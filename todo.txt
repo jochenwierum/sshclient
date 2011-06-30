@@ -6,9 +6,14 @@ Nahezu alles, insbesondere
 Persistierung:
 * Anlegen von Profilen
 
+SSH-UI:
+* Bell
+* Draw (blinking) Cursor
+
 Terminal:
 * Blinkender Cursor
 * Mehr escape sequence
+  * http://www-user.tu-chemnitz.de/~heha/hs_freeware/terminal/terminal.htm
   * http://www.termsys.demon.co.uk/vtansi.htm
   * http://ascii-table.com/ansi-escape-sequences-vt-100.php
   * http://vt100.net/docs/vt100-ug/chapter3.html

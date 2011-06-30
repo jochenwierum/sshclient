@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import de.jowisoftware.ssh.client.terminal.Buffer;
 import de.jowisoftware.ssh.client.terminal.CursorPosition;
 import de.jowisoftware.ssh.client.terminal.EncodingDecoder;
+import de.jowisoftware.ssh.client.terminal.Feedback;
 import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
@@ -17,6 +18,7 @@ public class CharacterProcessor<T extends GfxChar> {
     private static final char ESC_CHAR = (char) 27;
     private static final char NEWLINE_CHAR = '\n';
     private static final char CARRIDGE_RETURN_CHAR = '\r';
+    private static final char BELL_CHAR = 7;
     private static final char BACKSPACE_CHAR = (char) 8;
 
     private final LinkedList<ControlSequence<T>> availableSequences =
@@ -29,10 +31,13 @@ public class CharacterProcessor<T extends GfxChar> {
     private boolean isInSequence = false;
     private final GfxCharSetup<T> setup;
     private final Buffer<T> buffer;
+    private final Feedback feedback;
 
-    public CharacterProcessor(final Buffer<T> buffer, final GfxCharSetup<T> setup, final Charset charset) {
+    public CharacterProcessor(final Buffer<T> buffer, final GfxCharSetup<T> setup,
+            final Charset charset, final Feedback feedback) {
         this.buffer = buffer;
         this.setup = setup;
+        this.feedback = feedback;
         this.decoder = new EncodingDecoder(charset);
     }
 
@@ -69,6 +74,8 @@ public class CharacterProcessor<T extends GfxChar> {
             buffer.setCursorPosition(new CursorPosition(0, buffer.getCursorPosition().getY()));
         } else if (character == BACKSPACE_CHAR) {
             buffer.setCursorPosition(buffer.getCursorPosition().offset(-1, 0));
+        } else if (character == BELL_CHAR) {
+            feedback.bell();
         } else {
             buffer.addCharacter(setup.createChar(character));
         }

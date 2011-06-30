@@ -45,7 +45,8 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
     public SSHConsole(final ConnectionInfo info) {
         this.connectionInfo = info;
         setup = new GfxAwtCharSetup(info.getGfxSettings());
-        outputProcessor = new CharacterProcessor<GfxAwtChar>(buffer, setup, info.getCharset());
+        outputProcessor = new CharacterProcessor<GfxAwtChar>(buffer, setup,
+                info.getCharset(), new GfxFeedback());
         initializeProcessor();
 
         this.addComponentListener(this);
@@ -53,6 +54,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
 
         setFocusable(true);
         setRequestFocusEnabled(true);
+        setFocusTraversalKeysEnabled(false);
     }
 
     private void initializeProcessor() {

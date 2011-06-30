@@ -14,8 +14,6 @@ public class KeyboardProcessor implements KeyListener {
     private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
     private final OutputStream responseStream;
 
-    private final boolean firstKeyPress = false;
-
     private static final int ESC = 27;
 
     public KeyboardProcessor(final OutputStream outputStream) {

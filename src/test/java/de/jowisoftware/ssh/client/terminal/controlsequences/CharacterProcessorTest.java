@@ -13,9 +13,8 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.ssh.client.terminal.Buffer;
 import de.jowisoftware.ssh.client.terminal.CursorPosition;
+import de.jowisoftware.ssh.client.terminal.Feedback;
 import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
-import de.jowisoftware.ssh.client.terminal.controlsequences.CharacterProcessor;
-import de.jowisoftware.ssh.client.terminal.controlsequences.ControlSequence;
 import de.jowisoftware.ssh.client.test.matches.StringBuilderEquals;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
@@ -28,17 +27,20 @@ public class CharacterProcessorTest {
     private ControlSequence<GfxChar> sequence2;
     private GfxChar gfxChar;
     private CharacterProcessor<GfxChar> processor;
+    private Feedback feedback;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         buffer = context.mock(Buffer.class);
         setup = context.mock(GfxCharSetup.class);
+        feedback = context.mock(Feedback.class);
         sequence1 = context.mock(ControlSequence.class, "sequence1");
         sequence2 = context.mock(ControlSequence.class, "sequence2");
         gfxChar = context.mock(GfxChar.class);
 
-        processor = new CharacterProcessor<GfxChar>(buffer, setup, Charset.defaultCharset());
+        processor = new CharacterProcessor<GfxChar>(buffer,
+                setup, Charset.defaultCharset(), feedback);
         processor.addControlSequence(sequence1);
         processor.addControlSequence(sequence2);
     }
@@ -153,5 +155,28 @@ public class CharacterProcessorTest {
 
         processor.processByte((byte) 8);
         processor.processByte((byte) 8);
+    }
+
+    @Test
+    public void testBell() {
+        final Sequence seq = context.sequence("seq");
+
+        context.checking(new Expectations() {{
+            expectChar('x');
+            oneOf(feedback).bell();
+            expectChar('z');
+        }
+
+        private void expectChar(final char x) {
+            oneOf(setup).createChar(x);
+                inSequence(seq);
+                will(returnValue(gfxChar));
+            oneOf(buffer).addCharacter(gfxChar);
+                inSequence(seq);
+        }});
+
+        processor.processByte((byte) Character.codePointAt("x", 0));
+        processor.processByte((byte) 7);
+        processor.processByte((byte) Character.codePointAt("z", 0));
     }
 }
