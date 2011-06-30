@@ -3,8 +3,8 @@ package de.jowisoftware.ssh.client.ui;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-import de.jowisoftware.ssh.client.tty.Attribute;
-import de.jowisoftware.ssh.client.tty.Color;
+import de.jowisoftware.ssh.client.terminal.Attribute;
+import de.jowisoftware.ssh.client.terminal.Color;
 
 public class GfxAwtChar implements GfxChar {
     private final GfxInfo gfxInfo;

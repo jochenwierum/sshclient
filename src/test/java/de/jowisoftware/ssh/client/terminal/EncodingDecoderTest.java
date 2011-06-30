@@ -1,4 +1,4 @@
-package de.jowisoftware.ssh.client.tty;
+package de.jowisoftware.ssh.client.terminal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNull;
 import java.nio.charset.Charset;
 
 import org.junit.Test;
+
+import de.jowisoftware.ssh.client.terminal.EncodingDecoder;
 
 public class EncodingDecoderTest {
     @Test

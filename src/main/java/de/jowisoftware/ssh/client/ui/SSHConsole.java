@@ -17,14 +17,14 @@ import javax.swing.SwingUtilities;
 
 import de.jowisoftware.ssh.client.ConnectionInfo;
 import de.jowisoftware.ssh.client.jsch.AsyncInputStreamReaderThread.Callback;
-import de.jowisoftware.ssh.client.tty.ArrayListBuffer;
-import de.jowisoftware.ssh.client.tty.Buffer;
-import de.jowisoftware.ssh.client.tty.Color;
-import de.jowisoftware.ssh.client.tty.GfxCharSetup;
-import de.jowisoftware.ssh.client.tty.controlsequences.CharacterProcessor;
-import de.jowisoftware.ssh.client.tty.controlsequences.DisplayAttributeControlSequence;
-import de.jowisoftware.ssh.client.tty.controlsequences.EraseControlSequence;
-import de.jowisoftware.ssh.client.tty.controlsequences.MovementControlSequence;
+import de.jowisoftware.ssh.client.terminal.ArrayListBuffer;
+import de.jowisoftware.ssh.client.terminal.Buffer;
+import de.jowisoftware.ssh.client.terminal.Color;
+import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.controlsequences.CharacterProcessor;
+import de.jowisoftware.ssh.client.terminal.controlsequences.DisplayAttributeControlSequence;
+import de.jowisoftware.ssh.client.terminal.controlsequences.EraseControlSequence;
+import de.jowisoftware.ssh.client.terminal.controlsequences.MovementControlSequence;
 
 public class SSHConsole extends JPanel implements Callback, ComponentListener, MouseListener {
     private static final long serialVersionUID = 5102110929763645596L;

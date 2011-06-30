@@ -1,10 +1,10 @@
-package de.jowisoftware.ssh.client.tty.controlsequences;
+package de.jowisoftware.ssh.client.terminal.controlsequences;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.jowisoftware.ssh.client.tty.Buffer;
-import de.jowisoftware.ssh.client.tty.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.Buffer;
+import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 public class EraseControlSequence<T extends GfxChar> implements

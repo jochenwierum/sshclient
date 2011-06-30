@@ -1,4 +1,4 @@
-package de.jowisoftware.ssh.client.tty;
+package de.jowisoftware.ssh.client.terminal;
 
 public class CursorPosition {
     private final int x;

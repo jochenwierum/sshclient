@@ -1,4 +1,4 @@
-package de.jowisoftware.ssh.client.tty;
+package de.jowisoftware.ssh.client.terminal;
 
 import de.jowisoftware.ssh.client.ui.GfxChar;
 

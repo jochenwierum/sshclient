@@ -1,4 +1,4 @@
-package de.jowisoftware.ssh.client.tty.controlsequences;
+package de.jowisoftware.ssh.client.terminal.controlsequences;
 
 import java.nio.charset.Charset;
 import java.util.Iterator;
@@ -6,10 +6,10 @@ import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.ssh.client.tty.Buffer;
-import de.jowisoftware.ssh.client.tty.CursorPosition;
-import de.jowisoftware.ssh.client.tty.EncodingDecoder;
-import de.jowisoftware.ssh.client.tty.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.Buffer;
+import de.jowisoftware.ssh.client.terminal.CursorPosition;
+import de.jowisoftware.ssh.client.terminal.EncodingDecoder;
+import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 public class CharacterProcessor<T extends GfxChar> {

@@ -3,7 +3,7 @@ package de.jowisoftware.ssh.client.ui;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.jowisoftware.ssh.client.tty.Color;
+import de.jowisoftware.ssh.client.terminal.Color;
 
 public class GfxInfo {
     private final Map<Color, java.awt.Color> colors = new HashMap<Color, java.awt.Color>();

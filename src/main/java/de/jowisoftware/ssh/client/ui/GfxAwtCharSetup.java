@@ -3,9 +3,9 @@ package de.jowisoftware.ssh.client.ui;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.jowisoftware.ssh.client.tty.Attribute;
-import de.jowisoftware.ssh.client.tty.Color;
-import de.jowisoftware.ssh.client.tty.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.Attribute;
+import de.jowisoftware.ssh.client.terminal.Color;
+import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
 
 public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
     private final GfxInfo gfxInfo;

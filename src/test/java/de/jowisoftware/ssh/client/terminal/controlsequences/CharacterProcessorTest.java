@@ -1,4 +1,4 @@
-package de.jowisoftware.ssh.client.tty.controlsequences;
+package de.jowisoftware.ssh.client.terminal.controlsequences;
 
 import java.nio.charset.Charset;
 
@@ -11,10 +11,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.jowisoftware.ssh.client.terminal.Buffer;
+import de.jowisoftware.ssh.client.terminal.CursorPosition;
+import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.controlsequences.CharacterProcessor;
+import de.jowisoftware.ssh.client.terminal.controlsequences.ControlSequence;
 import de.jowisoftware.ssh.client.test.matches.StringBuilderEquals;
-import de.jowisoftware.ssh.client.tty.Buffer;
-import de.jowisoftware.ssh.client.tty.CursorPosition;
-import de.jowisoftware.ssh.client.tty.GfxCharSetup;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 @RunWith(JMock.class)

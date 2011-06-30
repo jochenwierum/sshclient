@@ -1,4 +1,4 @@
-package de.jowisoftware.ssh.client.tty;
+package de.jowisoftware.ssh.client.terminal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.jowisoftware.ssh.client.terminal.ArrayListBuffer;
+import de.jowisoftware.ssh.client.terminal.CursorPosition;
 import de.jowisoftware.ssh.client.ui.GfxAwtChar;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 

@@ -1,13 +1,13 @@
-package de.jowisoftware.ssh.client.tty.controlsequences;
+package de.jowisoftware.ssh.client.terminal.controlsequences;
 
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.ssh.client.tty.Attribute;
-import de.jowisoftware.ssh.client.tty.Buffer;
-import de.jowisoftware.ssh.client.tty.Color;
-import de.jowisoftware.ssh.client.tty.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.Attribute;
+import de.jowisoftware.ssh.client.terminal.Buffer;
+import de.jowisoftware.ssh.client.terminal.Color;
+import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 public class DisplayAttributeControlSequence<T extends GfxChar> implements ControlSequence<T> {

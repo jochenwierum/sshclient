@@ -1,4 +1,4 @@
-package de.jowisoftware.ssh.client.tty.controlsequences;
+package de.jowisoftware.ssh.client.terminal.controlsequences;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -11,10 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.ssh.client.tty.Attribute;
-import de.jowisoftware.ssh.client.tty.Buffer;
-import de.jowisoftware.ssh.client.tty.Color;
-import de.jowisoftware.ssh.client.tty.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.Attribute;
+import de.jowisoftware.ssh.client.terminal.Buffer;
+import de.jowisoftware.ssh.client.terminal.Color;
+import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.controlsequences.DisplayAttributeControlSequence;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 @RunWith(JMock.class)

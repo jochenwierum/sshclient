@@ -1,4 +1,4 @@
-package de.jowisoftware.ssh.client.tty.controlsequences;
+package de.jowisoftware.ssh.client.terminal.controlsequences;
 
 
 import static org.junit.Assert.assertFalse;
@@ -11,8 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.ssh.client.tty.Buffer;
-import de.jowisoftware.ssh.client.tty.CursorPosition;
+import de.jowisoftware.ssh.client.terminal.Buffer;
+import de.jowisoftware.ssh.client.terminal.CursorPosition;
+import de.jowisoftware.ssh.client.terminal.controlsequences.MovementControlSequence;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 @RunWith(JMock.class)
