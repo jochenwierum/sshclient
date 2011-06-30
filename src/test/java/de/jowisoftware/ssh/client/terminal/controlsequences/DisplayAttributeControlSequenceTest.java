@@ -15,7 +15,6 @@ import de.jowisoftware.ssh.client.terminal.Attribute;
 import de.jowisoftware.ssh.client.terminal.Buffer;
 import de.jowisoftware.ssh.client.terminal.Color;
 import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
-import de.jowisoftware.ssh.client.terminal.controlsequences.DisplayAttributeControlSequence;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 @RunWith(JMock.class)
@@ -157,11 +156,12 @@ public class DisplayAttributeControlSequenceTest {
         final Buffer<GfxChar> buffer = context.mock(Buffer.class);
 
         context.checking(new Expectations() {{
+            oneOf(setup).reset();
             oneOf(setup).setBackground(Color.RED);
             oneOf(setup).setForeground(Color.BLUE);
             oneOf(setup).setAttribute(Attribute.BLINK);
         }});
 
-        seq.handleSequence("[5;34;41m", buffer, setup);
+        seq.handleSequence("[0;5;34;41m", buffer, setup);
     }
 }

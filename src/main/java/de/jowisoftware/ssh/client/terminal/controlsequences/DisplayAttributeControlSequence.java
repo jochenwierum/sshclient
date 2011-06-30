@@ -38,6 +38,11 @@ public class DisplayAttributeControlSequence<T extends GfxChar> implements Contr
         for (final String number : numbers) {
             final int seq = Integer.parseInt(number);
 
+            if (seq == 0) {
+                setup.reset();
+                continue sequence;
+            }
+
             for (final Attribute attr : Attribute.values()) {
                 if (attr.isActivateSequence(seq)) {
                     setup.setAttribute(attr);
