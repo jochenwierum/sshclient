@@ -6,8 +6,6 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.jowisoftware.ssh.client.terminal.ArrayListBuffer;
-import de.jowisoftware.ssh.client.terminal.CursorPosition;
 import de.jowisoftware.ssh.client.ui.GfxAwtChar;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
@@ -16,7 +14,7 @@ public class ArrayListBufferTest {
 
     @Before
     public void setUp() {
-        buffer = new ArrayListBuffer<GfxChar>();
+        buffer = new ArrayListBuffer<GfxChar>(null);
     }
 
     @Test

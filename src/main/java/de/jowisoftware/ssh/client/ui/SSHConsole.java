@@ -1,15 +1,12 @@
 package de.jowisoftware.ssh.client.ui;
 
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 import java.io.OutputStream;
 
 import javax.swing.JPanel;
@@ -19,7 +16,6 @@ import de.jowisoftware.ssh.client.ConnectionInfo;
 import de.jowisoftware.ssh.client.jsch.AsyncInputStreamReaderThread.Callback;
 import de.jowisoftware.ssh.client.terminal.ArrayListBuffer;
 import de.jowisoftware.ssh.client.terminal.Buffer;
-import de.jowisoftware.ssh.client.terminal.Color;
 import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
 import de.jowisoftware.ssh.client.terminal.controlsequences.CharacterProcessor;
 import de.jowisoftware.ssh.client.terminal.controlsequences.DisplayAttributeControlSequence;
@@ -29,24 +25,20 @@ import de.jowisoftware.ssh.client.terminal.controlsequences.MovementControlSeque
 public class SSHConsole extends JPanel implements Callback, ComponentListener, MouseListener {
     private static final long serialVersionUID = 5102110929763645596L;
 
-    private final Buffer<GfxAwtChar> buffer = new ArrayListBuffer<GfxAwtChar>();
+    private final DoubleBufferedImage renderer;
+    private final Buffer<GfxAwtChar> buffer;
     private final GfxCharSetup<GfxAwtChar> setup;
     private final CharacterProcessor<GfxAwtChar> outputProcessor;
 
-    private BufferedImage[] images;
-    private Graphics2D[] graphics;
-    private int currentImage = 0;
-    boolean forceNewImages = true;
-
-    private FontMetrics fontMetrics;
-
-    private final ConnectionInfo connectionInfo;
+    private boolean forceNewImages = true;
 
     public SSHConsole(final ConnectionInfo info) {
-        this.connectionInfo = info;
+        renderer = new DoubleBufferedImage(info.getGfxSettings());
+        buffer = new ArrayListBuffer<GfxAwtChar>(renderer);
         setup = new GfxAwtCharSetup(info.getGfxSettings());
         outputProcessor = new CharacterProcessor<GfxAwtChar>(buffer, setup,
                 info.getCharset(), new GfxFeedback());
+
         initializeProcessor();
 
         this.addComponentListener(this);
@@ -65,98 +57,56 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
 
     @Override
     public void paintComponent(final Graphics g) {
-        if (images == null || forceNewImages) {
-            synchronized (this) {
-                if (images == null || forceNewImages) {
-                    drawImage();
-                }
-            }
+        if (forceNewImages) {
+            renderConsole(false);
         }
 
-        g.drawImage(images[currentImage], 0, 0, this);
+        final Image image = renderer.getImage();
+        if (image != null) {
+            g.drawImage(image, 0, 0, this);
+        }
     }
 
-    private void drawImage() {
-        final int width = getWidth();
-        final int height = getHeight();
-        final int i = (currentImage + 1) % 2;
-
-        if (images == null || forceNewImages) {
-            setupImage(width, height);
+    private synchronized void renderConsole(final boolean force) {
+        if (forceNewImages || force) {
+            buffer.render();
             forceNewImages = false;
         }
-
-        final Graphics2D graphics = this.graphics[i];
-        graphics.clearRect(0, 0, width, height);
-        drawText(graphics, width, height);
-        currentImage = (currentImage + 1) % 2;;
-    }
-
-    private void drawText(final Graphics2D graphics, final int width, final int height) {
-        graphics.setColor(java.awt.Color.white);
-
-        // hasUniformLineMetrics() !!
-        final int charWidth = fontMetrics.charWidth('m');
-        final int charHeight = fontMetrics.getHeight();
-        final int charsPerLine = width / charWidth;
-        final int charsPerColumn = height / charHeight;
-        final int baseLinePos = fontMetrics.getAscent() + fontMetrics.getLeading();
-
-        final int startRow = Math.max(buffer.rows() - charsPerColumn, 0);
-        for (int row = startRow; row < buffer.rows(); ++row) {
-            final int endCol = Math.min(charsPerLine, buffer.lengthOfLine(row));
-
-            for (int col = 0; col < endCol; ++col) {
-                final int posy = (row - startRow) * charHeight;
-                final int posx = col * charWidth;
-                final GfxAwtChar character = buffer.getCharacter(col, row);
-                if (character != null) {
-                    character.drawBackground(posx, posy, charWidth, charHeight, graphics);
-                    character.drawAt(posx, posy + baseLinePos, charWidth, graphics);
-                }
-            }
-        }
-    }
-
-    private void setupImage(final int width, final int height) {
-        images = new BufferedImage[2];
-        graphics = new Graphics2D[2];
-
-        for (int i = 0; i < 2; ++i) {
-            images[i] = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-            graphics[i] = images[i].createGraphics();
-            graphics[i].setBackground(connectionInfo.getGfxSettings().mapColor(
-                    Color.DEFAULTBG, false));
-            graphics[i].setFont(new Font("Consolas", 0, 11));
-        }
-
-        fontMetrics = getFontMetrics(graphics[0].getFont());
     }
 
     public void dispose() {
-        images = null;
-        graphics = null;
-        fontMetrics = null;
+        renderer.dispose();
     }
 
+    /**
+     * Adds new characters to the buffer and triggers a repaint.
+     */
     @Override
-    public void gotChars(final byte[] buffer, final int count) {
-        processCharacters(buffer, count);
-        synchronized(this) {
-            drawImage();
-        }
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                repaint();
-            }
-        });
+    public void gotChars(final byte[] chars, final int count) {
+        processCharacters(chars, count);
+        forceNewImages = true;
+        queueRedraw();
     }
 
-    public void redrawConsole() {
-        synchronized(this) {
-            drawImage();
+    private void processCharacters(final byte[] chars, final int count) {
+        for (int i = 0; i < count; ++i) {
+            outputProcessor.processByte(chars[i]);
         }
+    }
+
+    /**
+     * Generates a new console image and triggers a repaint.
+     * This method is threadsafe.
+     */
+    public void redrawConsole() {
+        renderConsole(true);
+        queueRedraw();
+    }
+
+    /**
+     * Triggers a redraw in the form's owner thread.
+     */
+    private void queueRedraw() {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -173,15 +123,11 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
         this.addKeyListener(new KeyboardProcessor(outputStream));
     }
 
-    private void processCharacters(final byte[] chars, final int count) {
-        for (int i = 0; i < count; ++i) {
-            outputProcessor.processByte(chars[i]);
-        }
-    }
-
     @Override
     public void componentResized(final ComponentEvent e) {
+        renderer.setDimensions(getWidth(), getHeight());
         forceNewImages = true;
+        queueRedraw();
     }
 
     @Override

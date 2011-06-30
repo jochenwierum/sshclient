@@ -1,5 +1,6 @@
 package de.jowisoftware.ssh.client.ui;
 
+import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,5 +41,9 @@ public class GfxInfo {
         } else {
             return brightColors.get(color);
         }
+    }
+
+    public Font getFont() {
+        return new Font("Consolas", 0, 11); // TODO hasUniformLineMetrics()
     }
 }
