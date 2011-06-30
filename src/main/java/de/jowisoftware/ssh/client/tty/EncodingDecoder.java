@@ -8,6 +8,8 @@ import java.nio.charset.CodingErrorAction;
 
 import org.apache.log4j.Logger;
 
+import de.jowisoftware.ssh.client.util.StringUtils;
+
 public class EncodingDecoder {
     private static final Logger LOGGER = Logger.getLogger(EncodingDecoder.class);
 
@@ -40,7 +42,13 @@ public class EncodingDecoder {
 
     private void checkErrorState() {
         if (byteBuffer.position() > maxBytes) {
-            LOGGER.error("Could not decode: " + byteBuffer.toString());
+            final StringBuilder bytes = new StringBuilder();
+            final StringBuilder chars = new StringBuilder();
+            for (int i = 0; i < byteBuffer.position(); ++i) {
+                bytes.append(StringUtils.byteToHex(byteBuffer.get(i)));
+                chars.append((char) byteBuffer.get(i));
+            }
+            LOGGER.error("Could not decode: " + bytes.toString() + ": " + chars.toString());
             byteBuffer.clear();
         }
     }

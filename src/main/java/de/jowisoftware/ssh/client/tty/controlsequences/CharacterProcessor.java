@@ -123,7 +123,7 @@ public class CharacterProcessor<T extends GfxChar> {
         LOGGER.warn("Unable to process sequence " + cachedChars);
         resetState();
 
-        processStandardChar(ESC_CHAR);
+        createChar(ESC_CHAR);
         for (final char c : cachedChars.toString().toCharArray()) {
             processChar(c);
         }

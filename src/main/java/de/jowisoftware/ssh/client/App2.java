@@ -1,44 +1,13 @@
 package de.jowisoftware.ssh.client;
 
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.charset.CharacterCodingException;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CoderResult;
+
+import javax.swing.JFrame;
+
+import de.jowisoftware.ssh.client.ui.SSHConsole;
 
 public class App2 {
     public static void main(final String args[]) throws CharacterCodingException {
-        final ByteBuffer temp = Charset.forName("UTF-8").encode(CharBuffer.wrap("Ä"));
-        System.out.println(temp.get());
-        System.out.println(temp.get());
-
-
-        final ByteBuffer buffer = ByteBuffer.allocate(10);
-        buffer.put((byte) -61);
-        final ByteBuffer b2 = buffer.duplicate(); b2.flip();
-        //final CharBuffer result = Charset.forName("UTF-8").decode(b2);
-
-        final CharsetDecoder dec = Charset.forName("UTF-8").newDecoder();
-        final CharBuffer result = CharBuffer.allocate(2);
-        final CoderResult tmp = dec.decode(b2, result, false);
-
-        System.out.println(b2.remaining());
-        /*
-        buffer.put((byte) 65);
-        b2 = buffer.duplicate(); b2.flip();
-        result = Charset.forName("UTF-8").decode(b2);
-        */
-
-        result.flip();
-        System.out.println(result.toString());
-
-        /*
-        final Pattern pattern = Pattern.compile("test");
-        final Matcher matcher = pattern.matcher("tes");
-        System.out.println(matcher.matches());
-        System.out.println(matcher.end());
-        /*
         final JFrame frame = new JFrame("test");
         final SSHConsole console = new SSHConsole(new ConnectionInfo(null));
         frame.add(console);
@@ -57,6 +26,6 @@ public class App2 {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         console.gotChars(text.getBytes(), text.getBytes().length);
-        */
+        console.setOutputStream(System.out);
     }
 }

@@ -1,5 +1,6 @@
 package de.jowisoftware.ssh.client.tty.controlsequences;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.jowisoftware.ssh.client.tty.Buffer;
@@ -10,9 +11,9 @@ public class EraseControlSequence<T extends GfxChar> implements
         ControlSequence<T> {
 
     private static final Pattern pattern = Pattern
-            .compile("\\[J");
+            .compile("\\[([12])?(J|K)");
     private static final Pattern partialpattern = Pattern
-            .compile("\\[");
+            .compile("\\[[12]?");
 
     @Override
     public boolean isPartialStart(final CharSequence sequence) {
@@ -27,6 +28,24 @@ public class EraseControlSequence<T extends GfxChar> implements
     @Override
     public void handleSequence(final String sequence, final Buffer<T> buffer,
             final GfxCharSetup<T> setup) {
-        buffer.eraseDown();
+        final Matcher matcher = pattern.matcher(sequence);
+        matcher.matches();
+
+        final char command = matcher.group(2).charAt(0);
+        final char mod = matcher.group(1) == null ? '0' : matcher.group(1).charAt(0);
+
+        if (command == 'J' && mod == '0') {
+            buffer.eraseToBottom();
+        } else if(command == 'J' && mod == '1') {
+            buffer.eraseFromTop();
+        } else if (command == 'J' && mod == '2') {
+            buffer.erase();
+        } else if (command == 'K' && mod == '0') {
+            buffer.eraseRestOfLine();
+        }  else if (command == 'K' && mod == '1') {
+            buffer.eraseStartOfLine();
+        } else if (command == 'K' && mod == '2') {
+            buffer.eraseLine();
+        }
     }
 }

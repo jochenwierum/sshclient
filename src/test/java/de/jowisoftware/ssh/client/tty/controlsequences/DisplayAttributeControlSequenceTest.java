@@ -11,10 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.jowisoftware.ssh.client.tty.Attribute;
 import de.jowisoftware.ssh.client.tty.Buffer;
+import de.jowisoftware.ssh.client.tty.Color;
 import de.jowisoftware.ssh.client.tty.GfxCharSetup;
-import de.jowisoftware.ssh.client.tty.GfxCharSetup.Attributes;
-import de.jowisoftware.ssh.client.tty.GfxCharSetup.Colors;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 @RunWith(JMock.class)
@@ -29,11 +29,12 @@ public class DisplayAttributeControlSequenceTest {
 
     @Test
     public void testFullMatches() {
+        assertTrue(seq.canHandleSequence("[m"));
         assertTrue(seq.canHandleSequence("[1m"));
         assertTrue(seq.canHandleSequence("[12m"));
         assertTrue(seq.canHandleSequence("[12;1m"));
         assertTrue(seq.canHandleSequence("[22;7;3m"));
-        assertFalse(seq.canHandleSequence("[m"));
+        assertFalse(seq.canHandleSequence("[y"));
         assertFalse(seq.canHandleSequence("[12;m"));
     }
 
@@ -51,7 +52,7 @@ public class DisplayAttributeControlSequenceTest {
     }
 
     @SuppressWarnings("unchecked")
-    private void callWithAttrAndExpect(final int attr, final Attributes expect) {
+    private void callWithAttrAndExpect(final int attr, final Attribute expect) {
         final GfxCharSetup<GfxChar> setup = context.mock(GfxCharSetup.class, "setup-" + attr + "-expect");
         final Buffer<GfxChar> buffer = context.mock(Buffer.class, "buffer-" + attr + "-expect");
 
@@ -63,7 +64,7 @@ public class DisplayAttributeControlSequenceTest {
     }
 
     @SuppressWarnings("unchecked")
-    private void callWithAttrAndExpectFGColor(final int attr, final Colors expect) {
+    private void callWithAttrAndExpectFGColor(final int attr, final Color expect) {
         final GfxCharSetup<GfxChar> setup = context.mock(GfxCharSetup.class, "setup-" + attr + "-expect");
         final Buffer<GfxChar> buffer = context.mock(Buffer.class, "buffer-" + attr + "-expect");
 
@@ -75,7 +76,7 @@ public class DisplayAttributeControlSequenceTest {
     }
 
     @SuppressWarnings("unchecked")
-    private void callWithAttrAndExpectBGColor(final int attr, final Colors expect) {
+    private void callWithAttrAndExpectBGColor(final int attr, final Color expect) {
         final GfxCharSetup<GfxChar> setup = context.mock(GfxCharSetup.class, "setup-" + attr + "-expect");
         final Buffer<GfxChar> buffer = context.mock(Buffer.class, "buffer-" + attr + "-expect");
 
@@ -86,32 +87,51 @@ public class DisplayAttributeControlSequenceTest {
         seq.handleSequence("[" + attr + "m", buffer, setup);
     }
 
+    @SuppressWarnings("unchecked")
+    private void callWithRemoveAttrAndExpect(final int attr, final Attribute expect) {
+        final GfxCharSetup<GfxChar> setup = context.mock(GfxCharSetup.class, "setup-" + attr + "-remove");
+        final Buffer<GfxChar> buffer = context.mock(Buffer.class, "buffer-" + attr + "-remove");
+
+        context.checking(new Expectations() {{
+            oneOf(setup).removeAttribute(expect);
+        }});
+
+        seq.handleSequence("[" + attr + "m", buffer, setup);
+    }
+
     @Test
     public void testAttributes() {
-        callWithAttrAndExpect(1, Attributes.BRIGHT);
-        callWithAttrAndExpect(2, Attributes.DIM);
-        callWithAttrAndExpect(4, Attributes.UNDERSCORE);
-        callWithAttrAndExpect(5, Attributes.BLINK);
-        callWithAttrAndExpect(7, Attributes.REVERSE);
-        callWithAttrAndExpect(8, Attributes.HIDDEN);
+        callWithAttrAndExpect(1, Attribute.BRIGHT);
+        callWithAttrAndExpect(2, Attribute.DIM);
+        callWithAttrAndExpect(4, Attribute.UNDERSCORE);
+        callWithAttrAndExpect(5, Attribute.BLINK);
+        callWithAttrAndExpect(7, Attribute.INVERSE);
+        callWithAttrAndExpect(8, Attribute.HIDDEN);
 
-        callWithAttrAndExpectFGColor(30, Colors.BLACK);
-        callWithAttrAndExpectFGColor(31, Colors.RED);
-        callWithAttrAndExpectFGColor(32, Colors.GREEN);
-        callWithAttrAndExpectFGColor(33, Colors.YELLOW);
-        callWithAttrAndExpectFGColor(34, Colors.BLUE);
-        callWithAttrAndExpectFGColor(35, Colors.MAGENTA);
-        callWithAttrAndExpectFGColor(36, Colors.CYAN);
-        callWithAttrAndExpectFGColor(37, Colors.WHITE);
+        callWithRemoveAttrAndExpect(22, Attribute.BRIGHT);
+        callWithRemoveAttrAndExpect(23, Attribute.DIM); // is this correct?
+        callWithRemoveAttrAndExpect(24, Attribute.UNDERSCORE);
+        callWithRemoveAttrAndExpect(25, Attribute.BLINK);
+        callWithRemoveAttrAndExpect(27, Attribute.INVERSE);
+        callWithRemoveAttrAndExpect(28, Attribute.HIDDEN);
 
-        callWithAttrAndExpectBGColor(40, Colors.BLACK);
-        callWithAttrAndExpectBGColor(41, Colors.RED);
-        callWithAttrAndExpectBGColor(42, Colors.GREEN);
-        callWithAttrAndExpectBGColor(43, Colors.YELLOW);
-        callWithAttrAndExpectBGColor(44, Colors.BLUE);
-        callWithAttrAndExpectBGColor(45, Colors.MAGENTA);
-        callWithAttrAndExpectBGColor(46, Colors.CYAN);
-        callWithAttrAndExpectBGColor(47, Colors.WHITE);
+        callWithAttrAndExpectFGColor(30, Color.BLACK);
+        callWithAttrAndExpectFGColor(31, Color.RED);
+        callWithAttrAndExpectFGColor(32, Color.GREEN);
+        callWithAttrAndExpectFGColor(33, Color.YELLOW);
+        callWithAttrAndExpectFGColor(34, Color.BLUE);
+        callWithAttrAndExpectFGColor(35, Color.MAGENTA);
+        callWithAttrAndExpectFGColor(36, Color.CYAN);
+        callWithAttrAndExpectFGColor(37, Color.WHITE);
+
+        callWithAttrAndExpectBGColor(40, Color.BLACK);
+        callWithAttrAndExpectBGColor(41, Color.RED);
+        callWithAttrAndExpectBGColor(42, Color.GREEN);
+        callWithAttrAndExpectBGColor(43, Color.YELLOW);
+        callWithAttrAndExpectBGColor(44, Color.BLUE);
+        callWithAttrAndExpectBGColor(45, Color.MAGENTA);
+        callWithAttrAndExpectBGColor(46, Color.CYAN);
+        callWithAttrAndExpectBGColor(47, Color.WHITE);
     }
 
     @SuppressWarnings("unchecked")
@@ -122,9 +142,11 @@ public class DisplayAttributeControlSequenceTest {
 
         context.checking(new Expectations() {{
             oneOf(setup).reset();
+            oneOf(setup).reset();
         }});
 
         seq.handleSequence("[0m", buffer, setup);
+        seq.handleSequence("[m", buffer, setup);
     }
 
     @SuppressWarnings("unchecked")
@@ -134,9 +156,9 @@ public class DisplayAttributeControlSequenceTest {
         final Buffer<GfxChar> buffer = context.mock(Buffer.class);
 
         context.checking(new Expectations() {{
-            oneOf(setup).setBackground(Colors.RED);
-            oneOf(setup).setForeground(Colors.BLUE);
-            oneOf(setup).setAttribute(Attributes.BLINK);
+            oneOf(setup).setBackground(Color.RED);
+            oneOf(setup).setForeground(Color.BLUE);
+            oneOf(setup).setAttribute(Attribute.BLINK);
         }});
 
         seq.handleSequence("[5;34;41m", buffer, setup);

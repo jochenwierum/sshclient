@@ -1,44 +1,37 @@
 package de.jowisoftware.ssh.client.ui;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import org.apache.log4j.Logger;
-
 import de.jowisoftware.ssh.client.ConnectionInfo;
 import de.jowisoftware.ssh.client.jsch.AsyncInputStreamReaderThread.Callback;
 import de.jowisoftware.ssh.client.tty.ArrayListBuffer;
 import de.jowisoftware.ssh.client.tty.Buffer;
+import de.jowisoftware.ssh.client.tty.Color;
 import de.jowisoftware.ssh.client.tty.GfxCharSetup;
-import de.jowisoftware.ssh.client.tty.GfxCharSetup.Colors;
 import de.jowisoftware.ssh.client.tty.controlsequences.CharacterProcessor;
 import de.jowisoftware.ssh.client.tty.controlsequences.DisplayAttributeControlSequence;
 import de.jowisoftware.ssh.client.tty.controlsequences.EraseControlSequence;
 import de.jowisoftware.ssh.client.tty.controlsequences.MovementControlSequence;
-import de.jowisoftware.ssh.client.util.StringUtils;
 
-public class SSHConsole extends JPanel implements Callback, ComponentListener, KeyListener, MouseListener {
+public class SSHConsole extends JPanel implements Callback, ComponentListener, MouseListener {
     private static final long serialVersionUID = 5102110929763645596L;
-    private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
 
     private final Buffer<GfxAwtChar> buffer = new ArrayListBuffer<GfxAwtChar>();
     private final GfxCharSetup<GfxAwtChar> setup;
-    private final CharacterProcessor<GfxAwtChar> processor;
+    private final CharacterProcessor<GfxAwtChar> outputProcessor;
 
     private BufferedImage[] images;
     private Graphics2D[] graphics;
@@ -49,16 +42,13 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, K
 
     private final ConnectionInfo connectionInfo;
 
-    private OutputStream responseStream;
-
     public SSHConsole(final ConnectionInfo info) {
         this.connectionInfo = info;
         setup = new GfxAwtCharSetup(info.getGfxSettings());
-        processor = new CharacterProcessor<GfxAwtChar>(buffer, setup, info.getCharset());
+        outputProcessor = new CharacterProcessor<GfxAwtChar>(buffer, setup, info.getCharset());
         initializeProcessor();
 
         this.addComponentListener(this);
-        this.addKeyListener(this);
         this.addMouseListener(this);
 
         setFocusable(true);
@@ -66,9 +56,9 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, K
     }
 
     private void initializeProcessor() {
-        processor.addControlSequence(new DisplayAttributeControlSequence<GfxAwtChar>());
-        processor.addControlSequence(new MovementControlSequence<GfxAwtChar>());
-        processor.addControlSequence(new EraseControlSequence<GfxAwtChar>());
+        outputProcessor.addControlSequence(new DisplayAttributeControlSequence<GfxAwtChar>());
+        outputProcessor.addControlSequence(new MovementControlSequence<GfxAwtChar>());
+        outputProcessor.addControlSequence(new EraseControlSequence<GfxAwtChar>());
     }
 
     @Override
@@ -101,7 +91,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, K
     }
 
     private void drawText(final Graphics2D graphics, final int width, final int height) {
-        graphics.setColor(Color.white);
+        graphics.setColor(java.awt.Color.white);
 
         // hasUniformLineMetrics() !!
         final int charWidth = fontMetrics.charWidth('m');
@@ -134,7 +124,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, K
             images[i] = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             graphics[i] = images[i].createGraphics();
             graphics[i].setBackground(connectionInfo.getGfxSettings().mapColor(
-                    Colors.DEFAULTBG, false));
+                    Color.DEFAULTBG, false));
             graphics[i].setFont(new Font("Consolas", 0, 11));
         }
 
@@ -161,8 +151,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, K
         });
     }
 
-    // TODO better name
-    public void redraw() {
+    public void redrawConsole() {
         synchronized(this) {
             drawImage();
         }
@@ -175,12 +164,16 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, K
     }
 
     public void setOutputStream(final OutputStream outputStream) {
-        this.responseStream = outputStream;
+        for (final KeyListener keyListener : this.getKeyListeners()) {
+            this.removeKeyListener(keyListener);
+        }
+
+        this.addKeyListener(new KeyboardProcessor(outputStream));
     }
 
     private void processCharacters(final byte[] chars, final int count) {
         for (int i = 0; i < count; ++i) {
-            processor.processByte(chars[i]);
+            outputProcessor.processByte(chars[i]);
         }
     }
 
@@ -190,34 +183,17 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, K
     }
 
     @Override
-    public void keyPressed(final KeyEvent e) {
-        if (responseStream != null) {
-            try {
-                LOGGER.trace("Sending: " + StringUtils.escapeCharForLog(e.getKeyChar()));
-                responseStream.write(e.getKeyChar());
-                responseStream.flush();
-            } catch (final IOException e1) {
-                LOGGER.warn("Failed to send keypress", e1);
-            }
-        }
-
-        e.consume();
-    }
-
-    @Override
     public void mousePressed(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             requestFocusInWindow();
         }
     }
 
-    @Override public void mouseReleased(final MouseEvent e) { }
-    @Override public void mouseClicked(final MouseEvent e) { }
     @Override public void componentMoved(final ComponentEvent e) { }
     @Override public void componentShown(final ComponentEvent e) { }
     @Override public void componentHidden(final ComponentEvent e) { }
-    @Override public void keyTyped(final KeyEvent e) { }
-    @Override public void keyReleased(final KeyEvent e) { }
+    @Override public void mouseReleased(final MouseEvent e) { }
+    @Override public void mouseClicked(final MouseEvent e) { }
     @Override public void mouseEntered(final MouseEvent e) { }
     @Override public void mouseExited(final MouseEvent e) { }
 }

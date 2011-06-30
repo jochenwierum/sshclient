@@ -1,22 +1,21 @@
 package de.jowisoftware.ssh.client.ui;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-import de.jowisoftware.ssh.client.tty.GfxCharSetup.Attributes;
-import de.jowisoftware.ssh.client.tty.GfxCharSetup.Colors;
+import de.jowisoftware.ssh.client.tty.Attribute;
+import de.jowisoftware.ssh.client.tty.Color;
 
 public class GfxAwtChar implements GfxChar {
     private final GfxInfo gfxInfo;
-    private final Attributes[] attributes;
-    private final Colors fgColor;
-    private final Colors bgColor;
+    private final Attribute[] attributes;
+    private final Color fgColor;
+    private final Color bgColor;
     private final char character;
 
     public GfxAwtChar(final char character,
-            final GfxInfo gfxInfo, final Colors fgColor, final Colors bgColor,
-            final Attributes[] attributes) {
+            final GfxInfo gfxInfo, final Color fgColor, final Color bgColor,
+            final Attribute[] attributes) {
         this.character = character;
         this.gfxInfo = gfxInfo;
         this.fgColor = fgColor;
@@ -25,7 +24,7 @@ public class GfxAwtChar implements GfxChar {
     }
 
     public void drawAt(final int x, final int y, final int w, final Graphics g) {
-        if (!hasAttribute(Attributes.BLINK)) {
+        if (!hasAttribute(Attribute.BLINK)) {
             g.setColor(getForeColor());
         } else {
             if (blinkIsForeGround()) {
@@ -35,7 +34,7 @@ public class GfxAwtChar implements GfxChar {
             }
         }
         g.drawString(Character.toString(character), x, y);
-        if (hasAttribute(Attributes.UNDERSCORE)) {
+        if (hasAttribute(Attribute.UNDERSCORE)) {
             g.drawLine(x, y, x + w, y);
         }
     }
@@ -49,24 +48,24 @@ public class GfxAwtChar implements GfxChar {
         g.fillRect(x, y, w, h);
     }
 
-    private Color getBackColor() {
-        if (!hasAttribute(Attributes.REVERSE)) {
-            return gfxInfo.mapColor(bgColor, hasAttribute(Attributes.BRIGHT));
+    private java.awt.Color getBackColor() {
+        if (!hasAttribute(Attribute.INVERSE)) {
+            return gfxInfo.mapColor(bgColor, hasAttribute(Attribute.BRIGHT));
         } else {
-            return gfxInfo.mapColor(fgColor, hasAttribute(Attributes.BRIGHT));
+            return gfxInfo.mapColor(fgColor, hasAttribute(Attribute.BRIGHT));
         }
     }
 
-    private Color getForeColor() {
-        if (!hasAttribute(Attributes.REVERSE)) {
-            return gfxInfo.mapColor(fgColor, hasAttribute(Attributes.BRIGHT));
+    private java.awt.Color getForeColor() {
+        if (!hasAttribute(Attribute.INVERSE)) {
+            return gfxInfo.mapColor(fgColor, hasAttribute(Attribute.BRIGHT));
         } else {
-            return gfxInfo.mapColor(bgColor, hasAttribute(Attributes.BRIGHT));
+            return gfxInfo.mapColor(bgColor, hasAttribute(Attribute.BRIGHT));
         }
     }
 
-    private boolean hasAttribute(final Attributes attribute) {
-        for (final Attributes attrib : attributes) {
+    private boolean hasAttribute(final Attribute attribute) {
+        for (final Attribute attrib : attributes) {
             if (attrib.equals(attribute)) {
                 return true;
             }

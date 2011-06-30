@@ -18,5 +18,10 @@ public interface Buffer<T extends GfxChar> {
 
     public void addCharacter(final T character);
 
-    public void eraseDown();
+    public void eraseToBottom();
+    public void eraseRestOfLine();
+    public void eraseStartOfLine();
+    public void eraseFromTop();
+    public void erase();
+    public void eraseLine();
 }

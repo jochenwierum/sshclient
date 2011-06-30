@@ -101,7 +101,7 @@ public class SSHFrame extends JPanel  {
 
     public void redraw() {
         if (console != null) {
-            console.redraw();
+            console.redrawConsole();
         }
     }
 }

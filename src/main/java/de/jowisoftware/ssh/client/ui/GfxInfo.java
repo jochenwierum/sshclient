@@ -1,41 +1,40 @@
 package de.jowisoftware.ssh.client.ui;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.jowisoftware.ssh.client.tty.GfxCharSetup.Colors;
+import de.jowisoftware.ssh.client.tty.Color;
 
 public class GfxInfo {
-    private final Map<Colors, Color> colors = new HashMap<Colors, Color>();
-    private final Map<Colors, Color> brightColors = new HashMap<Colors, Color>();
+    private final Map<Color, java.awt.Color> colors = new HashMap<Color, java.awt.Color>();
+    private final Map<Color, java.awt.Color> brightColors = new HashMap<Color, java.awt.Color>();
 
     // TODO: get this from config
     public GfxInfo() {
-       colors.put(Colors.BLACK, Color.BLACK);
-       colors.put(Colors.BLUE, Color.BLUE);
-       colors.put(Colors.CYAN, Color.CYAN);
-       colors.put(Colors.DEFAULT, Color.LIGHT_GRAY);
-       colors.put(Colors.DEFAULTBG, Color.BLACK);
-       colors.put(Colors.GREEN, Color.GREEN);
-       colors.put(Colors.MAGENTA, Color.MAGENTA);
-       colors.put(Colors.RED, Color.RED);
-       colors.put(Colors.WHITE, Color.WHITE);
-       colors.put(Colors.YELLOW, Color.YELLOW);
-       colors.put(Colors.BLACK, Color.BLACK);
+       colors.put(Color.BLACK, java.awt.Color.BLACK);
+       colors.put(Color.BLUE, java.awt.Color.BLUE);
+       colors.put(Color.CYAN, java.awt.Color.CYAN);
+       colors.put(Color.DEFAULT, java.awt.Color.LIGHT_GRAY);
+       colors.put(Color.DEFAULTBG, java.awt.Color.BLACK);
+       colors.put(Color.GREEN, java.awt.Color.GREEN);
+       colors.put(Color.MAGENTA, java.awt.Color.MAGENTA);
+       colors.put(Color.RED, java.awt.Color.RED);
+       colors.put(Color.WHITE, java.awt.Color.WHITE);
+       colors.put(Color.YELLOW, java.awt.Color.YELLOW);
+       colors.put(Color.BLACK, java.awt.Color.BLACK);
 
-       brightColors.put(Colors.BLUE, Color.BLUE.brighter().brighter());
-       brightColors.put(Colors.CYAN, Color.CYAN.brighter().brighter());
-       brightColors.put(Colors.DEFAULT, Color.WHITE);
-       brightColors.put(Colors.DEFAULTBG, Color.BLACK);
-       brightColors.put(Colors.GREEN, Color.GREEN.brighter().brighter());
-       brightColors.put(Colors.MAGENTA, Color.MAGENTA.brighter().brighter());
-       brightColors.put(Colors.RED, Color.RED.brighter().brighter());
-       brightColors.put(Colors.WHITE, Color.WHITE.brighter().brighter());
-       brightColors.put(Colors.YELLOW, Color.YELLOW.brighter().brighter());
+       brightColors.put(Color.BLUE, java.awt.Color.BLUE.brighter().brighter());
+       brightColors.put(Color.CYAN, java.awt.Color.CYAN.brighter().brighter());
+       brightColors.put(Color.DEFAULT, java.awt.Color.WHITE);
+       brightColors.put(Color.DEFAULTBG, java.awt.Color.BLACK);
+       brightColors.put(Color.GREEN, java.awt.Color.GREEN.brighter().brighter());
+       brightColors.put(Color.MAGENTA, java.awt.Color.MAGENTA.brighter().brighter());
+       brightColors.put(Color.RED, java.awt.Color.RED.brighter().brighter());
+       brightColors.put(Color.WHITE, java.awt.Color.WHITE.brighter().brighter());
+       brightColors.put(Color.YELLOW, java.awt.Color.YELLOW.brighter().brighter());
     }
 
-    public Color mapColor(final Colors color, final boolean light) {
+    public java.awt.Color mapColor(final Color color, final boolean light) {
         if (!light) {
             return colors.get(color);
         } else {

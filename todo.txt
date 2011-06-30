@@ -1,0 +1,17 @@
+UI:
+Nahezu alles, insbesondere
+* Setup-Dialog
+* Möglichkeit, Sitzungen zu eröffnen
+
+Persistierung:
+* Anlegen von Profilen
+
+Terminal:
+* Blinkender Cursor
+* Mehr escape sequence
+  * http://www.termsys.demon.co.uk/vtansi.htm
+  * http://ascii-table.com/ansi-escape-sequences-vt-100.php
+  * http://vt100.net/docs/vt100-ug/chapter3.html
+
+Hinweise zu JSch
+* Beispiele: http://www.jcraft.com/jsch/examples/

@@ -18,6 +18,7 @@ public class AsyncInputStreamReaderThread extends Thread {
 
     public AsyncInputStreamReaderThread(final Channel channel,
             final Callback callback) {
+        super("AsyncReader-" + channel.getId());
         this.channel = channel;
         this.callback = callback;
     }

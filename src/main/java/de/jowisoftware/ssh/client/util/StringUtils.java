@@ -33,4 +33,12 @@ public final class StringUtils {
             return Character.toString((char) value);
         }
     }
+
+    public static String byteToHex(final byte value) {
+        if ((value & 0xFF) < 16) {
+            return "0" + Integer.toHexString(value & 0xFF);
+        } else {
+            return Integer.toHexString(value & 0xFF);
+        }
+    }
 }
