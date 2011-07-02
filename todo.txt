@@ -20,3 +20,10 @@ Terminal:
 
 Hinweise zu JSch
 * Beispiele: http://www.jcraft.com/jsch/examples/
+
+ESC M - Vorherige Zeile, Runter-Rollen beim Erreichen des Roll-Randes (Cursor-Spalte 1)
+ESC D - Nächste Zeile, Hoch-Rollen beim Erreichen des Roll-Randes (Cursor-Spalte unverändert)
+ESC E - Nächste Zeile, Hoch-Rollen beim Erreichen des Roll-Randes (Cursor-Spalte 1)
+CR - Nächste Zeile, Hoch-Rollen beim Erreichen des Roll-Randes (Cursor-Spalte unverändert, darf CR ausführen)
+
+Warum hat vim keine Farben?

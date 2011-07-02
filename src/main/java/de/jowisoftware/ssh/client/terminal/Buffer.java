@@ -7,6 +7,7 @@ public interface Buffer<T extends GfxChar> {
 
     void setCursorPosition(final CursorPosition position);
     void setAbsoluteCursorPosition(CursorPosition cursorPosition);
+    void setSafeCursorPosition(CursorPosition offset);
     CursorPosition getCursorPosition();
     CursorPosition getAbsoluteCursorPosition();
 

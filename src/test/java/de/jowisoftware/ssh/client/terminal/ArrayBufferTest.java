@@ -275,5 +275,18 @@ public class ArrayBufferTest {
         assertChar(1, 24, char1);
     }
 
+
+    @Test
+    public void testSaveSet() {
+        buffer.setSafeCursorPosition(new CursorPosition(-7, -3));
+        assertPosition(1, 1);
+        buffer.setSafeCursorPosition(new CursorPosition(99, 99));
+        assertPosition(80, 24);
+        buffer.setSafeCursorPosition(new CursorPosition(5, 200));
+        assertPosition(5, 80);
+        buffer.setSafeCursorPosition(new CursorPosition(4, 8));
+        assertPosition(4, 8);
+    }
+
     // TODO: too long line
 }

@@ -82,6 +82,14 @@ public class CursorControlSequenceTest {
         assertFalse(seq.canHandleSequence("[4H"));
         assertFalse(seq.canHandleSequence("[2;H"));
         assertFalse(seq.canHandleSequence("[X"));
+        assertTrue(seq.canHandleSequence("[5A"));
+        assertTrue(seq.canHandleSequence("[A"));
+        assertTrue(seq.canHandleSequence("[25B"));
+        assertTrue(seq.canHandleSequence("[B"));
+        assertTrue(seq.canHandleSequence("[6C"));
+        assertTrue(seq.canHandleSequence("[C"));
+        assertTrue(seq.canHandleSequence("[98D"));
+        assertTrue(seq.canHandleSequence("[D"));
 
         assertTrue(seq.isPartialStart("["));
         assertTrue(seq.isPartialStart("[1"));

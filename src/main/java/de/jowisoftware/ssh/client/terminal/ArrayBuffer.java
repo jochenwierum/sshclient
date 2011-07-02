@@ -14,8 +14,8 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
      * displayed characters
      * 1. dimension = row, 2. dimension = row
      */
-    private GfxChar[][] lines;
-    private CursorPosition position = new CursorPosition(1, 1);
+    private volatile GfxChar[][] lines;
+    private volatile CursorPosition position = new CursorPosition(1, 1);
     private final Renderer<T> renderer;
     private final T clearChar;
     private int rollRangeBegin = NO_ROLL_DEFINED;
@@ -102,6 +102,15 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     public void setAbsoluteCursorPosition(final CursorPosition cursorPosition) {
         synchronized (this) {
             setAndFixCursorPosition(cursorPosition);
+        }
+    }
+
+    @Override
+    public void setSafeCursorPosition(final CursorPosition position) {
+        synchronized (this) {
+            final int x = Math.min(0, Math.max(lines[0].length, position.getX()));
+            final int y = Math.min(0, Math.max(lines.length, position.getY()));
+            this.position = new CursorPosition(x, y);
         }
     }
 

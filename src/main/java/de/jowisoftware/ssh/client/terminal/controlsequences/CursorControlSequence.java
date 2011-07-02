@@ -15,7 +15,7 @@ public class CursorControlSequence<T extends GfxChar> implements
         ControlSequence<T> {
     private static final Logger LOGGER = Logger.getLogger(CursorControlSequence.class);
     private static final Pattern pattern = Pattern
-            .compile("\\[(?:\\d+;\\d+)?[Hr]");
+            .compile("\\[(?:(?:\\d+;\\d+)?[Hr]|\\d*[ABCD])");
     private static final Pattern partialpattern = Pattern
             .compile("\\[(?:\\d+|\\d+;|\\d+;\\d+)?");
 
@@ -38,10 +38,27 @@ public class CursorControlSequence<T extends GfxChar> implements
         final char lastChar = sequence.charAt(sequence.length() - 1);
 
         switch(lastChar) {
-        case 'H': processMoveCursor(buffer, sequence); break;
+        case 'H': processSetCursor(buffer, sequence); break;
         case 'r': processRollSetup(buffer, sequence); break;
+        case 'A': case 'B': case 'C': case 'D':
+            processMoveCursor(buffer, sequence); break;
         default:
             LOGGER.error("Unknown control sequence: <ESC>" + sequence);
+        }
+    }
+
+    private void processMoveCursor(final Buffer<T> buffer, final String sequence) {
+        int count = 1;
+        final String countString = sequence.substring(1, sequence.length() - 1);
+        if (!countString.equals("") && !countString.equals("0")) {
+            count = Integer.parseInt(countString);
+        }
+
+        switch(countString.charAt(countString.length() - 1)) {
+        case 'A': buffer.setSafeCursorPosition(buffer.getCursorPosition().offset(0, -count)); break;
+        case 'B': buffer.setSafeCursorPosition(buffer.getCursorPosition().offset(0, count)); break;
+        case 'C': buffer.setSafeCursorPosition(buffer.getCursorPosition().offset(count, 0)); break;
+        case 'D': buffer.setSafeCursorPosition(buffer.getCursorPosition().offset(-count, 0)); break;
         }
     }
 
@@ -57,7 +74,7 @@ public class CursorControlSequence<T extends GfxChar> implements
         buffer.setCursorPosition(new CursorPosition(1, 1));
     }
 
-    private void processMoveCursor(final Buffer<T> buffer, final String sequence) {
+    private void processSetCursor(final Buffer<T> buffer, final String sequence) {
         if (sequence.length() > 2) {
             final String xy[] = sequence.substring(1, sequence.length() - 1).split(";");
             final int x = Integer.parseInt(xy[1]);
