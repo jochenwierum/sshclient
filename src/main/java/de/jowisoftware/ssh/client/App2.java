@@ -12,7 +12,7 @@ import de.jowisoftware.ssh.client.ui.SSHConsole;
 public class App2 {
     public static void main(final String args[]) throws CharacterCodingException {
         final JFrame frame = new JFrame("test");
-        final SSHConsole console = new SSHConsole(new ConnectionInfo(null));
+        final SSHConsole console = new SSHConsole(new ConnectionInfo());
         frame.add(console);
 
         final Timer timer = new Timer(200, new ActionListener() {

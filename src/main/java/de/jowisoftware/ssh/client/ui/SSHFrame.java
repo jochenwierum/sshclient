@@ -11,6 +11,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
@@ -30,7 +31,7 @@ public class SSHFrame extends JPanel  {
     private JFrame parent;
     private SSHConsole console = null;
 
-    public SSHFrame(final JFrame parent, final ConnectionInfo info) {
+    public SSHFrame(final JFrame parent, final ConnectionInfo info, final JSch jsch) {
         this.info = info;
         this.parent = parent;
 
@@ -38,7 +39,7 @@ public class SSHFrame extends JPanel  {
 
         try {
             console = new SSHConsole(info);
-            connect(console);
+            connect(jsch, console);
             add(console, BorderLayout.CENTER);
         } catch(final Exception e) {
             close();
@@ -73,15 +74,11 @@ public class SSHFrame extends JPanel  {
         }
     }
 
-    private void connect(final SSHConsole console) {
+    private void connect(final JSch jsch, final SSHConsole console) {
         LOGGER.warn("Connecting to " + info.getTitle());
-        startConnection(console);
-        LOGGER.warn("Connected to " + info.getTitle());
-    }
 
-    private void startConnection(final SSHConsole console) {
         try {
-            session = info.getSSH().getSession(
+            session = jsch.getSession(
                     info.getUser(), info.getHost(), info.getPort());
             session.setUserInfo(new UserInfo(parent));
             session.connect(info.getTimeout());
@@ -97,6 +94,8 @@ public class SSHFrame extends JPanel  {
             LOGGER.error("Could not estabish connection", e);
             throw new RuntimeException(e);
         }
+
+        LOGGER.warn("Connected to " + info.getTitle());
     }
 
     public void redraw() {

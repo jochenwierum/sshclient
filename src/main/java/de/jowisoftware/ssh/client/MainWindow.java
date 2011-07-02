@@ -104,7 +104,7 @@ public class MainWindow extends JFrame {
     }
 
     private void createConnection() {
-        final ConnectionInfo info = new ConnectionInfo(jsch);
+        final ConnectionInfo info = new ConnectionInfo();
         final String result =
             JOptionPane.showInputDialog("user@host", "jwieru2s@home.inf.h-brs.de");
         final String[] parts = result.split("@");
@@ -113,7 +113,7 @@ public class MainWindow extends JFrame {
         //info.setUser("gast");
         //info.setPort(2222);
         //info.setHost("jowisoftware.dyndns.org");
-        pane.addTab(info.getTitle(), new SSHFrame(this, info));
+        pane.addTab(info.getTitle(), new SSHFrame(this, info, jsch));
     }
 
     private JMenu createFileMenu() {
