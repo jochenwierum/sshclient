@@ -108,8 +108,8 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void setSafeCursorPosition(final CursorPosition position) {
         synchronized (this) {
-            final int x = Math.min(0, Math.max(lines[0].length, position.getX()));
-            final int y = Math.min(0, Math.max(lines.length, position.getY()));
+            final int x = Math.max(1, Math.min(lines[0].length, position.getX()));
+            final int y = Math.max(1, Math.min(lines.length, position.getY()));
             this.position = new CursorPosition(x, y);
         }
     }

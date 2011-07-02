@@ -283,7 +283,7 @@ public class ArrayBufferTest {
         buffer.setSafeCursorPosition(new CursorPosition(99, 99));
         assertPosition(80, 24);
         buffer.setSafeCursorPosition(new CursorPosition(5, 200));
-        assertPosition(5, 80);
+        assertPosition(5, 24);
         buffer.setSafeCursorPosition(new CursorPosition(4, 8));
         assertPosition(4, 8);
     }
