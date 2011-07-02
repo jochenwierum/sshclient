@@ -13,8 +13,9 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.ssh.client.terminal.Buffer;
 import de.jowisoftware.ssh.client.terminal.CursorPosition;
-import de.jowisoftware.ssh.client.terminal.Feedback;
 import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.KeyboardFeedback;
+import de.jowisoftware.ssh.client.terminal.VisualFeedback;
 import de.jowisoftware.ssh.client.test.matches.StringBuilderEquals;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
@@ -27,20 +28,22 @@ public class CharacterProcessorTest {
     private ControlSequence<GfxChar> sequence2;
     private GfxChar gfxChar;
     private CharacterProcessor<GfxChar> processor;
-    private Feedback feedback;
+    private VisualFeedback visualFeedback;
+    private KeyboardFeedback keyboardFeedback;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         buffer = context.mock(Buffer.class);
         setup = context.mock(GfxCharSetup.class);
-        feedback = context.mock(Feedback.class);
+        visualFeedback = context.mock(VisualFeedback.class);
+        keyboardFeedback = context.mock(KeyboardFeedback.class);
         sequence1 = context.mock(ControlSequence.class, "sequence1");
         sequence2 = context.mock(ControlSequence.class, "sequence2");
         gfxChar = context.mock(GfxChar.class);
 
         processor = new CharacterProcessor<GfxChar>(buffer,
-                setup, Charset.defaultCharset(), feedback);
+                setup, Charset.defaultCharset(), visualFeedback, keyboardFeedback);
         processor.addControlSequence(sequence1);
         processor.addControlSequence(sequence2);
     }
@@ -104,7 +107,7 @@ public class CharacterProcessorTest {
                 will(returnValue(false));
             oneOf(sequence1).canHandleSequence(with(new StringBuilderEquals("ts")));
                 will(returnValue(true));
-            oneOf(sequence1).handleSequence("ts", buffer, setup);
+            oneOf(sequence1).handleSequence("ts", buffer, setup, keyboardFeedback);
             oneOf(setup).createChar('3'); will(returnValue(gfxChar));
             oneOf(buffer).addCharacter(gfxChar);
         }});
@@ -163,7 +166,7 @@ public class CharacterProcessorTest {
 
         context.checking(new Expectations() {{
             expectChar('x');
-            oneOf(feedback).bell();
+            oneOf(visualFeedback).bell();
             expectChar('z');
         }
 

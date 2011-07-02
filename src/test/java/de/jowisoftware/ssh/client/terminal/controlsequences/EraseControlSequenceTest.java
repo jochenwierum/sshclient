@@ -7,17 +7,17 @@ import static org.junit.Assert.assertTrue;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
+import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.ssh.client.terminal.Buffer;
-import de.jowisoftware.ssh.client.terminal.controlsequences.EraseControlSequence;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 @RunWith(JMock.class)
 public class EraseControlSequenceTest {
-    private final Mockery context = new Mockery();
+    private final Mockery context = new JUnit4Mockery();
     private EraseControlSequence<GfxChar> seq;
     private Buffer<GfxChar> buffer;
 
@@ -34,7 +34,7 @@ public class EraseControlSequenceTest {
             oneOf(buffer).eraseToBottom();
         }});
 
-        seq.handleSequence("[J", buffer, null);
+        seq.handleSequence("[J", buffer, null, null);
     }
 
     @Test
@@ -43,7 +43,7 @@ public class EraseControlSequenceTest {
             oneOf(buffer).eraseFromTop();
         }});
 
-        seq.handleSequence("[1J", buffer, null);
+        seq.handleSequence("[1J", buffer, null, null);
     }
 
     @Test
@@ -52,7 +52,7 @@ public class EraseControlSequenceTest {
             oneOf(buffer).erase();
         }});
 
-        seq.handleSequence("[2J", buffer, null);
+        seq.handleSequence("[2J", buffer, null, null);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class EraseControlSequenceTest {
             oneOf(buffer).eraseRestOfLine();
         }});
 
-        seq.handleSequence("[K", buffer, null);
+        seq.handleSequence("[K", buffer, null, null);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class EraseControlSequenceTest {
             oneOf(buffer).eraseStartOfLine();
         }});
 
-        seq.handleSequence("[1K", buffer, null);
+        seq.handleSequence("[1K", buffer, null, null);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class EraseControlSequenceTest {
             oneOf(buffer).eraseLine();
         }});
 
-        seq.handleSequence("[2K", buffer, null);
+        seq.handleSequence("[2K", buffer, null, null);
     }
 
     @Test

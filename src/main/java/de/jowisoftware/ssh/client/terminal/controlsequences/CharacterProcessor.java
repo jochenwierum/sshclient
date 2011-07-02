@@ -9,8 +9,9 @@ import org.apache.log4j.Logger;
 import de.jowisoftware.ssh.client.terminal.Buffer;
 import de.jowisoftware.ssh.client.terminal.CursorPosition;
 import de.jowisoftware.ssh.client.terminal.EncodingDecoder;
-import de.jowisoftware.ssh.client.terminal.Feedback;
 import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.KeyboardFeedback;
+import de.jowisoftware.ssh.client.terminal.VisualFeedback;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 public class CharacterProcessor<T extends GfxChar> {
@@ -31,13 +32,17 @@ public class CharacterProcessor<T extends GfxChar> {
     private boolean isInSequence = false;
     private final GfxCharSetup<T> setup;
     private final Buffer<T> buffer;
-    private final Feedback feedback;
+    private final VisualFeedback visualFeedback;
+    private final KeyboardFeedback keyboardFeedback;
 
     public CharacterProcessor(final Buffer<T> buffer, final GfxCharSetup<T> setup,
-            final Charset charset, final Feedback feedback) {
+            final Charset charset,
+            final VisualFeedback visualFeedback,
+            final KeyboardFeedback keyboardFeedback) {
         this.buffer = buffer;
         this.setup = setup;
-        this.feedback = feedback;
+        this.visualFeedback = visualFeedback;
+        this.keyboardFeedback = keyboardFeedback;
         this.decoder = new EncodingDecoder(charset);
     }
 
@@ -75,7 +80,7 @@ public class CharacterProcessor<T extends GfxChar> {
         } else if (character == BACKSPACE_CHAR) {
             buffer.setCursorPosition(buffer.getCursorPosition().offset(-1, 0));
         } else if (character == BELL_CHAR) {
-            feedback.bell();
+            visualFeedback.bell();
         } else {
             buffer.addCharacter(setup.createChar(character));
         }
@@ -106,7 +111,8 @@ public class CharacterProcessor<T extends GfxChar> {
         while(it.hasNext()) {
             final ControlSequence<T> seq = it.next();
             if (seq.canHandleSequence(cachedChars)) {
-                seq.handleSequence(cachedChars.toString(), buffer, setup);
+                seq.handleSequence(cachedChars.toString(), buffer, setup,
+                        keyboardFeedback);
                 resetState();
                 return true;
             }

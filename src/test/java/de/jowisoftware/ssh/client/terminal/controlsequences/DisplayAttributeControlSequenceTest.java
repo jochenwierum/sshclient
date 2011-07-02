@@ -15,16 +15,19 @@ import de.jowisoftware.ssh.client.terminal.Attribute;
 import de.jowisoftware.ssh.client.terminal.Buffer;
 import de.jowisoftware.ssh.client.terminal.Color;
 import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.KeyboardFeedback;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 @RunWith(JMock.class)
 public class DisplayAttributeControlSequenceTest {
     private final Mockery context = new JUnit4Mockery();
     private DisplayAttributeControlSequence<GfxChar> seq;
+    private KeyboardFeedback keyboardFeedback;
 
     @Before
     public void setUp() {
         seq = new DisplayAttributeControlSequence<GfxChar>();
+        keyboardFeedback = context.mock(KeyboardFeedback.class);
     }
 
     @Test
@@ -60,7 +63,7 @@ public class DisplayAttributeControlSequenceTest {
             oneOf(setup).setAttribute(expect);
         }});
 
-        seq.handleSequence("[" + attr + "m", buffer, setup);
+        seq.handleSequence("[" + attr + "m", buffer, setup, keyboardFeedback);
     }
 
     @SuppressWarnings("unchecked")
@@ -72,7 +75,7 @@ public class DisplayAttributeControlSequenceTest {
             oneOf(setup).setForeground(expect);
         }});
 
-        seq.handleSequence("[" + attr + "m", buffer, setup);
+        seq.handleSequence("[" + attr + "m", buffer, setup, keyboardFeedback);
     }
 
     @SuppressWarnings("unchecked")
@@ -84,7 +87,7 @@ public class DisplayAttributeControlSequenceTest {
             oneOf(setup).setBackground(expect);
         }});
 
-        seq.handleSequence("[" + attr + "m", buffer, setup);
+        seq.handleSequence("[" + attr + "m", buffer, setup, null);
     }
 
     @SuppressWarnings("unchecked")
@@ -96,7 +99,7 @@ public class DisplayAttributeControlSequenceTest {
             oneOf(setup).removeAttribute(expect);
         }});
 
-        seq.handleSequence("[" + attr + "m", buffer, setup);
+        seq.handleSequence("[" + attr + "m", buffer, setup, null);
     }
 
     @Test
@@ -145,8 +148,8 @@ public class DisplayAttributeControlSequenceTest {
             oneOf(setup).reset();
         }});
 
-        seq.handleSequence("[0m", buffer, setup);
-        seq.handleSequence("[m", buffer, setup);
+        seq.handleSequence("[0m", buffer, setup, null);
+        seq.handleSequence("[m", buffer, setup, null);
     }
 
     @SuppressWarnings("unchecked")
@@ -162,6 +165,6 @@ public class DisplayAttributeControlSequenceTest {
             oneOf(setup).setAttribute(Attribute.BLINK);
         }});
 
-        seq.handleSequence("[0;5;34;41m", buffer, setup);
+        seq.handleSequence("[0;5;34;41m", buffer, setup, null);
     }
 }

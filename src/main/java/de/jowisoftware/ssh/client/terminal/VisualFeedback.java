@@ -1,5 +1,5 @@
 package de.jowisoftware.ssh.client.terminal;
 
-public interface Feedback {
+public interface VisualFeedback {
     public void bell();
 }

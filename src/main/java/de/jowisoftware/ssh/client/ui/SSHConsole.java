@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.OutputStream;
@@ -19,6 +18,7 @@ import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
 import de.jowisoftware.ssh.client.terminal.controlsequences.CharacterProcessor;
 import de.jowisoftware.ssh.client.terminal.controlsequences.DisplayAttributeControlSequence;
 import de.jowisoftware.ssh.client.terminal.controlsequences.EraseControlSequence;
+import de.jowisoftware.ssh.client.terminal.controlsequences.KeyboardControlSequence;
 import de.jowisoftware.ssh.client.terminal.controlsequences.MovementControlSequence;
 
 public class SSHConsole extends JPanel implements Callback, ComponentListener, MouseListener {
@@ -28,19 +28,23 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
     private final Buffer<GfxAwtChar> buffer;
     private final GfxCharSetup<GfxAwtChar> setup;
     private final CharacterProcessor<GfxAwtChar> outputProcessor;
+    private final KeyboardProcessor inputProcessor;
 
     public SSHConsole(final ConnectionInfo info) {
+        setup = new GfxAwtCharSetup(info.getGfxSettings());
+        inputProcessor = new KeyboardProcessor();
+
         renderer = new DoubleBufferedImage(info.getGfxSettings(), this);
         buffer = new ArrayBuffer<GfxAwtChar>(renderer,
                 info.getGfxSettings().getEmptyChar(), 80, 24);
-        setup = new GfxAwtCharSetup(info.getGfxSettings());
         outputProcessor = new CharacterProcessor<GfxAwtChar>(buffer, setup,
-                info.getCharset(), new GfxFeedback());
+                info.getCharset(), new GfxFeedback(), inputProcessor);
 
         initializeProcessor();
 
         this.addComponentListener(this);
         this.addMouseListener(this);
+        this.addKeyListener(inputProcessor);
 
         setFocusable(true);
         setRequestFocusEnabled(true);
@@ -51,6 +55,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
         outputProcessor.addControlSequence(new DisplayAttributeControlSequence<GfxAwtChar>());
         outputProcessor.addControlSequence(new MovementControlSequence<GfxAwtChar>());
         outputProcessor.addControlSequence(new EraseControlSequence<GfxAwtChar>());
+        outputProcessor.addControlSequence(new KeyboardControlSequence<GfxAwtChar>());
     }
 
     @Override
@@ -85,11 +90,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
     }
 
     public void setOutputStream(final OutputStream outputStream) {
-        for (final KeyListener keyListener : this.getKeyListeners()) {
-            this.removeKeyListener(keyListener);
-        }
-
-        this.addKeyListener(new KeyboardProcessor(outputStream));
+        inputProcessor.setOutputStream(outputStream);
     }
 
     @Override

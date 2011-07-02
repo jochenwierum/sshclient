@@ -8,6 +8,7 @@ import de.jowisoftware.ssh.client.terminal.Attribute;
 import de.jowisoftware.ssh.client.terminal.Buffer;
 import de.jowisoftware.ssh.client.terminal.Color;
 import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.KeyboardFeedback;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 public class DisplayAttributeControlSequence<T extends GfxChar> implements ControlSequence<T> {
@@ -26,7 +27,8 @@ public class DisplayAttributeControlSequence<T extends GfxChar> implements Contr
     }
 
     @Override
-    public void handleSequence(final String sequence, final Buffer<T> buffer, final GfxCharSetup<T> setup) {
+    public void handleSequence(final String sequence, final Buffer<T> buffer,
+            final GfxCharSetup<T> setup, final KeyboardFeedback feedback) {
         if (sequence.equals("[m") || sequence.equals("[0m")) {
             setup.reset();
             return;

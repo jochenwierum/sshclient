@@ -7,18 +7,18 @@ import static org.junit.Assert.assertTrue;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
+import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.ssh.client.terminal.Buffer;
 import de.jowisoftware.ssh.client.terminal.CursorPosition;
-import de.jowisoftware.ssh.client.terminal.controlsequences.MovementControlSequence;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 @RunWith(JMock.class)
 public class MovementControlSequenceTest {
-    private final Mockery context = new Mockery();
+    private final Mockery context = new JUnit4Mockery();
     private MovementControlSequence<GfxChar> seq;
     private Buffer<GfxChar> buffer;
 
@@ -35,7 +35,7 @@ public class MovementControlSequenceTest {
             oneOf(buffer).setCursorPosition(new CursorPosition(0, 0));
         }});
 
-        seq.handleSequence("[H", buffer, null);
+        seq.handleSequence("[H", buffer, null, null);
     }
 
     @Test
@@ -45,8 +45,8 @@ public class MovementControlSequenceTest {
             oneOf(buffer).setCursorPosition(new CursorPosition(3, 7));
         }});
 
-        seq.handleSequence("[1;5H", buffer, null);
-        seq.handleSequence("[3;7H", buffer, null);
+        seq.handleSequence("[1;5H", buffer, null, null);
+        seq.handleSequence("[3;7H", buffer, null, null);
     }
 
     @Test

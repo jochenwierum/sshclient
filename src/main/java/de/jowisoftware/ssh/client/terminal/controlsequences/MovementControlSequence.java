@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import de.jowisoftware.ssh.client.terminal.Buffer;
 import de.jowisoftware.ssh.client.terminal.CursorPosition;
 import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
+import de.jowisoftware.ssh.client.terminal.KeyboardFeedback;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 public class MovementControlSequence<T extends GfxChar> implements
@@ -28,7 +29,7 @@ public class MovementControlSequence<T extends GfxChar> implements
 
     @Override
     public void handleSequence(final String sequence, final Buffer<T> buffer,
-            final GfxCharSetup<T> setup) {
+            final GfxCharSetup<T> setup, final KeyboardFeedback feedback) {
         final Matcher matcher = pattern.matcher(sequence);
         matcher.matches();
 
