@@ -10,7 +10,6 @@ import java.awt.event.MouseListener;
 import java.io.OutputStream;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import de.jowisoftware.ssh.client.ConnectionInfo;
 import de.jowisoftware.ssh.client.jsch.AsyncInputStreamReaderThread.Callback;
@@ -30,10 +29,8 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
     private final GfxCharSetup<GfxAwtChar> setup;
     private final CharacterProcessor<GfxAwtChar> outputProcessor;
 
-    private boolean forceNewImages = true;
-
     public SSHConsole(final ConnectionInfo info) {
-        renderer = new DoubleBufferedImage(info.getGfxSettings());
+        renderer = new DoubleBufferedImage(info.getGfxSettings(), this);
         buffer = new ArrayBuffer<GfxAwtChar>(renderer,
                 info.getGfxSettings().getEmptyChar(), 80, 24);
         setup = new GfxAwtCharSetup(info.getGfxSettings());
@@ -58,20 +55,9 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
 
     @Override
     public void paintComponent(final Graphics g) {
-        if (forceNewImages) {
-            renderConsole(false);
-        }
-
         final Image image = renderer.getImage();
         if (image != null) {
             g.drawImage(image, 0, 0, this);
-        }
-    }
-
-    private synchronized void renderConsole(final boolean force) {
-        if (forceNewImages || force) {
-            buffer.render();
-            forceNewImages = false;
         }
     }
 
@@ -85,8 +71,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
     @Override
     public void gotChars(final byte[] chars, final int count) {
         processCharacters(chars, count);
-        forceNewImages = true;
-        queueRedraw();
+        buffer.render();
     }
 
     private void processCharacters(final byte[] chars, final int count) {
@@ -95,25 +80,8 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
         }
     }
 
-    /**
-     * Generates a new console image and triggers a repaint.
-     * This method is threadsafe.
-     */
     public void redrawConsole() {
-        renderConsole(true);
-        queueRedraw();
-    }
-
-    /**
-     * Triggers a redraw in the form's owner thread.
-     */
-    private void queueRedraw() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                repaint();
-            }
-        });
+        buffer.render();
     }
 
     public void setOutputStream(final OutputStream outputStream) {
@@ -127,8 +95,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
     @Override
     public void componentResized(final ComponentEvent e) {
         renderer.setDimensions(getWidth(), getHeight());
-        forceNewImages = true;
-        queueRedraw();
+        buffer.render();
     }
 
     @Override

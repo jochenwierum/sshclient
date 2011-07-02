@@ -156,14 +156,21 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void render() {
         final T[][] content = cloneContent();
-        // TODO: cursor
-        renderer.clear();
-        for (int row = 0; row < content.length; ++row) {
-            for (int col = 0; col < content[0].length; ++col) {
-                renderer.renderChar(content[row][col], col, row);
+
+        synchronized(renderer) {
+            renderer.clear();
+            for (int row = 0; row < content.length; ++row) {
+                for (int col = 0; col < content[0].length; ++col) {
+                    renderer.renderChar(content[row][col], col, row,
+                            isCursorAt(col, row));
+                }
             }
+            renderer.swap();
         }
-        renderer.swap();
+    }
+
+    private boolean isCursorAt(final int col, final int row) {
+        return col == position.getX() && row == position.getY();
     }
 
     @SuppressWarnings("unchecked")

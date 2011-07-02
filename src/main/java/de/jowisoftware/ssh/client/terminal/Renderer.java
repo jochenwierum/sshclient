@@ -4,7 +4,7 @@ import de.jowisoftware.ssh.client.ui.GfxChar;
 
 public interface Renderer<T extends GfxChar> {
     void clear();
-    void renderChar(T character, int x, int y);
+    void renderChar(T character, int x, int y, boolean isCursor);
     void swap();
 
     int getLines();

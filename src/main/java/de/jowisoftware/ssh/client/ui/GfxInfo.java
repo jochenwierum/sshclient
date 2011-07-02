@@ -52,4 +52,8 @@ public class GfxInfo {
     public GfxAwtChar getEmptyChar() {
         return emptyChar;
     }
+
+    public java.awt.Color getCursorColor() {
+        return java.awt.Color.GREEN;
+    }
 }

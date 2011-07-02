@@ -5,11 +5,15 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+
 import de.jowisoftware.ssh.client.terminal.Color;
 import de.jowisoftware.ssh.client.terminal.Renderer;
 
 public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
     private final GfxInfo gfxInfo;
+    private final JPanel parent;
 
     private BufferedImage[] images;
     private Graphics2D[] graphics;
@@ -21,9 +25,9 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
     private int charHeight = 1;
     private int baseLinePos = 1;
 
-
-    public DoubleBufferedImage(final GfxInfo gfxInfo) {
+    public DoubleBufferedImage(final GfxInfo gfxInfo, final JPanel parent) {
         this.gfxInfo = gfxInfo;
+        this.parent = parent;
     }
 
     public void dispose() {
@@ -59,12 +63,22 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
     }
 
     @Override
-    public void renderChar(final GfxAwtChar character, final int x, final int y) {
+    public void renderChar(final GfxAwtChar character,
+            final int x, final int y, final boolean isCursor) {
         if (images != null) {
-            final int posy = y * charHeight;
             final int posx = x * charWidth;
-            character.drawBackground(posx, posy, charWidth, charHeight, graphics[1 - currentImage]);
-            character.drawAt(posx, posy + baseLinePos, charWidth, graphics[1 - currentImage]);
+            final int posy = y * charHeight;
+
+            character.drawBackground(posx, posy, charWidth,
+                    charHeight, graphics[1 - currentImage]);
+            character.drawAt(posx, posy + baseLinePos,
+                    charWidth, graphics[1 - currentImage]);
+
+            if (isCursor) {
+                graphics[1 - currentImage].setColor(gfxInfo.getCursorColor());
+                graphics[1 - currentImage].drawRect(posx, posy,
+                        charWidth - 1, charHeight - 1);
+            }
         }
     }
 
@@ -73,12 +87,24 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
         if (images != null) {
             currentImage = 1 - currentImage;
         }
+        requestRepaint();
+    }
+
+    private void requestRepaint() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                parent.repaint();
+            }
+        });
     }
 
     public Image getImage() {
-        if (images != null)
+        if (images != null) {
             return images[currentImage];
-        else return null;
+        } else {
+            return null;
+        }
     }
 
     @Override
