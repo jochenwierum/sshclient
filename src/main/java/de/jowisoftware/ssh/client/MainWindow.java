@@ -17,6 +17,7 @@ import javax.swing.Timer;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
+import de.jowisoftware.ssh.client.log.LogPanel;
 import de.jowisoftware.ssh.client.ui.SSHFrame;
 
 public class MainWindow extends JFrame {
@@ -40,7 +41,11 @@ public class MainWindow extends JFrame {
             throw new RuntimeException(e);
         }
 
-        createConnection();
+        try {
+            createConnection();
+        } catch(final RuntimeException e) {
+            e.printStackTrace();
+        }
         createTimer();
     }
 
@@ -69,8 +74,8 @@ public class MainWindow extends JFrame {
             if (component instanceof SSHFrame) {
                 final SSHFrame tab = (SSHFrame) component;
                 tab.close();
-                pane.removeTabAt(0);
             }
+            pane.removeTabAt(0);
         }
         super.dispose();
     }
@@ -85,8 +90,14 @@ public class MainWindow extends JFrame {
         setJMenuBar(menu);
         add(pane);
 
+        addLogTab();
+
         setSize(640, 480);
         setVisible(true);
+    }
+
+    private void addLogTab() {
+        pane.addTab("Log", new LogPanel());
     }
 
     private void initJSch() throws JSchException {
