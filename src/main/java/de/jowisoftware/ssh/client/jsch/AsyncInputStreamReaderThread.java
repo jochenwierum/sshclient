@@ -36,7 +36,11 @@ public class AsyncInputStreamReaderThread extends Thread {
                         LOGGER.trace("Got " + read + " bytes: " +
                                 StringUtils.escapeForLogs(buffer, 0, read));
                     }
-                    callback.gotChars(buffer, read);
+                    try {
+                        callback.gotChars(buffer, read);
+                    } catch(final RuntimeException e) {
+                        LOGGER.error("Reader thread catched exception", e);
+                    }
                 }
 
                 try {

@@ -19,7 +19,7 @@ import de.jowisoftware.ssh.client.terminal.controlsequences.CharacterProcessor;
 import de.jowisoftware.ssh.client.terminal.controlsequences.DisplayAttributeControlSequence;
 import de.jowisoftware.ssh.client.terminal.controlsequences.EraseControlSequence;
 import de.jowisoftware.ssh.client.terminal.controlsequences.KeyboardControlSequence;
-import de.jowisoftware.ssh.client.terminal.controlsequences.MovementControlSequence;
+import de.jowisoftware.ssh.client.terminal.controlsequences.CursorControlSequence;
 
 public class SSHConsole extends JPanel implements Callback, ComponentListener, MouseListener {
     private static final long serialVersionUID = 5102110929763645596L;
@@ -53,7 +53,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
 
     private void initializeProcessor() {
         outputProcessor.addControlSequence(new DisplayAttributeControlSequence<GfxAwtChar>());
-        outputProcessor.addControlSequence(new MovementControlSequence<GfxAwtChar>());
+        outputProcessor.addControlSequence(new CursorControlSequence<GfxAwtChar>());
         outputProcessor.addControlSequence(new EraseControlSequence<GfxAwtChar>());
         outputProcessor.addControlSequence(new KeyboardControlSequence<GfxAwtChar>());
     }

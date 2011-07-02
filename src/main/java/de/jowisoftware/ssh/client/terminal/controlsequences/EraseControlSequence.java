@@ -3,6 +3,8 @@ package de.jowisoftware.ssh.client.terminal.controlsequences;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
+
 import de.jowisoftware.ssh.client.terminal.Buffer;
 import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
 import de.jowisoftware.ssh.client.terminal.KeyboardFeedback;
@@ -10,11 +12,9 @@ import de.jowisoftware.ssh.client.ui.GfxChar;
 
 public class EraseControlSequence<T extends GfxChar> implements
         ControlSequence<T> {
-
-    private static final Pattern pattern = Pattern
-            .compile("\\[([12])?(J|K)");
-    private static final Pattern partialpattern = Pattern
-            .compile("\\[[12]?");
+    private static final Pattern pattern = Pattern.compile("\\[([12])?(J|K)");
+    private static final Pattern partialpattern = Pattern.compile("\\[[12]?");
+    private static final Logger LOGGER = Logger.getLogger(EraseControlSequence.class);
 
     @Override
     public boolean isPartialStart(final CharSequence sequence) {
@@ -47,6 +47,8 @@ public class EraseControlSequence<T extends GfxChar> implements
             buffer.eraseStartOfLine();
         } else if (command == 'K' && mod == '2') {
             buffer.eraseLine();
+        } else {
+            LOGGER.error("Unknown control sequence: <ESC>" + sequence);
         }
     }
 }

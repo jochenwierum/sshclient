@@ -125,10 +125,10 @@ public class CharacterProcessorTest {
         context.checking(new Expectations() {{
             expectChar('x');
             oneOf(buffer).getCursorPosition(); will(returnValue(new CursorPosition(5, 7)));
-            oneOf(buffer).setCursorPosition(new CursorPosition(0, 7));
+            oneOf(buffer).setCursorPosition(new CursorPosition(1, 7));
             expectChar('z');
             oneOf(buffer).getCursorPosition(); will(returnValue(new CursorPosition(9, 12)));
-            oneOf(buffer).setCursorPosition(new CursorPosition(0, 12));
+            oneOf(buffer).setCursorPosition(new CursorPosition(1, 12));
             expectChar('y');
         }
 

@@ -76,7 +76,7 @@ public class CharacterProcessor<T extends GfxChar> {
         if (character == NEWLINE_CHAR) {
             buffer.addNewLine();
         } else if (character == CARRIDGE_RETURN_CHAR) {
-            buffer.setCursorPosition(new CursorPosition(0, buffer.getCursorPosition().getY()));
+            buffer.setCursorPosition(new CursorPosition(1, buffer.getCursorPosition().getY()));
         } else if (character == BACKSPACE_CHAR) {
             buffer.setCursorPosition(buffer.getCursorPosition().offset(-1, 0));
         } else if (character == BELL_CHAR) {
@@ -111,6 +111,10 @@ public class CharacterProcessor<T extends GfxChar> {
         while(it.hasNext()) {
             final ControlSequence<T> seq = it.next();
             if (seq.canHandleSequence(cachedChars)) {
+                if (LOGGER.isInfoEnabled()) {
+                    LOGGER.trace("Will handle " + cachedChars.toString() +
+                            " with " + seq.getClass().getSimpleName());
+                }
                 seq.handleSequence(cachedChars.toString(), buffer, setup,
                         keyboardFeedback);
                 resetState();

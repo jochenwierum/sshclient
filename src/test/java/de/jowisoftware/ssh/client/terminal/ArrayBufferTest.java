@@ -236,9 +236,9 @@ public class ArrayBufferTest {
         assertChar(24, 24, char2);
         assertChar(24, 30, nullChar);
 
-        buffer.setCursorPosition(new CursorPosition(24, 30));
+        buffer.setCursorPosition(new CursorPosition(23, 30));
         buffer.addCharacter(char1);
-        assertChar(24, 30, char1);
+        assertChar(23, 30, char1);
     }
 
     @Test
@@ -249,5 +249,31 @@ public class ArrayBufferTest {
         buffer.addCharacter(char2);
         assertPosition(2, 2);
     }
-    // TODO: too long line, full buffer
+
+    @Test
+    public void setRollRangedCursorSet() {
+        buffer.setRollRange(3, 10);
+        buffer.setCursorPosition(new CursorPosition(1, 2));
+        buffer.addCharacter(char1);
+
+        assertChar(1, 2, nullChar);
+        assertChar(1, 4, char1);
+        assertPosition(2, 2);
+    }
+
+    @Test
+    public void testFullBuffer() {
+        buffer.addCharacter(char1); buffer.addNewLine();
+        buffer.addCharacter(char2);
+
+        buffer.setCursorPosition(new CursorPosition(1, 24));
+        buffer.addCharacter(char2); buffer.addNewLine();
+        buffer.addCharacter(char1);
+
+        assertChar(1, 1, char2);
+        assertChar(1, 23, char2);
+        assertChar(1, 24, char1);
+    }
+
+    // TODO: too long line
 }

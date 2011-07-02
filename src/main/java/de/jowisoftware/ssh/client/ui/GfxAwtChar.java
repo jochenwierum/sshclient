@@ -72,4 +72,9 @@ public class GfxAwtChar implements GfxChar {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return Character.toString(character);
+    }
 }

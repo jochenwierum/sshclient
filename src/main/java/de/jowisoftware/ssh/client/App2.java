@@ -25,14 +25,24 @@ public class App2 {
         timer.setRepeats(true);
         timer.start();
 
-        final String text="Last login: Mon Jun 27 18:22:49 2011 from 192.168.0.98" +
-                "\n\nEnvironment:\n  USER=gast\n  LOGNAME=gast\n  HOME=/home/" +
-                "gast\n  PATH=/usr/local/bin:/usr/bin:/bin:/usr/bin/X11:/usr/" +
-                "games\n  MAIL=/var/mail/gast\n  SHELL=/bin/bash\n  SSH_CLIEN" +
-                "T=192.168.0.98 40133 223\n  SSH_CONNECTION=192.168.0.98 4013" +
-                "3  192.168.0.1 223\n  SSH_TTY=/dev/pts/1\n  TERM=vt100\n\n" +
-                "\u001b[0;5;36mgast\u001b[1;37m@\u001b[0;33mjowi\u001b[1;37m:" +
-                "\u001b[1;34m~\u001b[1;37m$ \u001b[0m\n";
+        final String text=
+            "\u001b[0;36mjwieru2s\u001b[0m\u001b[1;37m@\u001b[0;33mux-2s05\u001b[1;37m:\u001b[1;34m~\u001b[1;37m$\u001b[0m \r\u001b[0;36mjwieru2s\u001b[0m\u001b[1;37m@\u001b[0;33mux-2s05\u001b[1;37m:\u001b[1;34m~\u001b[1;37m$\u001b[0m\r\u001b[0;36mjwieru2s\u001b[0m\u001b[1;37m@\u001b[0;33mux-2s05\u001b[1;37m:\u001b[1;34m~\u001b[1;37m$\u001b[0m v\r\u001b[0;36mjwieru2s\u001b[0m\u001b[1;37m@\u001b[0;33mux-2s05\u001b[1;37m:\u001b[1;34m~\u001b[1;37m$\u001b[0m \r\u001b[0;36mjwieru2s\u001b[0m\u001b[1;37m@\u001b[0;33mux-2s05\u001b[1;37m:\u001b[1;34m~\u001b[1;37m$\u001b[0m v\r\u001b[0;36mjwieru2s\u001b[0m\u001b[1;37m@\u001b[0;33mux-2s05\u001b[1;37m:\u001b[1;34m~\u001b[1;37m$\u001b[0m \r\u001b[0;36mjwieru2s\u001b[0m\u001b[1;37m@\u001b[0;33mux-2s05\u001b[1;37m:\u001b[1;34m~\u001b[1;37m$\u001b[0m vi\r" +
+            "\u001b[0;36mjwieru2s\u001b[0m\u001b[1;37m@\u001b[0;33mux-2s05\u001b[1;37m:\u001b[1;34m~\u001b[1;37m$\u001b[0m \r" +
+            "\u001b[0;36mjwieru2s\u001b[0m\u001b[1;37m@\u001b[0;33mux-2s05\u001b[1;37m:\u001b[1;34m~\u001b[1;37m$\u001b[0m vi" +
+            "\u001b[?1h" +
+            "\u001b=" +
+            "\u001b[1;24r" +
+            "\u001b[m" +
+            "\u001b[m" +
+            "\u001b[0m" +
+            "\u001b[H\u001b[J" +
+            "\u001b[2;1H\u001b[1m~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~" +
+            "\u001b[0m\r\n\u001b[7m[No Name] [F=unix] [T=] [A=000] [H=00] [P=\u001b[0m0000\u001b[7m,0001][100%] [L=1]                " +
+            "\u001b[23;1H[No Name] [F=unix] [T=] [A=000] [H=00] [P=\u001b[0m0000\u001b[7m,0001][100%] [L=1]                " +
+            "\u001b[1;1H\u001b[0m\u001b[24;70H:         \u001b[1;1H\u001b[24;70H\u001b[K\u001b[24;1H:" +
+
+            "";
+
 
         frame.setSize(630, 480);
         frame.setVisible(true);

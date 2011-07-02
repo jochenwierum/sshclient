@@ -12,9 +12,9 @@ import de.jowisoftware.ssh.client.terminal.KeyboardFeedback;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 public class DisplayAttributeControlSequence<T extends GfxChar> implements ControlSequence<T> {
+    private static final Logger LOGGER = Logger.getLogger(DisplayAttributeControlSequence.class);
     private static final Pattern pattern = Pattern.compile("\\[(?:(?:\\d+;)*(?:\\d+))?m");
     private static final Pattern partialpattern = Pattern.compile("\\[(?:\\d+;?)*");
-    private static final Logger LOGGER = Logger.getLogger(DisplayAttributeControlSequence.class);
 
     @Override
     public boolean isPartialStart(final CharSequence sequence) {
@@ -65,7 +65,7 @@ public class DisplayAttributeControlSequence<T extends GfxChar> implements Contr
                 }
             }
 
-            LOGGER.warn("Unknown attribute: <ESC>[" + number + "m");
+            LOGGER.error("Unknown attribute: <ESC>[" + number + "m");
         }
     }
 }

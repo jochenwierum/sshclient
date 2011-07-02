@@ -6,7 +6,9 @@ public interface Buffer<T extends GfxChar> {
     void newSize(int width, int height);
 
     void setCursorPosition(final CursorPosition position);
+    void setAbsoluteCursorPosition(CursorPosition cursorPosition);
     CursorPosition getCursorPosition();
+    CursorPosition getAbsoluteCursorPosition();
 
     T getCharacter(final int row, final int column);
 
@@ -19,6 +21,9 @@ public interface Buffer<T extends GfxChar> {
     void eraseFromTop();
     void erase();
     void eraseLine();
+
+    void setRollRange(int i, int j);
+    void deleteRollRange();
 
     void render();
 }

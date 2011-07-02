@@ -29,7 +29,7 @@ public class KeyboardControlSequenceTest {
         assertTrue(sequence.canHandleSequence("="));
         assertTrue(sequence.canHandleSequence(">"));
         assertTrue(sequence.canHandleSequence("[?1h"));
-        assertTrue(sequence.canHandleSequence("[?11"));
+        assertTrue(sequence.canHandleSequence("[?1l"));
         assertFalse(sequence.canHandleSequence("[?12"));
         assertFalse(sequence.canHandleSequence("[X"));
 
@@ -58,7 +58,7 @@ public class KeyboardControlSequenceTest {
             oneOf(feedback).setCursorKeysIsAppMode(false);
         }});
 
-        sequence.handleSequence("[?11", null, null, feedback);
+        sequence.handleSequence("[?1l", null, null, feedback);
     }
 
     @Test
