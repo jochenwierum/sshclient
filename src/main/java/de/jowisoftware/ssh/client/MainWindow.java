@@ -105,8 +105,11 @@ public class MainWindow extends JFrame {
 
     private void createConnection() {
         final ConnectionInfo info = new ConnectionInfo(jsch);
-        info.setHost("home.inf.h-brs.de");
-        info.setUser("jwieru2s");
+        final String result =
+            JOptionPane.showInputDialog("user@host", "jwieru2s@home.inf.h-brs.de");
+        final String[] parts = result.split("@");
+        info.setUser(parts[0]);
+        info.setHost(parts[1]);
         //info.setUser("gast");
         //info.setPort(2222);
         //info.setHost("jowisoftware.dyndns.org");

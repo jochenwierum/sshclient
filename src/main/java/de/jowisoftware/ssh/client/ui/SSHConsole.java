@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 
 import de.jowisoftware.ssh.client.ConnectionInfo;
 import de.jowisoftware.ssh.client.jsch.AsyncInputStreamReaderThread.Callback;
-import de.jowisoftware.ssh.client.terminal.ArrayListBuffer;
+import de.jowisoftware.ssh.client.terminal.ArrayBuffer;
 import de.jowisoftware.ssh.client.terminal.Buffer;
 import de.jowisoftware.ssh.client.terminal.GfxCharSetup;
 import de.jowisoftware.ssh.client.terminal.controlsequences.CharacterProcessor;
@@ -34,7 +34,8 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener, M
 
     public SSHConsole(final ConnectionInfo info) {
         renderer = new DoubleBufferedImage(info.getGfxSettings());
-        buffer = new ArrayListBuffer<GfxAwtChar>(renderer);
+        buffer = new ArrayBuffer<GfxAwtChar>(renderer,
+                info.getGfxSettings().getEmptyChar(), 80, 24);
         setup = new GfxAwtCharSetup(info.getGfxSettings());
         outputProcessor = new CharacterProcessor<GfxAwtChar>(buffer, setup,
                 info.getCharset(), new GfxFeedback());

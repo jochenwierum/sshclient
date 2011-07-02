@@ -3,23 +3,22 @@ package de.jowisoftware.ssh.client.terminal;
 import de.jowisoftware.ssh.client.ui.GfxChar;
 
 public interface Buffer<T extends GfxChar> {
-    public void setCursorPosition(final CursorPosition position);
-    public CursorPosition getCursorPosition();
+    void newSize(int width, int height);
 
-    public int rows();
-    public int lengthOfLine(final int row);
+    void setCursorPosition(final CursorPosition position);
+    CursorPosition getCursorPosition();
 
-    public T getCharacter(final int column, final int row);
+    T getCharacter(final int row, final int column);
 
-    public void addCharacter(final T character);
-    public void addNewLine();
+    void addCharacter(final T character);
+    void addNewLine();
 
-    public void eraseToBottom();
-    public void eraseRestOfLine();
-    public void eraseStartOfLine();
-    public void eraseFromTop();
-    public void erase();
-    public void eraseLine();
+    void eraseToBottom();
+    void eraseRestOfLine();
+    void eraseStartOfLine();
+    void eraseFromTop();
+    void erase();
+    void eraseLine();
 
     void render();
 }

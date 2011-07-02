@@ -4,11 +4,13 @@ import java.awt.Font;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.jowisoftware.ssh.client.terminal.Attribute;
 import de.jowisoftware.ssh.client.terminal.Color;
 
 public class GfxInfo {
     private final Map<Color, java.awt.Color> colors = new HashMap<Color, java.awt.Color>();
     private final Map<Color, java.awt.Color> brightColors = new HashMap<Color, java.awt.Color>();
+    private final GfxAwtChar emptyChar = new GfxAwtChar(' ', this, Color.DEFAULTBG, Color.DEFAULTBG, new Attribute[0]);
 
     // TODO: get this from config
     public GfxInfo() {
@@ -45,5 +47,9 @@ public class GfxInfo {
 
     public Font getFont() {
         return new Font("Consolas", 0, 11); // TODO hasUniformLineMetrics()
+    }
+
+    public GfxAwtChar getEmptyChar() {
+        return emptyChar;
     }
 }
