@@ -10,7 +10,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
      * 1. dimension = row, 2. dimension = row
      */
     private GfxChar[][] lines;
-    private CursorPosition position = new CursorPosition(0, 0);
+    private CursorPosition position = new CursorPosition(1, 1);
     private final Renderer<T> renderer;
     private final T clearChar;
 
@@ -55,22 +55,22 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T getCharacter(final int row, final int column) {
-        return (T) lines[row][column];
+        return (T) lines[row - 1][column - 1];
     }
 
     @Override
     public void addNewLine() {
-        position = new CursorPosition(0, position.getY() + 1);
+        position = new CursorPosition(1, position.getY() + 1);
     }
 
     @Override
     public void addCharacter(final T character) {
         synchronized(this) {
             // TODO: check position
-            lines[position.getY()][position.getX()] = character;
+            lines[position.getY() - 1][position.getX() - 1] = character;
             position = position.offset(1, 0);
-            if (position.getX() == lines[0].length) {
-                position = new CursorPosition(0, position.getY() + 1);
+            if (position.getX() == lines[0].length + 1) {
+                position = new CursorPosition(1, position.getY() + 1);
             }
         }
     }
@@ -84,7 +84,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     private void eraseNextLineToBottomUnsynced() {
-        for (int row = position.getY() + 1; row < lines.length; ++row) {
+        for (int row = position.getY(); row < lines.length; ++row) {
             for (int col = 0; col < lines[0].length; ++col) {
                 lines[row][col] = clearChar;
             }
@@ -92,14 +92,14 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     private void eraseRestOfLineUnsynced() {
-        for (int col = position.getX(); col < lines[position.getY()].length; ++col) {
-            lines[position.getY()][col] = clearChar;
+        for (int col = position.getX() - 1; col < lines[position.getY() - 1].length; ++col) {
+            lines[position.getY() - 1][col] = clearChar;
         }
     }
 
     private void eraseStartOfLineUnsynced() {
-        for (int col = 0; col <= position.getX(); ++col) {
-            lines[position.getY()][col] = clearChar;
+        for (int col = 0; col <= position.getX() - 1; ++col) {
+            lines[position.getY() - 1][col] = clearChar;
         }
     }
 
@@ -126,7 +126,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     private void eraseTopToPreviousLineUnsynced() {
-        for (int row = 0; row < position.getY(); ++row) {
+        for (int row = 0; row < position.getY() - 1; ++row) {
             for (int col = 0; col < lines[row].length; ++col) {
                 lines[row][col] = clearChar;
             }
@@ -148,7 +148,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     public void eraseLine() {
         synchronized(this) {
             for (int col = 0; col < lines[0].length; ++col) {
-                lines[position.getY()][col] = clearChar;
+                lines[position.getY() - 1][col] = clearChar;
             }
         }
     }

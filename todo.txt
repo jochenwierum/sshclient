@@ -9,9 +9,9 @@ Persistierung:
 SSH-UI:
 * Bell
 * Draw (blinking) Cursor
+* Selektion von Text mit der Maus
 
 Terminal:
-* Blinkender Cursor
 * Mehr escape sequence
   * http://www-user.tu-chemnitz.de/~heha/hs_freeware/terminal/terminal.htm
   * http://www.termsys.demon.co.uk/vtansi.htm

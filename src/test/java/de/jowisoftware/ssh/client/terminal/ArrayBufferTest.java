@@ -37,9 +37,9 @@ public class ArrayBufferTest {
 
     @Test
     public void testInitialValue() {
-        assertPosition(0, 0);
-        assertChar(0, 0, nullChar);
-        assertChar(79, 23, nullChar);
+        assertPosition(1, 1);
+        assertChar(1, 1, nullChar);
+        assertChar(80, 24, nullChar);
     }
 
     @Test
@@ -54,200 +54,200 @@ public class ArrayBufferTest {
     @Test
     public void testAddChar() {
         buffer.addCharacter(char1);
-        assertPosition(1, 0);
-        assertChar(0, 0, char1);
+        assertPosition(2, 1);
+        assertChar(1, 1, char1);
     }
 
     @Test
     public void testAddTwoChars() {
         buffer.addCharacter(char1);
         buffer.addCharacter(char2);
-        assertPosition(2, 0);
-        assertChar(0, 0, char1);
-        assertChar(1, 0, char2);
+        assertPosition(3, 1);
+        assertChar(1, 1, char1);
+        assertChar(2, 1, char2);
     }
 
     @Test
     public void testAddNewLineChars() {
         buffer.addCharacter(char1);
-        assertPosition(1, 0);
+        assertPosition(2, 1);
 
         buffer.addNewLine();
-        assertPosition(0, 1);
+        assertPosition(1, 2);
 
         buffer.addCharacter(char2);
-        assertChar(0, 1, char2);
-        assertPosition(1, 1);
+        assertChar(1, 2, char2);
+        assertPosition(2, 2);
     }
 
     @Test
     public void testEraseDown() {
         /*
          * delete from y to bottom, including y
-         *   01
-         * 0 x
+         *   1234
          * 1 x
-         * 2 xy
-         * 3 x
+         * 2 x
+         * 3 xy
+         * 4 x
          */
 
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char2); buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char2); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(1, 2));
+        buffer.setCursorPosition(new CursorPosition(2, 3));
         buffer.eraseToBottom();
 
-        assertChar(0, 0, char1);
-        assertChar(0, 1, char1);
-        assertChar(0, 2, char2);
-        assertChar(1, 2, nullChar);
-        assertChar(0, 3, nullChar);
+        assertChar(1, 1, char1);
+        assertChar(1, 2, char1);
+        assertChar(1, 3, char2);
+        assertChar(2, 3, nullChar);
+        assertChar(1, 4, nullChar);
     }
 
     @Test
     public void testEraseRestOfLine() {
         /*
          * delete all y
-         *   01
-         * 0 x
-         * 1 xyyy
-         * 2 x
+         *   12345
+         * 1 x
+         * 2 xyyy
+         * 3 x
          */
 
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addCharacter(char2);
             buffer.addCharacter(char1); buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char2); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(1, 1));
+        buffer.setCursorPosition(new CursorPosition(2, 2));
         buffer.eraseRestOfLine();
 
-        assertChar(0, 0, char1);
-        assertChar(0, 1, char1);
-        assertChar(1, 1, nullChar);
-        assertChar(1, 2, nullChar);
-        assertChar(1, 3, nullChar);
-        assertChar(0, 2, char2);
+        assertChar(1, 1, char1);
+        assertChar(1, 2, char1);
+        assertChar(2, 2, nullChar);
+        assertChar(2, 3, nullChar);
+        assertChar(2, 4, nullChar);
+        assertChar(1, 3, char2);
     }
 
     @Test
     public void testEraseStartOfLine() {
         /*
          * delete all y
-         *   0123
-         * 0 x
-         * 1 yyxx
-         * 2 x
+         *   1234
+         * 1 x
+         * 2 yyxx
+         * 3 x
          */
 
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addCharacter(char1);
             buffer.addCharacter(char1); buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(1, 1));
+        buffer.setCursorPosition(new CursorPosition(2, 2));
         buffer.eraseStartOfLine();
 
-        assertChar(0, 0, char1);
-        assertChar(0, 1, nullChar);
-        assertChar(1, 1, nullChar);
-        assertChar(2, 1, char1);
-        assertChar(3, 1, char1);
-        assertChar(0, 2, char1);
+        assertChar(1, 1, char1);
+        assertChar(1, 2, nullChar);
+        assertChar(2, 2, nullChar);
+        assertChar(3, 2, char1);
+        assertChar(4, 2, char1);
+        assertChar(1, 3, char1);
     }
 
     @Test
     public void testErase() {
         /*
          * delete all x
-         *   0123
-         * 0 x
-         * 1 xx
-         * 2 x
+         *   1234
+         * 1 x
+         * 2 xx
+         * 3 x
          */
 
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(1, 1));
+        buffer.setCursorPosition(new CursorPosition(2, 2));
         buffer.erase();
 
-        assertChar(0, 0, nullChar);
-        assertChar(0, 1, nullChar);
         assertChar(1, 1, nullChar);
-        assertChar(0, 2, nullChar);
+        assertChar(1, 2, nullChar);
+        assertChar(2, 2, nullChar);
+        assertChar(1, 3, nullChar);
     }
 
     @Test
     public void testEraseLine() {
         /*
          * delete all y
-         *   0123
-         * 0 x
-         * 1 yyy
-         * 2 x
+         *   1234
+         * 1 x
+         * 2 yyy
+         * 3 x
          */
 
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addCharacter(char1);
             buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(1, 1));
+        buffer.setCursorPosition(new CursorPosition(2, 2));
         buffer.eraseLine();
 
-        assertChar(0, 0, char1);
-        assertChar(0, 1, nullChar);
-        assertChar(1, 1, nullChar);
-        assertChar(2, 1, nullChar);
-        assertChar(0, 2, char1);
+        assertChar(1, 1, char1);
+        assertChar(1, 2, nullChar);
+        assertChar(2, 2, nullChar);
+        assertChar(3, 2, nullChar);
+        assertChar(1, 3, char1);
     }
 
     @Test
     public void testEraseFromTop() {
         /*
          * delete all y
-         *   0123
-         * 0 y
-         * 1 yyx
-         * 2 x
+         *   1234
+         * 1 y
+         * 2 yyx
+         * 3 x
          */
 
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addCharacter(char1);
             buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(1, 1));
+        buffer.setCursorPosition(new CursorPosition(2, 2));
         buffer.eraseFromTop();
 
-        assertChar(0, 0, nullChar);
-        assertChar(0, 1, nullChar);
         assertChar(1, 1, nullChar);
-        assertChar(2, 1, char1);
-        assertChar(0, 2, char1);
+        assertChar(1, 2, nullChar);
+        assertChar(2, 2, nullChar);
+        assertChar(3, 2, char1);
+        assertChar(1, 3, char1);
     }
 
     @Test
     public void testResize() {
         buffer.addCharacter(char1);
-        buffer.setCursorPosition(new CursorPosition(23, 23));
+        buffer.setCursorPosition(new CursorPosition(24, 24));
         buffer.addCharacter(char2);
-        buffer.newSize(24, 31);
+        buffer.newSize(24, 30);
 
-        assertChar(0, 0, char1);
-        assertChar(23, 23, char2);
-        assertChar(23, 30, nullChar);
+        assertChar(1, 1, char1);
+        assertChar(24, 24, char2);
+        assertChar(24, 30, nullChar);
 
-        buffer.setCursorPosition(new CursorPosition(23, 30));
+        buffer.setCursorPosition(new CursorPosition(24, 30));
         buffer.addCharacter(char1);
-        assertChar(23, 30, char1);
+        assertChar(24, 30, char1);
     }
 
     @Test
     public void testTooLongLine() {
-        buffer.setCursorPosition(new CursorPosition(79, 0));
+        buffer.setCursorPosition(new CursorPosition(80, 1));
         buffer.addCharacter(char1);
-        assertPosition(0, 1);
+        assertPosition(1, 2);
         buffer.addCharacter(char2);
-        assertPosition(1, 1);
+        assertPosition(2, 2);
     }
-    // TODO: too long line, too full buffer
+    // TODO: too long line, full buffer
 }
