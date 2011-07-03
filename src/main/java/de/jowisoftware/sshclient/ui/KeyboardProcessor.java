@@ -12,7 +12,7 @@ import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
 import de.jowisoftware.sshclient.util.StringUtils;
 
 public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
-    private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
+    private static final Logger LOGGER = Logger.getLogger(KeyboardProcessor.class);
     private OutputStream responseStream;
 
     private static final int ESC = 27;

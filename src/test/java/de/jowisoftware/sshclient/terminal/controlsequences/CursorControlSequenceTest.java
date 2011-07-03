@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CursorPosition;
-import de.jowisoftware.sshclient.terminal.controlsequences.CursorControlSequence;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 @RunWith(JMock.class)
@@ -74,6 +73,26 @@ public class CursorControlSequenceTest {
     }
 
     @Test
+    public void testMoveUpAndRoll() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).moveCursorDownAndRoll(false);
+            oneOf(buffer).moveCursorDownAndRoll(true);
+        }});
+
+        seq.handleSequence("D", buffer, null, null);
+        seq.handleSequence("E", buffer, null, null);
+    }
+
+    @Test
+    public void testMoveDownAndRoll() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).moveCursorUpAndRoll();
+        }});
+
+        seq.handleSequence("M", buffer, null, null);
+    }
+
+    @Test
     public void testHandle() {
         assertTrue(seq.canHandleSequence("[H"));
         assertTrue(seq.canHandleSequence("[r"));
@@ -91,6 +110,9 @@ public class CursorControlSequenceTest {
         assertTrue(seq.canHandleSequence("[C"));
         assertTrue(seq.canHandleSequence("[98D"));
         assertTrue(seq.canHandleSequence("[D"));
+        assertTrue(seq.canHandleSequence("D"));
+        assertTrue(seq.canHandleSequence("E"));
+        assertTrue(seq.canHandleSequence("M"));
 
         assertTrue(seq.isPartialStart("["));
         assertTrue(seq.isPartialStart("[1"));

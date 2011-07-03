@@ -5,16 +5,17 @@ import de.jowisoftware.sshclient.ui.GfxChar;
 public interface Buffer<T extends GfxChar> {
     void newSize(int width, int height);
 
+    void addCharacter(final T character);
+    void addNewLine();
+    T getCharacter(final int row, final int column);
+
     void setCursorPosition(final CursorPosition position);
     void setAbsoluteCursorPosition(CursorPosition cursorPosition);
     void setSafeCursorPosition(CursorPosition offset);
+    void moveCursorUpAndRoll();
+    void moveCursorDownAndRoll(boolean resetToFirstColumn);
     CursorPosition getCursorPosition();
     CursorPosition getAbsoluteCursorPosition();
-
-    T getCharacter(final int row, final int column);
-
-    void addCharacter(final T character);
-    void addNewLine();
 
     void eraseToBottom();
     void eraseRestOfLine();
@@ -23,7 +24,7 @@ public interface Buffer<T extends GfxChar> {
     void erase();
     void eraseLine();
 
-    void setRollRange(int i, int j);
+    void setRollRange(int start, int end);
     void deleteRollRange();
 
     void render();

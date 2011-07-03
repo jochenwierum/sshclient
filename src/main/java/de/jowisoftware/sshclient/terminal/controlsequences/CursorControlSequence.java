@@ -1,6 +1,5 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
@@ -15,7 +14,7 @@ public class CursorControlSequence<T extends GfxChar> implements
         ControlSequence<T> {
     private static final Logger LOGGER = Logger.getLogger(CursorControlSequence.class);
     private static final Pattern pattern = Pattern
-            .compile("\\[(?:(?:\\d+;\\d+)?[Hr]|\\d*[ABCD])");
+            .compile("\\[(?:(?:\\d+;\\d+)?[Hr]|\\d*[ABCD])|[DEM]");
     private static final Pattern partialpattern = Pattern
             .compile("\\[(?:\\d+|\\d+;|\\d+;\\d+)?");
 
@@ -32,18 +31,29 @@ public class CursorControlSequence<T extends GfxChar> implements
     @Override
     public void handleSequence(final String sequence, final Buffer<T> buffer,
             final GfxCharSetup<T> setup, final KeyboardFeedback feedback) {
-        final Matcher matcher = pattern.matcher(sequence);
-        matcher.matches();
 
         final char lastChar = sequence.charAt(sequence.length() - 1);
 
-        switch(lastChar) {
-        case 'H': processSetCursor(buffer, sequence); break;
-        case 'r': processRollSetup(buffer, sequence); break;
-        case 'A': case 'B': case 'C': case 'D':
-            processMoveCursor(buffer, sequence); break;
-        default:
+        if (sequence.equals("D") || sequence.equals("E") || sequence.endsWith("M")) {
+            processRollCursor(buffer, sequence);
+        } else if (lastChar == 'H') {
+            processSetCursor(buffer, sequence);
+        } else if(lastChar == 'r') {
+            processRollSetup(buffer, sequence);
+        } else if(lastChar >= 'A' && lastChar <= 'D') {
+            processMoveCursor(buffer, sequence);
+        } else {
             LOGGER.error("Unknown control sequence: <ESC>" + sequence);
+        }
+    }
+
+    private void processRollCursor(final Buffer<T> buffer, final String sequence) {
+        if (sequence.equals("D")) {
+            buffer.moveCursorDownAndRoll(false);
+        } else if (sequence.endsWith("E")) {
+            buffer.moveCursorDownAndRoll(true);
+        } else if (sequence.endsWith("M")) {
+            buffer.moveCursorUpAndRoll();
         }
     }
 

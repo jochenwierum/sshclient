@@ -1,6 +1,9 @@
 package de.jowisoftware.sshclient.terminal;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -66,31 +69,45 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
             y = 1;
         } else if (y > lines.length) {
             LOGGER.debug("invalid terminal position, shifting lines: " + x + "/" + y);
-            shiftLines(y - lines.length);
+            shiftLines((-y - lines.length) % lines.length , 0, lines.length);
             y = lines.length;
         }
         this.position = new CursorPosition(x, y);
     }
 
-    private void shiftLines(final int offset) {
-        final GfxChar[][] newLines = new GfxChar[lines.length][];
-        for (int i = 0; i < lines.length; ++i) {
-            final int newIndex = (lines.length + i - offset % lines.length) % lines.length;
-            newLines[newIndex] = lines[i];
+    private void shiftLines(final int offset, final int start, final int end) {
+        final List<GfxChar[]> newLines = new ArrayList<GfxChar[]>();
+        for (final GfxChar[] line : lines) {
+            newLines.add(line);
         }
-        for (int i = lines.length - offset % lines.length; i < lines.length; ++i) {
-            for (int j = 0; j < lines[i].length; ++j) {
-                newLines[i][j] = clearChar;
-            }
+
+        Collections.rotate(newLines, offset);
+
+        final int clearStart;
+        final int clearEnd;
+        if (offset > 0) {
+            clearStart = start;
+            clearEnd = start + offset;
+        } else {
+            clearStart = end + offset;
+            clearEnd = end;
         }
-        lines = newLines;
+
+        for (int i = clearStart; i < clearEnd; ++i) {
+            newLines.set(i, new GfxChar[lines[i].length]);
+            Arrays.fill(newLines.get(i), clearChar);
+        }
+
+        for (int i = start; i < end; ++i) {
+            lines[i] = newLines.get(i);
+        }
     }
 
     @Override
     public void setCursorPosition(final CursorPosition position) {
         synchronized (this) {
             if (rollRangeBegin != NO_ROLL_DEFINED && rollRangeBegin != NO_ROLL_DEFINED) {
-                setAndFixCursorPosition(position.offset(0, rollRangeBegin));
+                setAndFixCursorPosition(position.offset(0, rollRangeBegin - 1));
             } else {
                 setAndFixCursorPosition(position);
             }
@@ -118,7 +135,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     public CursorPosition getCursorPosition() {
         synchronized (this) {
             if (rollRangeBegin != NO_ROLL_DEFINED && rollRangeEnd != NO_ROLL_DEFINED) {
-                return position.offset(0, -rollRangeBegin);
+                return position.offset(0, -rollRangeBegin + 1);
             } else {
                 return position;
             }
@@ -138,7 +155,9 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
 
     @Override
     public void addNewLine() {
-        setAndFixCursorPosition(new CursorPosition(1, position.getY() + 1));
+        synchronized(this) {
+            moveCursorDownAndRoll(true);
+        }
     }
 
     @Override
@@ -262,13 +281,48 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
 
     @Override
     public void setRollRange(final int rollRangeBegin, final int rollRangeEnd) {
-        this.rollRangeBegin = rollRangeBegin - 1;
-        this.rollRangeEnd = rollRangeEnd - 1;
+        this.rollRangeBegin = rollRangeBegin;
+        this.rollRangeEnd = rollRangeEnd;
     }
 
     @Override
     public void deleteRollRange() {
         rollRangeBegin = NO_ROLL_DEFINED;
         rollRangeEnd = NO_ROLL_DEFINED;
+    }
+
+    @Override
+    public void moveCursorUpAndRoll() {
+        synchronized(this) {
+            int y = position.getY();
+            if (rollRangeBegin == NO_ROLL_DEFINED) {
+                setSafeCursorPosition(new CursorPosition(1, y - 1));
+            } else {
+                if (y == rollRangeBegin) {
+                    shiftLines(1, rollRangeBegin - 1, rollRangeEnd);
+                } else {
+                    --y;
+                }
+                setAndFixCursorPosition(new CursorPosition(1, y));
+            }
+        }
+    }
+
+    @Override
+    public void moveCursorDownAndRoll(final boolean resetToFirstColumn) {
+        synchronized(this) {
+            int y = position.getY();
+            final int x = resetToFirstColumn ? 1 : position.getX();
+            if (rollRangeEnd == NO_ROLL_DEFINED) {
+                setCursorPosition(new CursorPosition(x, y + 1));
+            } else {
+                if (y == rollRangeEnd) {
+                    shiftLines(-1, rollRangeBegin - 1, rollRangeEnd);
+                } else {
+                    ++y;
+                }
+                setAndFixCursorPosition(new CursorPosition(x, y));
+            }
+        }
     }
 }

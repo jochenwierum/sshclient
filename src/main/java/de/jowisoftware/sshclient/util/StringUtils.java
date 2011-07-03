@@ -26,7 +26,7 @@ public final class StringUtils {
 
     public static String escapeCharForLog(final int value) {
         if (value < 32) {
-            return String.format("\\%02d", value);
+            return String.format("\\u%04d", value);
         } else if (value == '\\') {
             return "\\\\";
         } else {

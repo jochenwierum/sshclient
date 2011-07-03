@@ -53,6 +53,7 @@ public class MainWindow extends JFrame {
         timer = new Timer(200, new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
+                // TODO: repaint only visible pane?
                 for (int i = 0; i < pane.getTabCount(); ++i) {
                     final Component component = pane.getComponent(i);
                     if (component instanceof SSHFrame) {
