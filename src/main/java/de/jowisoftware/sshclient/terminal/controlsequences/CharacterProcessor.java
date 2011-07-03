@@ -6,12 +6,9 @@ import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CursorPosition;
 import de.jowisoftware.sshclient.terminal.EncodingDecoder;
-import de.jowisoftware.sshclient.terminal.GfxCharSetup;
-import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
-import de.jowisoftware.sshclient.terminal.VisualFeedback;
+import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 public class CharacterProcessor<T extends GfxChar> {
@@ -30,19 +27,11 @@ public class CharacterProcessor<T extends GfxChar> {
     private final StringBuilder cachedChars = new StringBuilder();
     private final EncodingDecoder decoder;
     private boolean isInSequence = false;
-    private final GfxCharSetup<T> setup;
-    private final Buffer<T> buffer;
-    private final VisualFeedback visualFeedback;
-    private final KeyboardFeedback keyboardFeedback;
+    private final SessionInfo<T> sessionInfo;
 
-    public CharacterProcessor(final Buffer<T> buffer, final GfxCharSetup<T> setup,
-            final Charset charset,
-            final VisualFeedback visualFeedback,
-            final KeyboardFeedback keyboardFeedback) {
-        this.buffer = buffer;
-        this.setup = setup;
-        this.visualFeedback = visualFeedback;
-        this.keyboardFeedback = keyboardFeedback;
+    public CharacterProcessor(final SessionInfo<T> sessionInfo,
+            final Charset charset) {
+        this.sessionInfo = sessionInfo;
         this.decoder = new EncodingDecoder(charset);
     }
 
@@ -74,15 +63,18 @@ public class CharacterProcessor<T extends GfxChar> {
 
     private void createChar(final char character) {
         if (character == NEWLINE_CHAR) {
-            buffer.addNewLine();
+            sessionInfo.getBuffer().addNewLine();
         } else if (character == CARRIDGE_RETURN_CHAR) {
-            buffer.setCursorPosition(new CursorPosition(1, buffer.getCursorPosition().getY()));
+            sessionInfo.getBuffer().setCursorPosition(
+                    new CursorPosition(1, sessionInfo.getBuffer().getCursorPosition().getY()));
         } else if (character == BACKSPACE_CHAR) {
-            buffer.setCursorPosition(buffer.getCursorPosition().offset(-1, 0));
+            sessionInfo.getBuffer().setCursorPosition(
+                    sessionInfo.getBuffer().getCursorPosition().offset(-1, 0));
         } else if (character == BELL_CHAR) {
-            visualFeedback.bell();
+            sessionInfo.getVisualFeedback().bell();
         } else {
-            buffer.addCharacter(setup.createChar(character));
+            sessionInfo.getBuffer().addCharacter(
+                    sessionInfo.getCharSetup().createChar(character));
         }
     }
 
@@ -115,8 +107,7 @@ public class CharacterProcessor<T extends GfxChar> {
                     LOGGER.trace("Will handle " + cachedChars.toString() +
                             " with " + seq.getClass().getSimpleName());
                 }
-                seq.handleSequence(cachedChars.toString(), buffer, setup,
-                        keyboardFeedback);
+                seq.handleSequence(cachedChars.toString(), sessionInfo);
                 resetState();
                 return true;
             }

@@ -14,10 +14,8 @@ import org.junit.runner.RunWith;
 import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CursorPosition;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
-import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
+import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
-import de.jowisoftware.sshclient.terminal.controlsequences.CharacterProcessor;
-import de.jowisoftware.sshclient.terminal.controlsequences.ControlSequence;
 import de.jowisoftware.sshclient.test.matches.StringBuilderEquals;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
@@ -31,7 +29,7 @@ public class CharacterProcessorTest {
     private GfxChar gfxChar;
     private CharacterProcessor<GfxChar> processor;
     private VisualFeedback visualFeedback;
-    private KeyboardFeedback keyboardFeedback;
+    private SessionInfo<GfxChar> sessionInfo;
 
     @SuppressWarnings("unchecked")
     @Before
@@ -39,15 +37,22 @@ public class CharacterProcessorTest {
         buffer = context.mock(Buffer.class);
         setup = context.mock(GfxCharSetup.class);
         visualFeedback = context.mock(VisualFeedback.class);
-        keyboardFeedback = context.mock(KeyboardFeedback.class);
         sequence1 = context.mock(ControlSequence.class, "sequence1");
         sequence2 = context.mock(ControlSequence.class, "sequence2");
         gfxChar = context.mock(GfxChar.class);
+        sessionInfo = context.mock(SessionInfo.class);
 
-        processor = new CharacterProcessor<GfxChar>(buffer,
-                setup, Charset.defaultCharset(), visualFeedback, keyboardFeedback);
+        processor = new CharacterProcessor<GfxChar>(
+                sessionInfo,
+                Charset.defaultCharset());
         processor.addControlSequence(sequence1);
         processor.addControlSequence(sequence2);
+
+        context.checking(new Expectations() {{
+            allowing(sessionInfo).getBuffer(); will(returnValue(buffer));
+            allowing(sessionInfo).getCharSetup(); will(returnValue(setup));
+            allowing(sessionInfo).getVisualFeedback(); will(returnValue(visualFeedback));
+        }});
     }
 
     @Test
@@ -109,7 +114,7 @@ public class CharacterProcessorTest {
                 will(returnValue(false));
             oneOf(sequence1).canHandleSequence(with(new StringBuilderEquals("ts")));
                 will(returnValue(true));
-            oneOf(sequence1).handleSequence("ts", buffer, setup, keyboardFeedback);
+            oneOf(sequence1).handleSequence("ts", sessionInfo);
             oneOf(setup).createChar('3'); will(returnValue(gfxChar));
             oneOf(buffer).addCharacter(gfxChar);
         }});

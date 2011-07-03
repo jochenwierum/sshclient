@@ -18,7 +18,7 @@ public final class StringUtils {
     public static String escapeForLogs(final byte[] buffer, final int start, final int count) {
         final StringBuilder builder = new StringBuilder();
         for (int i = start; i < count; ++i) {
-            builder.append(escapeCharForLog(buffer[i]));
+            builder.append(escapeCharForLog(buffer[i] & 0xFF));
         }
 
         return builder.toString();
@@ -26,7 +26,8 @@ public final class StringUtils {
 
     public static String escapeCharForLog(final int value) {
         if (value < 32) {
-            return String.format("\\u%04d", value);
+            final String hexString = Integer.toHexString(value);
+            return "\\u0000".substring(0, 6 - hexString.length()) + hexString;
         } else if (value == '\\') {
             return "\\\\";
         } else {

@@ -7,4 +7,9 @@ public class GfxFeedback implements VisualFeedback {
     public void bell() {
         System.err.println("BELL!");
     }
+
+    @Override
+    public void setTitle(final String title) {
+        System.out.println("Title: " + title);
+    }
 }

@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CursorPosition;
+import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 @RunWith(JMock.class)
@@ -21,12 +22,17 @@ public class CursorControlSequenceTest {
     private final Mockery context = new JUnit4Mockery();
     private CursorControlSequence<GfxChar> seq;
     private Buffer<GfxChar> buffer;
+    private SessionInfo<GfxChar> sessionInfo;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
         buffer = context.mock(Buffer.class);
         seq = new CursorControlSequence<GfxChar>();
+        sessionInfo = context.mock(SessionInfo.class);
+        context.checking(new Expectations() {{
+            allowing(sessionInfo).getBuffer(); will(returnValue(buffer));
+        }});
     }
 
     @Test
@@ -35,7 +41,7 @@ public class CursorControlSequenceTest {
             oneOf(buffer).setAbsoluteCursorPosition(new CursorPosition(1, 1));
         }});
 
-        seq.handleSequence("[H", buffer, null, null);
+        seq.handleSequence("[H", sessionInfo);
     }
 
     @Test
@@ -45,8 +51,8 @@ public class CursorControlSequenceTest {
             oneOf(buffer).setCursorPosition(new CursorPosition(7, 3));
         }});
 
-        seq.handleSequence("[1;5H", buffer, null, null);
-        seq.handleSequence("[3;7H", buffer, null, null);
+        seq.handleSequence("[1;5H", sessionInfo);
+        seq.handleSequence("[3;7H", sessionInfo);
     }
 
     @Test
@@ -58,8 +64,8 @@ public class CursorControlSequenceTest {
             oneOf(buffer).setCursorPosition(new CursorPosition(1, 1));
         }});
 
-        seq.handleSequence("[1;5r", buffer, null, null);
-        seq.handleSequence("[3;7r", buffer, null, null);
+        seq.handleSequence("[1;5r", sessionInfo);
+        seq.handleSequence("[3;7r", sessionInfo);
     }
 
     @Test
@@ -69,7 +75,7 @@ public class CursorControlSequenceTest {
             oneOf(buffer).setCursorPosition(new CursorPosition(1, 1));
         }});
 
-        seq.handleSequence("[r", buffer, null, null);
+        seq.handleSequence("[r", sessionInfo);
     }
 
     @Test
@@ -79,8 +85,8 @@ public class CursorControlSequenceTest {
             oneOf(buffer).moveCursorDownAndRoll(true);
         }});
 
-        seq.handleSequence("D", buffer, null, null);
-        seq.handleSequence("E", buffer, null, null);
+        seq.handleSequence("D", sessionInfo);
+        seq.handleSequence("E", sessionInfo);
     }
 
     @Test
@@ -89,8 +95,10 @@ public class CursorControlSequenceTest {
             oneOf(buffer).moveCursorUpAndRoll();
         }});
 
-        seq.handleSequence("M", buffer, null, null);
+        seq.handleSequence("M", sessionInfo);
     }
+
+    // TODO: test for 6C is missing
 
     @Test
     public void testHandle() {

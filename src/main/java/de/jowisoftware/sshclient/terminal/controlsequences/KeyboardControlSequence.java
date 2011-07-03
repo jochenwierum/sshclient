@@ -4,9 +4,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.Buffer;
-import de.jowisoftware.sshclient.terminal.GfxCharSetup;
-import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
+import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 public class KeyboardControlSequence<T extends GfxChar> implements ControlSequence<T> {
@@ -25,16 +23,16 @@ public class KeyboardControlSequence<T extends GfxChar> implements ControlSequen
     }
 
     @Override
-    public void handleSequence(final String sequence, final Buffer<T> buffer,
-            final GfxCharSetup<T> setup, final KeyboardFeedback keyboardFeedback) {
+    public void handleSequence(final String sequence,
+            final SessionInfo<T> sessionInfo) {
         if (sequence.equals("[?1l")) {
-            keyboardFeedback.setCursorKeysIsAppMode(false);
+            sessionInfo.getKeyboardFeedback().setCursorKeysIsAppMode(false);
         } else if (sequence.equals("[?1h")) {
-            keyboardFeedback.setCursorKeysIsAppMode(true);
+            sessionInfo.getKeyboardFeedback().setCursorKeysIsAppMode(true);
         } else if (sequence.equals("=")) {
-            keyboardFeedback.setNumblockIsAppMode(true);
+            sessionInfo.getKeyboardFeedback().setNumblockIsAppMode(true);
         } else if (sequence.equals(">")) {
-            keyboardFeedback.setNumblockIsAppMode(false);
+            sessionInfo.getKeyboardFeedback().setNumblockIsAppMode(false);
         } else {
             LOGGER.error("Unknown control sequence: <ESC>" + sequence);
         }

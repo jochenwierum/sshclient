@@ -12,17 +12,25 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
-import de.jowisoftware.sshclient.terminal.controlsequences.KeyboardControlSequence;
+import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 @RunWith(JMock.class)
 public class KeyboardControlSequenceTest {
     private final Mockery context = new JUnit4Mockery();
     private KeyboardControlSequence<GfxChar> sequence;
+    private KeyboardFeedback feedback;
+    private SessionInfo<GfxChar> sessionInfo;
 
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         sequence = new KeyboardControlSequence<GfxChar>();
+        feedback = context.mock(KeyboardFeedback.class);
+        sessionInfo = context.mock(SessionInfo.class);
+        context.checking(new Expectations() {{
+            allowing(sessionInfo).getKeyboardFeedback(); will(returnValue(feedback));
+        }});
     }
 
     @Test
@@ -42,45 +50,37 @@ public class KeyboardControlSequenceTest {
 
     @Test
     public void testHandleAppKeys() {
-        final KeyboardFeedback feedback = context.mock(KeyboardFeedback.class);
-
         context.checking(new Expectations() {{
             oneOf(feedback).setCursorKeysIsAppMode(true);
         }});
 
-        sequence.handleSequence("[?1h", null, null, feedback);
+        sequence.handleSequence("[?1h", sessionInfo);
     }
 
     @Test
     public void testHandleNonAppKeys() {
-        final KeyboardFeedback feedback = context.mock(KeyboardFeedback.class);
-
         context.checking(new Expectations() {{
             oneOf(feedback).setCursorKeysIsAppMode(false);
         }});
 
-        sequence.handleSequence("[?1l", null, null, feedback);
+        sequence.handleSequence("[?1l", sessionInfo);
     }
 
     @Test
     public void testHandleNumblock() {
-        final KeyboardFeedback feedback = context.mock(KeyboardFeedback.class);
-
         context.checking(new Expectations() {{
             oneOf(feedback).setNumblockIsAppMode(true);
         }});
 
-        sequence.handleSequence("=", null, null, feedback);
+        sequence.handleSequence("=", sessionInfo);
     }
 
     @Test
     public void testHandleNumblockOff() {
-        final KeyboardFeedback feedback = context.mock(KeyboardFeedback.class);
-
         context.checking(new Expectations() {{
             oneOf(feedback).setNumblockIsAppMode(false);
         }});
 
-        sequence.handleSequence(">", null, null, feedback);
+        sequence.handleSequence(">", sessionInfo);
     }
 }

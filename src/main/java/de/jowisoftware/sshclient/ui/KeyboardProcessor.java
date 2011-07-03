@@ -190,7 +190,7 @@ public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_DELETE:
             send(127);
-            // TODO: map?
+            // TODO: read from config?
             // case KeyEvent.VK_DELETE: send(ESC, '[', '3', '~'); break;
             return true;
         case KeyEvent.VK_HOME:

@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Buffer;
-import de.jowisoftware.sshclient.terminal.controlsequences.EraseControlSequence;
+import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 @RunWith(JMock.class)
@@ -21,12 +21,17 @@ public class EraseControlSequenceTest {
     private final Mockery context = new JUnit4Mockery();
     private EraseControlSequence<GfxChar> seq;
     private Buffer<GfxChar> buffer;
+    private SessionInfo<GfxChar> sessionInfo;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
         buffer = context.mock(Buffer.class);
         seq = new EraseControlSequence<GfxChar>();
+        sessionInfo = context.mock(SessionInfo.class);
+        context.checking(new Expectations() {{
+            allowing(sessionInfo).getBuffer(); will(returnValue(buffer));
+        }});
     }
 
     @Test
@@ -35,7 +40,7 @@ public class EraseControlSequenceTest {
             oneOf(buffer).eraseToBottom();
         }});
 
-        seq.handleSequence("[J", buffer, null, null);
+        seq.handleSequence("[J", sessionInfo);
     }
 
     @Test
@@ -44,7 +49,7 @@ public class EraseControlSequenceTest {
             oneOf(buffer).eraseFromTop();
         }});
 
-        seq.handleSequence("[1J", buffer, null, null);
+        seq.handleSequence("[1J", sessionInfo);
     }
 
     @Test
@@ -53,7 +58,7 @@ public class EraseControlSequenceTest {
             oneOf(buffer).erase();
         }});
 
-        seq.handleSequence("[2J", buffer, null, null);
+        seq.handleSequence("[2J", sessionInfo);
     }
 
     @Test
@@ -62,7 +67,7 @@ public class EraseControlSequenceTest {
             oneOf(buffer).eraseRestOfLine();
         }});
 
-        seq.handleSequence("[K", buffer, null, null);
+        seq.handleSequence("[K", sessionInfo);
     }
 
     @Test
@@ -71,7 +76,7 @@ public class EraseControlSequenceTest {
             oneOf(buffer).eraseStartOfLine();
         }});
 
-        seq.handleSequence("[1K", buffer, null, null);
+        seq.handleSequence("[1K", sessionInfo);
     }
 
     @Test
@@ -80,7 +85,7 @@ public class EraseControlSequenceTest {
             oneOf(buffer).eraseLine();
         }});
 
-        seq.handleSequence("[2K", buffer, null, null);
+        seq.handleSequence("[2K", sessionInfo);
     }
 
     @Test

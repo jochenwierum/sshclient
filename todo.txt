@@ -12,8 +12,14 @@ SSH-UI:
 * Selektion von Text mit der Maus
 * Resize
 
+SSH:
+* Port forwarding
+* Keep-Alives (was kann JSch schon?)
+
 Terminal:
 * Mehr escape sequence
+  * http://www.mudpedia.org/wiki/Xterm_256_colors
+  * http://en.wikipedia.org/wiki/ANSI_escape_code
   * http://www-user.tu-chemnitz.de/~heha/hs_freeware/terminal/terminal.htm
   * http://www.termsys.demon.co.uk/vtansi.htm
   * http://ascii-table.com/ansi-escape-sequences-vt-100.php
@@ -21,7 +27,5 @@ Terminal:
 
 Hinweise zu JSch
 * Beispiele: http://www.jcraft.com/jsch/examples/
-
-CR - Nächste Zeile, Hoch-Rollen beim Erreichen des Roll-Randes (Cursor-Spalte unverändert, darf CR ausführen)
 
 Warum hat vim keine Farben?

@@ -5,10 +5,8 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
-import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.Color;
-import de.jowisoftware.sshclient.terminal.GfxCharSetup;
-import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
+import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 public class DisplayAttributeControlSequence<T extends GfxChar> implements ControlSequence<T> {
@@ -27,10 +25,10 @@ public class DisplayAttributeControlSequence<T extends GfxChar> implements Contr
     }
 
     @Override
-    public void handleSequence(final String sequence, final Buffer<T> buffer,
-            final GfxCharSetup<T> setup, final KeyboardFeedback feedback) {
+    public void handleSequence(final String sequence,
+            final SessionInfo<T> sessionInfo) {
         if (sequence.equals("[m") || sequence.equals("[0m")) {
-            setup.reset();
+            sessionInfo.getCharSetup().reset();
             return;
         }
 
@@ -41,26 +39,26 @@ public class DisplayAttributeControlSequence<T extends GfxChar> implements Contr
             final int seq = Integer.parseInt(number);
 
             if (seq == 0) {
-                setup.reset();
+                sessionInfo.getCharSetup().reset();
                 continue sequence;
             }
 
             for (final Attribute attr : Attribute.values()) {
                 if (attr.isActivateSequence(seq)) {
-                    setup.setAttribute(attr);
+                    sessionInfo.getCharSetup().setAttribute(attr);
                     continue sequence;
                 } else if (attr.isDeactivateSequence(seq)) {
-                    setup.removeAttribute(attr);
+                    sessionInfo.getCharSetup().removeAttribute(attr);
                     continue sequence;
                 }
             }
 
             for (final Color color : Color.values()) {
                 if (color.isForegroundSequence(seq)) {
-                    setup.setForeground(color);
+                    sessionInfo.getCharSetup().setForeground(color);
                     continue sequence;
                 } else if (color.isBackgroundSequence(seq)) {
-                    setup.setBackground(color);
+                    sessionInfo.getCharSetup().setBackground(color);
                     continue sequence;
                 }
             }

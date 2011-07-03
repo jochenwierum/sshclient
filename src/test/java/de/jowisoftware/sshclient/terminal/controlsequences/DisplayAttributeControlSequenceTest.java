@@ -12,11 +12,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
-import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.Color;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
-import de.jowisoftware.sshclient.terminal.controlsequences.DisplayAttributeControlSequence;
+import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 @RunWith(JMock.class)
@@ -24,11 +23,18 @@ public class DisplayAttributeControlSequenceTest {
     private final Mockery context = new JUnit4Mockery();
     private DisplayAttributeControlSequence<GfxChar> seq;
     private KeyboardFeedback keyboardFeedback;
+    private SessionInfo<GfxChar> sessionInfo;
 
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         seq = new DisplayAttributeControlSequence<GfxChar>();
         keyboardFeedback = context.mock(KeyboardFeedback.class);
+        sessionInfo = context.mock(SessionInfo.class);
+        context.checking(new Expectations() {{
+            allowing(sessionInfo).getKeyboardFeedback();
+                will(returnValue(keyboardFeedback));
+        }});
     }
 
     @Test
@@ -58,49 +64,49 @@ public class DisplayAttributeControlSequenceTest {
     @SuppressWarnings("unchecked")
     private void callWithAttrAndExpect(final int attr, final Attribute expect) {
         final GfxCharSetup<GfxChar> setup = context.mock(GfxCharSetup.class, "setup-" + attr + "-expect");
-        final Buffer<GfxChar> buffer = context.mock(Buffer.class, "buffer-" + attr + "-expect");
 
         context.checking(new Expectations() {{
+            oneOf(sessionInfo).getCharSetup(); will(returnValue(setup));
             oneOf(setup).setAttribute(expect);
         }});
 
-        seq.handleSequence("[" + attr + "m", buffer, setup, keyboardFeedback);
+        seq.handleSequence("[" + attr + "m", sessionInfo);
     }
 
     @SuppressWarnings("unchecked")
     private void callWithAttrAndExpectFGColor(final int attr, final Color expect) {
         final GfxCharSetup<GfxChar> setup = context.mock(GfxCharSetup.class, "setup-" + attr + "-expect");
-        final Buffer<GfxChar> buffer = context.mock(Buffer.class, "buffer-" + attr + "-expect");
 
         context.checking(new Expectations() {{
+            oneOf(sessionInfo).getCharSetup(); will(returnValue(setup));
             oneOf(setup).setForeground(expect);
         }});
 
-        seq.handleSequence("[" + attr + "m", buffer, setup, keyboardFeedback);
+        seq.handleSequence("[" + attr + "m", sessionInfo);
     }
 
     @SuppressWarnings("unchecked")
     private void callWithAttrAndExpectBGColor(final int attr, final Color expect) {
         final GfxCharSetup<GfxChar> setup = context.mock(GfxCharSetup.class, "setup-" + attr + "-expect");
-        final Buffer<GfxChar> buffer = context.mock(Buffer.class, "buffer-" + attr + "-expect");
 
         context.checking(new Expectations() {{
+            oneOf(sessionInfo).getCharSetup(); will(returnValue(setup));
             oneOf(setup).setBackground(expect);
         }});
 
-        seq.handleSequence("[" + attr + "m", buffer, setup, null);
+        seq.handleSequence("[" + attr + "m", sessionInfo);
     }
 
     @SuppressWarnings("unchecked")
     private void callWithRemoveAttrAndExpect(final int attr, final Attribute expect) {
         final GfxCharSetup<GfxChar> setup = context.mock(GfxCharSetup.class, "setup-" + attr + "-remove");
-        final Buffer<GfxChar> buffer = context.mock(Buffer.class, "buffer-" + attr + "-remove");
 
         context.checking(new Expectations() {{
+            oneOf(sessionInfo).getCharSetup(); will(returnValue(setup));
             oneOf(setup).removeAttribute(expect);
         }});
 
-        seq.handleSequence("[" + attr + "m", buffer, setup, null);
+        seq.handleSequence("[" + attr + "m", sessionInfo);
     }
 
     @Test
@@ -142,30 +148,30 @@ public class DisplayAttributeControlSequenceTest {
     @Test
     public void testResetAttributes() {
         final GfxCharSetup<GfxChar> setup = context.mock(GfxCharSetup.class, "setup-0-expect");
-        final Buffer<GfxChar> buffer = context.mock(Buffer.class, "buffer-0-expect");
 
         context.checking(new Expectations() {{
+            allowing(sessionInfo).getCharSetup(); will(returnValue(setup));
             oneOf(setup).reset();
             oneOf(setup).reset();
         }});
 
-        seq.handleSequence("[0m", buffer, setup, null);
-        seq.handleSequence("[m", buffer, setup, null);
+        seq.handleSequence("[0m", sessionInfo);
+        seq.handleSequence("[m", sessionInfo);
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testMultipleAttributes() {
         final GfxCharSetup<GfxChar> setup = context.mock(GfxCharSetup.class);
-        final Buffer<GfxChar> buffer = context.mock(Buffer.class);
 
         context.checking(new Expectations() {{
+            allowing(sessionInfo).getCharSetup(); will(returnValue(setup));
             oneOf(setup).reset();
             oneOf(setup).setBackground(Color.RED);
             oneOf(setup).setForeground(Color.BLUE);
             oneOf(setup).setAttribute(Attribute.BLINK);
         }});
 
-        seq.handleSequence("[0;5;34;41m", buffer, setup, null);
+        seq.handleSequence("[0;5;34;41m", sessionInfo);
     }
 }

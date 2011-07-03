@@ -5,9 +5,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.Buffer;
-import de.jowisoftware.sshclient.terminal.GfxCharSetup;
-import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
+import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 public class EraseControlSequence<T extends GfxChar> implements
@@ -27,8 +25,8 @@ public class EraseControlSequence<T extends GfxChar> implements
     }
 
     @Override
-    public void handleSequence(final String sequence, final Buffer<T> buffer,
-            final GfxCharSetup<T> setup, final KeyboardFeedback feedback) {
+    public void handleSequence(final String sequence,
+            final SessionInfo<T> sessionInfo) {
         final Matcher matcher = pattern.matcher(sequence);
         matcher.matches();
 
@@ -36,17 +34,17 @@ public class EraseControlSequence<T extends GfxChar> implements
         final char mod = matcher.group(1) == null ? '0' : matcher.group(1).charAt(0);
 
         if (command == 'J' && mod == '0') {
-            buffer.eraseToBottom();
+            sessionInfo.getBuffer().eraseToBottom();
         } else if(command == 'J' && mod == '1') {
-            buffer.eraseFromTop();
+            sessionInfo.getBuffer().eraseFromTop();
         } else if (command == 'J' && mod == '2') {
-            buffer.erase();
+            sessionInfo.getBuffer().erase();
         } else if (command == 'K' && mod == '0') {
-            buffer.eraseRestOfLine();
+            sessionInfo.getBuffer().eraseRestOfLine();
         }  else if (command == 'K' && mod == '1') {
-            buffer.eraseStartOfLine();
+            sessionInfo.getBuffer().eraseStartOfLine();
         } else if (command == 'K' && mod == '2') {
-            buffer.eraseLine();
+            sessionInfo.getBuffer().eraseLine();
         } else {
             LOGGER.error("Unknown control sequence: <ESC>" + sequence);
         }

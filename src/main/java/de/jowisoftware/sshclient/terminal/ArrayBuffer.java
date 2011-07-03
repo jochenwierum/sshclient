@@ -41,9 +41,8 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
             }
             if (lines != null) {
                 for (int i = 0; i < Math.min(lines.length, height); ++i) {
-                    for (int j = 0; j < Math.min(lines[i].length, width); ++j) {
-                        newLines[i][j] = lines[i][j];
-                    }
+                    System.arraycopy(lines[i], 0, newLines[i], 0,
+                            Math.min(lines[i].length, width));
                 }
             }
             lines = newLines;
@@ -51,7 +50,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
 
-    void setAndFixCursorPosition(final CursorPosition position) {
+    private void setAndFixCursorPosition(final CursorPosition position) {
         int x = position.getX();
         int y = position.getY();
 
@@ -150,7 +149,9 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T getCharacter(final int row, final int column) {
-        return (T) lines[row - 1][column - 1];
+        synchronized(this) {
+            return (T) lines[row - 1][column - 1];
+        }
     }
 
     @Override
@@ -230,9 +231,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     public void erase() {
         synchronized(this) {
             for (int row = 0; row < lines.length; ++row) {
-                for (int col = 0; col < lines[row].length; ++col) {
-                    lines[row][col] = clearChar;
-                }
+                Arrays.fill(lines[row], clearChar);
             }
         }
     }
@@ -240,9 +239,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void eraseLine() {
         synchronized(this) {
-            for (int col = 0; col < lines[0].length; ++col) {
-                lines[position.getY() - 1][col] = clearChar;
-            }
+            Arrays.fill(lines[position.getY() - 1], clearChar);
         }
     }
 

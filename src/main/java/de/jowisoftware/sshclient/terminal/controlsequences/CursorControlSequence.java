@@ -6,10 +6,10 @@ import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CursorPosition;
-import de.jowisoftware.sshclient.terminal.GfxCharSetup;
-import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
+import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
+// TODO too complicate? Refactor?
 public class CursorControlSequence<T extends GfxChar> implements
         ControlSequence<T> {
     private static final Logger LOGGER = Logger.getLogger(CursorControlSequence.class);
@@ -29,19 +29,19 @@ public class CursorControlSequence<T extends GfxChar> implements
     }
 
     @Override
-    public void handleSequence(final String sequence, final Buffer<T> buffer,
-            final GfxCharSetup<T> setup, final KeyboardFeedback feedback) {
+    public void handleSequence(final String sequence,
+            final SessionInfo<T> sessionInfo) {
 
         final char lastChar = sequence.charAt(sequence.length() - 1);
 
         if (sequence.equals("D") || sequence.equals("E") || sequence.endsWith("M")) {
-            processRollCursor(buffer, sequence);
+            processRollCursor(sessionInfo.getBuffer(), sequence);
         } else if (lastChar == 'H') {
-            processSetCursor(buffer, sequence);
+            processSetCursor(sessionInfo.getBuffer(), sequence);
         } else if(lastChar == 'r') {
-            processRollSetup(buffer, sequence);
+            processRollSetup(sessionInfo.getBuffer(), sequence);
         } else if(lastChar >= 'A' && lastChar <= 'D') {
-            processMoveCursor(buffer, sequence);
+            processMoveCursor(sessionInfo.getBuffer(), sequence);
         } else {
             LOGGER.error("Unknown control sequence: <ESC>" + sequence);
         }
@@ -64,7 +64,7 @@ public class CursorControlSequence<T extends GfxChar> implements
             count = Integer.parseInt(countString);
         }
 
-        switch(countString.charAt(countString.length() - 1)) {
+        switch(sequence.charAt(sequence.length() - 1)) {
         case 'A': buffer.setSafeCursorPosition(buffer.getCursorPosition().offset(0, -count)); break;
         case 'B': buffer.setSafeCursorPosition(buffer.getCursorPosition().offset(0, count)); break;
         case 'C': buffer.setSafeCursorPosition(buffer.getCursorPosition().offset(count, 0)); break;

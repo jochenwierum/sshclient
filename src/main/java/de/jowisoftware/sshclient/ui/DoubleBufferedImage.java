@@ -35,7 +35,7 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
         graphics = null;
     }
 
-    public void setDimensions(final int width, final int height) {
+    public synchronized void setDimensions(final int width, final int height) {
         this.width = width;
         this.height = height;
 
@@ -56,14 +56,14 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
     }
 
     @Override
-    public void clear() {
+    public synchronized void clear() {
         if (images != null) {
             graphics[1 - currentImage].clearRect(0, 0, width, height);
         }
     }
 
     @Override
-    public void renderChar(final GfxAwtChar character,
+    public synchronized void renderChar(final GfxAwtChar character,
             final int x, final int y, final boolean isCursor) {
         if (images != null) {
             final int posx = x * charWidth;
