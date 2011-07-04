@@ -1,6 +1,5 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.jmock.Expectations;
@@ -37,33 +36,6 @@ public class KeyboardControlSequenceTest {
     public void testMatches() {
         assertTrue(sequence.canHandleSequence("="));
         assertTrue(sequence.canHandleSequence(">"));
-        assertTrue(sequence.canHandleSequence("[?1h"));
-        assertTrue(sequence.canHandleSequence("[?1l"));
-        assertFalse(sequence.canHandleSequence("[?12"));
-        assertFalse(sequence.canHandleSequence("[X"));
-
-        assertTrue(sequence.isPartialStart("["));
-        assertTrue(sequence.isPartialStart("[?"));
-        assertTrue(sequence.isPartialStart("[?1"));
-        assertFalse(sequence.isPartialStart("[x"));
-    }
-
-    @Test
-    public void testHandleAppKeys() {
-        context.checking(new Expectations() {{
-            oneOf(feedback).setCursorKeysIsAppMode(true);
-        }});
-
-        sequence.handleSequence("[?1h", sessionInfo);
-    }
-
-    @Test
-    public void testHandleNonAppKeys() {
-        context.checking(new Expectations() {{
-            oneOf(feedback).setCursorKeysIsAppMode(false);
-        }});
-
-        sequence.handleSequence("[?1l", sessionInfo);
     }
 
     @Test

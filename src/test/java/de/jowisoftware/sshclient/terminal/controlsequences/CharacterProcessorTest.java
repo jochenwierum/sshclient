@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Buffer;
+import de.jowisoftware.sshclient.terminal.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.CursorPosition;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.SessionInfo;
@@ -24,8 +25,8 @@ public class CharacterProcessorTest {
     private final Mockery context = new JUnit4Mockery();
     private Buffer<GfxChar> buffer;
     private GfxCharSetup<GfxChar> setup;
-    private ControlSequence<GfxChar> sequence1;
-    private ControlSequence<GfxChar> sequence2;
+    private NonASCIIControlSequence<GfxChar> sequence1;
+    private NonASCIIControlSequence<GfxChar> sequence2;
     private GfxChar gfxChar;
     private CharacterProcessor<GfxChar> processor;
     private VisualFeedback visualFeedback;
@@ -37,8 +38,8 @@ public class CharacterProcessorTest {
         buffer = context.mock(Buffer.class);
         setup = context.mock(GfxCharSetup.class);
         visualFeedback = context.mock(VisualFeedback.class);
-        sequence1 = context.mock(ControlSequence.class, "sequence1");
-        sequence2 = context.mock(ControlSequence.class, "sequence2");
+        sequence1 = context.mock(NonASCIIControlSequence.class, "sequence1");
+        sequence2 = context.mock(NonASCIIControlSequence.class, "sequence2");
         gfxChar = context.mock(GfxChar.class);
         sessionInfo = context.mock(SessionInfo.class);
 

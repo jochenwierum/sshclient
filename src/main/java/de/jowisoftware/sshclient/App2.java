@@ -11,6 +11,7 @@ import de.jowisoftware.sshclient.ui.SSHConsole;
 
 public class App2 {
     public static void main(final String args[]) throws CharacterCodingException {
+        System.out.println("".split("x").length);
         final JFrame frame = new JFrame("test");
         final SSHConsole console = new SSHConsole(new ConnectionInfo());
         frame.add(console);

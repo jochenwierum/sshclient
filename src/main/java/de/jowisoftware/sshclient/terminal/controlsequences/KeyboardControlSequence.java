@@ -7,14 +7,13 @@ import org.apache.log4j.Logger;
 import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
-public class KeyboardControlSequence<T extends GfxChar> implements ControlSequence<T> {
+public class KeyboardControlSequence<T extends GfxChar> implements NonASCIIControlSequence<T> {
     private static final Logger LOGGER = Logger.getLogger(KeyboardControlSequence.class);
-    private static final Pattern pattern = Pattern.compile("(?:\\[\\?1[lh]|=|>)");
-    private static final Pattern partialpattern = Pattern.compile("(?:\\[(?:\\?(?:1(?:[lh])?)?)?)");
+    private static final Pattern pattern = Pattern.compile("=|>");
 
     @Override
     public boolean isPartialStart(final CharSequence sequence) {
-        return partialpattern.matcher(sequence).matches();
+        return false;
     }
 
     @Override
@@ -25,11 +24,7 @@ public class KeyboardControlSequence<T extends GfxChar> implements ControlSequen
     @Override
     public void handleSequence(final String sequence,
             final SessionInfo<T> sessionInfo) {
-        if (sequence.equals("[?1l")) {
-            sessionInfo.getKeyboardFeedback().setCursorKeysIsAppMode(false);
-        } else if (sequence.equals("[?1h")) {
-            sessionInfo.getKeyboardFeedback().setCursorKeysIsAppMode(true);
-        } else if (sequence.equals("=")) {
+        if (sequence.equals("=")) {
             sessionInfo.getKeyboardFeedback().setNumblockIsAppMode(true);
         } else if (sequence.equals(">")) {
             sessionInfo.getKeyboardFeedback().setNumblockIsAppMode(false);
@@ -37,5 +32,4 @@ public class KeyboardControlSequence<T extends GfxChar> implements ControlSequen
             LOGGER.error("Unknown control sequence: <ESC>" + sequence);
         }
     }
-
 }

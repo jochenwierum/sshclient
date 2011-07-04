@@ -18,15 +18,13 @@ import de.jowisoftware.sshclient.ConnectionInfo;
 import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread.Callback;
 import de.jowisoftware.sshclient.terminal.ArrayBuffer;
 import de.jowisoftware.sshclient.terminal.Buffer;
+import de.jowisoftware.sshclient.terminal.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.CursorPosition;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
 import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
-import de.jowisoftware.sshclient.terminal.controlsequences.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.controlsequences.CursorControlSequence;
-import de.jowisoftware.sshclient.terminal.controlsequences.DisplayAttributeControlSequence;
-import de.jowisoftware.sshclient.terminal.controlsequences.EraseControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.KeyboardControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.OperatingSystemCommandSequence;
 
@@ -66,9 +64,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     }
 
     private void initializeProcessor() {
-        outputProcessor.addControlSequence(new DisplayAttributeControlSequence<GfxAwtChar>());
         outputProcessor.addControlSequence(new CursorControlSequence<GfxAwtChar>());
-        outputProcessor.addControlSequence(new EraseControlSequence<GfxAwtChar>());
         outputProcessor.addControlSequence(new KeyboardControlSequence<GfxAwtChar>());
         outputProcessor.addControlSequence(new OperatingSystemCommandSequence<GfxAwtChar>());
     }

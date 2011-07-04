@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
-public class OperatingSystemCommandSequence<T extends GfxChar> implements ControlSequence<T> {
+public class OperatingSystemCommandSequence<T extends GfxChar> implements NonASCIIControlSequence<T> {
     private static final Pattern pattern = Pattern.compile("\\][02];.*\u0007");
     private static final Pattern partialpattern = Pattern.compile("(?:\\](?:[02](?:;.*)?)?)");
 
@@ -25,5 +25,4 @@ public class OperatingSystemCommandSequence<T extends GfxChar> implements Contro
         final String title = sequence.substring(3, sequence.length() - 1);
         sessionInfo.getVisualFeedback().setTitle(title);
     }
-
 }
