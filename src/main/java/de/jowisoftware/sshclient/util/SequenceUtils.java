@@ -46,8 +46,8 @@ public final class SequenceUtils {
         case 'r': return new ANSISequencer<T>();
         case 'A': return new ANSISequenceABCD<T>(0, -1);
         case 'B': return new ANSISequenceABCD<T>(0, 1);
-        case 'C': return new ANSISequenceABCD<T>(-1, 0);
-        case 'D': return new ANSISequenceABCD<T>(1, 0);
+        case 'C': return new ANSISequenceABCD<T>(1, 0);
+        case 'D': return new ANSISequenceABCD<T>(-1, 0);
         case 'm': return new ANSISequencem<T>();
         case 'J': return new ANSISequenceJ<T>();
         case 'K': return new ANSISequenceK<T>();

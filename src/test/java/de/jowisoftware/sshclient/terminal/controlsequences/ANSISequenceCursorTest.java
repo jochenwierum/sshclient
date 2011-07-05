@@ -58,19 +58,19 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
     public void testMoveCursorLeft() {
         context.checking(new Expectations() {{
             oneOf(buffer).getCursorPosition();
-                will(returnValue(new CursorPosition(2, 4)));
-            oneOf(buffer).setCursorPosition(new CursorPosition(3, 4));
+                will(returnValue(new CursorPosition(3, 4)));
+            oneOf(buffer).setCursorPosition(new CursorPosition(2, 4));
         }});
 
         SequenceUtils.getANSISequence('D').process(sessionInfo);
 
         context.checking(new Expectations() {{
             oneOf(buffer).getCursorPosition();
-                will(returnValue(new CursorPosition(3, 6)));
-            oneOf(buffer).setCursorPosition(new CursorPosition(6, 6));
+                will(returnValue(new CursorPosition(6, 6)));
+            oneOf(buffer).setCursorPosition(new CursorPosition(3, 6));
             oneOf(buffer).getCursorPosition();
-                will(returnValue(new CursorPosition(2, 6)));
-            oneOf(buffer).setCursorPosition(new CursorPosition(7, 6));
+                will(returnValue(new CursorPosition(7, 6)));
+            oneOf(buffer).setCursorPosition(new CursorPosition(2, 6));
         }});
 
         SequenceUtils.getANSISequence('D').process(sessionInfo, "3");
@@ -81,19 +81,19 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
     public void testMoveCursorRight() {
         context.checking(new Expectations() {{
             oneOf(buffer).getCursorPosition();
-                will(returnValue(new CursorPosition(3, 4)));
-            oneOf(buffer).setCursorPosition(new CursorPosition(2, 4));
+                will(returnValue(new CursorPosition(2, 4)));
+            oneOf(buffer).setCursorPosition(new CursorPosition(3, 4));
         }});
 
         SequenceUtils.getANSISequence('C').process(sessionInfo);
 
         context.checking(new Expectations() {{
             oneOf(buffer).getCursorPosition();
-                will(returnValue(new CursorPosition(6, 6)));
-            oneOf(buffer).setCursorPosition(new CursorPosition(3, 6));
+                will(returnValue(new CursorPosition(3, 6)));
+            oneOf(buffer).setCursorPosition(new CursorPosition(6, 6));
             oneOf(buffer).getCursorPosition();
-                will(returnValue(new CursorPosition(7, 6)));
-            oneOf(buffer).setCursorPosition(new CursorPosition(2, 6));
+                will(returnValue(new CursorPosition(2, 6)));
+            oneOf(buffer).setCursorPosition(new CursorPosition(7, 6));
         }});
 
         SequenceUtils.getANSISequence('C').process(sessionInfo, "3");

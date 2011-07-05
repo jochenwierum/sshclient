@@ -10,14 +10,14 @@ SSH-UI:
 * Bell
 * Draw (blinking) Cursor
 * Selektion von Text mit der Maus
-* Resize
+* Resize (Prüfen: wird immer die richtige Größer übergeben? Was passiert am Bildrand bei Space? "ls" auf jws.de lieferte Müll)
 
 SSH:
 * Port forwarding
 * Keep-Alives (was kann JSch schon?)
 
 Terminal:
-* Mehr escape sequence
+* Mehr escape sequence (VT100, VT220, XTerm)
   * http://www.mudpedia.org/wiki/Xterm_256_colors
   * http://en.wikipedia.org/wiki/ANSI_escape_code
   * http://www-user.tu-chemnitz.de/~heha/hs_freeware/terminal/terminal.htm
@@ -27,5 +27,3 @@ Terminal:
 
 Hinweise zu JSch
 * Beispiele: http://www.jcraft.com/jsch/examples/
-
-Warum hat vim keine Farben?
