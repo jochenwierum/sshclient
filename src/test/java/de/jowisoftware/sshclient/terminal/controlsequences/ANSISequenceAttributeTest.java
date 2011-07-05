@@ -44,21 +44,27 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testAttributes() {
+    public void testAttributes1to8() {
         callWithAttrAndExpect(1, Attribute.BRIGHT);
         callWithAttrAndExpect(2, Attribute.DIM);
         callWithAttrAndExpect(4, Attribute.UNDERSCORE);
         callWithAttrAndExpect(5, Attribute.BLINK);
         callWithAttrAndExpect(7, Attribute.INVERSE);
         callWithAttrAndExpect(8, Attribute.HIDDEN);
+    }
 
+    @Test
+    public void testAttributes22to28() {
         callWithRemoveAttrAndExpect(22, Attribute.BRIGHT);
         callWithRemoveAttrAndExpect(23, Attribute.DIM); // is this correct?
         callWithRemoveAttrAndExpect(24, Attribute.UNDERSCORE);
         callWithRemoveAttrAndExpect(25, Attribute.BLINK);
         callWithRemoveAttrAndExpect(27, Attribute.INVERSE);
         callWithRemoveAttrAndExpect(28, Attribute.HIDDEN);
+    }
 
+    @Test
+    public void testForegroundColors() {
         callWithAttrAndExpectFGColor(30, Color.BLACK);
         callWithAttrAndExpectFGColor(31, Color.RED);
         callWithAttrAndExpectFGColor(32, Color.GREEN);
@@ -67,7 +73,11 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
         callWithAttrAndExpectFGColor(35, Color.MAGENTA);
         callWithAttrAndExpectFGColor(36, Color.CYAN);
         callWithAttrAndExpectFGColor(37, Color.WHITE);
+        callWithAttrAndExpectFGColor(38, Color.DEFAULT);
+    }
 
+    @Test
+    public void testBackgroundColors() {
         callWithAttrAndExpectBGColor(40, Color.BLACK);
         callWithAttrAndExpectBGColor(41, Color.RED);
         callWithAttrAndExpectBGColor(42, Color.GREEN);
@@ -76,6 +86,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
         callWithAttrAndExpectBGColor(45, Color.MAGENTA);
         callWithAttrAndExpectBGColor(46, Color.CYAN);
         callWithAttrAndExpectBGColor(47, Color.WHITE);
+        callWithAttrAndExpectBGColor(48, Color.DEFAULTBG);
     }
 
     @Test

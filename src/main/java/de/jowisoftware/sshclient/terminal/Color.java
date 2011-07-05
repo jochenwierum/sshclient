@@ -1,7 +1,7 @@
 package de.jowisoftware.sshclient.terminal;
 
 public enum Color {
-    DEFAULT(null, null), DEFAULTBG(null, null),
+    DEFAULT(38, null), DEFAULTBG(null, 48),
     BLACK(30, 40), RED(31, 41), GREEN(32, 42), YELLOW(33, 43), BLUE(34, 44),
     MAGENTA(35, 45), CYAN(36, 46), WHITE(37, 47);
 
