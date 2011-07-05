@@ -5,6 +5,7 @@ import javax.swing.JOptionPane;
 
 import de.jowisoftware.sshclient.ui.PasswordDialog;
 
+// TODO: delete passwords after request (are they requested more than once?)
 public class UserInfo implements com.jcraft.jsch.UserInfo {
     private String password;
     private String passphrase;

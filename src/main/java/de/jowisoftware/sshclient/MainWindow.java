@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -17,7 +19,9 @@ import javax.swing.Timer;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
+import de.jowisoftware.sshclient.jsch.KeyAgentManager;
 import de.jowisoftware.sshclient.log.LogPanel;
+import de.jowisoftware.sshclient.ui.PrivateKeyTab;
 import de.jowisoftware.sshclient.ui.SSHFrame;
 
 public class MainWindow extends JFrame {
@@ -29,9 +33,6 @@ public class MainWindow extends JFrame {
     public MainWindow() {
         super("SSH");
 
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        initWindowElements();
-
         try {
             initJSch();
         } catch(final JSchException e) {
@@ -41,11 +42,9 @@ public class MainWindow extends JFrame {
             throw new RuntimeException(e);
         }
 
-        try {
-            createConnection();
-        } catch(final RuntimeException e) {
-            e.printStackTrace();
-        }
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        initWindowElements();
+
         createTimer();
     }
 
@@ -92,9 +91,14 @@ public class MainWindow extends JFrame {
         add(pane);
 
         addLogTab();
+        addPrivateKeyTab();
 
         setSize(640, 480);
         setVisible(true);
+    }
+
+    private void addPrivateKeyTab() {
+        pane.addTab("Key Agent", new PrivateKeyTab(jsch));
     }
 
     private void addLogTab() {
@@ -106,25 +110,49 @@ public class MainWindow extends JFrame {
         jsch = new JSch();
 
         final File home = new File(System.getProperty("user.home"));
+        final File projectDir = new File(home, ".ssh");
         if (home.isDirectory()) {
-            final File projectDir = new File(home, ".ssh");
             if (!projectDir.exists()) {
                 projectDir.mkdir();
             }
             jsch.setKnownHosts(new File(projectDir, "known_hosts").getAbsolutePath());
         }
+
+        final File keyListFile = new File(projectDir, "keyagent");
+        if (keyListFile.isFile()) {
+            new KeyAgentManager(jsch).loadKeyListFromFile(keyListFile);
+        }
+
+        final File privKey = new File(projectDir, "id_rsa");
+        if (privKey.isFile()) {
+            jsch.addIdentity(privKey.getAbsolutePath());
+        }
     }
 
+    // TODO replace this through a real login
     private void createConnection() {
         final ConnectionInfo info = new ConnectionInfo();
         final String result =
-            JOptionPane.showInputDialog("user@host", "jwieru2s@home.inf.h-brs.de");
-        final String[] parts = result.split("@");
-        info.setUser(parts[0]);
-        info.setHost(parts[1]);
-        //info.setUser("gast");
-        //info.setPort(2222);
-        //info.setHost("jowisoftware.dyndns.org");
+            JOptionPane.showInputDialog("[user@]host[:port]", "jwieru2s@home.inf.h-brs.de");
+        if (result == null) {
+            return;
+        }
+
+        final Matcher matcher = Pattern.compile("([^@]*)@([^:]+)(?:(:\\d+))?").matcher(result);
+        if (!matcher.matches()) {
+            return;
+        }
+
+        if (matcher.group(1) != null) {
+            info.setUser(matcher.group(1));
+        }
+        if (matcher.group(2) != null) {
+            info.setHost(matcher.group(2));
+        }
+        if (matcher.group(3) != null) {
+            info.setPort(Integer.parseInt(matcher.group(3)));
+        }
+
         pane.addTab(info.getTitle(), new SSHFrame(this, info, jsch));
     }
 
@@ -132,9 +160,21 @@ public class MainWindow extends JFrame {
         final JMenu fileMenu = new JMenu("File");
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
+        fileMenu.add(createConnectEntry());
         fileMenu.add(createQuitMenuEntry());
 
         return fileMenu;
+    }
+
+    private JMenuItem createConnectEntry() {
+        final JMenuItem connect = new JMenuItem("Connect...");
+        connect.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                createConnection();
+            }
+        });
+        return connect;
     }
 
     private JMenuItem createQuitMenuEntry() {
