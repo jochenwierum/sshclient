@@ -6,7 +6,9 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 
 import javax.swing.JPanel;
 
@@ -19,7 +21,6 @@ import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread.Callback;
 import de.jowisoftware.sshclient.terminal.ArrayBuffer;
 import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CharacterProcessor;
-import de.jowisoftware.sshclient.terminal.CursorPosition;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
 import de.jowisoftware.sshclient.terminal.SessionInfo;
@@ -41,6 +42,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     private final VisualFeedback visualFeedback;
 
     private ChannelShell channel;
+    private OutputStream outputStream;
 
     public SSHConsole(final ConnectionInfo info) {
         setup = new GfxAwtCharSetup(info.getGfxSettings());
@@ -101,6 +103,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     }
 
     public void setOutputStream(final OutputStream outputStream) {
+        this.outputStream = outputStream;
         keyboardProcessor.setOutputStream(outputStream);
     }
 
@@ -118,13 +121,12 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         LOGGER.debug("Reporting new window size: " + cw + "/" + ch + " "
                 + pw + "/" + ph);
         buffer.newSize(cw, ch);
-        buffer.setAbsoluteCursorPosition(new CursorPosition(1, 1));
         buffer.render();
 
         if (channel != null) {
             channel.setPtySize(cw, ch, pw, ph);
             try {
-                channel.sendSignal("SIGWINCH");
+                channel.sendSignal("WINCH");
             } catch(final Exception e2) {
                 LOGGER.error("Could not send SIGWINCH", e2);
             }
@@ -164,5 +166,19 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     @Override
     public GfxCharSetup<GfxAwtChar> getCharSetup() {
         return setup;
+    }
+
+    @Override
+    public void respond(final String string) {
+        if (outputStream != null) {
+            synchronized(outputStream) {
+                try {
+                    outputStream.write((Charset.defaultCharset()
+                            .encode(string).array()));
+                } catch (final IOException e) {
+                }
+            }
+        }
+
     }
 }

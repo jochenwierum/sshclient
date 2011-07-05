@@ -97,7 +97,7 @@ public class CharacterProcessor<T extends GfxChar> {
     }
 
     private boolean isLeagalANSISequenceContent(final Character c) {
-        return c == '?' || (c >= '0' && c <= '9') || c == ';';
+        return c == '?' || c == '>' || (c >= '0' && c <= '9') || c == ';';
     }
 
     private void createChar(final char character) {

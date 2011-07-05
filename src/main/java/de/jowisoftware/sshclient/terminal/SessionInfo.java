@@ -7,4 +7,5 @@ public interface SessionInfo<T extends GfxChar> {
     KeyboardFeedback getKeyboardFeedback();
     VisualFeedback getVisualFeedback();
     GfxCharSetup<T> getCharSetup();
+    void respond(String string);
 }

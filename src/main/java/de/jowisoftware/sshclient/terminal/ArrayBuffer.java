@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.ui.GfxChar;
 
+// TODO: is it possible to split this into two classes? e.g. Cursorposition + Array?
 public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     private static final Logger LOGGER = Logger.getLogger(ArrayBuffer.class);
     private static final int NO_ROLL_DEFINED = -1;
@@ -46,6 +47,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
                 }
             }
             lines = newLines;
+            setAndFixCursorPosition(position);
         }
     }
 

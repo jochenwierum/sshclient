@@ -30,8 +30,10 @@ public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
             LOGGER.trace("Sending: " + StringUtils.byteToHex(value));
         }
         try {
-            responseStream.write(value);
-            responseStream.flush();
+            synchronized(responseStream) {
+                responseStream.write(value);
+                responseStream.flush();
+            }
         } catch (final IOException e1) {
             LOGGER.warn("Failed to send keypress: " + value, e1);
         }
