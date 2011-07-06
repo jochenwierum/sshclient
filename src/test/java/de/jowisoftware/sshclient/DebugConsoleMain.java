@@ -28,11 +28,25 @@ public class DebugConsoleMain {
         }
 
         final String text = readFile(stream);
+        SSHConsole console = showFrame(text);
+        console.gotChars(text.getBytes(), text.getBytes().length);
+    }
 
+    private SSHConsole showFrame(final String text) {
         final JFrame frame = new JFrame("test");
         final SSHConsole console = new SSHConsole(new ConnectionInfo());
         frame.add(console);
+        startTimer(console);
 
+        frame.setSize(630, 480);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        console.setOutputStream(System.out);
+        return console;
+    }
+
+    private void startTimer(final SSHConsole console) {
         final Timer timer = new Timer(200, new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -42,17 +56,10 @@ public class DebugConsoleMain {
 
         timer.setRepeats(true);
         timer.start();
-
-        frame.setSize(630, 480);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        console.gotChars(text.getBytes(), text.getBytes().length);
-        console.setOutputStream(System.out);
     }
 
     private String readFile(final InputStream stream) throws IOException {
-        final String text = IOUtils.toString(stream).replace("\n", "").replace("\r", "");
+        final String text = IOUtils.toString(stream, "UTF-8").replace("\n", "").replace("\r", "");
         IOUtils.closeQuietly(stream);
 
         final StringBuffer builder = new StringBuffer();

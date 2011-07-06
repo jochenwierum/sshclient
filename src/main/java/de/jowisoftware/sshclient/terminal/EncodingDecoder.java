@@ -13,14 +13,14 @@ import de.jowisoftware.sshclient.util.StringUtils;
 public class EncodingDecoder {
     private static final Logger LOGGER = Logger.getLogger(EncodingDecoder.class);
 
-    private final ByteBuffer byteBuffer = ByteBuffer.allocate(16);
+    private final ByteBuffer byteBuffer = ByteBuffer.allocate(32);
 
     private final CharsetDecoder decoder;
     private final float maxBytes;
 
     public EncodingDecoder(final Charset charset) {
         this.decoder = charset.newDecoder();
-        maxBytes = 1 / decoder.maxCharsPerByte();
+        maxBytes = 2 / decoder.maxCharsPerByte();
         decoder.onMalformedInput(CodingErrorAction.REPORT);
         byteBuffer.clear();
     }

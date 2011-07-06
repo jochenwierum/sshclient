@@ -105,9 +105,11 @@ public class ArrayBufferTest {
     public void testTooLongLine() {
         buffer.setCursorPosition(new Position(80, 1));
         buffer.addCharacter(char1);
-        assertPosition(2, 1);
+        assertPosition(1, 80);
+        assertChar(1, 80, char1);
         buffer.addCharacter(char2);
-        assertPosition(2, 2);
+        assertPosition(1, 80);
+        assertChar(1, 80, char2);
     }
 
     @Test
@@ -144,7 +146,7 @@ public class ArrayBufferTest {
         buffer.setSafeCursorPosition(new Position(99, 99));
         assertPosition(24, 80);
         buffer.setSafeCursorPosition(new Position(5, 200));
-        assertPosition(24, 5);
+        assertPosition(24, 80);
         buffer.setSafeCursorPosition(new Position(4, 8));
         assertPosition(8, 4);
     }

@@ -65,8 +65,7 @@ public class Position {
         }
 
         if (range.bottomRight.x < x) {
-            x = range.topLeft.x;
-            ++y;
+            x = range.bottomRight.x;
         } else if (range.topLeft.x > x) {
             x = range.topLeft.x;
         }

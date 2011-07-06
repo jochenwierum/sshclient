@@ -98,9 +98,9 @@ public class PositionTest {
         final Range range3 = new Range(new Position(2, 2), new Position(5, 20));
 
         assertSame(pos1, pos1.moveInRange(range1));
-        assertEquals(new Position(1, 11), pos1.moveInRange(range2));
+        assertEquals(new Position(5, 10), pos1.moveInRange(range2));
         assertEquals(new Position(12, 12), pos2.moveInRange(range1));
-        assertEquals(new Position(2, 16), pos2.moveInRange(range3));
+        assertEquals(new Position(5, 15), pos2.moveInRange(range3));
     }
 
     @Test

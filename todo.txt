@@ -1,6 +1,17 @@
 UI:
 Nahezu alles, insbesondere
 * Setup-Dialog
+  * Global:
+    * Close: yes, no, not on errors
+    * Unlock keys: always, on first use
+    * Save open tabs (Log, Key)
+  * Setup einer Verbindung
+    * Username
+    * Host
+    * Port
+    * Schriftart
+    * Farben
+    * Bell-Typ
 * Möglichkeit, Sitzungen zu eröffnen
 
 Persistierung:
@@ -33,8 +44,3 @@ Hinweise zu JSch
 * Sofern möglich: Cursor vereinfachen?
 
 Methode getValidPos(), z.B. für Rendern, fix erst bei nächster Operation
-
-Close: yes, no, not on errors
-Unlock keys: always, on first use
-
-Save open tabs (Log, 
