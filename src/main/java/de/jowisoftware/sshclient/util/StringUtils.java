@@ -25,11 +25,15 @@ public final class StringUtils {
     }
 
     public static String escapeCharForLog(final int value) {
-        if (value < 32) {
-            final String hexString = Integer.toHexString(value);
-            return "\\u0000".substring(0, 6 - hexString.length()) + hexString;
+        if (value == '\n') {
+            return "\\n";
+        } else if (value == '\r') {
+            return "\\r";
         } else if (value == '\\') {
             return "\\\\";
+        } else if (value < 32) {
+            final String hexString = Integer.toHexString(value);
+            return "\\u0000".substring(0, 6 - hexString.length()) + hexString;
         } else {
             return Character.toString((char) value);
         }
