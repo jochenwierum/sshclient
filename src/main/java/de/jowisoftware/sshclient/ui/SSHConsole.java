@@ -50,7 +50,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         keyboardProcessor = new KeyboardProcessor();
 
         renderer = new DoubleBufferedImage(info.getGfxSettings(), this);
-        buffer = new ArrayBuffer<GfxAwtChar>(renderer,
+        buffer = new ArrayBuffer<GfxAwtChar>(
                 info.getGfxSettings().getEmptyChar(), 80, 24);
         outputProcessor = new CharacterProcessor<GfxAwtChar>(this, info.getCharset());
 
@@ -89,17 +89,21 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     @Override
     public void gotChars(final byte[] chars, final int count) {
         processCharacters(chars, count);
-        buffer.render();
+        buffer.render(renderer);
     }
 
     private void processCharacters(final byte[] chars, final int count) {
         for (int i = 0; i < count; ++i) {
-            outputProcessor.processByte(chars[i]);
+            try {
+                outputProcessor.processByte(chars[i]);
+            } catch(final RuntimeException e) {
+                LOGGER.error("Error while processing byte " + (chars[i] & 0xff), e);
+            }
         }
     }
 
     public void redrawConsole() {
-        buffer.render();
+        buffer.render(renderer);
     }
 
     public void setOutputStream(final OutputStream outputStream) {
@@ -121,7 +125,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         LOGGER.debug("Reporting new window size: " + cw + "/" + ch + " "
                 + pw + "/" + ph);
         buffer.newSize(cw, ch);
-        buffer.render();
+        buffer.render(renderer);
 
         if (channel != null) {
             channel.setPtySize(cw, ch, pw, ph);

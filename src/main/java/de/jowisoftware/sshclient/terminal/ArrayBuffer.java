@@ -20,15 +20,13 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
      */
     private volatile GfxChar[][] lines;
     private volatile Position position = new Position(1, 1);
-    private final Renderer<T> renderer;
     private final T clearChar;
     private int rollRangeBegin = NO_ROLL_DEFINED;
     private int rollRangeEnd = NO_ROLL_DEFINED;
 
 
-    public ArrayBuffer(final Renderer<T> renderer, final T clearChar,
+    public ArrayBuffer(final T clearChar,
             final int width, final int height) {
-        this.renderer = renderer;
         this.clearChar = clearChar;
         newSize(width, height);
     }
@@ -172,81 +170,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     @Override
-    public void eraseToBottom() {
-        synchronized(this) {
-            eraseNextLineToBottomUnsynced();
-            eraseRestOfLineUnsynced();
-        }
-    }
-
-    private void eraseNextLineToBottomUnsynced() {
-        for (int row = position.y; row < lines.length; ++row) {
-            for (int col = 0; col < lines[0].length; ++col) {
-                lines[row][col] = clearChar;
-            }
-        }
-    }
-
-    private void eraseRestOfLineUnsynced() {
-        for (int col = position.x - 1; col < lines[position.y - 1].length; ++col) {
-            lines[position.y - 1][col] = clearChar;
-        }
-    }
-
-    private void eraseStartOfLineUnsynced() {
-        for (int col = 0; col <= position.x - 1; ++col) {
-            lines[position.y - 1][col] = clearChar;
-        }
-    }
-
-    @Override
-    public void eraseRestOfLine() {
-        synchronized(this) {
-            eraseRestOfLineUnsynced();
-        }
-    }
-
-    @Override
-    public void eraseStartOfLine() {
-        synchronized(this) {
-            eraseStartOfLineUnsynced();
-        }
-    }
-
-    @Override
-    public void eraseFromTop() {
-        synchronized(this) {
-            eraseStartOfLineUnsynced();
-            eraseTopToPreviousLineUnsynced();
-        }
-    }
-
-    private void eraseTopToPreviousLineUnsynced() {
-        for (int row = 0; row < position.y - 1; ++row) {
-            for (int col = 0; col < lines[row].length; ++col) {
-                lines[row][col] = clearChar;
-            }
-        }
-    }
-
-    @Override
-    public void erase() {
-        synchronized(this) {
-            for (int row = 0; row < lines.length; ++row) {
-                Arrays.fill(lines[row], clearChar);
-            }
-        }
-    }
-
-    @Override
-    public void eraseLine() {
-        synchronized(this) {
-            Arrays.fill(lines[position.y - 1], clearChar);
-        }
-    }
-
-    @Override
-    public void render() {
+    public void render(final Renderer<T> renderer) {
         final T[][] content = cloneContent();
 
         synchronized(renderer) {
@@ -321,6 +245,30 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
                     ++y;
                 }
                 setAndFixCursorPosition(new Position(x, y));
+            }
+        }
+    }
+
+    @Override
+    public Position getSize() {
+        synchronized(this) {
+            return new Position(lines[0].length, lines.length);
+        }
+    }
+
+    @Override
+    public void erase(final Range range) {
+        synchronized(this) {
+            for (int col = range.topLeft.x - 1; col < lines[0].length; ++col) {
+                lines[range.topLeft.y - 1][col] = clearChar;
+            }
+            for (int row = range.topLeft.y; row < range.bottomRight.y - 1; ++row) {
+                for (int col = 0; col < lines[row].length; ++col) {
+                    lines[row][col] = clearChar;
+                }
+            }
+            for (int col = 0; col < range.bottomRight.x; ++col) {
+                lines[range.bottomRight.y - 1][col] = clearChar;
             }
         }
     }

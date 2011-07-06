@@ -17,4 +17,32 @@ public class Range {
                 Math.max(position.x, position2.x),
                 Math.max(position.y, position2.y));
     }
+
+    @Override
+    public String toString() {
+        return "[Range " + topLeft + " - " + bottomRight + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((bottomRight == null) ? 0 : bottomRight.hashCode());
+        result = prime * result + ((topLeft == null) ? 0 : topLeft.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final Range other = (Range) obj;
+        return bottomRight.equals(other.bottomRight) &&  topLeft.equals(other.topLeft);
+    }
 }

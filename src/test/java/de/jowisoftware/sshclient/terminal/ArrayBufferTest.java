@@ -21,7 +21,7 @@ public class ArrayBufferTest {
     @Before
     public void setUp() {
         nullChar = context.mock(GfxChar.class, "nullChar");
-        buffer = new ArrayBuffer<GfxChar>(null, nullChar, 80, 24);
+        buffer = new ArrayBuffer<GfxChar>(nullChar, 80, 24);
         char1 = context.mock(GfxChar.class, "char1");
         char2 = context.mock(GfxChar.class, "char2");
     }
@@ -83,151 +83,6 @@ public class ArrayBufferTest {
         buffer.addCharacter(char2);
         assertChar(2, 1, char2);
         assertPosition(2, 2);
-    }
-
-    @Test
-    public void testEraseDown() {
-        /*
-         * delete from y to bottom, including y
-         *   1234
-         * 1 x
-         * 2 x
-         * 3 xy
-         * 4 x
-         */
-
-        buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char2); buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char2); buffer.addNewLine();
-        buffer.setCursorPosition(new Position(2, 3));
-        buffer.eraseToBottom();
-
-        assertChar(1, 1, char1);
-        assertChar(2, 1, char1);
-        assertChar(3, 1, char2);
-        assertChar(3, 2, nullChar);
-        assertChar(4, 1, nullChar);
-    }
-
-    @Test
-    public void testEraseRestOfLine() {
-        /*
-         * delete all y
-         *   12345
-         * 1 x
-         * 2 xyyy
-         * 3 x
-         */
-
-        buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char1); buffer.addCharacter(char2);
-            buffer.addCharacter(char1); buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char2); buffer.addNewLine();
-        buffer.setCursorPosition(new Position(2, 2));
-        buffer.eraseRestOfLine();
-
-        assertChar(1, 1, char1);
-        assertChar(2, 1, char1);
-        assertChar(2, 2, nullChar);
-        assertChar(3, 2, nullChar);
-        assertChar(4, 2, nullChar);
-        assertChar(3, 1, char2);
-    }
-
-    @Test
-    public void testEraseStartOfLine() {
-        /*
-         * delete all y
-         *   1234
-         * 1 x
-         * 2 yyxx
-         * 3 x
-         */
-
-        buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char1); buffer.addCharacter(char1);
-            buffer.addCharacter(char1); buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new Position(2, 2));
-        buffer.eraseStartOfLine();
-
-        assertChar(1, 1, char1);
-        assertChar(2, 1, nullChar);
-        assertChar(2, 2, nullChar);
-        assertChar(2, 3, char1);
-        assertChar(2, 4, char1);
-        assertChar(3, 1, char1);
-    }
-
-    @Test
-    public void testErase() {
-        /*
-         * delete all x
-         *   1234
-         * 1 x
-         * 2 xx
-         * 3 x
-         */
-
-        buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char1); buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new Position(2, 2));
-        buffer.erase();
-
-        assertChar(1, 1, nullChar);
-        assertChar(2, 1, nullChar);
-        assertChar(2, 2, nullChar);
-        assertChar(3, 1, nullChar);
-    }
-
-    @Test
-    public void testEraseLine() {
-        /*
-         * delete all y
-         *   1234
-         * 1 x
-         * 2 yyy
-         * 3 x
-         */
-
-        buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char1); buffer.addCharacter(char1);
-            buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new Position(2, 2));
-        buffer.eraseLine();
-
-        assertChar(1, 1, char1);
-        assertChar(2, 1, nullChar);
-        assertChar(2, 2, nullChar);
-        assertChar(2, 3, nullChar);
-        assertChar(3, 1, char1);
-    }
-
-    @Test
-    public void testEraseFromTop() {
-        /*
-         * delete all y
-         *   1234
-         * 1 y
-         * 2 yyx
-         * 3 x
-         */
-
-        buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char1); buffer.addCharacter(char1);
-            buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new Position(2, 2));
-        buffer.eraseFromTop();
-
-        assertChar(1, 1, nullChar);
-        assertChar(2, 1, nullChar);
-        assertChar(2, 2, nullChar);
-        assertChar(2, 3, char1);
-        assertChar(3, 1, char1);
     }
 
     @Test
@@ -403,5 +258,64 @@ public class ArrayBufferTest {
         assertChar(22, 1, char2);
         assertChar(23, 1, char1);
         assertChar(24, 1, nullChar);
+    }
+
+    @Test
+    public void testEraseOneLine() {
+        buffer.addCharacter(char1); buffer.addNewLine();
+        buffer.addCharacter(char1); buffer.addCharacter(char1);
+            buffer.addCharacter(char1); buffer.addNewLine();
+        buffer.addCharacter(char1); buffer.addNewLine();
+        buffer.addCharacter(char1); buffer.addCharacter(char1);
+            buffer.addCharacter(char1); buffer.addNewLine();
+        buffer.addCharacter(char1);
+
+        buffer.erase(new Range(new Position(1, 2),
+                new Position(80, 2)));
+        buffer.erase(new Range(new Position(1, 4),
+                new Position(80, 4)));
+
+        assertChar(1, 1, char1);
+        assertChar(3, 1, char1);
+        assertChar(5, 1, char1);
+        assertChar(2, 1, nullChar);
+        assertChar(2, 3, nullChar);
+        assertChar(4, 1, nullChar);
+        assertChar(4, 3, nullChar);
+    }
+
+    @Test
+    public void testEraseAll() {
+        buffer.addCharacter(char1); buffer.addNewLine();
+        buffer.addCharacter(char1);
+        buffer.setCursorPosition(new Position(80, 23));
+        buffer.addCharacter(char1);
+
+        buffer.erase(new Range(new Position(1, 1),
+                new Position(80, 23)));
+
+        assertChar(1, 1, nullChar);
+        assertChar(23, 80, nullChar);
+        assertChar(2, 1, nullChar);
+        assertChar(5, 5, nullChar);
+    }
+
+    @Test
+    public void testReaseRange() {
+        buffer.setCursorPosition(new Position(2, 3));
+        buffer.addCharacter(char1); buffer.addCharacter(char2);
+        buffer.setCursorPosition(new Position(6, 5));
+        buffer.addCharacter(char2);
+        buffer.setCursorPosition(new Position(6, 6));
+        buffer.addCharacter(char2); buffer.addCharacter(char1);
+
+        buffer.erase(new Range(new Position(3, 3),
+                new Position(6, 6)));
+
+        assertChar(3, 2, char1);
+        assertChar(3, 3, nullChar);
+        assertChar(5, 6, nullChar);
+        assertChar(6, 6, nullChar);
+        assertChar(6, 7, char1);
     }
 }

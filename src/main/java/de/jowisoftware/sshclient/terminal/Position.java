@@ -38,7 +38,7 @@ public class Position {
 
     @Override
     public String toString() {
-        return "[CursorPosition: " + x + "/" + y + "]";
+        return "[Position: " + x + "/" + y + "]";
     }
 
     public Position withX(final int x) {
