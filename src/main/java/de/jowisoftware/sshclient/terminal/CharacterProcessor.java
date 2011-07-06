@@ -105,7 +105,7 @@ public class CharacterProcessor<T extends GfxChar> {
             sessionInfo.getBuffer().addNewLine();
         } else if (character == CARRIDGE_RETURN_CHAR) {
             sessionInfo.getBuffer().setCursorPosition(
-                    new CursorPosition(1, sessionInfo.getBuffer().getCursorPosition().getY()));
+                    new Position(1, sessionInfo.getBuffer().getCursorPosition().y));
         } else if (character == BACKSPACE_CHAR) {
             sessionInfo.getBuffer().setCursorPosition(
                     sessionInfo.getBuffer().getCursorPosition().offset(-1, 0));

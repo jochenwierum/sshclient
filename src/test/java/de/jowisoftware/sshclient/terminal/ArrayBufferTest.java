@@ -31,13 +31,13 @@ public class ArrayBufferTest {
     }
 
     private void assertPosition(final int y, final int x) {
-        assertEquals(x, buffer.getAbsoluteCursorPosition().getX());
-        assertEquals(y, buffer.getAbsoluteCursorPosition().getY());
+        assertEquals(x, buffer.getAbsoluteCursorPosition().x);
+        assertEquals(y, buffer.getAbsoluteCursorPosition().y);
     }
 
     private void assertPositionInRoll(final int y, final int x) {
-        assertEquals(x, buffer.getCursorPosition().getX());
-        assertEquals(y, buffer.getCursorPosition().getY());
+        assertEquals(x, buffer.getCursorPosition().x);
+        assertEquals(y, buffer.getCursorPosition().y);
     }
 
     @Test
@@ -49,10 +49,10 @@ public class ArrayBufferTest {
 
     @Test
     public void testCursorPosition() {
-        buffer.setCursorPosition(new CursorPosition(2, 4));
+        buffer.setCursorPosition(new Position(2, 4));
         assertPosition(4, 2);
 
-        buffer.setCursorPosition(new CursorPosition(1, 1));
+        buffer.setCursorPosition(new Position(1, 1));
         assertPosition(1, 1);
     }
 
@@ -100,7 +100,7 @@ public class ArrayBufferTest {
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char2); buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char2); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(2, 3));
+        buffer.setCursorPosition(new Position(2, 3));
         buffer.eraseToBottom();
 
         assertChar(1, 1, char1);
@@ -124,7 +124,7 @@ public class ArrayBufferTest {
         buffer.addCharacter(char1); buffer.addCharacter(char2);
             buffer.addCharacter(char1); buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char2); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(2, 2));
+        buffer.setCursorPosition(new Position(2, 2));
         buffer.eraseRestOfLine();
 
         assertChar(1, 1, char1);
@@ -149,7 +149,7 @@ public class ArrayBufferTest {
         buffer.addCharacter(char1); buffer.addCharacter(char1);
             buffer.addCharacter(char1); buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(2, 2));
+        buffer.setCursorPosition(new Position(2, 2));
         buffer.eraseStartOfLine();
 
         assertChar(1, 1, char1);
@@ -173,7 +173,7 @@ public class ArrayBufferTest {
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(2, 2));
+        buffer.setCursorPosition(new Position(2, 2));
         buffer.erase();
 
         assertChar(1, 1, nullChar);
@@ -196,7 +196,7 @@ public class ArrayBufferTest {
         buffer.addCharacter(char1); buffer.addCharacter(char1);
             buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(2, 2));
+        buffer.setCursorPosition(new Position(2, 2));
         buffer.eraseLine();
 
         assertChar(1, 1, char1);
@@ -220,7 +220,7 @@ public class ArrayBufferTest {
         buffer.addCharacter(char1); buffer.addCharacter(char1);
             buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(2, 2));
+        buffer.setCursorPosition(new Position(2, 2));
         buffer.eraseFromTop();
 
         assertChar(1, 1, nullChar);
@@ -233,7 +233,7 @@ public class ArrayBufferTest {
     @Test
     public void testResize() {
         buffer.addCharacter(char1);
-        buffer.setCursorPosition(new CursorPosition(24, 24));
+        buffer.setCursorPosition(new Position(24, 24));
         buffer.addCharacter(char2);
         buffer.newSize(24, 30);
 
@@ -241,14 +241,14 @@ public class ArrayBufferTest {
         assertChar(24, 24, char2);
         assertChar(30, 24, nullChar);
 
-        buffer.setCursorPosition(new CursorPosition(23, 30));
+        buffer.setCursorPosition(new Position(23, 30));
         buffer.addCharacter(char1);
         assertChar(30, 23, char1);
     }
 
     @Test
     public void testTooLongLine() {
-        buffer.setCursorPosition(new CursorPosition(80, 1));
+        buffer.setCursorPosition(new Position(80, 1));
         buffer.addCharacter(char1);
         assertPosition(2, 1);
         buffer.addCharacter(char2);
@@ -258,7 +258,7 @@ public class ArrayBufferTest {
     @Test
     public void setRollRangedCursorSet() {
         buffer.setRollRange(3, 10);
-        buffer.setCursorPosition(new CursorPosition(1, 2));
+        buffer.setCursorPosition(new Position(1, 2));
         buffer.addCharacter(char1);
 
         assertChar(2, 1, nullChar);
@@ -272,7 +272,7 @@ public class ArrayBufferTest {
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char2);
 
-        buffer.setCursorPosition(new CursorPosition(1, 24));
+        buffer.setCursorPosition(new Position(1, 24));
         buffer.addCharacter(char2); buffer.addNewLine();
         buffer.addCharacter(char1);
 
@@ -284,13 +284,13 @@ public class ArrayBufferTest {
 
     @Test
     public void testSaveSet() {
-        buffer.setSafeCursorPosition(new CursorPosition(-7, -3));
+        buffer.setSafeCursorPosition(new Position(-7, -3));
         assertPosition(1, 1);
-        buffer.setSafeCursorPosition(new CursorPosition(99, 99));
+        buffer.setSafeCursorPosition(new Position(99, 99));
         assertPosition(24, 80);
-        buffer.setSafeCursorPosition(new CursorPosition(5, 200));
+        buffer.setSafeCursorPosition(new Position(5, 200));
         assertPosition(24, 5);
-        buffer.setSafeCursorPosition(new CursorPosition(4, 8));
+        buffer.setSafeCursorPosition(new Position(4, 8));
         assertPosition(8, 4);
     }
 
@@ -359,7 +359,7 @@ public class ArrayBufferTest {
     @Test
     public void testMoveCursorDownAndRollWithoutRoll() {
         buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(1, 23));
+        buffer.setCursorPosition(new Position(1, 23));
         buffer.addCharacter(char2); buffer.addNewLine();
         buffer.addCharacter(char1);
 
@@ -393,7 +393,7 @@ public class ArrayBufferTest {
     @Test
     public void testMoveCursorDownAndRollWithoutRollAndColReset() {
         buffer.addCharacter(char1); buffer.addNewLine();
-        buffer.setCursorPosition(new CursorPosition(1, 23));
+        buffer.setCursorPosition(new Position(1, 23));
         buffer.addCharacter(char2); buffer.addNewLine();
         buffer.addCharacter(char1);
 

@@ -19,7 +19,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
      * 1. dimension = row, 2. dimension = row
      */
     private volatile GfxChar[][] lines;
-    private volatile CursorPosition position = new CursorPosition(1, 1);
+    private volatile Position position = new Position(1, 1);
     private final Renderer<T> renderer;
     private final T clearChar;
     private int rollRangeBegin = NO_ROLL_DEFINED;
@@ -52,14 +52,14 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
 
-    private void setAndFixCursorPosition(final CursorPosition position) {
-        int x = position.getX();
-        int y = position.getY();
+    private void setAndFixCursorPosition(final Position position) {
+        int x = position.x;
+        int y = position.y;
 
         if (x <= 0) {
             LOGGER.warn("Cursor was set to x = " + x + ", moving to 1");
             x = 1;
-        } else if (position.getX() > lines[0].length) {
+        } else if (position.x > lines[0].length) {
             LOGGER.debug("invalid terminal position, moving to next line: " + x + "/" + y);
             x = 1;
             ++y;
@@ -73,7 +73,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
             shiftLines((-y - lines.length) % lines.length , 0, lines.length);
             y = lines.length;
         }
-        this.position = new CursorPosition(x, y);
+        this.position = new Position(x, y);
     }
 
     private void shiftLines(final int offset, final int start, final int end) {
@@ -105,7 +105,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     @Override
-    public void setCursorPosition(final CursorPosition position) {
+    public void setCursorPosition(final Position position) {
         synchronized (this) {
             if (rollRangeBegin != NO_ROLL_DEFINED && rollRangeBegin != NO_ROLL_DEFINED) {
                 setAndFixCursorPosition(position.offset(0, rollRangeBegin - 1));
@@ -117,23 +117,23 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
 
 
     @Override
-    public void setAbsoluteCursorPosition(final CursorPosition cursorPosition) {
+    public void setAbsoluteCursorPosition(final Position cursorPosition) {
         synchronized (this) {
             setAndFixCursorPosition(cursorPosition);
         }
     }
 
     @Override
-    public void setSafeCursorPosition(final CursorPosition position) {
+    public void setSafeCursorPosition(final Position position) {
         synchronized (this) {
-            final int x = Math.max(1, Math.min(lines[0].length, position.getX()));
-            final int y = Math.max(1, Math.min(lines.length, position.getY()));
-            this.position = new CursorPosition(x, y);
+            final int x = Math.max(1, Math.min(lines[0].length, position.x));
+            final int y = Math.max(1, Math.min(lines.length, position.y));
+            this.position = new Position(x, y);
         }
     }
 
     @Override
-    public CursorPosition getCursorPosition() {
+    public Position getCursorPosition() {
         synchronized (this) {
             if (rollRangeBegin != NO_ROLL_DEFINED && rollRangeEnd != NO_ROLL_DEFINED) {
                 return position.offset(0, -rollRangeBegin + 1);
@@ -144,7 +144,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     @Override
-    public CursorPosition getAbsoluteCursorPosition() {
+    public Position getAbsoluteCursorPosition() {
         return position;
     }
 
@@ -166,7 +166,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void addCharacter(final T character) {
         synchronized(this) {
-            lines[position.getY() - 1][position.getX() - 1] = character;
+            lines[position.y - 1][position.x - 1] = character;
             setAndFixCursorPosition(position.offset(1, 0));
         }
     }
@@ -180,7 +180,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     private void eraseNextLineToBottomUnsynced() {
-        for (int row = position.getY(); row < lines.length; ++row) {
+        for (int row = position.y; row < lines.length; ++row) {
             for (int col = 0; col < lines[0].length; ++col) {
                 lines[row][col] = clearChar;
             }
@@ -188,14 +188,14 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     private void eraseRestOfLineUnsynced() {
-        for (int col = position.getX() - 1; col < lines[position.getY() - 1].length; ++col) {
-            lines[position.getY() - 1][col] = clearChar;
+        for (int col = position.x - 1; col < lines[position.y - 1].length; ++col) {
+            lines[position.y - 1][col] = clearChar;
         }
     }
 
     private void eraseStartOfLineUnsynced() {
-        for (int col = 0; col <= position.getX() - 1; ++col) {
-            lines[position.getY() - 1][col] = clearChar;
+        for (int col = 0; col <= position.x - 1; ++col) {
+            lines[position.y - 1][col] = clearChar;
         }
     }
 
@@ -222,7 +222,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     private void eraseTopToPreviousLineUnsynced() {
-        for (int row = 0; row < position.getY() - 1; ++row) {
+        for (int row = 0; row < position.y - 1; ++row) {
             for (int col = 0; col < lines[row].length; ++col) {
                 lines[row][col] = clearChar;
             }
@@ -241,7 +241,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void eraseLine() {
         synchronized(this) {
-            Arrays.fill(lines[position.getY() - 1], clearChar);
+            Arrays.fill(lines[position.y - 1], clearChar);
         }
     }
 
@@ -262,7 +262,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     private boolean isCursorAt(final int col, final int row) {
-        return col == position.getX() - 1 && row == position.getY() - 1;
+        return col == position.x - 1 && row == position.y - 1;
     }
 
     @SuppressWarnings("unchecked")
@@ -293,16 +293,16 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void moveCursorUpAndRoll() {
         synchronized(this) {
-            int y = position.getY();
+            int y = position.y;
             if (rollRangeBegin == NO_ROLL_DEFINED) {
-                setSafeCursorPosition(new CursorPosition(1, y - 1));
+                setSafeCursorPosition(new Position(1, y - 1));
             } else {
                 if (y == rollRangeBegin) {
                     shiftLines(1, rollRangeBegin - 1, rollRangeEnd);
                 } else {
                     --y;
                 }
-                setAndFixCursorPosition(new CursorPosition(1, y));
+                setAndFixCursorPosition(new Position(1, y));
             }
         }
     }
@@ -310,17 +310,17 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void moveCursorDownAndRoll(final boolean resetToFirstColumn) {
         synchronized(this) {
-            int y = position.getY();
-            final int x = resetToFirstColumn ? 1 : position.getX();
+            int y = position.y;
+            final int x = resetToFirstColumn ? 1 : position.x;
             if (rollRangeEnd == NO_ROLL_DEFINED) {
-                setCursorPosition(new CursorPosition(x, y + 1));
+                setCursorPosition(new Position(x, y + 1));
             } else {
                 if (y == rollRangeEnd) {
                     shiftLines(-1, rollRangeBegin - 1, rollRangeEnd);
                 } else {
                     ++y;
                 }
-                setAndFixCursorPosition(new CursorPosition(x, y));
+                setAndFixCursorPosition(new Position(x, y));
             }
         }
     }

@@ -9,13 +9,13 @@ public interface Buffer<T extends GfxChar> {
     void addNewLine();
     T getCharacter(final int row, final int column);
 
-    void setCursorPosition(final CursorPosition position);
-    void setAbsoluteCursorPosition(CursorPosition cursorPosition);
-    void setSafeCursorPosition(CursorPosition offset);
+    void setCursorPosition(final Position position);
+    void setAbsoluteCursorPosition(Position cursorPosition);
+    void setSafeCursorPosition(Position offset);
     void moveCursorUpAndRoll();
     void moveCursorDownAndRoll(boolean resetToFirstColumn);
-    CursorPosition getCursorPosition();
-    CursorPosition getAbsoluteCursorPosition();
+    Position getCursorPosition();
+    Position getAbsoluteCursorPosition();
 
     void eraseToBottom();
     void eraseRestOfLine();

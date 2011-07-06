@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CharacterProcessor;
-import de.jowisoftware.sshclient.terminal.CursorPosition;
+import de.jowisoftware.sshclient.terminal.Position;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.SessionInfo;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
@@ -132,11 +132,11 @@ public class CharacterProcessorTest {
 
         context.checking(new Expectations() {{
             expectChar('x');
-            oneOf(buffer).getCursorPosition(); will(returnValue(new CursorPosition(5, 7)));
-            oneOf(buffer).setCursorPosition(new CursorPosition(1, 7));
+            oneOf(buffer).getCursorPosition(); will(returnValue(new Position(5, 7)));
+            oneOf(buffer).setCursorPosition(new Position(1, 7));
             expectChar('z');
-            oneOf(buffer).getCursorPosition(); will(returnValue(new CursorPosition(9, 12)));
-            oneOf(buffer).setCursorPosition(new CursorPosition(1, 12));
+            oneOf(buffer).getCursorPosition(); will(returnValue(new Position(9, 12)));
+            oneOf(buffer).setCursorPosition(new Position(1, 12));
             expectChar('y');
         }
 
@@ -158,10 +158,10 @@ public class CharacterProcessorTest {
     @Test
     public void testBackspace() {
         context.checking(new Expectations() {{
-            oneOf(buffer).getCursorPosition(); will(returnValue(new CursorPosition(5, 7)));
-            oneOf(buffer).setCursorPosition(new CursorPosition(4, 7));
-            oneOf(buffer).getCursorPosition(); will(returnValue(new CursorPosition(9, 12)));
-            oneOf(buffer).setCursorPosition(new CursorPosition(8, 12));
+            oneOf(buffer).getCursorPosition(); will(returnValue(new Position(5, 7)));
+            oneOf(buffer).setCursorPosition(new Position(4, 7));
+            oneOf(buffer).getCursorPosition(); will(returnValue(new Position(9, 12)));
+            oneOf(buffer).setCursorPosition(new Position(8, 12));
         }});
 
         processor.processByte((byte) 8);

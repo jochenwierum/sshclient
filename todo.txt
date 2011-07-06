@@ -27,3 +27,16 @@ Terminal:
 
 Hinweise zu JSch
 * Beispiele: http://www.jcraft.com/jsch/examples/
+
+* Feste und Dynamische Terminal-Breiten
+* CursorPosition: umbenennen in Position, validate(Buffer), withXint(), withY(int)
+* Range(Position, Position)
+* Delete-Methoden des Buffers zusammenfassen
+* Sofern möglich: Cursor vereinfachen?
+
+Methode getValidPos(), z.B. für Rendern, fix erst bei nächster Operation
+
+Close: yes, no, not on errors
+Unlock keys: always, on first use
+
+Save open tabs
