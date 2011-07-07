@@ -21,7 +21,7 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testCustomPositions() {
+    public void testCustomPositionsWithH() {
         context.checking(new Expectations() {{
             oneOf(buffer).setCursorPosition(new Position(5, 1));
             oneOf(buffer).setCursorPosition(new Position(7, 3));
@@ -29,6 +29,17 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
 
         SequenceUtils.getANSISequence('H').process(sessionInfo, "1", "5");
         SequenceUtils.getANSISequence('H').process(sessionInfo, "3", "7");
+    }
+
+    @Test
+    public void testCustomPositionsWithf() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).setCursorPosition(new Position(5, 1));
+            oneOf(buffer).setCursorPosition(new Position(7, 3));
+        }});
+
+        SequenceUtils.getANSISequence('f').process(sessionInfo, "1", "5");
+        SequenceUtils.getANSISequence('f').process(sessionInfo, "3", "7");
     }
 
     @Test

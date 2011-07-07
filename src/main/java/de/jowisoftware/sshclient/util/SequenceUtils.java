@@ -10,6 +10,7 @@ import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceHighLow;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceJ;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceK;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequencec;
+import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequencef;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequencem;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequencer;
 import de.jowisoftware.sshclient.ui.GfxChar;
@@ -54,6 +55,7 @@ public final class SequenceUtils {
         case 'l': return new ANSISequenceHighLow<T>(false);
         case 'h': return new ANSISequenceHighLow<T>(true);
         case 'c': return new ANSISequencec<T>();
+        case 'f': return new ANSISequencef<T>();
         default: return new WarnSequenceHandler<T>(c);
         }
     }
