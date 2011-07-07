@@ -15,7 +15,7 @@ import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.Position;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
-import de.jowisoftware.sshclient.terminal.SessionInfo;
+import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
 import de.jowisoftware.sshclient.test.matches.StringBuilderEquals;
 import de.jowisoftware.sshclient.ui.GfxChar;
@@ -30,7 +30,7 @@ public class CharacterProcessorTest {
     private GfxChar gfxChar;
     private CharacterProcessor<GfxChar> processor;
     private VisualFeedback visualFeedback;
-    private SessionInfo<GfxChar> sessionInfo;
+    private Session<GfxChar> sessionInfo;
 
     @SuppressWarnings("unchecked")
     @Before
@@ -41,7 +41,7 @@ public class CharacterProcessorTest {
         sequence1 = context.mock(NonASCIIControlSequence.class, "sequence1");
         sequence2 = context.mock(NonASCIIControlSequence.class, "sequence2");
         gfxChar = context.mock(GfxChar.class);
-        sessionInfo = context.mock(SessionInfo.class);
+        sessionInfo = context.mock(Session.class);
 
         processor = new CharacterProcessor<GfxChar>(
                 sessionInfo,

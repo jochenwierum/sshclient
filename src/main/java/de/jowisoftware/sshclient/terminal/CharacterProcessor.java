@@ -29,10 +29,10 @@ public class CharacterProcessor<T extends GfxChar> {
 
     private final StringBuilder cachedChars = new StringBuilder();
     private final EncodingDecoder decoder;
-    private final SessionInfo<T> sessionInfo;
+    private final Session<T> sessionInfo;
     private State state = State.NO_SEQUENCE;
 
-    public CharacterProcessor(final SessionInfo<T> sessionInfo,
+    public CharacterProcessor(final Session<T> sessionInfo,
             final Charset charset) {
         this.sessionInfo = sessionInfo;
         this.decoder = new EncodingDecoder(charset);

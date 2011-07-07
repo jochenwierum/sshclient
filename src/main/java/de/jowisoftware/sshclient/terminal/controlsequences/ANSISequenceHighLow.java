@@ -1,6 +1,6 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
-import de.jowisoftware.sshclient.terminal.SessionInfo;
+import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
@@ -11,7 +11,7 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
     }
 
     @Override
-    public void process(final SessionInfo<T> sessionInfo, final String... args) {
+    public void process(final Session<T> sessionInfo, final String... args) {
         if (args[0].equals("?1")) {
             sessionInfo.getKeyboardFeedback().setCursorKeysIsAppMode(isHigh);
         }

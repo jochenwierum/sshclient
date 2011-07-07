@@ -2,7 +2,7 @@ package de.jowisoftware.sshclient.util;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.SessionInfo;
+import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceABCD;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceH;
@@ -26,7 +26,7 @@ public final class SequenceUtils {
         }
 
         @Override
-        public void process(final SessionInfo<T> sessionInfo, final String... args) {
+        public void process(final Session<T> sessionInfo, final String... args) {
             final StringBuilder builder = new StringBuilder();
             builder.append("Ignoring unknown ANSI Sequence: <ESC>[");
             for (int i = 0; i < args.length; ++i) {
@@ -60,7 +60,7 @@ public final class SequenceUtils {
 
     @SuppressWarnings("unchecked")
     public static <T extends GfxChar> void executeAnsiSequence(
-            final char c, final SessionInfo<T> sessionInfo, final String... args) {
-        getANSISequence(c).process((SessionInfo<GfxChar>) sessionInfo, args);
+            final char c, final Session<T> sessionInfo, final String... args) {
+        getANSISequence(c).process((Session<GfxChar>) sessionInfo, args);
     }
 }

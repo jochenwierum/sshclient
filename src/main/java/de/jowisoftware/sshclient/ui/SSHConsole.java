@@ -6,9 +6,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 import javax.swing.JPanel;
 
@@ -21,38 +19,34 @@ import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread.Callback;
 import de.jowisoftware.sshclient.terminal.ArrayBuffer;
 import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CharacterProcessor;
-import de.jowisoftware.sshclient.terminal.GfxCharSetup;
-import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
-import de.jowisoftware.sshclient.terminal.SessionInfo;
+import de.jowisoftware.sshclient.terminal.DefaultSession;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
 import de.jowisoftware.sshclient.terminal.controlsequences.CursorControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.KeyboardControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.OperatingSystemCommandSequence;
 
 public class SSHConsole extends JPanel implements Callback, ComponentListener,
-        MouseListener, SessionInfo<GfxAwtChar> {
+        MouseListener {
     private static final long serialVersionUID = 5102110929763645596L;
     private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
 
-    private final DoubleBufferedImage renderer;
-    private final Buffer<GfxAwtChar> buffer;
-    private final GfxCharSetup<GfxAwtChar> setup;
-    private final CharacterProcessor<GfxAwtChar> outputProcessor;
-    private final KeyboardProcessor keyboardProcessor;
-    private final VisualFeedback visualFeedback;
-
+    private final DefaultSession<GfxAwtChar> session;
     private ChannelShell channel;
-    private OutputStream outputStream;
+    private final DoubleBufferedImage renderer;
+    private final CharacterProcessor<GfxAwtChar> outputProcessor;
 
     public SSHConsole(final ConnectionInfo info) {
-        setup = new GfxAwtCharSetup(info.getGfxSettings());
-        visualFeedback = new GfxFeedback();
-        keyboardProcessor = new KeyboardProcessor();
+        final GfxAwtCharSetup charSetup = new GfxAwtCharSetup(info.getGfxSettings());
+        final VisualFeedback visualFeedback = new GfxFeedback();
+        final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
+        final Buffer<GfxAwtChar> buffer = new ArrayBuffer<GfxAwtChar>(
+                info.getGfxSettings().getEmptyChar(), 80, 24);
+        session = new DefaultSession<GfxAwtChar>(buffer,
+                keyboardProcessor, visualFeedback, charSetup);
+        keyboardProcessor.setSession(session);
 
         renderer = new DoubleBufferedImage(info.getGfxSettings(), this);
-        buffer = new ArrayBuffer<GfxAwtChar>(
-                info.getGfxSettings().getEmptyChar(), 80, 24);
-        outputProcessor = new CharacterProcessor<GfxAwtChar>(this, info.getCharset());
+        outputProcessor = new CharacterProcessor<GfxAwtChar>(session, info.getCharset());
 
         initializeProcessor();
 
@@ -89,7 +83,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     @Override
     public void gotChars(final byte[] chars, final int count) {
         processCharacters(chars, count);
-        buffer.render(renderer);
+        session.getBuffer().render(renderer);
     }
 
     private void processCharacters(final byte[] chars, final int count) {
@@ -103,12 +97,11 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     }
 
     public void redrawConsole() {
-        buffer.render(renderer);
+        session.getBuffer().render(renderer);
     }
 
     public void setOutputStream(final OutputStream outputStream) {
-        this.outputStream = outputStream;
-        keyboardProcessor.setOutputStream(outputStream);
+        session.setOutputStream(outputStream);
     }
 
     public void setChannel(final ChannelShell channel) {
@@ -124,8 +117,9 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         final int ch = renderer.getLines();
         LOGGER.debug("Reporting new window size: " + cw + "/" + ch + " "
                 + pw + "/" + ph);
-        buffer.newSize(cw, ch);
-        buffer.render(renderer);
+
+        session.getBuffer().newSize(cw, ch);
+        session.getBuffer().render(renderer);
 
         if (channel != null) {
             channel.setPtySize(cw, ch, pw, ph);
@@ -151,38 +145,4 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     @Override public void mouseClicked(final MouseEvent e) { }
     @Override public void mouseEntered(final MouseEvent e) { }
     @Override public void mouseExited(final MouseEvent e) { }
-
-    @Override
-    public Buffer<GfxAwtChar> getBuffer() {
-        return buffer;
-    }
-
-    @Override
-    public KeyboardFeedback getKeyboardFeedback() {
-        return keyboardProcessor;
-    }
-
-    @Override
-    public VisualFeedback getVisualFeedback() {
-        return visualFeedback;
-    }
-
-    @Override
-    public GfxCharSetup<GfxAwtChar> getCharSetup() {
-        return setup;
-    }
-
-    @Override
-    public void respond(final String string) {
-        if (outputStream != null) {
-            synchronized(outputStream) {
-                try {
-                    outputStream.write((Charset.defaultCharset()
-                            .encode(string).array()));
-                } catch (final IOException e) {
-                }
-            }
-        }
-
-    }
 }

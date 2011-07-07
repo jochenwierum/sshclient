@@ -4,14 +4,14 @@ import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.Range;
-import de.jowisoftware.sshclient.terminal.SessionInfo;
+import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 public class ANSISequenceJ<T extends GfxChar> implements ANSISequence<T> {
     private static final Logger LOGGER = Logger.getLogger(ANSISequenceK.class);
 
     @Override
-    public void process(final SessionInfo<T> sessionInfo, final String... args) {
+    public void process(final Session<T> sessionInfo, final String... args) {
         final int mod = args.length == 0 ? 0 : Integer.parseInt(args[0]);
         final Buffer<T> buffer = sessionInfo.getBuffer();
 

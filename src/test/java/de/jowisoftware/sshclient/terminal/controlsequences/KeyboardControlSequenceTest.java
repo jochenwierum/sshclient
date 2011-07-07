@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
-import de.jowisoftware.sshclient.terminal.SessionInfo;
+import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 @RunWith(JMock.class)
@@ -19,14 +19,14 @@ public class KeyboardControlSequenceTest {
     private final Mockery context = new JUnit4Mockery();
     private KeyboardControlSequence<GfxChar> sequence;
     private KeyboardFeedback feedback;
-    private SessionInfo<GfxChar> sessionInfo;
+    private Session<GfxChar> sessionInfo;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         sequence = new KeyboardControlSequence<GfxChar>();
         feedback = context.mock(KeyboardFeedback.class);
-        sessionInfo = context.mock(SessionInfo.class);
+        sessionInfo = context.mock(Session.class);
         context.checking(new Expectations() {{
             allowing(sessionInfo).getKeyboardFeedback(); will(returnValue(feedback));
         }});

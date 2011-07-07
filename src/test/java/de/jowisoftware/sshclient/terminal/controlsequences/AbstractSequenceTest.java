@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
-import de.jowisoftware.sshclient.terminal.SessionInfo;
+import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
@@ -18,7 +18,7 @@ import de.jowisoftware.sshclient.ui.GfxChar;
 public abstract class AbstractSequenceTest {
     protected final Mockery context = new JUnit4Mockery();
     protected Buffer<GfxChar> buffer;
-    protected SessionInfo<GfxChar> sessionInfo;
+    protected Session<GfxChar> sessionInfo;
     protected GfxCharSetup<GfxChar> charSetup;
     protected KeyboardFeedback keyboardFeedback;
     protected VisualFeedback visualFeedback;
@@ -27,7 +27,7 @@ public abstract class AbstractSequenceTest {
     @Before
     public void setUp() throws Exception {
         buffer = context.mock(Buffer.class);
-        sessionInfo = context.mock(SessionInfo.class);
+        sessionInfo = context.mock(Session.class);
         charSetup = context.mock(GfxCharSetup.class);
         keyboardFeedback = context.mock(KeyboardFeedback.class);
         visualFeedback = context.mock(VisualFeedback.class);

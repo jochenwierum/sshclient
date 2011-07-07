@@ -3,54 +3,72 @@ package de.jowisoftware.sshclient.ui;
 import java.awt.Label;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 
-import org.junit.Assert;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JMock;
+import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.ui.KeyboardProcessor;
+import de.jowisoftware.sshclient.terminal.Session;
 
+@RunWith(JMock.class)
 public class KeyboardProcessorTest {
+    private final Mockery context = new JUnit4Mockery();
     final char ESC = (char) 27;
 
-    private ByteArrayOutputStream stream;
     private KeyboardProcessor processor;
+    private Session<?> session;
 
     @Before
     public void setUp() {
-        stream = new ByteArrayOutputStream();
+        session = context.mock(Session.class);
         processor = new KeyboardProcessor();
-        processor.setOutputStream(stream);
+        processor.setSession(session);
     }
 
     private void assertText(final String t, final KeyEvent... events) {
+        expectStringInChars(t);
         pressKeys(events);
-        assertStreamContains(stream, t.getBytes());
-        stream.reset();
+    }
+
+    private void expectStringInChars(final String t) {
+        for (final char c : t.toCharArray()) {
+            expectString(Character.toString(c));
+        }
+    }
+
+    private void expectString(final String s) {
+        context.checking(new Expectations() {{
+            oneOf(session).sendToServer(s);
+        }});
+    }
+
+    private void expectBytes(final byte[] bytes) {
+        context.checking(new Expectations() {{
+            oneOf(session).sendToServer(bytes);
+        }});
     }
 
     private void assertSequence(final KeyEvent e, final char... chars) {
+        final byte[] bytes = Charset.defaultCharset()
+            .encode(new String(chars)).array();
+        expectString("x");
+        expectBytes(bytes);
+        expectString("x");
+
         final KeyEvent x = new KeyEvent(new Label(), 0, 0, 0, KeyEvent.VK_X,
                 'x');
         pressKeys(x, e, x);
-
-        final byte[] bytes = Charset.defaultCharset()
-                .encode("x" + new String(chars) + "x").array();
-        assertStreamContains(stream, bytes);
-        stream.reset();
     }
 
     private void pressKeys(final KeyEvent... events) {
         for (final KeyEvent e : events) {
             processor.keyPressed(e);
         }
-    }
-
-    private void assertStreamContains(final ByteArrayOutputStream stream,
-            final byte[] bytes) {
-        Assert.assertArrayEquals(stream.toByteArray(), bytes);
     }
 
     private KeyEvent makeEvent(final int code, final char character) {
@@ -161,7 +179,7 @@ public class KeyboardProcessorTest {
 
     @Test
     public void testErrorHandling() {
-        processor.setOutputStream(null);
-        assertText("", makeEvent(KeyEvent.VK_UP));
+        processor.setSession(null);
+        makeEvent(KeyEvent.VK_UP);
     }
 }

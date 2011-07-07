@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Buffer;
-import de.jowisoftware.sshclient.terminal.SessionInfo;
+import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 public class CursorControlSequence<T extends GfxChar> implements
@@ -26,7 +26,7 @@ public class CursorControlSequence<T extends GfxChar> implements
 
     @Override
     public void handleSequence(final String sequence,
-            final SessionInfo<T> sessionInfo) {
+            final Session<T> sessionInfo) {
 
         if (sequence.equals("D") || sequence.equals("E") || sequence.endsWith("M")) {
             processRollCursor(sessionInfo.getBuffer(), sequence);

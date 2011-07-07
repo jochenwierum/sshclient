@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Buffer;
-import de.jowisoftware.sshclient.terminal.SessionInfo;
+import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 @RunWith(JMock.class)
@@ -20,14 +20,14 @@ public class CursorControlSequenceTest {
     private final Mockery context = new JUnit4Mockery();
     private CursorControlSequence<GfxChar> seq;
     private Buffer<GfxChar> buffer;
-    private SessionInfo<GfxChar> sessionInfo;
+    private Session<GfxChar> sessionInfo;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
         buffer = context.mock(Buffer.class);
         seq = new CursorControlSequence<GfxChar>();
-        sessionInfo = context.mock(SessionInfo.class);
+        sessionInfo = context.mock(Session.class);
         context.checking(new Expectations() {{
             allowing(sessionInfo).getBuffer(); will(returnValue(buffer));
         }});

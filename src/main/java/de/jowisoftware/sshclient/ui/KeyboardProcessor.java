@@ -2,54 +2,37 @@ package de.jowisoftware.sshclient.ui;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
-import de.jowisoftware.sshclient.util.StringUtils;
+import de.jowisoftware.sshclient.terminal.Session;
 
 public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
     private static final Logger LOGGER = Logger.getLogger(KeyboardProcessor.class);
-    private OutputStream responseStream;
 
-    private static final int ESC = 27;
+    private static final char ESC = 27;
     public boolean cursorsInAppMode = false;
     private boolean numpadInAppMode;
+    private Session<?> session;
 
-    private void send(final byte[] value) {
-        for (final byte b : value) {
-            send(b);
-        }
+    public void setSession(final Session<?> session) {
+        this.session = session;
     }
 
-    private void send(final byte value) {
-        if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Sending: " + StringUtils.byteToHex(value));
+    private void send(final char... value) {
+        final byte bytes[] = new byte[value.length];
+        for (int i = 0; i < bytes.length; ++i) {
+            bytes[i] = (byte) value[i];
         }
-        try {
-            synchronized(responseStream) {
-                responseStream.write(value);
-                responseStream.flush();
-            }
-        } catch (final IOException e1) {
-            LOGGER.warn("Failed to send keypress: " + value, e1);
-        }
-    }
-
-    private void send(final int... value) {
-        for (final int c : value) {
-            send((byte) c);
-        }
+        session.sendToServer(bytes);
     }
 
     @Override
     public void keyPressed(final KeyEvent e) {
         e.consume();
 
-        if (responseStream == null) {
+        if (session == null) {
             return;
         }
 
@@ -67,8 +50,7 @@ public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
     }
 
     private void handleChar(final KeyEvent e) {
-        send(Charset.defaultCharset()
-                .encode(Character.toString(e.getKeyChar())).array());
+        session.sendToServer(Character.toString(e.getKeyChar()));
     }
 
     private boolean handleSpecialChar(final KeyEvent e) {
@@ -191,7 +173,7 @@ public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
     private boolean processMiscKeys(final KeyEvent e) {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_DELETE:
-            send(127);
+            send((char) 127);
             // TODO: read from config?
             // case KeyEvent.VK_DELETE: send(ESC, '[', '3', '~'); break;
             return true;
@@ -214,7 +196,7 @@ public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
             send('\n');
             return true;
         case KeyEvent.VK_BACK_SPACE:
-            send(8);
+            send((char) 8);
             return true;
         case KeyEvent.VK_ESCAPE:
             send(ESC);
@@ -223,7 +205,7 @@ public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
             if (e.isShiftDown()) {
                 send(ESC, '[', 'z');
             } else {
-                send(9);
+                send((char) 9);
             }
             return true;
         default:
@@ -316,10 +298,6 @@ public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
     @Override
     public void setCursorKeysIsAppMode(final boolean value) {
         cursorsInAppMode = value;
-    }
-
-    public void setOutputStream(final OutputStream outputStream) {
-        this.responseStream = outputStream;
     }
 
     @Override

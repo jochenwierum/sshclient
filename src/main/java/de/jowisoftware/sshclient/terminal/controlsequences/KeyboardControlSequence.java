@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.SessionInfo;
+import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 public class KeyboardControlSequence<T extends GfxChar> implements NonASCIIControlSequence<T> {
@@ -23,7 +23,7 @@ public class KeyboardControlSequence<T extends GfxChar> implements NonASCIIContr
 
     @Override
     public void handleSequence(final String sequence,
-            final SessionInfo<T> sessionInfo) {
+            final Session<T> sessionInfo) {
         if (sequence.equals("=")) {
             sessionInfo.getKeyboardFeedback().setNumblockIsAppMode(true);
         } else if (sequence.equals(">")) {
