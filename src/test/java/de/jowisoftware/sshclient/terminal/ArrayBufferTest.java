@@ -320,4 +320,21 @@ public class ArrayBufferTest {
         assertChar(6, 6, nullChar);
         assertChar(6, 7, char1);
     }
+
+    @Test
+    public void testReaseInLineRange() {
+        buffer.addCharacter(char1);
+        buffer.addCharacter(char2); buffer.addCharacter(char2);
+            buffer.addCharacter(char2);
+        buffer.addCharacter(char1);
+
+        buffer.erase(new Range(new Position(2, 1),
+                new Position(4, 1)));
+
+        assertChar(1, 1, char1);
+        assertChar(1, 2, nullChar);
+        assertChar(1, 3, nullChar);
+        assertChar(1, 4, nullChar);
+        assertChar(1, 5, char1);
+    }
 }
