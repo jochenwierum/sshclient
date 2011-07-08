@@ -17,7 +17,9 @@ import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequencer;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 public final class SequenceUtils {
-    private SequenceUtils() {};
+    private SequenceUtils() {
+        /* Util classes are not instanciated */
+    }
 
     private static class WarnSequenceHandler<T extends GfxChar> implements ANSISequence<T> {
         private static final Logger LOGGER = Logger.getLogger(SequenceUtils.class);

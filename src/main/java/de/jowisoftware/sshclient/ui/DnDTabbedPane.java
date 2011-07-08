@@ -65,6 +65,7 @@ public class DnDTabbedPane extends JTabbedPane {
     private static int buttonsize = 30;// XXX: magic number of scroll button
                                        // size
 
+    @SuppressWarnings("hiding")
     private void autoScrollTest(final Point glassPt) {
         final Rectangle r = getTabAreaBounds();
         final int tabPlacement = getTabPlacement();
@@ -90,6 +91,7 @@ public class DnDTabbedPane extends JTabbedPane {
         }
     }
 
+    @SuppressWarnings("unused")
     public DnDTabbedPane() {
         super();
         final DragSourceListener dsl = new DragSourceListener() {
@@ -139,6 +141,7 @@ public class DnDTabbedPane extends JTabbedPane {
 
             @Override
             public void dropActionChanged(final DragSourceDragEvent e) {
+                /* ignored */
             }
         };
         final Transferable t = new Transferable() {
@@ -200,10 +203,12 @@ public class DnDTabbedPane extends JTabbedPane {
 
         @Override
         public void dragExit(final DropTargetEvent e) {
+            /* ignored */
         }
 
         @Override
         public void dropActionChanged(final DropTargetDragEvent e) {
+            /* ignored */
         }
 
         private Point _glassPt = new Point();
@@ -394,6 +399,7 @@ public class DnDTabbedPane extends JTabbedPane {
         }
         final Rectangle compRect = (comp == null) ? new Rectangle() : comp
                 .getBounds();
+        @SuppressWarnings("hiding")
         final int tabPlacement = getTabPlacement();
         if (tabPlacement == TOP) {
             tabbedRect.height = tabbedRect.height - compRect.height;

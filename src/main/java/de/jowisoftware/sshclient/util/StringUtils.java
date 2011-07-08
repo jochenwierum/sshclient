@@ -1,7 +1,9 @@
 package de.jowisoftware.sshclient.util;
 
 public final class StringUtils {
-    private StringUtils() {}
+    private StringUtils() {
+        /* Util classes will not be instanciated */
+    }
 
     public static String escapeHTML(final String text) {
         return text
@@ -45,5 +47,16 @@ public final class StringUtils {
         } else {
             return Integer.toHexString(value & 0xFF);
         }
+    }
+
+    public static String join(final String delim, final String[] parts) {
+        final StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < parts.length; ++i) {
+            builder.append(parts[i]);
+            if (i < parts.length - 1) {
+                builder.append(delim);
+            }
+        }
+        return builder.toString();
     }
 }

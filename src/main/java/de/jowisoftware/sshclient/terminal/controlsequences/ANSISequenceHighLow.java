@@ -1,9 +1,13 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
+import org.apache.log4j.Logger;
+
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.util.StringUtils;
 
 public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
+    private static final Logger LOGGER = Logger.getLogger(ANSISequenceHighLow.class);
     private final boolean isHigh;
 
     public ANSISequenceHighLow(final boolean isHigh) {
@@ -14,6 +18,8 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
     public void process(final Session<T> sessionInfo, final String... args) {
         if (args[0].equals("?1")) {
             sessionInfo.getKeyboardFeedback().setCursorKeysIsAppMode(isHigh);
+        } else {
+            LOGGER.warn("Ignoring unknown high/low flag: " + StringUtils.join(";", args));
         }
     }
 }

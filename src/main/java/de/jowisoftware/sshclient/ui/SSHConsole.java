@@ -138,11 +138,11 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         }
     }
 
-    @Override public void componentMoved(final ComponentEvent e) { }
-    @Override public void componentShown(final ComponentEvent e) { }
-    @Override public void componentHidden(final ComponentEvent e) { }
-    @Override public void mouseReleased(final MouseEvent e) { }
-    @Override public void mouseClicked(final MouseEvent e) { }
-    @Override public void mouseEntered(final MouseEvent e) { }
-    @Override public void mouseExited(final MouseEvent e) { }
+    @Override public void componentMoved(final ComponentEvent e) { /* ignored */ }
+    @Override public void componentShown(final ComponentEvent e) { /* ignored */ }
+    @Override public void componentHidden(final ComponentEvent e) { /* ignored */ }
+    @Override public void mouseReleased(final MouseEvent e) { /* ignored */ }
+    @Override public void mouseClicked(final MouseEvent e) { /* ignored */ }
+    @Override public void mouseEntered(final MouseEvent e) { /* ignored */ }
+    @Override public void mouseExited(final MouseEvent e) { /* ignored */ }
 }

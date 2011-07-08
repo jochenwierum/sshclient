@@ -41,42 +41,42 @@ public class Position {
         return "[Position: " + x + "/" + y + "]";
     }
 
-    public Position withX(final int x) {
-        if (x == this.x) {
+    public Position withX(final int newX) {
+        if (newX == this.x) {
             return this;
         }
-        return new Position(x, this.y);
+        return new Position(newX, this.y);
     }
 
-    public Position withY(final int y) {
-        if (y == this.y) {
+    public Position withY(final int newY) {
+        if (newY == this.y) {
             return this;
         }
-        return new Position(this.x, y);
+        return new Position(this.x, newY);
     }
 
     public Position moveInRange(final Range range) {
-        int y = this.y;
-        int x = this.x;
+        int newY = this.y;
+        int newX = this.x;
 
-        if (range.bottomRight.x >= x && range.bottomRight.y >= y
-                && range.topLeft.x <= x && range.topLeft.y <= y) {
+        if (range.bottomRight.x >= newX && range.bottomRight.y >= newY
+                && range.topLeft.x <= newX && range.topLeft.y <= newY) {
             return this;
         }
 
-        if (range.bottomRight.x < x) {
-            x = range.bottomRight.x;
-        } else if (range.topLeft.x > x) {
-            x = range.topLeft.x;
+        if (range.bottomRight.x < newX) {
+            newX = range.bottomRight.x;
+        } else if (range.topLeft.x > newX) {
+            newX = range.topLeft.x;
         }
 
-        if (range.bottomRight.y < y) {
-            x = range.bottomRight.x;
-            y = range.bottomRight.y;
-        } else if (range.topLeft.y > y) {
-            y = range.topLeft.y;
+        if (range.bottomRight.y < newY) {
+            newX = range.bottomRight.x;
+            newY = range.bottomRight.y;
+        } else if (range.topLeft.y > newY) {
+            newY = range.topLeft.y;
         }
 
-        return new Position(x, y);
+        return new Position(newX, newY);
     }
 }

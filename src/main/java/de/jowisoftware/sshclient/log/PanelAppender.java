@@ -12,6 +12,7 @@ public class PanelAppender extends AppenderSkeleton {
 
     @Override
     public void close() {
+        /* ignored */
     }
 
     @Override

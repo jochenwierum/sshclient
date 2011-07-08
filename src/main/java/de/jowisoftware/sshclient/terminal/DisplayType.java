@@ -1,5 +1,5 @@
 package de.jowisoftware.sshclient.terminal;
 
 public enum DisplayType {
-    DYNAMIC, FIXED
+    DYNAMIC, FIXED80, FIXED132
 }

@@ -39,7 +39,7 @@ public class SSHFrame extends JPanel {
 
         try {
             console = new SSHConsole(info);
-            connect(jsch, console);
+            connect(jsch);
             add(console, BorderLayout.CENTER);
         } catch(final Exception e) {
             close();
@@ -74,7 +74,7 @@ public class SSHFrame extends JPanel {
         }
     }
 
-    private void connect(final JSch jsch, final SSHConsole console) {
+    private void connect(final JSch jsch) {
         LOGGER.warn("Connecting to " + info.getTitle());
 
         try {

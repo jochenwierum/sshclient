@@ -46,9 +46,11 @@ public class AsyncInputStreamReaderThread extends Thread {
                 try {
                     Thread.sleep(80);
                 } catch (final InterruptedException e) {
+                    /* no error handling here, just go on in the loop */
                 }
             }
         } catch (final IOException e) {
+            LOGGER.warn("Exception while reading from socket", e);
         }
         IOUtils.closeQuietly(stream);
         LOGGER.info("Thread ended");

@@ -292,8 +292,8 @@ public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
         return true;
     }
 
-    @Override public void keyReleased(final KeyEvent e) { }
-    @Override public void keyTyped(final KeyEvent e) { }
+    @Override public void keyReleased(final KeyEvent e) { /* ignored */ }
+    @Override public void keyTyped(final KeyEvent e) { /* ignored */ }
 
     @Override
     public void setCursorKeysIsAppMode(final boolean value) {
