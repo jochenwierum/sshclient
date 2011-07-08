@@ -1,7 +1,0 @@
-Hinweise zu JSch
-* Beispiele: http://www.jcraft.com/jsch/examples/
-
-* Feste und Dynamische Terminal-Breiten
-* Sofern möglich: Cursor vereinfachen?
-
-Methode getValidPos(), z.B. für Rendern, fix erst bei nächster Operation
