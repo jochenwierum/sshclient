@@ -1,46 +1,7 @@
-UI:
-Nahezu alles, insbesondere
-* Setup-Dialog
-  * Global:
-    * Close: yes, no, not on errors
-    * Unlock keys: always, on first use
-    * Save open tabs (Log, Key)
-  * Setup einer Verbindung
-    * Username
-    * Host
-    * Port
-    * Schriftart
-    * Farben
-    * Bell-Typ
-* Möglichkeit, Sitzungen zu eröffnen
-
-Persistierung:
-* Anlegen von Profilen
-
-SSH-UI:
-* Bell
-* Draw (blinking) Cursor
-* Selektion von Text mit der Maus
-* Resize (Prüfen: wird immer die richtige Größer übergeben? Was passiert am Bildrand bei Space? "ls" auf jws.de lieferte Müll)
-
-SSH:
-* Port forwarding
-* Keep-Alives (was kann JSch schon?)
-
-Terminal:
-* Mehr escape sequence (VT100, VT220, XTerm)
-  * http://www.mudpedia.org/wiki/Xterm_256_colors
-  * http://en.wikipedia.org/wiki/ANSI_escape_code
-  * http://www-user.tu-chemnitz.de/~heha/hs_freeware/terminal/terminal.htm
-  * http://www.termsys.demon.co.uk/vtansi.htm
-  * http://ascii-table.com/ansi-escape-sequences-vt-100.php
-  * http://vt100.net/docs/vt100-ug/chapter3.html
-
 Hinweise zu JSch
 * Beispiele: http://www.jcraft.com/jsch/examples/
 
 * Feste und Dynamische Terminal-Breiten
-* Delete-Methoden des Buffers zusammenfassen
 * Sofern möglich: Cursor vereinfachen?
 
 Methode getValidPos(), z.B. für Rendern, fix erst bei nächster Operation
