@@ -22,6 +22,7 @@ public interface Buffer<T extends GfxChar> {
     void deleteRollRange();
     void moveCursorUpAndRoll();
     void moveCursorDownAndRoll(boolean resetToFirstColumn);
+    void insertLines(int lines);
 
     void render(Renderer<T> renderer);
 }

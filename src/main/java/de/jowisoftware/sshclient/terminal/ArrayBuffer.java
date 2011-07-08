@@ -68,7 +68,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
             y = 1;
         } else if (y > lines.length) {
             LOGGER.debug("invalid terminal position, shifting lines: " + x + "/" + y);
-            shiftLines((-y - lines.length) % lines.length , 0, lines.length);
+            shiftLines((-y - lines.length) % lines.length, 0, lines.length);
             y = lines.length;
         }
         this.position = new Position(x, y);
@@ -273,6 +273,17 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
                 for (int col = 0; col < range.bottomRight.x; ++col) {
                     lines[range.bottomRight.y - 1][col] = clearChar;
                 }
+            }
+        }
+    }
+
+    @Override
+    public void insertLines(final int linesCount) {
+        synchronized(this) {
+            if (rollRangeEnd != NO_ROLL_DEFINED) {
+                shiftLines(linesCount, position.y - 1, rollRangeEnd);
+            } else {
+                shiftLines(linesCount, position.y - 1, lines.length);
             }
         }
     }

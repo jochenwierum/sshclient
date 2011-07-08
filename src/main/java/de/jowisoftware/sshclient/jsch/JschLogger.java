@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 public class JschLogger implements com.jcraft.jsch.Logger {
     private static final Logger LOGGER = Logger.getLogger(JschLogger.class);
 
+    @Override
     public void log(final int level, final String message) {
         switch (level) {
         case DEBUG:
@@ -25,6 +26,7 @@ public class JschLogger implements com.jcraft.jsch.Logger {
         }
     }
 
+    @Override
     public boolean isEnabled(final int level) {
         return true;
     }

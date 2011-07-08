@@ -153,11 +153,11 @@ public class ArrayBufferTest {
 
     @Test
     public void testMoveCursorUpAndRoll() {
-        buffer.setRollRange(2, 4);
         buffer.addCharacter(char2); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char2); buffer.addNewLine();
         buffer.addCharacter(char1);
+        buffer.setRollRange(2, 3);
 
         buffer.moveCursorUpAndRoll();
         assertPosition(3, 1);
@@ -176,7 +176,7 @@ public class ArrayBufferTest {
         assertChar(1, 1, char2);
         assertChar(2, 1, nullChar);
         assertChar(3, 1, char1);
-        assertChar(4, 1, char2);
+        assertChar(4, 1, char1);
     }
 
     @Test
@@ -196,16 +196,18 @@ public class ArrayBufferTest {
 
     @Test
     public void testMoveCursorDownAndRoll() {
-        buffer.setRollRange(2, 3);
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char2); buffer.addNewLine();
         buffer.addCharacter(char1);
 
         buffer.setCursorPosition(buffer.getCursorPosition().offset(0, -1));
+        buffer.setRollRange(2, 3);
+
         buffer.moveCursorDownAndRoll(false);
         assertPosition(3, 2);
         assertChar(1, 1, char1);
         assertChar(2, 1, char2);
+        assertChar(3, 1, char1);
 
         buffer.moveCursorDownAndRoll(false);
         assertPosition(3, 2);
@@ -336,5 +338,74 @@ public class ArrayBufferTest {
         assertChar(1, 3, nullChar);
         assertChar(1, 4, nullChar);
         assertChar(1, 5, char1);
+    }
+
+    @Test
+    public void testInsertOneLine() {
+        buffer.addCharacter(char1); buffer.addNewLine();
+        buffer.addCharacter(char2); buffer.addNewLine();
+        buffer.setCursorPosition(new Position(1, 23));
+        buffer.addCharacter(char2); buffer.addNewLine();
+        buffer.addCharacter(char1);
+
+        buffer.setCursorPosition(new Position(5, 2));
+        buffer.insertLines(1);
+
+        assertChar(1, 1, char1);
+        assertChar(2, 1, nullChar);
+        assertChar(3, 1, char2);
+        assertChar(23, 1, nullChar);
+        assertChar(24, 1, char2);
+    }
+
+    @Test
+    public void testInsertTwoLines() {
+        buffer.addCharacter(char1); buffer.addNewLine();
+        buffer.addCharacter(char1); buffer.addNewLine();
+        buffer.addCharacter(char2); buffer.addNewLine();
+        buffer.addCharacter(char2); buffer.addNewLine();
+        buffer.setCursorPosition(new Position(1, 22));
+        buffer.addCharacter(char2); buffer.addNewLine();
+        buffer.addCharacter(char2); buffer.addNewLine();
+        buffer.addCharacter(char1);
+
+        buffer.setCursorPosition(new Position(7, 3));
+        buffer.insertLines(2);
+
+        assertChar(1, 1, char1);
+        assertChar(2, 1, char1);
+        assertChar(3, 1, nullChar);
+        assertChar(4, 1, nullChar);
+        assertChar(5, 1, char2);
+        assertChar(6, 1, char2);
+        assertChar(24, 1, char2);
+    }
+
+    @Test
+    public void testInsertTwoLinesWithRoll() {
+        buffer.addCharacter(char1); buffer.addNewLine();
+        buffer.addCharacter(char1); buffer.addNewLine();
+        buffer.addCharacter(char2); buffer.addNewLine();
+        buffer.addCharacter(char2); buffer.addNewLine();
+        buffer.setCursorPosition(new Position(1, 21));
+        buffer.addCharacter(char2); buffer.addNewLine();
+        buffer.addCharacter(char2); buffer.addNewLine();
+        buffer.addCharacter(char2); buffer.addNewLine();
+        buffer.addCharacter(char1);
+
+        buffer.setRollRange(1, 22);
+        buffer.setCursorPosition(new Position(7, 3));
+        buffer.insertLines(2);
+
+        assertChar(1, 1, char1);
+        assertChar(2, 1, char1);
+        assertChar(3, 1, nullChar);
+        assertChar(4, 1, nullChar);
+        assertChar(5, 1, char2);
+        assertChar(6, 1, char2);
+        assertChar(21, 1, nullChar);
+        assertChar(22, 1, nullChar);
+        assertChar(23, 1, char2);
+        assertChar(24, 1, char1);
     }
 }

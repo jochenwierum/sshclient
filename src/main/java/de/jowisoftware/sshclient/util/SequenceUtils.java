@@ -9,6 +9,7 @@ import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceH;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceHighLow;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceJ;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceK;
+import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceL;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequencec;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequencef;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequencem;
@@ -43,19 +44,20 @@ public final class SequenceUtils {
 
     public static <T extends GfxChar> ANSISequence<T> getANSISequence(final char c) {
         switch(c) {
-        case 'H': return new ANSISequenceH<T>();
-        case 'r': return new ANSISequencer<T>();
         case 'A': return new ANSISequenceABCD<T>(0, -1);
         case 'B': return new ANSISequenceABCD<T>(0, 1);
         case 'C': return new ANSISequenceABCD<T>(1, 0);
         case 'D': return new ANSISequenceABCD<T>(-1, 0);
-        case 'm': return new ANSISequencem<T>();
+        case 'H': return new ANSISequenceH<T>();
         case 'J': return new ANSISequenceJ<T>();
         case 'K': return new ANSISequenceK<T>();
-        case 'l': return new ANSISequenceHighLow<T>(false);
-        case 'h': return new ANSISequenceHighLow<T>(true);
+        case 'L': return new ANSISequenceL<T>();
+        case 'r': return new ANSISequencer<T>();
         case 'c': return new ANSISequencec<T>();
         case 'f': return new ANSISequencef<T>();
+        case 'h': return new ANSISequenceHighLow<T>(true);
+        case 'l': return new ANSISequenceHighLow<T>(false);
+        case 'm': return new ANSISequencem<T>();
         default: return new WarnSequenceHandler<T>(c);
         }
     }
