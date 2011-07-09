@@ -1,10 +1,9 @@
-package de.jowisoftware.sshclient.ui;
+package de.jowisoftware.sshclient.settings;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 
-import de.jowisoftware.sshclient.ConnectionInfo;
 
 public class ApplicationSettings {
     public enum FrameCloseBehaviour {

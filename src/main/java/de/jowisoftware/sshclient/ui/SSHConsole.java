@@ -14,8 +14,8 @@ import org.apache.log4j.Logger;
 
 import com.jcraft.jsch.ChannelShell;
 
-import de.jowisoftware.sshclient.ConnectionInfo;
 import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread.Callback;
+import de.jowisoftware.sshclient.settings.ConnectionInfo;
 import de.jowisoftware.sshclient.terminal.ArrayBuffer;
 import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CharacterProcessor;

@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.jsch;
+package de.jowisoftware.sshclient.settings;
 
 import java.io.File;
 import java.io.IOException;

@@ -15,9 +15,9 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
-import de.jowisoftware.sshclient.ConnectionInfo;
 import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread;
 import de.jowisoftware.sshclient.jsch.UserInfo;
+import de.jowisoftware.sshclient.settings.ConnectionInfo;
 
 public class SSHFrame extends JPanel {
     private static final long serialVersionUID = 7873084199411017370L;

@@ -20,8 +20,9 @@ import javax.swing.Timer;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
-import de.jowisoftware.sshclient.jsch.KeyAgentManager;
 import de.jowisoftware.sshclient.log.LogPanel;
+import de.jowisoftware.sshclient.settings.ConnectionInfo;
+import de.jowisoftware.sshclient.settings.KeyAgentManager;
 import de.jowisoftware.sshclient.ui.DnDTabbedPane;
 import de.jowisoftware.sshclient.ui.PrivateKeyTab;
 import de.jowisoftware.sshclient.ui.SSHFrame;

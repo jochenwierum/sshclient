@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient;
+package de.jowisoftware.sshclient.settings;
 
 import java.nio.charset.Charset;
 
