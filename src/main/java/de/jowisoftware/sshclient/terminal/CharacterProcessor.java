@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
 
+import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.NonASCIIControlSequence;
 import de.jowisoftware.sshclient.ui.GfxChar;
 import de.jowisoftware.sshclient.util.SequenceUtils;
@@ -86,11 +87,14 @@ public class CharacterProcessor<T extends GfxChar> {
         if (isLeagalANSISequenceContent(c)) {
             cachedChars.append(c);
         } else {
+            final ANSISequence<T> seq = SequenceUtils.getANSISequence(c);
+            LOGGER.trace("Will handle <ESC>[" + cachedChars.toString()
+                    + c + " with " + seq.getClass().getSimpleName());
+
             if (cachedChars.length() == 0) {
-                SequenceUtils.executeAnsiSequence(c, sessionInfo);
+                seq.process(sessionInfo);
             } else {
-                SequenceUtils.executeAnsiSequence(c, sessionInfo,
-                        cachedChars.toString().split(";"));
+                seq.process(sessionInfo, cachedChars.toString().split(";"));
             }
             resetState();
         }
