@@ -1,6 +1,7 @@
 package de.jowisoftware.sshclient.terminal;
 
 public interface VisualFeedback {
-    public void bell();
-    public void setTitle(String title);
+    void bell();
+    void setTitle(String title);
+    void setDisplayType(DisplayType displayType);
 }

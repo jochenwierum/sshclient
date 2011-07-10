@@ -71,7 +71,6 @@ public class Position {
         }
 
         if (range.bottomRight.y < newY) {
-            newX = range.bottomRight.x;
             newY = range.bottomRight.y;
         } else if (range.topLeft.y > newY) {
             newY = range.topLeft.y;

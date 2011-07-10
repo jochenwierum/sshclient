@@ -146,7 +146,7 @@ public class ArrayBufferTest {
         buffer.setSafeCursorPosition(new Position(99, 99));
         assertPosition(24, 80);
         buffer.setSafeCursorPosition(new Position(5, 200));
-        assertPosition(24, 80);
+        assertPosition(24, 5);
         buffer.setSafeCursorPosition(new Position(4, 8));
         assertPosition(8, 4);
     }

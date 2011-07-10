@@ -1,6 +1,8 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
+import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.Position;
+import de.jowisoftware.sshclient.terminal.Range;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
@@ -16,12 +18,14 @@ public class ANSISequenceABCD<T extends GfxChar> implements ANSISequence<T> {
     @Override
     public void process(final Session<T> sessionInfo, final String... args) {
         int count = 1;
-        if (args.length == 1 && !args[0].equals("1")) {
+        if (args.length == 1 && !args[0].equals("1") && !args[0].equals("0")) {
             count = Integer.parseInt(args[0]);
         }
 
-        final Position newPosition = sessionInfo.getBuffer()
-                .getCursorPosition().offset(count * dx, count * dy);
-        sessionInfo.getBuffer().setCursorPosition(newPosition);
+        final Buffer<T> buffer = sessionInfo.getBuffer();
+        final Position newPosition = buffer
+                .getCursorPosition().offset(count * dx, count * dy)
+                .moveInRange(new Range(buffer.getSize()));
+        buffer.setCursorPosition(newPosition);
     }
 }

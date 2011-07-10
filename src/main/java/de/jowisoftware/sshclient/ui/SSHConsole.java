@@ -20,6 +20,7 @@ import de.jowisoftware.sshclient.terminal.ArrayBuffer;
 import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.DefaultSession;
+import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
 import de.jowisoftware.sshclient.terminal.controlsequences.CursorControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.KeyboardControlSequence;
@@ -31,13 +32,14 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
 
     private final DefaultSession<GfxAwtChar> session;
-    private ChannelShell channel;
     private final DoubleBufferedImage renderer;
     private final CharacterProcessor<GfxAwtChar> outputProcessor;
+    private ChannelShell channel;
+    private DisplayType displayType = DisplayType.DYNAMIC;
 
     public SSHConsole(final ConnectionInfo info) {
         final GfxAwtCharSetup charSetup = new GfxAwtCharSetup(info.getGfxSettings());
-        final VisualFeedback visualFeedback = new GfxFeedback();
+        final VisualFeedback visualFeedback = new GfxFeedback(this);
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
         final Buffer<GfxAwtChar> buffer = new ArrayBuffer<GfxAwtChar>(
                 info.getGfxSettings().getEmptyChar(), 80, 24);
@@ -115,13 +117,15 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         renderer.setDimensions(pw, ph);
         final int cw = renderer.getCharsPerLine();
         final int ch = renderer.getLines();
-        LOGGER.debug("Reporting new window size: " + cw + "/" + ch + " "
-                + pw + "/" + ph);
 
-        session.getBuffer().newSize(cw, ch);
+        if (displayType == DisplayType.DYNAMIC) {
+            session.getBuffer().newSize(cw, ch);
+        }
         session.getBuffer().render(renderer);
 
         if (channel != null) {
+            LOGGER.debug("Reporting new window size: " + cw + "/" + ch + " "
+                    + pw + "/" + ph);
             channel.setPtySize(cw, ch, pw, ph);
             try {
                 channel.sendSignal("WINCH");
@@ -136,6 +140,20 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         if (e.getButton() == MouseEvent.BUTTON1) {
             requestFocusInWindow();
         }
+    }
+
+    public void setDisplayType(final DisplayType displayType) {
+        this.displayType = displayType;
+        LOGGER.info("Setting new terminal display type: " + displayType);
+        switch(displayType) {
+        case DYNAMIC:
+            componentResized(null); break;
+        case FIXED132X24:
+            session.getBuffer().newSize(132, 24); break;
+        case FIXED80X24:
+            session.getBuffer().newSize(80, 24); break;
+        }
+        session.getBuffer().render(renderer);
     }
 
     @Override public void componentMoved(final ComponentEvent e) { /* ignored */ }

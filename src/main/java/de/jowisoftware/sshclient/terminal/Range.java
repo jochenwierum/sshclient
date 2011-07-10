@@ -45,4 +45,14 @@ public class Range {
         final Range other = (Range) obj;
         return bottomRight.equals(other.bottomRight) &&  topLeft.equals(other.topLeft);
     }
+
+    // TODO: test
+    public int width() {
+        return bottomRight.x - topLeft.x;
+    }
+
+ // TODO: test
+    public int height() {
+        return bottomRight.y - topLeft.y;
+    }
 }
