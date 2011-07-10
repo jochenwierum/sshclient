@@ -2,7 +2,9 @@ package de.jowisoftware.sshclient.terminal.controlsequences;
 
 import org.apache.log4j.Logger;
 
+import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.DisplayType;
+import de.jowisoftware.sshclient.terminal.Position;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.ui.GfxChar;
 import de.jowisoftware.sshclient.util.StringUtils;
@@ -25,6 +27,9 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
             } else {
                 sessionInfo.getVisualFeedback().setDisplayType(DisplayType.FIXED80X24);
             }
+            final Buffer<T> buffer = sessionInfo.getBuffer();
+            buffer.erase(buffer.getSize().toRange());
+            buffer.setCursorPosition(new Position(1, 1));
         } else {
             LOGGER.warn("Ignoring unknown high/low flag: " + StringUtils.join(";", args));
         }

@@ -78,4 +78,8 @@ public class Position {
 
         return new Position(newX, newY);
     }
+
+    public Range toRange() {
+        return new Range(this);
+    }
 }

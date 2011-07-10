@@ -46,13 +46,11 @@ public class Range {
         return bottomRight.equals(other.bottomRight) &&  topLeft.equals(other.topLeft);
     }
 
-    // TODO: test
     public int width() {
-        return bottomRight.x - topLeft.x;
+        return bottomRight.x - topLeft.x + 1;
     }
 
- // TODO: test
     public int height() {
-        return bottomRight.y - topLeft.y;
+        return bottomRight.y - topLeft.y + 1;
     }
 }

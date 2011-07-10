@@ -124,7 +124,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void setSafeCursorPosition(final Position position) {
         synchronized (this) {
-            this.position = position.moveInRange(new Range(getSize()));
+            this.position = position.moveInRange(getSize().toRange());
         }
     }
 
@@ -163,7 +163,7 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     public void addCharacter(final T character) {
         synchronized(this) {
             lines[position.y - 1][position.x - 1] = character;
-            position = position.offset(1, 0).moveInRange(new Range(getSize()));
+            position = position.offset(1, 0).moveInRange(getSize().toRange());
         }
     }
 

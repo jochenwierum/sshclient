@@ -8,12 +8,12 @@ import org.junit.Test;
 public class RangeTest {
     @Test
     public void test1ArgConstructor() {
-        final Range range = new Range(new Position(3, 5));
+        final Range range = new Position(3, 5).toRange();
 
         assertEquals(range.topLeft, new Position(1, 1));
         assertEquals(new Position(3, 5), range.bottomRight);
 
-        final Range range2 = new Range(new Position(4, 8));
+        final Range range2 = new Position(4, 8).toRange();
         assertEquals(new Position(1, 1), range2.topLeft);
         assertEquals(new Position(4, 8), range2.bottomRight);
     }
@@ -45,5 +45,16 @@ public class RangeTest {
 
         assertFalse(range1.equals(range3));
         assertFalse(range4.equals(range1));
+    }
+
+    @Test
+    public void testWidthAndHeight() {
+        final Range range1 = new Range(new Position(1, 1), new Position(3, 8));
+        final Range range2 = new Range(new Position(2, 3), new Position(7, 4));
+
+        assertEquals(3, range1.width());
+        assertEquals(6, range2.width());
+        assertEquals(8, range1.height());
+        assertEquals(2, range2.height());
     }
 }

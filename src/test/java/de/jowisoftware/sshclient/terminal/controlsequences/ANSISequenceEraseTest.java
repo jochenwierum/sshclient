@@ -39,7 +39,7 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
         context.checking(new Expectations() {{
             oneOf(buffer).getCursorPosition();
                 will(returnValue(cursorPosition));
-            oneOf(buffer).erase(new Range(cursorPosition));
+            oneOf(buffer).erase(cursorPosition.toRange());
         }});
 
         SequenceUtils.getANSISequence('J').process(sessionInfo, "1");
@@ -59,7 +59,7 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
         context.checking(new Expectations() {{
             allowing(buffer).getSize();
             will(returnValue(position));
-            oneOf(buffer).erase(new Range(position));
+            oneOf(buffer).erase(position.toRange());
         }});
 
         SequenceUtils.getANSISequence('J').process(sessionInfo, "2");

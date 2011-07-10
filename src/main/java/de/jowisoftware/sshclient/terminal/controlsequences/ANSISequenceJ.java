@@ -21,10 +21,10 @@ public class ANSISequenceJ<T extends GfxChar> implements ANSISequence<T> {
                 buffer.getSize()));
             break;
         case 1:
-            buffer.erase(new Range(buffer.getCursorPosition()));
+            buffer.erase(buffer.getCursorPosition().toRange());
             break;
         case 2:
-            buffer.erase(new Range(buffer.getSize()));
+            buffer.erase(buffer.getSize().toRange());
             break;
         default: LOGGER.error("Unknown control sequence: <ESC>" + mod + "J");
         }

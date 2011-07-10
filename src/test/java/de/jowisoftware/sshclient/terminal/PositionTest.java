@@ -93,8 +93,8 @@ public class PositionTest {
         final Position pos1 = new Position(10, 10);
         final Position pos2 = new Position(8, 15);
 
-        final Range range1 = new Range(new Position(12, 12));
-        final Range range2 = new Range(new Position(5, 12));
+        final Range range1 = new Position(12, 12).toRange();
+        final Range range2 = new Position(5, 12).toRange();
         final Range range3 = new Range(new Position(2, 2), new Position(5, 20));
 
         assertSame(pos1, pos1.moveInRange(range1));
@@ -109,12 +109,27 @@ public class PositionTest {
         final Position pos2 = new Position(1, 9);
         final Position pos3 = new Position(1, 1);
 
-        final Range range1 = new Range(new Position(12, 12));
+        final Range range1 = new Position(12, 12).toRange();
         final Range range2 = new Range(new Position(2, 3), new Position(5, 12));
 
         assertSame(pos2, pos2.moveInRange(range1));
         assertEquals(new Position(1, 10), pos1.moveInRange(range1));
         assertEquals(new Position(2, 10), pos1.moveInRange(range2));
         assertEquals(new Position(2, 3), pos3.moveInRange(range2));
+    }
+
+    @Test
+    public void testToRange() {
+        final Position pos1 = new Position(3, 7);
+        final Range range1 = pos1.toRange();
+
+        assertEquals(new Position(1, 1), range1.topLeft);
+        assertEquals(pos1, range1.bottomRight);
+
+        final Position pos2 = new Position(5, 9);
+        final Range range2 = pos2.toRange();
+
+        assertEquals(new Position(1, 1), range2.topLeft);
+        assertEquals(pos2, range2.bottomRight);
     }
 }
