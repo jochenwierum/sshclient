@@ -160,11 +160,12 @@ public class ArrayBufferTest {
         buffer.setRollRange(2, 3);
 
         buffer.moveCursorUpAndRoll();
-        assertPosition(3, 1);
+        assertPosition(3, 2);
         assertChar(1, 1, char2);
         assertChar(2, 1, char1);
         assertChar(4, 1, char1);
 
+        buffer.setCursorPosition(buffer.getCursorPosition().withX(1));
         buffer.moveCursorUpAndRoll();
         assertPosition(2, 1);
         assertChar(1, 1, char2);
@@ -188,7 +189,7 @@ public class ArrayBufferTest {
         buffer.moveCursorUpAndRoll();
         buffer.moveCursorUpAndRoll();
         buffer.moveCursorUpAndRoll();
-        assertPosition(1, 1);
+        assertPosition(1, 2);
         assertChar(3, 1, char1);
         assertChar(2, 1, char2);
         assertChar(1, 1, char1);

@@ -215,16 +215,16 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void moveCursorUpAndRoll() {
         synchronized(this) {
-            int y = position.y;
             if (rollRangeBegin == NO_ROLL_DEFINED) {
-                setSafeCursorPosition(new Position(1, y - 1));
+                setSafeCursorPosition(position.offset(0, -1));
             } else {
+                int y = position.y;
                 if (y == rollRangeBegin) {
                     shiftLines(1, rollRangeBegin - 1, rollRangeEnd);
                 } else {
                     --y;
                 }
-                setAndFixCursorPosition(new Position(1, y));
+                setSafeCursorPosition(position.withY(y));
             }
         }
     }
