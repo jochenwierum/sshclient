@@ -3,6 +3,7 @@ package de.jowisoftware.sshclient.terminal;
 import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -23,9 +24,9 @@ public class CharacterProcessor<T extends GfxChar> {
     private static final char BELL_CHAR = 7;
     private static final char BACKSPACE_CHAR = (char) 8;
 
-    private final LinkedList<NonASCIIControlSequence<T>> availableSequences =
+    private final List<NonASCIIControlSequence<T>> availableSequences =
         new LinkedList<NonASCIIControlSequence<T>>();
-    private final LinkedList<NonASCIIControlSequence<T>> deactivatedSequences =
+    private final List<NonASCIIControlSequence<T>> deactivatedSequences =
         new LinkedList<NonASCIIControlSequence<T>>();
 
     private final StringBuilder cachedChars = new StringBuilder();
@@ -101,7 +102,9 @@ public class CharacterProcessor<T extends GfxChar> {
     }
 
     private boolean isLeagalANSISequenceContent(final Character c) {
-        return c == '?' || c == '>' || (c >= '0' && c <= '9') || c == ';';
+        final boolean isNumber = c >= '0' && c <= '9';
+        final boolean isAllowdChar = c == '?' || c == '>' || c == ';';
+        return isNumber || isAllowdChar;
     }
 
     private void createChar(final char character) {
@@ -157,7 +160,7 @@ public class CharacterProcessor<T extends GfxChar> {
             final NonASCIIControlSequence<T> seq = it.next();
             if (!seq.isPartialStart(cachedChars)) {
                 it.remove();
-                deactivatedSequences.addLast(seq);
+                deactivatedSequences.add(seq);
             }
         }
     }

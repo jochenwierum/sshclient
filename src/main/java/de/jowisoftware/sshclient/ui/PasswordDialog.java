@@ -16,8 +16,8 @@ import javax.swing.JPasswordField;
 public class PasswordDialog extends JDialog implements ActionListener {
     private static final long serialVersionUID = -2426474184438059732L;
 
-    private final String OK = "ok";
-    private final String CANCEL = "cancel";
+    private static final String OK = "ok";
+    private static final String CANCEL = "cancel";
 
     private char[] result;
 

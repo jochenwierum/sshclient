@@ -11,8 +11,7 @@ import de.jowisoftware.sshclient.ui.GfxChar;
 public class CursorControlSequence<T extends GfxChar> implements
         NonASCIIControlSequence<T> {
     private static final Logger LOGGER = Logger.getLogger(CursorControlSequence.class);
-    private static final Pattern pattern = Pattern
-            .compile("[DEM]");
+    private static final Pattern PATTERN = Pattern.compile("[DEM]");
 
     @Override
     public boolean isPartialStart(final CharSequence sequence) {
@@ -21,7 +20,7 @@ public class CursorControlSequence<T extends GfxChar> implements
 
     @Override
     public boolean canHandleSequence(final CharSequence sequence) {
-        return pattern.matcher(sequence).matches();
+        return PATTERN.matcher(sequence).matches();
     }
 
     @Override

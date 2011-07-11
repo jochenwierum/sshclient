@@ -12,7 +12,7 @@ public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
     private static final Logger LOGGER = Logger.getLogger(KeyboardProcessor.class);
 
     private static final char ESC = 27;
-    public boolean cursorsInAppMode = false;
+    private boolean cursorsInAppMode = false;
     private boolean numpadInAppMode;
     private Session<?> session;
 

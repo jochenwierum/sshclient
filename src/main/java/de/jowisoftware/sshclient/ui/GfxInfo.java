@@ -2,6 +2,7 @@ package de.jowisoftware.sshclient.ui;
 
 import java.awt.Font;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
@@ -10,7 +11,8 @@ import de.jowisoftware.sshclient.terminal.Color;
 public class GfxInfo {
     private final Map<Color, java.awt.Color> colors = new HashMap<Color, java.awt.Color>();
     private final Map<Color, java.awt.Color> brightColors = new HashMap<Color, java.awt.Color>();
-    private final GfxAwtChar emptyChar = new GfxAwtChar(' ', this, Color.DEFAULTBG, Color.DEFAULTBG, new Attribute[0]);
+    private final GfxAwtChar emptyChar = new GfxAwtChar(' ', this,
+            Color.DEFAULTBG, Color.DEFAULTBG, new HashSet<Attribute>());
 
     // TODO: get this from config
     public GfxInfo() {

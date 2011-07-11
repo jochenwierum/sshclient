@@ -51,7 +51,7 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
     @Override
     public GfxAwtChar createChar(final char character) {
         return new GfxAwtChar(character, gfxInfo, fgColor, bgColor,
-                attributes.toArray(new Attribute[attributes.size()]));
+                attributes);
     }
 
     @Override

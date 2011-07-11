@@ -56,7 +56,7 @@ public class AsyncInputStreamReaderThread extends Thread {
         LOGGER.info("Thread ended");
     }
 
-    public static interface Callback {
+    public interface Callback {
         void gotChars(byte[] buffer, int read);
     }
 }

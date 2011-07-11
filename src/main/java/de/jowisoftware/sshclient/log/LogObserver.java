@@ -13,12 +13,4 @@ public class LogObserver extends Observable {
         this.setChanged();
         this.notifyObservers(message);
     }
-
-    public void addObserver(final LogPanel observer) {
-        super.addObserver(observer);
-    }
-
-    public void deleteObserver(final LogPanel observer) {
-        super.deleteObserver(observer);
-    }
 }

@@ -6,17 +6,17 @@ import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 public class OperatingSystemCommandSequence<T extends GfxChar> implements NonASCIIControlSequence<T> {
-    private static final Pattern pattern = Pattern.compile("\\][012];.*\u0007");
-    private static final Pattern partialpattern = Pattern.compile("(?:\\](?:[012](?:;.*)?)?)");
+    private static final Pattern PATTERN = Pattern.compile("\\][012];.*\u0007");
+    private static final Pattern PARTIAL_PATTERN = Pattern.compile("(?:\\](?:[012](?:;.*)?)?)");
 
     @Override
     public boolean isPartialStart(final CharSequence sequence) {
-        return partialpattern.matcher(sequence).matches();
+        return PARTIAL_PATTERN.matcher(sequence).matches();
     }
 
     @Override
     public boolean canHandleSequence(final CharSequence sequence) {
-        return pattern.matcher(sequence).matches();
+        return PATTERN.matcher(sequence).matches();
     }
 
     @Override

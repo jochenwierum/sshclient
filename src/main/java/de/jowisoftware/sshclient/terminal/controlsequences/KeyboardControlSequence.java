@@ -9,7 +9,7 @@ import de.jowisoftware.sshclient.ui.GfxChar;
 
 public class KeyboardControlSequence<T extends GfxChar> implements NonASCIIControlSequence<T> {
     private static final Logger LOGGER = Logger.getLogger(KeyboardControlSequence.class);
-    private static final Pattern pattern = Pattern.compile("=|>");
+    private static final Pattern PATTERN = Pattern.compile("=|>");
 
     @Override
     public boolean isPartialStart(final CharSequence sequence) {
@@ -18,7 +18,7 @@ public class KeyboardControlSequence<T extends GfxChar> implements NonASCIIContr
 
     @Override
     public boolean canHandleSequence(final CharSequence sequence) {
-        return pattern.matcher(sequence).matches();
+        return PATTERN.matcher(sequence).matches();
     }
 
     @Override

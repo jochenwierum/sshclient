@@ -1,8 +1,8 @@
 package de.jowisoftware.sshclient.settings;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ApplicationSettings {
@@ -24,7 +24,7 @@ public class ApplicationSettings {
         }
     }
 
-    private HashMap<String, ConnectionInfo> connections;
+    private Map<String, ConnectionInfo> connections;
     private List<File> keyFiles;
 
     private boolean unlockKeysOnStart;

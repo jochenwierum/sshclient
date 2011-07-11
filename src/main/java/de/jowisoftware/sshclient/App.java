@@ -5,6 +5,7 @@ import javax.swing.UIManager;
 import org.apache.log4j.Logger;
 
 public class App {
+    private App() { /* This class cannot be intantiated */ }
     private static final Logger LOGGER = Logger.getLogger(App.class);
 
     @SuppressWarnings("unused")

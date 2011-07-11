@@ -2,6 +2,7 @@ package de.jowisoftware.sshclient.ui;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.Set;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
 import de.jowisoftware.sshclient.terminal.Color;
@@ -15,12 +16,12 @@ public class GfxAwtChar implements GfxChar {
 
     public GfxAwtChar(final char character,
             final GfxInfo gfxInfo, final Color fgColor, final Color bgColor,
-            final Attribute[] attributes) {
+            final Set<Attribute> attributes) {
         this.character = character;
         this.gfxInfo = gfxInfo;
         this.fgColor = fgColor;
         this.bgColor = bgColor;
-        this.attributes = attributes;
+        this.attributes = attributes.toArray(new Attribute[attributes.size()]);
     }
 
     public void drawAt(final int x, final int y, final int w, final Graphics g) {

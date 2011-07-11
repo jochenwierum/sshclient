@@ -181,7 +181,7 @@ public class DnDTabbedPane extends JTabbedPane {
                 try {
                     e.startDrag(DragSource.DefaultMoveDrop, t, dsl);
                 } catch (final InvalidDnDOperationException idoe) {
-                    idoe.printStackTrace();
+                    throw new RuntimeException(idoe);
                 }
             }
         };
