@@ -7,8 +7,26 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>client</name>
-	<url>http://maven.apache.org</url>
+	<name>SSH-Client</name>
+	<description>A simple but powerful and platform independent SSH client with tab support.</description>
+	<url>https://jowisoftware.de:4443/trac/ssh</url>
+
+    <organization>
+        <name>JoWiSoftware</name>
+        <url>http://www.jowisoftware.de</url>
+    </organization>
+
+    <issueManagement>
+        <system>Trac</system>
+        <url>https://jowisoftware.de:4443/trac/ssh</url>
+    </issueManagement>
+    
+    <scm>
+        <connection>scm:svn:https://jowisoftware.de:4443/svn/ssh</connection>
+        <developerConnection>scm:svn:https://jowisoftware.de:4443/svn/ssh</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://jowisoftware.de:4443/svn/ssh</url>
+    </scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
