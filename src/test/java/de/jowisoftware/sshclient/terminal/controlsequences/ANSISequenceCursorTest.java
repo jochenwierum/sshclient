@@ -1,6 +1,8 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
 
+import static org.junit.Assert.assertSame;
+
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
@@ -12,27 +14,22 @@ import de.jowisoftware.sshclient.util.SequenceUtils;
 @RunWith(JMock.class)
 public class ANSISequenceCursorTest extends AbstractSequenceTest {
     @Test
+    public void testFEqualsH() {
+        assertSame(SequenceUtils.getANSISequence('H'),
+                SequenceUtils.getANSISequence('f'));
+    }
+
+    @Test
     public void testHomePosition() {
         context.checking(new Expectations() {{
-            oneOf(buffer).setAbsoluteCursorPosition(new Position(1, 1));
+            oneOf(buffer).setCursorPosition(new Position(1, 1));
         }});
 
-        SequenceUtils.getANSISequence('H').process(sessionInfo);
+        SequenceUtils.getANSISequence('f').process(sessionInfo);
     }
 
     @Test
-    public void testCustomPositionsWithH() {
-        context.checking(new Expectations() {{
-            oneOf(buffer).setCursorPosition(new Position(5, 1));
-            oneOf(buffer).setCursorPosition(new Position(7, 3));
-        }});
-
-        SequenceUtils.getANSISequence('H').process(sessionInfo, "1", "5");
-        SequenceUtils.getANSISequence('H').process(sessionInfo, "3", "7");
-    }
-
-    @Test
-    public void testCustomPositionsWithf() {
+    public void testCustomPositions() {
         context.checking(new Expectations() {{
             oneOf(buffer).setCursorPosition(new Position(5, 1));
             oneOf(buffer).setCursorPosition(new Position(7, 3));
@@ -43,7 +40,22 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testSetupRoll() {
+    public void testPartialPositions() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).setCursorPosition(new Position(1, 4));
+            oneOf(buffer).setCursorPosition(new Position(3, 1));
+            oneOf(buffer).setCursorPosition(new Position(1, 7));
+            oneOf(buffer).setCursorPosition(new Position(12, 1));
+        }});
+
+        SequenceUtils.getANSISequence('f').process(sessionInfo, "4", "");
+        SequenceUtils.getANSISequence('f').process(sessionInfo, "", "3");
+        SequenceUtils.getANSISequence('f').process(sessionInfo, "7", "0");
+        SequenceUtils.getANSISequence('f').process(sessionInfo, "0", "12");
+    }
+
+    @Test
+    public void testMargin() {
         context.checking(new Expectations() {{
             oneOf(buffer).setMargin(1, 5);
             oneOf(buffer).setCursorPosition(new Position(1, 1));
@@ -56,7 +68,7 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testRemoveRoll() {
+    public void testResetMargin() {
         context.checking(new Expectations() {{
             oneOf(buffer).resetMargin();
             oneOf(buffer).setCursorPosition(new Position(1, 1));

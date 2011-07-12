@@ -113,14 +113,6 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
         }
     }
 
-
-    @Override
-    public void setAbsoluteCursorPosition(final Position cursorPosition) {
-        synchronized (this) {
-            setAndFixCursorPosition(cursorPosition);
-        }
-    }
-
     @Override
     public Position getCursorPosition() {
         synchronized (this) {
@@ -132,7 +124,6 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
         }
     }
 
-    @Override
     public Position getAbsoluteCursorPosition() {
         return position;
     }

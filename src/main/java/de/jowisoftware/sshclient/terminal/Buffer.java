@@ -14,8 +14,6 @@ public interface Buffer<T extends GfxChar> {
 
     void setCursorPosition(final Position position);
     Position getCursorPosition();
-    void setAbsoluteCursorPosition(Position cursorPosition);
-    Position getAbsoluteCursorPosition();
 
     void setMargin(int start, int end);
     void resetMargin();
