@@ -12,7 +12,7 @@ import de.jowisoftware.sshclient.ui.GfxChar;
 // TODO: is it possible to split this into two classes? e.g. Cursorposition + Array?
 public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     private static final Logger LOGGER = Logger.getLogger(ArrayBuffer.class);
-    private static final int NO_ROLL_DEFINED = -1;
+    private static final int NO_MARGIN_DEFINED = -1;
 
     /**
      * displayed characters
@@ -21,8 +21,8 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     private volatile GfxChar[][] lines;
     private volatile Position position = new Position(1, 1);
     private final T clearChar;
-    private int rollRangeBegin = NO_ROLL_DEFINED;
-    private int rollRangeEnd = NO_ROLL_DEFINED;
+    private int topMargin = NO_MARGIN_DEFINED;
+    private int bottomMargin = NO_MARGIN_DEFINED;
 
 
     public ArrayBuffer(final T clearChar,
@@ -105,8 +105,8 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void setCursorPosition(final Position position) {
         synchronized (this) {
-            if (rollRangeBegin != NO_ROLL_DEFINED && rollRangeBegin != NO_ROLL_DEFINED) {
-                setAndFixCursorPosition(position.offset(0, rollRangeBegin - 1));
+            if (topMargin != NO_MARGIN_DEFINED && topMargin != NO_MARGIN_DEFINED) {
+                setAndFixCursorPosition(position.offset(0, topMargin - 1));
             } else {
                 setAndFixCursorPosition(position);
             }
@@ -122,17 +122,10 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     @Override
-    public void setSafeCursorPosition(final Position position) {
-        synchronized (this) {
-            this.position = position.moveInRange(getSize().toRange());
-        }
-    }
-
-    @Override
     public Position getCursorPosition() {
         synchronized (this) {
-            if (rollRangeBegin != NO_ROLL_DEFINED && rollRangeEnd != NO_ROLL_DEFINED) {
-                return position.offset(0, -rollRangeBegin + 1);
+            if (topMargin != NO_MARGIN_DEFINED && bottomMargin != NO_MARGIN_DEFINED) {
+                return position.offset(0, -topMargin + 1);
             } else {
                 return position;
             }
@@ -201,30 +194,29 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     @Override
-    public void setRollRange(final int rollRangeBegin, final int rollRangeEnd) {
-        this.rollRangeBegin = rollRangeBegin;
-        this.rollRangeEnd = rollRangeEnd;
+    public void setMargin(final int rollRangeBegin, final int rollRangeEnd) {
+        this.topMargin = rollRangeBegin;
+        this.bottomMargin = rollRangeEnd;
     }
 
     @Override
-    public void deleteRollRange() {
-        rollRangeBegin = NO_ROLL_DEFINED;
-        rollRangeEnd = NO_ROLL_DEFINED;
+    public void resetMargin() {
+        topMargin = NO_MARGIN_DEFINED;
+        bottomMargin = NO_MARGIN_DEFINED;
     }
 
     @Override
     public void moveCursorUpAndRoll() {
         synchronized(this) {
-            if (rollRangeBegin == NO_ROLL_DEFINED) {
-                setSafeCursorPosition(position.offset(0, -1));
+            if (topMargin == NO_MARGIN_DEFINED) {
+                this.position = position.offset(0, -1).moveInRange(position.toRange());
             } else {
-                int y = position.y;
-                if (y == rollRangeBegin) {
-                    shiftLines(1, rollRangeBegin - 1, rollRangeEnd);
+                final int y = position.y;
+                if (y == topMargin) {
+                    shiftLines(1, topMargin - 1, bottomMargin);
                 } else {
-                    --y;
+                    this.position = position.withY(y - 1);
                 }
-                setSafeCursorPosition(position.withY(y));
             }
         }
     }
@@ -234,11 +226,11 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
         synchronized(this) {
             int y = position.y;
             final int x = resetToFirstColumn ? 1 : position.x;
-            if (rollRangeEnd == NO_ROLL_DEFINED) {
+            if (bottomMargin == NO_MARGIN_DEFINED) {
                 setCursorPosition(new Position(x, y + 1));
             } else {
-                if (y == rollRangeEnd) {
-                    shiftLines(-1, rollRangeBegin - 1, rollRangeEnd);
+                if (y == bottomMargin) {
+                    shiftLines(-1, topMargin - 1, bottomMargin);
                 } else {
                     ++y;
                 }
@@ -280,8 +272,8 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void insertLines(final int linesCount) {
         synchronized(this) {
-            if (rollRangeEnd != NO_ROLL_DEFINED) {
-                shiftLines(linesCount, position.y - 1, rollRangeEnd);
+            if (bottomMargin != NO_MARGIN_DEFINED) {
+                shiftLines(linesCount, position.y - 1, bottomMargin);
             } else {
                 shiftLines(linesCount, position.y - 1, lines.length);
             }

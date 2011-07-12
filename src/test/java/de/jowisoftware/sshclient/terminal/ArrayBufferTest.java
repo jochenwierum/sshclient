@@ -114,7 +114,7 @@ public class ArrayBufferTest {
 
     @Test
     public void setRollRangedCursorSet() {
-        buffer.setRollRange(3, 10);
+        buffer.setMargin(3, 10);
         buffer.setCursorPosition(new Position(1, 2));
         buffer.addCharacter(char1);
 
@@ -138,26 +138,13 @@ public class ArrayBufferTest {
         assertChar(24, 1, char1);
     }
 
-
-    @Test
-    public void testSaveSet() {
-        buffer.setSafeCursorPosition(new Position(-7, -3));
-        assertPosition(1, 1);
-        buffer.setSafeCursorPosition(new Position(99, 99));
-        assertPosition(24, 80);
-        buffer.setSafeCursorPosition(new Position(5, 200));
-        assertPosition(24, 5);
-        buffer.setSafeCursorPosition(new Position(4, 8));
-        assertPosition(8, 4);
-    }
-
     @Test
     public void testMoveCursorUpAndRoll() {
         buffer.addCharacter(char2); buffer.addNewLine();
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char2); buffer.addNewLine();
         buffer.addCharacter(char1);
-        buffer.setRollRange(2, 3);
+        buffer.setMargin(2, 3);
 
         buffer.moveCursorUpAndRoll();
         assertPosition(3, 2);
@@ -202,7 +189,7 @@ public class ArrayBufferTest {
         buffer.addCharacter(char1);
 
         buffer.setCursorPosition(buffer.getCursorPosition().offset(0, -1));
-        buffer.setRollRange(2, 3);
+        buffer.setMargin(2, 3);
 
         buffer.moveCursorDownAndRoll(false);
         assertPosition(3, 2);
@@ -233,7 +220,7 @@ public class ArrayBufferTest {
 
     @Test
     public void testMoveCursorDownAndRollColReset() {
-        buffer.setRollRange(2, 3);
+        buffer.setMargin(2, 3);
         buffer.addCharacter(char1); buffer.addNewLine();
         buffer.addCharacter(char2); buffer.addNewLine();
         buffer.addCharacter(char1);
@@ -394,7 +381,7 @@ public class ArrayBufferTest {
         buffer.addCharacter(char2); buffer.addNewLine();
         buffer.addCharacter(char1);
 
-        buffer.setRollRange(1, 22);
+        buffer.setMargin(1, 22);
         buffer.setCursorPosition(new Position(7, 3));
         buffer.insertLines(2);
 

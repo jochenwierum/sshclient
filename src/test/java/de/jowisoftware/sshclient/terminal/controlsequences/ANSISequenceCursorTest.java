@@ -45,9 +45,9 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
     @Test
     public void testSetupRoll() {
         context.checking(new Expectations() {{
-            oneOf(buffer).setRollRange(1, 5);
+            oneOf(buffer).setMargin(1, 5);
             oneOf(buffer).setCursorPosition(new Position(1, 1));
-            oneOf(buffer).setRollRange(3, 7);
+            oneOf(buffer).setMargin(3, 7);
             oneOf(buffer).setCursorPosition(new Position(1, 1));
         }});
 
@@ -58,7 +58,7 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
     @Test
     public void testRemoveRoll() {
         context.checking(new Expectations() {{
-            oneOf(buffer).deleteRollRange();
+            oneOf(buffer).resetMargin();
             oneOf(buffer).setCursorPosition(new Position(1, 1));
         }});
 

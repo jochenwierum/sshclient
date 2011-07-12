@@ -16,10 +16,9 @@ public interface Buffer<T extends GfxChar> {
     Position getCursorPosition();
     void setAbsoluteCursorPosition(Position cursorPosition);
     Position getAbsoluteCursorPosition();
-    void setSafeCursorPosition(Position offset); // TODO: remove
 
-    void setRollRange(int start, int end);
-    void deleteRollRange();
+    void setMargin(int start, int end);
+    void resetMargin();
     void moveCursorUpAndRoll();
     void moveCursorDownAndRoll(boolean resetToFirstColumn);
     void insertLines(int lines);

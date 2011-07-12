@@ -8,10 +8,10 @@ public class ANSISequencer<T extends GfxChar> implements ANSISequence<T> {
     @Override
     public void process(final Session<T> sessionInfo, final String... args) {
         if (args.length == 2) {
-            sessionInfo.getBuffer().setRollRange(
+            sessionInfo.getBuffer().setMargin(
                     Integer.parseInt(args[0]), Integer.parseInt(args[1]));
         } else {
-            sessionInfo.getBuffer().deleteRollRange();
+            sessionInfo.getBuffer().resetMargin();
         }
         sessionInfo.getBuffer().setCursorPosition(new Position(1, 1));
     }
