@@ -1,8 +1,5 @@
 package de.jowisoftware.sshclient.util;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Session;
@@ -19,30 +16,8 @@ import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequencer;
 import de.jowisoftware.sshclient.ui.GfxChar;
 
 public final class SequenceUtils {
-    private static Map<Character, ANSISequence<? extends GfxChar>> sequenceHandlers = null;
-    private static final Object SYNC_OBJ = new Object();
-
     private SequenceUtils() {
         /* Util classes are not instanciated */
-    }
-
-    private static <T extends GfxChar> void initMap() {
-        sequenceHandlers = new HashMap<Character, ANSISequence<?>>();
-        sequenceHandlers.put('A', new ANSISequenceABCD<T>(0, -1));
-        sequenceHandlers.put('B', new ANSISequenceABCD<T>(0, 1));
-        sequenceHandlers.put('C', new ANSISequenceABCD<T>(1, 0));
-        sequenceHandlers.put('D', new ANSISequenceABCD<T>(-1, 0));
-        final ANSISequenceHf<T> sequencesHf = new ANSISequenceHf<T>();
-        sequenceHandlers.put('H', sequencesHf);
-        sequenceHandlers.put('J', new ANSISequenceJ<T>());
-        sequenceHandlers.put('K', new ANSISequenceK<T>());
-        sequenceHandlers.put('L', new ANSISequenceL<T>());
-        sequenceHandlers.put('r', new ANSISequencer<T>());
-        sequenceHandlers.put('c', new ANSISequencec<T>());
-        sequenceHandlers.put('f', sequencesHf);
-        sequenceHandlers.put('h', new ANSISequenceHighLow<T>(true));
-        sequenceHandlers.put('l', new ANSISequenceHighLow<T>(false));
-        sequenceHandlers.put('m', new ANSISequencem<T>());
     }
 
     private static class WarnSequenceHandler<T extends GfxChar> implements ANSISequence<T> {
@@ -68,18 +43,24 @@ public final class SequenceUtils {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static <T extends GfxChar> ANSISequence<T> getANSISequence(final char c) {
-        if (sequenceHandlers == null) {
-            synchronized(SYNC_OBJ) {
-                if (sequenceHandlers == null) {
-                    initMap();
-                }
-            }
+        switch(c) {
+        case 'A': return new ANSISequenceABCD<T>(0, -1);
+        case 'B': return new ANSISequenceABCD<T>(0, 1);
+        case 'C': return new ANSISequenceABCD<T>(1, 0);
+        case 'D': return new ANSISequenceABCD<T>(-1, 0);
+        case 'H': return new ANSISequenceHf<T>();
+        case 'J': return new ANSISequenceJ<T>();
+        case 'K': return new ANSISequenceK<T>();
+        case 'L': return new ANSISequenceL<T>();
+        case 'r': return new ANSISequencer<T>();
+        case 'c': return new ANSISequencec<T>();
+        case 'f': return new ANSISequenceHf<T>();
+        case 'h': return new ANSISequenceHighLow<T>(true);
+        case 'l': return new ANSISequenceHighLow<T>(false);
+        case 'm': return new ANSISequencem<T>();
+        default: return new WarnSequenceHandler<T>(c);
         }
-
-        return sequenceHandlers.containsKey(c) ?
-                (ANSISequence<T>) sequenceHandlers.get(c) : new WarnSequenceHandler<T>(c);
     }
 
     @SuppressWarnings("unchecked")

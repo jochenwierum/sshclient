@@ -1,7 +1,7 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
 
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertEquals;
 
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JMock;
@@ -15,8 +15,8 @@ import de.jowisoftware.sshclient.util.SequenceUtils;
 public class ANSISequenceCursorTest extends AbstractSequenceTest {
     @Test
     public void testFEqualsH() {
-        assertSame(SequenceUtils.getANSISequence('H'),
-                SequenceUtils.getANSISequence('f'));
+        assertEquals(SequenceUtils.getANSISequence('H').getClass(),
+                SequenceUtils.getANSISequence('f').getClass());
     }
 
     @Test

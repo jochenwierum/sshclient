@@ -21,8 +21,10 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     private volatile GfxChar[][] lines;
     private volatile Position position = new Position(1, 1);
     private final T clearChar;
+
     private int topMargin = NO_MARGIN_DEFINED;
     private int bottomMargin = NO_MARGIN_DEFINED;
+    private boolean cursorIsRelativeToMargin = false;
 
 
     public ArrayBuffer(final T clearChar,
@@ -105,7 +107,8 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void setCursorPosition(final Position position) {
         synchronized (this) {
-            if (topMargin != NO_MARGIN_DEFINED && topMargin != NO_MARGIN_DEFINED) {
+            final boolean isMarginDefined = topMargin != NO_MARGIN_DEFINED && topMargin != NO_MARGIN_DEFINED;
+            if (isMarginDefined && cursorIsRelativeToMargin) {
                 setAndFixCursorPosition(position.offset(0, topMargin - 1));
             } else {
                 setAndFixCursorPosition(position);
@@ -116,7 +119,8 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public Position getCursorPosition() {
         synchronized (this) {
-            if (topMargin != NO_MARGIN_DEFINED && bottomMargin != NO_MARGIN_DEFINED) {
+            final boolean isMarginDefined = topMargin != NO_MARGIN_DEFINED && bottomMargin != NO_MARGIN_DEFINED;
+            if (isMarginDefined && cursorIsRelativeToMargin) {
                 return position.offset(0, -topMargin + 1);
             } else {
                 return position;
@@ -269,5 +273,10 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
                 shiftLines(linesCount, position.y - 1, lines.length);
             }
         }
+    }
+
+    @Override
+    public void setCursorRelativeToMargin(final boolean b) {
+        cursorIsRelativeToMargin  = b;
     }
 }

@@ -54,4 +54,24 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
 
         SequenceUtils.getANSISequence('l').process(sessionInfo, "?3");
     }
+
+    @Test
+    public void testOriginModeHigh() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).setCursorRelativeToMargin(true);
+            oneOf(buffer).setCursorPosition(new Position(1, 1));
+        }});
+
+        SequenceUtils.getANSISequence('h').process(sessionInfo, "?6");
+    }
+
+    @Test
+    public void testOriginModeLow() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).setCursorRelativeToMargin(false);
+            oneOf(buffer).setCursorPosition(new Position(1, 1));
+        }});
+
+        SequenceUtils.getANSISequence('l').process(sessionInfo, "?6");
+    }
 }

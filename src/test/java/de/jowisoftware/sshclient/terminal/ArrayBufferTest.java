@@ -114,6 +114,7 @@ public class ArrayBufferTest {
 
     @Test
     public void setRollRangedCursorSet() {
+        buffer.setCursorRelativeToMargin(true);
         buffer.setMargin(3, 10);
         buffer.setCursorPosition(new Position(1, 2));
         buffer.addCharacter(char1);
@@ -395,5 +396,23 @@ public class ArrayBufferTest {
         assertChar(22, 1, nullChar);
         assertChar(23, 1, char2);
         assertChar(24, 1, char1);
+    }
+
+    @Test
+    public void testSetCursorInMargin() {
+        buffer.setMargin(4, 23);
+        buffer.setCursorPosition(new Position(3, 3));
+        assertEquals(new Position(3, 3),
+                buffer.getAbsoluteCursorPosition());
+
+        buffer.setCursorRelativeToMargin(true);
+        buffer.setCursorPosition(new Position(5, 3));
+        assertEquals(new Position(5, 6),
+                buffer.getAbsoluteCursorPosition());
+
+        buffer.setCursorRelativeToMargin(false);
+        buffer.setCursorPosition(new Position(1, 1));
+        assertEquals(new Position(1, 1),
+                buffer.getAbsoluteCursorPosition());
     }
 }

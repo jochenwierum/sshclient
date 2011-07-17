@@ -12,6 +12,7 @@ public interface Buffer<T extends GfxChar> {
 
     void erase(Range range);
 
+    void setCursorRelativeToMargin(boolean b);
     void setCursorPosition(final Position position);
     Position getCursorPosition();
 
