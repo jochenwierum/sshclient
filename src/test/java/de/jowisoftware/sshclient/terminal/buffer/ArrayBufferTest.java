@@ -8,7 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.terminal.buffer.ArrayBuffer;
+import de.jowisoftware.sshclient.terminal.buffer.DefaultBuffer;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Range;
@@ -16,7 +16,7 @@ import de.jowisoftware.sshclient.terminal.buffer.Range;
 @RunWith(JMock.class)
 public class ArrayBufferTest {
     private final Mockery context = new Mockery();
-    private ArrayBuffer<GfxChar> buffer;
+    private DefaultBuffer<GfxChar> buffer;
     private GfxChar nullChar;
     private GfxChar char1;
     private GfxChar char2;
@@ -24,7 +24,7 @@ public class ArrayBufferTest {
     @Before
     public void setUp() {
         nullChar = context.mock(GfxChar.class, "nullChar");
-        buffer = new ArrayBuffer<GfxChar>(nullChar, 80, 24);
+        buffer = new DefaultBuffer<GfxChar>(nullChar, 80, 24);
         char1 = context.mock(GfxChar.class, "char1");
         char2 = context.mock(GfxChar.class, "char2");
     }

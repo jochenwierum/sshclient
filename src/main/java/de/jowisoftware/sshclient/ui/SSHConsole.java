@@ -20,7 +20,7 @@ import de.jowisoftware.sshclient.terminal.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.DefaultSession;
 import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
-import de.jowisoftware.sshclient.terminal.buffer.ArrayBuffer;
+import de.jowisoftware.sshclient.terminal.buffer.DefaultBuffer;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.controlsequences.CursorControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.DebugControlSequence;
@@ -42,7 +42,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         final GfxAwtCharSetup charSetup = new GfxAwtCharSetup(info.getGfxSettings());
         final VisualFeedback visualFeedback = new GfxFeedback(this);
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
-        final Buffer<GfxAwtChar> buffer = new ArrayBuffer<GfxAwtChar>(
+        final Buffer<GfxAwtChar> buffer = new DefaultBuffer<GfxAwtChar>(
                 info.getGfxSettings().getEmptyChar(), 80, 24);
         session = new DefaultSession<GfxAwtChar>(buffer,
                 keyboardProcessor, visualFeedback, charSetup);
