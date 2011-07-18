@@ -77,8 +77,6 @@ public class CharacterProcessor<T extends GfxChar> {
         } else if (character == CARRIDGE_RETURN_CHAR) {
             sessionInfo.getBuffer().setCursorPosition(
                     new Position(1, sessionInfo.getBuffer().getCursorPosition().y));
-        } else if (character == BELL_CHAR) {
-            sessionInfo.getVisualFeedback().bell();
         } else if (character == ESC_CHAR) {
             enterNewState();
         } else {
@@ -88,8 +86,12 @@ public class CharacterProcessor<T extends GfxChar> {
     }
 
     private void processStandardChar(final char character) {
-        sessionInfo.getBuffer().addCharacter(
-            sessionInfo.getCharSetup().createChar(character));
+        if (character == BELL_CHAR) {
+            sessionInfo.getVisualFeedback().bell();
+        } else {
+            sessionInfo.getBuffer().addCharacter(
+                sessionInfo.getCharSetup().createChar(character));
+        }
     }
 
     private void processFirstSequenceChar(final Character c) {
