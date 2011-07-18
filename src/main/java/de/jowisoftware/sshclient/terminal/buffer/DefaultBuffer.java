@@ -25,21 +25,22 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     @Override
-    public void newSize(final int width, final int height) {
+    public final void newSize(final int width, final int height) {
         synchronized(this) {
             storage.newSize(width, height);
             setAndFixCursorPosition(position);
         }
     }
 
-    private void setAndFixCursorPosition(final Position position) {
-        if (position.y > storage.height()) {
+    private void setAndFixCursorPosition(final Position newPosition) {
+        final Position size = storage.size();
+        if (newPosition.y > size.y) {
             LOGGER.debug("invalid terminal position, shifting lines: " +
-                    position.x + "/" + position.y);
-            storage.shiftLines((-position.y - storage.height()) % storage.height(),
-                    0, storage.height());
+                    newPosition.x + "/" + newPosition.y);
+            storage.shiftLines((-newPosition.y - size.y) % size.y,
+                    0, size.y);
         }
-        this.position = position.moveInRange(getSize().toRange());
+        this.position = newPosition.moveInRange(size.toRange());
     }
 
     @Override
@@ -166,14 +167,14 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public Position getSize() {
         synchronized(this) {
-            return new Position(storage.width(), storage.height());
+            return storage.size();
         }
     }
 
     @Override
     public void erase(final Range range) {
         synchronized(this) {
-            storage.erase(range);
+            storage.erase(range.offset(-1, -1));
         }
     }
 
@@ -183,7 +184,7 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
             if (bottomMargin != NO_MARGIN_DEFINED) {
                 storage.shiftLines(linesCount, position.y - 1, bottomMargin);
             } else {
-                storage.shiftLines(linesCount, position.y - 1, storage.height());
+                storage.shiftLines(linesCount, position.y - 1, storage.size().y);
             }
         }
     }

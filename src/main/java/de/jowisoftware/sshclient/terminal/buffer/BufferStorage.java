@@ -1,8 +1,7 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
 public interface BufferStorage<T extends GfxChar> {
-    int width();
-    int height();
+    Position size();
     void newSize(final int width, final int height);
 
     void shiftLines(final int offset, final int start, final int end);

@@ -53,4 +53,8 @@ public class Range {
     public int height() {
         return bottomRight.y - topLeft.y + 1;
     }
+
+    public Range offset(final int dx, final int dy) {
+        return new Range(topLeft.offset(dx, dy), bottomRight.offset(dx, dy));
+    }
 }

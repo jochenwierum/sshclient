@@ -19,13 +19,8 @@ public class DefaultBufferStorage<T extends GfxChar> implements BufferStorage<T>
     }
 
     @Override
-    public int width() {
-        return lines[0].length;
-    }
-
-    @Override
-    public int height() {
-        return lines.length;
+    public Position size() {
+        return new Position(lines[0].length, lines.length);
     }
 
     @Override
@@ -98,20 +93,20 @@ public class DefaultBufferStorage<T extends GfxChar> implements BufferStorage<T>
     @Override
     public void erase(final Range range) {
         if (range.topLeft.y == range.bottomRight.y) {
-            for (int col = range.topLeft.x - 1; col < range.bottomRight.x; ++col) {
-                lines[range.topLeft.y - 1][col] = clearChar;
+            for (int col = range.topLeft.x; col <= range.bottomRight.x; ++col) {
+                lines[range.topLeft.y][col] = clearChar;
             }
         } else {
-            for (int col = range.topLeft.x - 1; col < lines[0].length; ++col) {
-                lines[range.topLeft.y - 1][col] = clearChar;
+            for (int col = range.topLeft.x; col < lines[0].length; ++col) {
+                lines[range.topLeft.y][col] = clearChar;
             }
-            for (int row = range.topLeft.y; row < range.bottomRight.y - 1; ++row) {
+            for (int row = range.topLeft.y + 1; row < range.bottomRight.y; ++row) {
                 for (int col = 0; col < lines[row].length; ++col) {
                     lines[row][col] = clearChar;
                 }
             }
-            for (int col = 0; col < range.bottomRight.x; ++col) {
-                lines[range.bottomRight.y - 1][col] = clearChar;
+            for (int col = 0; col <= range.bottomRight.x; ++col) {
+                lines[range.bottomRight.y][col] = clearChar;
             }
         }
     }

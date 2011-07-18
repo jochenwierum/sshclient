@@ -5,9 +5,6 @@ import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.terminal.buffer.Range;
-
 public class RangeTest {
     @Test
     public void test1ArgConstructor() {
@@ -59,5 +56,17 @@ public class RangeTest {
         assertEquals(6, range2.width());
         assertEquals(8, range1.height());
         assertEquals(2, range2.height());
+    }
+
+    @Test
+    public void testOffset() {
+        final Range range1 = new Range(new Position(1, 1), new Position(3, 8));
+        final Range range2 = new Range(new Position(2, 3), new Position(7, 4));
+
+        final Range range3 = new Range(new Position(3, 5), new Position(5, 12));
+        final Range range4 = new Range(new Position(1, 2), new Position(6, 3));
+
+        assertEquals(range3, range1.offset(2, 4));
+        assertEquals(range4, range2.offset(-1, -1));
     }
 }
