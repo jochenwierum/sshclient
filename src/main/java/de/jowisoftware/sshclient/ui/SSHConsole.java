@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.OutputStream;
@@ -20,8 +22,8 @@ import de.jowisoftware.sshclient.terminal.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.DefaultSession;
 import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
-import de.jowisoftware.sshclient.terminal.buffer.DefaultBuffer;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import de.jowisoftware.sshclient.terminal.buffer.DefaultBuffer;
 import de.jowisoftware.sshclient.terminal.controlsequences.CursorControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.DebugControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.KeyboardControlSequence;
@@ -156,6 +158,11 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
             session.getBuffer().newSize(80, 24); break;
         }
         session.getBuffer().render(renderer);
+    }
+
+    public void takeFocusWithKey(final KeyEvent e) {
+        this.requestFocusInWindow();
+        ((KeyListener) session.getKeyboardFeedback()).keyPressed(e);
     }
 
     @Override public void componentMoved(final ComponentEvent e) { /* ignored */ }

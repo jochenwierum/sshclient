@@ -3,6 +3,7 @@ package de.jowisoftware.sshclient;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.regex.Matcher;
@@ -92,7 +93,7 @@ public class MainWindow extends JFrame {
         menu.add(fileMenu);
         menu.add(viewMenu);
 
-        pane = new DnDTabbedPane();
+        pane = createPane();
 
         setJMenuBar(menu);
         add(pane);
@@ -101,6 +102,21 @@ public class MainWindow extends JFrame {
 
         setSize(640, 480);
         setVisible(true);
+    }
+
+    private JTabbedPane createPane() {
+        final JTabbedPane tabbedPane = new DnDTabbedPane();
+        tabbedPane.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(final KeyEvent e) {
+                if (pane.getSelectedComponent() instanceof SSHFrame) {
+                    ((SSHFrame) pane.getSelectedComponent())
+                            .takeFocusWithKey(e);
+                }
+            }
+        });
+
+        return tabbedPane;
     }
 
     private void initTabs() {
@@ -156,7 +172,10 @@ public class MainWindow extends JFrame {
             info.setPort(Integer.parseInt(matcher.group(3)));
         }
 
-        pane.addTab(info.getTitle(), new SSHFrame(this, info, jsch));
+        final SSHFrame sshFrame = new SSHFrame(this, info, jsch);
+        pane.addTab(info.getTitle(), sshFrame);
+        pane.setTabComponentAt(pane.getTabCount() - 1,
+                sshFrame.createTabComponent(pane));
     }
 
     private JMenu createFileMenu() {

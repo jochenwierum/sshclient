@@ -1,11 +1,14 @@
 package de.jowisoftware.sshclient.ui;
 
 import java.awt.BorderLayout;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -106,6 +109,16 @@ public class SSHFrame extends JPanel {
     public void redraw() {
         if (console != null) {
             console.redrawConsole();
+        }
+    }
+
+    public JComponent createTabComponent(final JTabbedPane pane) {
+        return new SSHTabComponent(this, info, pane);
+    }
+
+    public void takeFocusWithKey(final KeyEvent e) {
+        if (console != null) {
+            console.takeFocusWithKey(e);
         }
     }
 }

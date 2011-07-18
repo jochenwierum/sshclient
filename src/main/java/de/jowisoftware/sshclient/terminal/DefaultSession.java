@@ -74,6 +74,10 @@ public class DefaultSession<T extends GfxChar> implements Session<T> {
 
     @Override
     public void sendToServer(final byte[] bytes) {
+        if (responseStream == null) {
+            return;
+        }
+
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Sending: " +
                     StringUtils.escapeForLogs(bytes, 0, bytes.length));
