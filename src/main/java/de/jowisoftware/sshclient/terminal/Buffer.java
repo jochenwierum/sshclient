@@ -23,4 +23,5 @@ public interface Buffer<T extends GfxChar> {
     void insertLines(int lines);
 
     void render(Renderer<T> renderer);
+    void tapstop(Tabstop vertical);
 }

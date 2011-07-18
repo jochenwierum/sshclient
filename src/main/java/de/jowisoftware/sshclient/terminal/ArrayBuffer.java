@@ -279,4 +279,10 @@ public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
     public void setCursorRelativeToMargin(final boolean b) {
         cursorIsRelativeToMargin  = b;
     }
+
+    @Override
+    public void tapstop(final Tabstop vertical) {
+        // TODO Auto-generated method stub
+
+    }
 }

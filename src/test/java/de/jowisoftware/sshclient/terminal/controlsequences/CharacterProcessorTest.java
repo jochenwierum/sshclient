@@ -13,8 +13,8 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CharacterProcessor;
-import de.jowisoftware.sshclient.terminal.Position;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
+import de.jowisoftware.sshclient.terminal.Position;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
 import de.jowisoftware.sshclient.test.matches.StringBuilderEquals;
@@ -189,5 +189,54 @@ public class CharacterProcessorTest {
         processor.processByte((byte) Character.codePointAt("x", 0));
         processor.processByte((byte) 7);
         processor.processByte((byte) Character.codePointAt("z", 0));
+    }
+
+    @Test
+    public void testStackStates() {
+        final Sequence seq = context.sequence("seq");
+        context.checking(new Expectations() {{
+                oneOf(buffer).addNewLine();
+                    inSequence(seq);
+
+                handleSeq(sequence1, "1", false);
+                handleSeq(sequence2, "1", false);
+                handlePartialStart(sequence1, "1", false);
+                handlePartialStart(sequence2, "1", true);
+                handleSeq(sequence2, "12", true);
+                oneOf(sequence2).handleSequence("12", sessionInfo);
+                    inSequence(seq);
+
+                handleSeq(sequence1, "a", false);
+                handleSeq(sequence2, "a", false);
+                handlePartialStart(sequence1, "a", true);
+                handlePartialStart(sequence2, "a", false);
+                handleSeq(sequence1, "ab", true);
+                oneOf(sequence1).handleSequence("ab", sessionInfo);
+                    inSequence(seq);
+            }
+
+            protected void handleSeq(final NonASCIIControlSequence<GfxChar> sequence,
+                    final String expected, final boolean value) {
+                oneOf(sequence).canHandleSequence(
+                        with(new StringBuilderEquals(expected)));
+                    will(returnValue(value));
+            }
+
+            private void handlePartialStart(
+                    final NonASCIIControlSequence<GfxChar> sequence, final String expected,
+                    final boolean value) {
+                oneOf(sequence).isPartialStart(
+                        with(new StringBuilderEquals(expected)));
+                    will(returnValue(value));
+            }
+        });
+
+        processor.processByte((byte) 27);
+        processor.processByte((byte) Character.codePointAt("a", 0));
+        processor.processByte((byte) 27);
+        processor.processByte((byte) '\n');
+        processor.processByte((byte) Character.codePointAt("1", 0));
+        processor.processByte((byte) Character.codePointAt("2", 0));
+        processor.processByte((byte) Character.codePointAt("b", 0));
     }
 }
