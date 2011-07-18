@@ -6,6 +6,7 @@ import java.util.Set;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
 import de.jowisoftware.sshclient.terminal.Color;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public class GfxAwtChar implements GfxChar {
     private final GfxInfo gfxInfo;

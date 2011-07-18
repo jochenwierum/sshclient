@@ -1,7 +1,7 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public interface NonASCIIControlSequence<T extends GfxChar> {
     boolean isPartialStart(CharSequence sequence);

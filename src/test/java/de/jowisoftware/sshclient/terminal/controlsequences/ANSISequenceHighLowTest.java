@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.DisplayType;
-import de.jowisoftware.sshclient.terminal.Position;
+import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.util.SequenceUtils;
 
 @RunWith(JMock.class)

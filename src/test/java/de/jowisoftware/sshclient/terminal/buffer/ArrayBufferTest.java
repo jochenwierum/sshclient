@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.terminal;
+package de.jowisoftware.sshclient.terminal.buffer;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,7 +8,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.ArrayBuffer;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.Position;
+import de.jowisoftware.sshclient.terminal.buffer.Range;
 
 @RunWith(JMock.class)
 public class ArrayBufferTest {

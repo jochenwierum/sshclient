@@ -4,9 +4,9 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public class CursorControlSequence<T extends GfxChar> implements
         NonASCIIControlSequence<T> {

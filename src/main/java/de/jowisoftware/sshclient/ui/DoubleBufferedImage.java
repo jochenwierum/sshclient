@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import de.jowisoftware.sshclient.terminal.Color;
-import de.jowisoftware.sshclient.terminal.Renderer;
+import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 
 public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
     private final GfxInfo gfxInfo;

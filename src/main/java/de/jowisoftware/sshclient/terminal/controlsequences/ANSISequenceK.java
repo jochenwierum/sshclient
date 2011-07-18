@@ -2,10 +2,10 @@ package de.jowisoftware.sshclient.terminal.controlsequences;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.Buffer;
-import de.jowisoftware.sshclient.terminal.Range;
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.Range;
 
 public class ANSISequenceK<T extends GfxChar> implements ANSISequence<T> {
     private static final Logger LOGGER = Logger.getLogger(ANSISequenceK.class);

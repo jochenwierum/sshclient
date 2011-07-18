@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.controlsequences.NonASCIIControlSequence;
-import de.jowisoftware.sshclient.ui.GfxChar;
 
 public class CharacterProcessorState<T extends GfxChar> {
     static enum State {

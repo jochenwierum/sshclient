@@ -9,9 +9,11 @@ import java.util.Stack;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.CharacterProcessorState.State;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.Position;
+import de.jowisoftware.sshclient.terminal.buffer.Tabstop;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.NonASCIIControlSequence;
-import de.jowisoftware.sshclient.ui.GfxChar;
 import de.jowisoftware.sshclient.util.SequenceUtils;
 
 public class CharacterProcessor<T extends GfxChar> {

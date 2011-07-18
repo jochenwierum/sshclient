@@ -5,8 +5,8 @@ import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.terminal.Position;
-import de.jowisoftware.sshclient.terminal.Range;
+import de.jowisoftware.sshclient.terminal.buffer.Position;
+import de.jowisoftware.sshclient.terminal.buffer.Range;
 import de.jowisoftware.sshclient.util.SequenceUtils;
 
 @RunWith(JMock.class)

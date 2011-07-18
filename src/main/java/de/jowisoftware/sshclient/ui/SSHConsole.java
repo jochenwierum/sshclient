@@ -16,12 +16,12 @@ import com.jcraft.jsch.ChannelShell;
 
 import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread.Callback;
 import de.jowisoftware.sshclient.settings.ConnectionInfo;
-import de.jowisoftware.sshclient.terminal.ArrayBuffer;
-import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.DefaultSession;
 import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
+import de.jowisoftware.sshclient.terminal.buffer.ArrayBuffer;
+import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.controlsequences.CursorControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.DebugControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.KeyboardControlSequence;

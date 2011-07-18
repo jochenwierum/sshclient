@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.terminal;
+package de.jowisoftware.sshclient.terminal.buffer;
 
 public class Position {
     public final int x;

@@ -6,7 +6,8 @@ import java.nio.charset.Charset;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.util.StringUtils;
 
 public class DefaultSession<T extends GfxChar> implements Session<T> {

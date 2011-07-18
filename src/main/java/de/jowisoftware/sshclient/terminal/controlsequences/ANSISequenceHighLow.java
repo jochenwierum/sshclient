@@ -2,11 +2,11 @@ package de.jowisoftware.sshclient.terminal.controlsequences;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.Buffer;
 import de.jowisoftware.sshclient.terminal.DisplayType;
-import de.jowisoftware.sshclient.terminal.Position;
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.util.StringUtils;
 
 public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {

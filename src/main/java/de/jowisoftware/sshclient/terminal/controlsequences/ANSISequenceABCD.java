@@ -1,9 +1,9 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
-import de.jowisoftware.sshclient.terminal.Buffer;
-import de.jowisoftware.sshclient.terminal.Position;
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.Position;
 
 public class ANSISequenceABCD<T extends GfxChar> implements ANSISequence<T> {
     private final int dx;

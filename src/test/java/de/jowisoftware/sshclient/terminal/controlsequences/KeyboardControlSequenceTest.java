@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 @RunWith(JMock.class)
 public class KeyboardControlSequenceTest {

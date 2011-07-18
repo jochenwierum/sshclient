@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import de.jowisoftware.sshclient.terminal.Attribute;
 import de.jowisoftware.sshclient.terminal.Color;
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public class ANSISequencem<T extends GfxChar> implements ANSISequence<T> {
     private static final Logger LOGGER = Logger.getLogger(ANSISequencem.class);

@@ -1,9 +1,12 @@
-package de.jowisoftware.sshclient.terminal;
+package de.jowisoftware.sshclient.terminal.buffer;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
+
+import de.jowisoftware.sshclient.terminal.buffer.Position;
+import de.jowisoftware.sshclient.terminal.buffer.Range;
 
 public class RangeTest {
     @Test

@@ -1,6 +1,5 @@
-package de.jowisoftware.sshclient.terminal;
+package de.jowisoftware.sshclient.terminal.buffer;
 
-import de.jowisoftware.sshclient.ui.GfxChar;
 
 public interface Buffer<T extends GfxChar> {
     void newSize(int width, int height);

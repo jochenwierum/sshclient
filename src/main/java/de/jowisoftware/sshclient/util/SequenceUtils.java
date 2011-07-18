@@ -3,6 +3,7 @@ package de.jowisoftware.sshclient.util;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Session;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceABCD;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceHf;
@@ -13,7 +14,6 @@ import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequenceL;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequencec;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequencem;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequencer;
-import de.jowisoftware.sshclient.ui.GfxChar;
 
 public final class SequenceUtils {
     private SequenceUtils() {

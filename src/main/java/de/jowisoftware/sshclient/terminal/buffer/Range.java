@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.terminal;
+package de.jowisoftware.sshclient.terminal.buffer;
 
 public class Range {
     public final Position topLeft;

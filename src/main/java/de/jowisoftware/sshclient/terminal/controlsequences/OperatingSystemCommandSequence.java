@@ -3,7 +3,7 @@ package de.jowisoftware.sshclient.terminal.controlsequences;
 import java.util.regex.Pattern;
 
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public class OperatingSystemCommandSequence<T extends GfxChar> implements NonASCIIControlSequence<T> {
     private static final Pattern PATTERN = Pattern.compile("\\][012];.*\u0007");

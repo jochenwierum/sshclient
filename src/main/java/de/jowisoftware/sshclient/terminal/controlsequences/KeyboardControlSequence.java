@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public class KeyboardControlSequence<T extends GfxChar> implements NonASCIIControlSequence<T> {
     private static final Logger LOGGER = Logger.getLogger(KeyboardControlSequence.class);

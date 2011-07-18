@@ -1,6 +1,7 @@
 package de.jowisoftware.sshclient.terminal;
 
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public interface Session<T extends GfxChar> {
     void sendToServer(String string);

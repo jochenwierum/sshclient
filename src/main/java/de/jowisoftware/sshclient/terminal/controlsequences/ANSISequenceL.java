@@ -1,7 +1,7 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public class ANSISequenceL<T extends GfxChar> implements ANSISequence<T> {
     @Override

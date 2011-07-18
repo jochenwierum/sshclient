@@ -1,6 +1,6 @@
 package de.jowisoftware.sshclient.terminal;
 
-import de.jowisoftware.sshclient.ui.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public interface GfxCharSetup<T extends GfxChar> {
     void reset();

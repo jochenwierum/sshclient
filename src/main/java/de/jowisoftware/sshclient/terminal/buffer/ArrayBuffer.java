@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.terminal;
+package de.jowisoftware.sshclient.terminal.buffer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.ui.GfxChar;
 
 // TODO: is it possible to split this into two classes? e.g. Cursorposition + Array?
 public class ArrayBuffer<T extends GfxChar> implements Buffer<T> {
