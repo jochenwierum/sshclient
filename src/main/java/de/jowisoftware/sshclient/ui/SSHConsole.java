@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import com.jcraft.jsch.ChannelShell;
 
 import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread.Callback;
-import de.jowisoftware.sshclient.settings.ConnectionInfo;
+import de.jowisoftware.sshclient.settings.Profile;
 import de.jowisoftware.sshclient.terminal.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.DefaultSession;
 import de.jowisoftware.sshclient.terminal.DisplayType;
@@ -40,7 +40,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     private ChannelShell channel;
     private DisplayType displayType = DisplayType.DYNAMIC;
 
-    public SSHConsole(final ConnectionInfo info) {
+    public SSHConsole(final Profile info) {
         final GfxAwtCharSetup charSetup = new GfxAwtCharSetup(info.getGfxSettings());
         final VisualFeedback visualFeedback = new GfxFeedback(this);
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();

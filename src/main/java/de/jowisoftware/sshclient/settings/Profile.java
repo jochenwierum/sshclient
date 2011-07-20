@@ -4,11 +4,13 @@ import java.nio.charset.Charset;
 
 import de.jowisoftware.sshclient.ui.GfxInfo;
 
-public class ConnectionInfo {
+public class Profile {
     private String user = System.getProperty("user.name");
     private String host = "localhost";
     private int port = 22;
     private int timeout = 10000;
+    private Charset charset = Charset.forName("UTF-8");
+    private final GfxInfo gfxInfo = new GfxInfo();
 
     public String getTitle() {
         return user + "@" + host;
@@ -47,10 +49,14 @@ public class ConnectionInfo {
     }
 
     public Charset getCharset() {
-        return Charset.forName("UTF-8");
+        return charset;
+    }
+
+    public void setCharset(final Charset charset) {
+        this.charset  = charset;
     }
 
     public GfxInfo getGfxSettings() {
-        return new GfxInfo();
+        return gfxInfo;
     }
 }

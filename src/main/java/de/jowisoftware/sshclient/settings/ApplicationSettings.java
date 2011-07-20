@@ -1,33 +1,67 @@
 package de.jowisoftware.sshclient.settings;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
 public class ApplicationSettings {
-    public enum FrameCloseBehaviour {
-        ALWAYS, NEVER, WITHOUT_ERRORS
-    }
-
     public enum TabState {
-        OPENED_ON_START(false), CLOSED_ON_START(false),
-            SAVE_AND_CLOSED(true), SAVE_AND_OPENED(true);
-
-        private final boolean saveState;
-        private TabState(final boolean saveState) {
-            this.saveState = saveState;
-        }
-
-        public boolean saveTabState() {
-            return saveState;
-        }
+        OPENED, CLOSED, ALYWAYS_OPEN, ALWAYS_CLOSED
     }
 
-    private Map<String, ConnectionInfo> connections;
-    private List<File> keyFiles;
+    private final Map<String, Profile> profiles = new HashMap<String, Profile>();
+    private final List<File> keyFiles = new ArrayList<File>();
 
-    private boolean unlockKeysOnStart;
-    private TabState logTabState;
-    private TabState keyTabState;
+    private boolean unlockKeysOnStart = false;
+    private TabState logTabState = TabState.CLOSED;
+    private TabState keyTabState = TabState.CLOSED;
+
+    /*
+    public ApplicationSettings() {
+        Profile profile = new Profile();
+        profile.setHost("jowisoftware.de");
+        profile.setUser("jochen");
+        profiles.put("jowisoftware", profile);
+
+        profile = new Profile();
+        profile.setHost("home.inf.h-brs.de");
+        profile.setUser("jwieru2s");
+        profiles.put("fh", profile);
+    }
+    */
+
+    public Map<String, Profile> getProfiles() {
+        return profiles;
+    }
+
+    public List<File> getKeyFiles() {
+        return keyFiles;
+    }
+
+    public boolean isUnlockKeysOnStart() {
+        return unlockKeysOnStart;
+    }
+
+    public TabState getLogTabState() {
+        return logTabState;
+    }
+
+    public TabState getKeyTabState() {
+        return keyTabState;
+    }
+
+    public void setKeyTabState(final TabState state) {
+        keyTabState = state;
+    }
+
+    public void setLogTabState(final TabState state) {
+        logTabState = state;
+    }
+
+    public void setUnlockKeyOnStart(final boolean unlock) {
+        unlockKeysOnStart = unlock;
+    }
 }
