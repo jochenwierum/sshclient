@@ -163,7 +163,7 @@ public class MainWindow extends JFrame {
     }
 
     private void initTabs() {
-        keyPanel = new PrivateKeyTab(jsch);
+        keyPanel = new PrivateKeyTab(jsch, settings);
         logPanel = new LogPanel();
 
         if (settings.getKeyTabState() == TabState.ALYWAYS_OPEN
@@ -208,7 +208,7 @@ public class MainWindow extends JFrame {
         jsch.setKnownHosts(new File(projectDir, "known_hosts").getAbsolutePath());
         final File keyListFile = new File(projectDir, "keyagent");
         if (keyListFile.isFile()) {
-            new KeyAgentManager(jsch).loadKeyListFromFile(keyListFile);
+            new KeyAgentManager(jsch).loadKeyListFromSettings(settings);
         }
 
         final File privKey = new File(projectDir, "id_rsa");

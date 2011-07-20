@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
+import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.KeyAgentManager;
 
 public class PrivateKeyTab extends JPanel {
@@ -25,13 +26,14 @@ public class PrivateKeyTab extends JPanel {
 
     private static final Logger LOGGER = Logger.getLogger(PrivateKeyTab.class);
 
-    private final File projectDir = new File(new File(System.getProperty("user.home")), ".ssh");
     private final JSch jsch;
     private JList list;
     private final DefaultListModel listModel = new DefaultListModel();
+    private final ApplicationSettings settings;
 
-    public PrivateKeyTab(final JSch jsch) {
+    public PrivateKeyTab(final JSch jsch, final ApplicationSettings settings) {
         this.jsch = jsch;
+        this.settings = settings;
 
         updateListModel();
         setLayout(new BorderLayout());
@@ -82,11 +84,14 @@ public class PrivateKeyTab extends JPanel {
             public void actionPerformed(final ActionEvent e) {
                 final JFileChooser chooser = new JFileChooser();
                 chooser.setAcceptAllFileFilterUsed(true);
+                final File projectDir = new File(
+                        new File(System.getProperty("user.home")), ".ssh");
                 chooser.setCurrentDirectory(projectDir);
 
                 final int result = chooser.showOpenDialog(getParent());
                 if (result == JFileChooser.APPROVE_OPTION) {
                     final File file = chooser.getSelectedFile();
+                    // TODO: check whether file.toLowerCase() is in identity list
                     LOGGER.info("Adding private key: " + file.getAbsolutePath());
                     try {
                         jsch.addIdentity(file.getAbsolutePath());
@@ -131,8 +136,7 @@ public class PrivateKeyTab extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                new KeyAgentManager(jsch).persistKeyListToFile(
-                        new File(projectDir, "keyagent"));
+                new KeyAgentManager(jsch).persistKeyListToSettings(settings);
             }
         });
     }
