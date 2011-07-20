@@ -127,9 +127,9 @@ public class XMLLoader {
     private void loadGfxSettingsToProfile(final XPath xpath, final Element gfxNode,
             final GfxInfo gfxSettings) {
         gfxSettings.getColorMap().putAll(
-                getColor(xpath, gfxNode, "colors/color[@name][@value]"));
+                getColors(xpath, gfxNode, "colors/color[@name][@value]"));
         gfxSettings.getLightColorMap().putAll(
-                getColor(xpath, gfxNode, "colors/color[@name][@value]"));
+                getColors(xpath, gfxNode, "colors/color[@name][@value]"));
         final Color cursorColor = getAWTColor(xpath, gfxNode, "cursorColor/text()");
         if (cursorColor != null) {
             gfxSettings.setCursorColor(cursorColor);
@@ -156,7 +156,7 @@ public class XMLLoader {
         return null;
     }
 
-    private Map<de.jowisoftware.sshclient.terminal.Color, Color> getColor(
+    private Map<de.jowisoftware.sshclient.terminal.Color, Color> getColors(
             final XPath xpath, final Element node, final String xpathExpression) {
         final NodeList colorList;
         try {
@@ -182,12 +182,20 @@ public class XMLLoader {
     }
 
     private Color getAWTColor(final XPath xpath, final Node item, final String expression) {
-        final Integer rgbValue = getInteger(xpath, item, expression, null);
-        if (rgbValue != null) {
-            return new Color(rgbValue);
-        } else {
+        final String rgbHexValue = getString(xpath, item, expression, null);
+        if (rgbHexValue == null) {
             return null;
         }
+
+        final int rgbValue;
+        try {
+            rgbValue = Integer.parseInt(rgbHexValue, 16);
+        } catch (final NumberFormatException e) {
+            LOGGER.warn("Illegal color code, igonring: " + rgbHexValue, e);
+            return null;
+        }
+
+        return new Color(rgbValue | 0xFF000000);
     }
 
     private de.jowisoftware.sshclient.terminal.Color getTermColor(final XPath xpath, final Node item) {

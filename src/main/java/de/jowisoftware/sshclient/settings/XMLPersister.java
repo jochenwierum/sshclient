@@ -87,13 +87,13 @@ public class XMLPersister {
         for(final Entry<de.jowisoftware.sshclient.terminal.Color, Color> e : colorMap.entrySet()) {
             final Element color = doc.createElement("color");
             color.setAttribute("name", e.getKey().name());
-            color.setAttribute("value", Integer.toString(e.getValue().getRGB()));
+            color.setAttribute("value", Integer.toString(e.getValue().getRGB() & 0xFFFFFF, 16));
             parent.appendChild(color);
         }
     }
 
     private Node createKeyValue(final Document doc, final String key, final Color color) {
-        return createKeyValue(doc, key, color.getRGB());
+        return createKeyValue(doc, key, Integer.toString(color.getRGB() & 0xFFFFFF, 16));
     }
 
     private Node createKeyValue(final Document doc, final String key, final int value) {
