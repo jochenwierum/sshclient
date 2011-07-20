@@ -10,15 +10,10 @@ import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
 import javax.swing.Timer;
 
 import org.apache.log4j.Logger;
@@ -35,6 +30,8 @@ import de.jowisoftware.sshclient.settings.XMLLoader;
 import de.jowisoftware.sshclient.settings.XMLPersister;
 import de.jowisoftware.sshclient.ui.ClosableTabComponent;
 import de.jowisoftware.sshclient.ui.DnDTabbedPane;
+import de.jowisoftware.sshclient.ui.MainWindowMenu;
+import de.jowisoftware.sshclient.ui.MainWindowToolbar;
 import de.jowisoftware.sshclient.ui.PrivateKeyTab;
 import de.jowisoftware.sshclient.ui.SSHFrame;
 
@@ -46,10 +43,14 @@ public class MainWindow extends JFrame {
     private Timer timer;
     private JComponent logPanel;
     private PrivateKeyTab keyPanel;
+    private MainWindowMenu menu;
 
+    public final ApplicationSettings settings = new ApplicationSettings();
+
+    private final File projectDir;
     private JSch jsch;
-    final File projectDir;
-    private final ApplicationSettings settings = new ApplicationSettings();
+    private MainWindowToolbar toolBar;
+
 
     public MainWindow() {
         super("SSH");
@@ -129,36 +130,21 @@ public class MainWindow extends JFrame {
     }
 
     private void initWindowElements() {
-        final JMenuBar menu = initMenu();
-        setJMenuBar(menu);
+        menu = new MainWindowMenu(this);
+        setJMenuBar(menu.getMenuBar());
 
         setLayout(new BorderLayout());
 
         pane = createPane();
         add(pane, BorderLayout.CENTER);
 
-        final JToolBar toolBar = createToolBar();
-        add(toolBar, BorderLayout.NORTH);
+        toolBar = new MainWindowToolbar(this);
+        add(toolBar.getToolBar(), BorderLayout.NORTH);
 
         initTabs();
 
         setSize(640, 480);
         setVisible(true);
-    }
-
-    private JToolBar createToolBar() {
-        final JToolBar toolBar = new JToolBar("ssh");
-        toolBar.add(new JButton("connect"));
-        return toolBar;
-    }
-
-    private JMenuBar initMenu() {
-        final JMenuBar menu = new JMenuBar();
-        final JMenu fileMenu = createFileMenu();
-        final JMenu viewMenu = createViewMenu();
-        menu.add(fileMenu);
-        menu.add(viewMenu);
-        return menu;
     }
 
     private JTabbedPane createPane() {
@@ -191,11 +177,11 @@ public class MainWindow extends JFrame {
         }
     }
 
-    private void setKeyTabVisibility(final boolean isVisible) {
+    public void setKeyTabVisibility(final boolean isVisible) {
         setPanelVisibility(isVisible, keyPanel, "keys");
     }
 
-    private void setLogTabVisibility(final boolean isVisible) {
+    public void setLogTabVisibility(final boolean isVisible) {
         setPanelVisibility(isVisible, logPanel, "logs");
     }
 
@@ -243,11 +229,18 @@ public class MainWindow extends JFrame {
         return finalProjectDir;
     }
 
-    // TODO replace this through a real login
-    private void createConnection() {
-        final Profile info = new Profile();
+    public void connect(final Profile profile) {
+        final SSHFrame sshFrame = new SSHFrame(this, profile, jsch);
+        pane.addTab(profile.getTitle(), sshFrame);
+        pane.setTabComponentAt(pane.getTabCount() - 1,
+                sshFrame.createTabComponent(pane));
+        pane.setSelectedComponent(sshFrame);
+    }
+
+    public void connectToCustomProfile() {
+        final Profile profile = new Profile();
         final String result =
-            JOptionPane.showInputDialog("[user@]host[:port]", "jwieru2s@home.inf.h-brs.de");
+            JOptionPane.showInputDialog("[user@]host[:port]", "localhost");
         if (result == null) {
             return;
         }
@@ -258,90 +251,15 @@ public class MainWindow extends JFrame {
         }
 
         if (matcher.group(1) != null) {
-            info.setUser(matcher.group(1));
+            profile.setUser(matcher.group(1));
         }
         if (matcher.group(2) != null) {
-            info.setHost(matcher.group(2));
+            profile.setHost(matcher.group(2));
         }
         if (matcher.group(3) != null) {
-            info.setPort(Integer.parseInt(matcher.group(3)));
+            profile.setPort(Integer.parseInt(matcher.group(3)));
         }
 
-        final SSHFrame sshFrame = new SSHFrame(this, info, jsch);
-        pane.addTab(info.getTitle(), sshFrame);
-        pane.setTabComponentAt(pane.getTabCount() - 1,
-                sshFrame.createTabComponent(pane));
-    }
-
-    private JMenu createFileMenu() {
-        final JMenu fileMenu = new JMenu("File");
-        fileMenu.setMnemonic(KeyEvent.VK_F);
-
-        fileMenu.add(createConnectEntry());
-        fileMenu.add(createQuitMenuEntry());
-
-        return fileMenu;
-    }
-
-
-    private JMenu createViewMenu() {
-        final JMenu viewMenu = new JMenu("View");
-        viewMenu.setMnemonic('v');
-
-        viewMenu.add(createLogVisibilityEntry());
-        viewMenu.add(createKeyAgentVisibilityEntry());
-
-        return viewMenu;
-    }
-
-
-    private JMenuItem createLogVisibilityEntry() {
-        final JMenuItem entry = new JMenuItem("Show Logs");
-        entry.setMnemonic('l');
-
-        entry.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                setLogTabVisibility(true);
-            }
-        });
-
-        return entry;
-    }
-
-    private JMenuItem createKeyAgentVisibilityEntry() {
-        final JMenuItem entry = new JMenuItem("Key Agent");
-        entry.setMnemonic('a');
-
-        entry.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                setKeyTabVisibility(true);
-            }
-        });
-
-        return entry;
-    }
-
-    private JMenuItem createConnectEntry() {
-        final JMenuItem entry = new JMenuItem("Connect...");
-        entry.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                createConnection();
-            }
-        });
-        return entry;
-    }
-
-    private JMenuItem createQuitMenuEntry() {
-        final JMenuItem entry = new JMenuItem("Quit");
-        entry.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                dispose();
-            }
-        });
-        return entry;
+        connect(profile);
     }
 }

@@ -26,7 +26,7 @@ public class SSHFrame extends JPanel {
     private static final long serialVersionUID = 7873084199411017370L;
 
     private static final Logger LOGGER = Logger.getLogger(SSHFrame.class);
-    private final Profile info;
+    private final Profile profile;
 
     private ChannelShell channel;
     private Session session;
@@ -34,14 +34,14 @@ public class SSHFrame extends JPanel {
     private JFrame parent;
     private SSHConsole console = null;
 
-    public SSHFrame(final JFrame parent, final Profile info, final JSch jsch) {
-        this.info = info;
+    public SSHFrame(final JFrame parent, final Profile profile, final JSch jsch) {
+        this.profile = profile;
         this.parent = parent;
 
         setLayout(new BorderLayout());
 
         try {
-            console = new SSHConsole(info);
+            console = new SSHConsole(profile);
             connect(jsch);
             add(console, BorderLayout.CENTER);
         } catch(final Exception e) {
@@ -78,13 +78,13 @@ public class SSHFrame extends JPanel {
     }
 
     private void connect(final JSch jsch) {
-        LOGGER.warn("Connecting to " + info.getTitle());
+        LOGGER.warn("Connecting to " + profile.getTitle());
 
         try {
             session = jsch.getSession(
-                    info.getUser(), info.getHost(), info.getPort());
+                    profile.getUser(), profile.getHost(), profile.getPort());
             session.setUserInfo(new UserInfo(parent));
-            session.connect(info.getTimeout());
+            session.connect(profile.getTimeout());
             channel = (ChannelShell) session.openChannel("shell");
             // TODO: Make env settable via config
             channel.setEnv("TERM", "xterm");
@@ -103,7 +103,7 @@ public class SSHFrame extends JPanel {
             throw new RuntimeException(e);
         }
 
-        LOGGER.warn("Connected to " + info.getTitle());
+        LOGGER.warn("Connected to " + profile.getTitle());
     }
 
     public void redraw() {
@@ -113,7 +113,7 @@ public class SSHFrame extends JPanel {
     }
 
     public JComponent createTabComponent(final JTabbedPane pane) {
-        return new SSHTabComponent(this, info, pane);
+        return new SSHTabComponent(this, profile, pane);
     }
 
     public void takeFocusWithKey(final KeyEvent e) {
