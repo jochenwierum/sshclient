@@ -13,6 +13,7 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     private int topMargin = NO_MARGIN_DEFINED;
     private int bottomMargin = NO_MARGIN_DEFINED;
     private boolean cursorIsRelativeToMargin = false;
+    private boolean autoWrap = true;
 
 
     public DefaultBuffer(final T clearChar,
@@ -91,7 +92,16 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     public void addCharacter(final T character) {
         synchronized(this) {
             storage.setCharacter(position.y - 1, position.x - 1, character);
-            position = position.offset(1, 0).moveInRange(getSize().toRange());
+            moveCursorToNextPosition();
+        }
+    }
+
+    private void moveCursorToNextPosition() {
+        final Range size = getSize().toRange();
+        if (!autoWrap || position.x < size.bottomRight.x) {
+            position = position.offset(1, 0).moveInRange(size);
+        } else {
+            setAndFixCursorPosition(position.offset(0, 1).withX(0));
         }
     }
 
@@ -197,5 +207,9 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void tapstop(final Tabstop vertical) {
         // TODO Auto-generated method stub
+    }
+
+    public void setAutoWrap(final boolean autoWrap) {
+        this.autoWrap = autoWrap;
     }
 }
