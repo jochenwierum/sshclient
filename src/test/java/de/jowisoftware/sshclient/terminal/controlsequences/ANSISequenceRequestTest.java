@@ -3,7 +3,6 @@ package de.jowisoftware.sshclient.terminal.controlsequences;
 import org.jmock.Expectations;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.util.SequenceUtils;
 
 public class ANSISequenceRequestTest extends AbstractSequenceTest {
     private void prepareDeviceAttributes() {
@@ -15,19 +14,19 @@ public class ANSISequenceRequestTest extends AbstractSequenceTest {
     @Test
     public void testDeviceAttributes1() {
         prepareDeviceAttributes();
-        SequenceUtils.getANSISequence('c').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('c', sessionInfo);
     }
 
     @Test
     public void testDeviceAttributes2() {
         prepareDeviceAttributes();
-        SequenceUtils.getANSISequence('c').process(sessionInfo, "0");
+        DefaultSequenceRepository.executeAnsiSequence('c', sessionInfo, "0");
     }
 
     @Test
     public void testDeviceAttributes3() {
         prepareDeviceAttributes();
-        SequenceUtils.getANSISequence('c').process(sessionInfo, "1");
+        DefaultSequenceRepository.executeAnsiSequence('c', sessionInfo, "1");
     }
 
     private void prepareSecondaryDeviceAttributes() {
@@ -39,18 +38,18 @@ public class ANSISequenceRequestTest extends AbstractSequenceTest {
     @Test
     public void testSecondaryDeviceAttributes1() {
         prepareSecondaryDeviceAttributes();
-        SequenceUtils.getANSISequence('c').process(sessionInfo, ">");
+        DefaultSequenceRepository.executeAnsiSequence('c', sessionInfo, ">");
     }
 
     @Test
     public void testSecondaryDeviceAttributes2() {
         prepareSecondaryDeviceAttributes();
-        SequenceUtils.getANSISequence('c').process(sessionInfo, ">0");
+        DefaultSequenceRepository.executeAnsiSequence('c', sessionInfo, ">0");
     }
 
     @Test
     public void testSecondaryDeviceAttributes3() {
         prepareSecondaryDeviceAttributes();
-        SequenceUtils.getANSISequence('c').process(sessionInfo, ">1");
+        DefaultSequenceRepository.executeAnsiSequence('c', sessionInfo, ">1");
     }
 }

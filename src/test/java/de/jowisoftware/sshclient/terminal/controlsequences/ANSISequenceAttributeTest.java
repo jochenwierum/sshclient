@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
 import de.jowisoftware.sshclient.terminal.Color;
-import de.jowisoftware.sshclient.util.SequenceUtils;
 
 @RunWith(JMock.class)
 public class ANSISequenceAttributeTest extends AbstractSequenceTest {
@@ -16,7 +15,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
             oneOf(charSetup).setAttribute(expect);
         }});
 
-        SequenceUtils.getANSISequence('m').process(sessionInfo, Integer.toString(attr));
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, Integer.toString(attr));
     }
 
     private void callWithAttrAndExpectFGColor(final int attr, final Color expect) {
@@ -24,7 +23,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
             oneOf(charSetup).setForeground(expect);
         }});
 
-        SequenceUtils.getANSISequence('m').process(sessionInfo, Integer.toString(attr));
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, Integer.toString(attr));
     }
 
     private void callWithAttrAndExpectBGColor(final int attr, final Color expect) {
@@ -32,7 +31,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
             oneOf(charSetup).setBackground(expect);
         }});
 
-        SequenceUtils.getANSISequence('m').process(sessionInfo, Integer.toString(attr));
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, Integer.toString(attr));
     }
 
     private void callWithRemoveAttrAndExpect(final int attr, final Attribute expect) {
@@ -40,7 +39,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
             oneOf(charSetup).removeAttribute(expect);
         }});
 
-        SequenceUtils.getANSISequence('m').process(sessionInfo, Integer.toString(attr));
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, Integer.toString(attr));
     }
 
     @Test
@@ -96,8 +95,8 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
             oneOf(charSetup).reset();
         }});
 
-        SequenceUtils.getANSISequence('m').process(sessionInfo, "0");
-        SequenceUtils.getANSISequence('m').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "0");
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo);
     }
 
     @Test
@@ -109,6 +108,6 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
             oneOf(charSetup).setAttribute(Attribute.BLINK);
         }});
 
-        SequenceUtils.getANSISequence('m').process(sessionInfo, "0", "5", "34", "41");
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "0", "5", "34", "41");
     }
 }

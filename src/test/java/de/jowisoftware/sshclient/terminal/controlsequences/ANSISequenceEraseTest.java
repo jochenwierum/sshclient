@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Range;
-import de.jowisoftware.sshclient.util.SequenceUtils;
 
 @RunWith(JMock.class)
 public class ANSISequenceEraseTest extends AbstractSequenceTest {
@@ -22,7 +21,7 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
             oneOf(buffer).erase(new Range(cursorPosition, screenSize));
         }});
 
-        SequenceUtils.getANSISequence('J').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('J', sessionInfo);
     }
 
     @Test
@@ -42,7 +41,7 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
             oneOf(buffer).erase(cursorPosition.toRange());
         }});
 
-        SequenceUtils.getANSISequence('J').process(sessionInfo, "1");
+        DefaultSequenceRepository.executeAnsiSequence('J', sessionInfo, "1");
     }
 
     @Test
@@ -62,7 +61,7 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
             oneOf(buffer).erase(position.toRange());
         }});
 
-        SequenceUtils.getANSISequence('J').process(sessionInfo, "2");
+        DefaultSequenceRepository.executeAnsiSequence('J', sessionInfo, "2");
     }
 
     @Test
@@ -89,7 +88,7 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
                     new Position(screenSize.x, cursorPos.y)));
         }});
 
-        SequenceUtils.getANSISequence('K').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('K', sessionInfo);
     }
 
     @Test
@@ -111,7 +110,7 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
                     position));
         }});
 
-        SequenceUtils.getANSISequence('K').process(sessionInfo, "1");
+        DefaultSequenceRepository.executeAnsiSequence('K', sessionInfo, "1");
     }
 
     @Test
@@ -136,7 +135,7 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
                     new Position(screenSize.x, cursorPos.y)));
         }});
 
-        SequenceUtils.getANSISequence('K').process(sessionInfo, "2");
+        DefaultSequenceRepository.executeAnsiSequence('K', sessionInfo, "2");
     }
 
     @Test

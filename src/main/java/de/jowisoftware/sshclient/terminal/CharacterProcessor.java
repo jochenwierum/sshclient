@@ -2,8 +2,6 @@ package de.jowisoftware.sshclient.terminal;
 
 import java.nio.charset.Charset;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Stack;
 
 import org.apache.log4j.Logger;
@@ -14,7 +12,7 @@ import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Tabstop;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.NonASCIIControlSequence;
-import de.jowisoftware.sshclient.util.SequenceUtils;
+import de.jowisoftware.sshclient.terminal.controlsequences.SequenceRepository;
 
 public class CharacterProcessor<T extends GfxChar> {
     private static final Logger LOGGER = Logger.getLogger(CharacterProcessor.class);
@@ -25,8 +23,7 @@ public class CharacterProcessor<T extends GfxChar> {
     private static final char BACKSPACE_CHAR = (char) 8;
     private static final Character TAB_CHAR = (char) 11;
 
-    private final List<NonASCIIControlSequence<T>> knownSequences =
-        new LinkedList<NonASCIIControlSequence<T>>();
+    private final SequenceRepository<T> sequenceRepository;
     private final Stack<CharacterProcessorState<T>> states =
         new Stack<CharacterProcessorState<T>>();
 
@@ -34,13 +31,10 @@ public class CharacterProcessor<T extends GfxChar> {
     private final Session<T> sessionInfo;
 
     public CharacterProcessor(final Session<T> sessionInfo,
-            final Charset charset) {
+            final Charset charset, final SequenceRepository<T> repository) {
         this.sessionInfo = sessionInfo;
         this.decoder = new EncodingDecoder(charset);
-    }
-
-    public void addControlSequence(final NonASCIIControlSequence<T> seq) {
-        knownSequences.add(seq);
+        sequenceRepository = repository;
     }
 
     public void processByte(final byte value) {
@@ -107,7 +101,7 @@ public class CharacterProcessor<T extends GfxChar> {
         if (isLeagalANSISequenceContent(c)) {
             currentState().cachedChars.append(c);
         } else {
-            final ANSISequence<T> seq = SequenceUtils.getANSISequence(c);
+            final ANSISequence<T> seq = sequenceRepository.getANSISequence(c);
             LOGGER.trace("Will handle <ESC>[" + currentState().getCachedString()
                     + c + " with " + seq.getClass().getSimpleName());
 
@@ -191,6 +185,6 @@ public class CharacterProcessor<T extends GfxChar> {
     }
 
     private void enterNewState() {
-        states.push(new CharacterProcessorState<T>(knownSequences));
+        states.push(new CharacterProcessorState<T>(sequenceRepository.getNonASCIISequences()));
     }
 }

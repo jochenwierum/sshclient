@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.util.SequenceUtils;
 
 @RunWith(JMock.class)
 public class ANSISequenceHighLowTest extends AbstractSequenceTest {
@@ -17,7 +16,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
             oneOf(keyboardFeedback).setCursorKeysIsAppMode(false);
         }});
 
-        SequenceUtils.getANSISequence('l').process(sessionInfo, "?1");
+        DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo, "?1");
     }
 
     @Test
@@ -26,7 +25,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
             oneOf(keyboardFeedback).setCursorKeysIsAppMode(true);
         }});
 
-        SequenceUtils.getANSISequence('h').process(sessionInfo, "?1");
+        DefaultSequenceRepository.executeAnsiSequence('h', sessionInfo, "?1");
     }
 
     @Test
@@ -39,7 +38,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(1, 1));
         }});
 
-        SequenceUtils.getANSISequence('h').process(sessionInfo, "?3");
+        DefaultSequenceRepository.executeAnsiSequence('h', sessionInfo, "?3");
     }
 
     @Test
@@ -52,7 +51,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(1, 1));
         }});
 
-        SequenceUtils.getANSISequence('l').process(sessionInfo, "?3");
+        DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo, "?3");
     }
 
     @Test
@@ -62,7 +61,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(1, 1));
         }});
 
-        SequenceUtils.getANSISequence('h').process(sessionInfo, "?6");
+        DefaultSequenceRepository.executeAnsiSequence('h', sessionInfo, "?6");
     }
 
     @Test
@@ -72,6 +71,6 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(1, 1));
         }});
 
-        SequenceUtils.getANSISequence('l').process(sessionInfo, "?6");
+        DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo, "?6");
     }
 }

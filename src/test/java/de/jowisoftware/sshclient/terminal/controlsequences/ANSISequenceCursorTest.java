@@ -8,15 +8,15 @@ import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.util.SequenceUtils;
 
 @RunWith(JMock.class)
 public class ANSISequenceCursorTest extends AbstractSequenceTest {
     @Test
     public void testFEqualsH() {
-        assertEquals(SequenceUtils.getANSISequence('H').getClass(),
-                SequenceUtils.getANSISequence('f').getClass());
+        assertEquals(new DefaultSequenceRepository<GfxChar>().getANSISequence('H').getClass(),
+                new DefaultSequenceRepository<GfxChar>().getANSISequence('f').getClass());
     }
 
     @Test
@@ -25,7 +25,7 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(1, 1));
         }});
 
-        SequenceUtils.getANSISequence('f').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('f', sessionInfo);
     }
 
     @Test
@@ -35,8 +35,8 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(7, 3));
         }});
 
-        SequenceUtils.getANSISequence('f').process(sessionInfo, "1", "5");
-        SequenceUtils.getANSISequence('f').process(sessionInfo, "3", "7");
+        DefaultSequenceRepository.executeAnsiSequence('f', sessionInfo, "1", "5");
+        DefaultSequenceRepository.executeAnsiSequence('f', sessionInfo, "3", "7");
     }
 
     @Test
@@ -48,10 +48,10 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(12, 1));
         }});
 
-        SequenceUtils.getANSISequence('f').process(sessionInfo, "4", "");
-        SequenceUtils.getANSISequence('f').process(sessionInfo, "", "3");
-        SequenceUtils.getANSISequence('f').process(sessionInfo, "7", "0");
-        SequenceUtils.getANSISequence('f').process(sessionInfo, "0", "12");
+        DefaultSequenceRepository.executeAnsiSequence('f', sessionInfo, "4", "");
+        DefaultSequenceRepository.executeAnsiSequence('f', sessionInfo, "", "3");
+        DefaultSequenceRepository.executeAnsiSequence('f', sessionInfo, "7", "0");
+        DefaultSequenceRepository.executeAnsiSequence('f', sessionInfo, "0", "12");
     }
 
     @Test
@@ -63,8 +63,8 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(1, 1));
         }});
 
-        SequenceUtils.getANSISequence('r').process(sessionInfo, "1", "5");
-        SequenceUtils.getANSISequence('r').process(sessionInfo, "3", "7");
+        DefaultSequenceRepository.executeAnsiSequence('r', sessionInfo, "1", "5");
+        DefaultSequenceRepository.executeAnsiSequence('r', sessionInfo, "3", "7");
     }
 
     @Test
@@ -74,7 +74,7 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(1, 1));
         }});
 
-        SequenceUtils.getANSISequence('r').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('r', sessionInfo);
     }
 
     @Test
@@ -86,7 +86,7 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(2, 4));
         }});
 
-        SequenceUtils.getANSISequence('D').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('D', sessionInfo);
 
         context.checking(new Expectations() {{
             oneOf(buffer).getCursorPosition();
@@ -97,8 +97,8 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(2, 6));
         }});
 
-        SequenceUtils.getANSISequence('D').process(sessionInfo, "3");
-        SequenceUtils.getANSISequence('D').process(sessionInfo, "5");
+        DefaultSequenceRepository.executeAnsiSequence('D', sessionInfo, "3");
+        DefaultSequenceRepository.executeAnsiSequence('D', sessionInfo, "5");
     }
 
     @Test
@@ -110,7 +110,7 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(3, 4));
         }});
 
-        SequenceUtils.getANSISequence('C').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('C', sessionInfo);
     }
 
     @Test
@@ -125,8 +125,8 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(7, 6));
         }});
 
-        SequenceUtils.getANSISequence('C').process(sessionInfo, "3");
-        SequenceUtils.getANSISequence('C').process(sessionInfo, "5");
+        DefaultSequenceRepository.executeAnsiSequence('C', sessionInfo, "3");
+        DefaultSequenceRepository.executeAnsiSequence('C', sessionInfo, "5");
     }
 
     @Test
@@ -137,28 +137,28 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
                 will(returnValue(new Position(80, 1)));
             oneOf(buffer).setCursorPosition(new Position(80, 1));
         }});
-        SequenceUtils.getANSISequence('C').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('C', sessionInfo);
 
         context.checking(new Expectations() {{
             oneOf(buffer).getCursorPosition();
                 will(returnValue(new Position(1, 3)));
             oneOf(buffer).setCursorPosition(new Position(1, 3));
         }});
-        SequenceUtils.getANSISequence('D').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('D', sessionInfo);
 
         context.checking(new Expectations() {{
             oneOf(buffer).getCursorPosition();
                 will(returnValue(new Position(3, 1)));
             oneOf(buffer).setCursorPosition(new Position(3, 1));
         }});
-        SequenceUtils.getANSISequence('A').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('A', sessionInfo);
 
         context.checking(new Expectations() {{
             oneOf(buffer).getCursorPosition();
                 will(returnValue(new Position(3, 24)));
             oneOf(buffer).setCursorPosition(new Position(3, 24));
         }});
-        SequenceUtils.getANSISequence('B').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('B', sessionInfo);
     }
 
     @Test
@@ -173,8 +173,8 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(3, 6));
         }});
 
-        SequenceUtils.getANSISequence('C').process(sessionInfo, "0");
-        SequenceUtils.getANSISequence('C').process(sessionInfo, "0");
+        DefaultSequenceRepository.executeAnsiSequence('C', sessionInfo, "0");
+        DefaultSequenceRepository.executeAnsiSequence('C', sessionInfo, "0");
     }
 
     @Test
@@ -186,7 +186,7 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(3, 3));
         }});
 
-        SequenceUtils.getANSISequence('A').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('A', sessionInfo);
 
         context.checking(new Expectations() {{
             oneOf(buffer).getCursorPosition();
@@ -197,8 +197,8 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(1, 2));
         }});
 
-        SequenceUtils.getANSISequence('A').process(sessionInfo, "3");
-        SequenceUtils.getANSISequence('A').process(sessionInfo, "5");
+        DefaultSequenceRepository.executeAnsiSequence('A', sessionInfo, "3");
+        DefaultSequenceRepository.executeAnsiSequence('A', sessionInfo, "5");
     }
 
     @Test
@@ -210,7 +210,7 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(3, 4));
         }});
 
-        SequenceUtils.getANSISequence('B').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('B', sessionInfo);
 
         context.checking(new Expectations() {{
             oneOf(buffer).getCursorPosition();
@@ -221,8 +221,8 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).setCursorPosition(new Position(1, 7));
         }});
 
-        SequenceUtils.getANSISequence('B').process(sessionInfo, "3");
-        SequenceUtils.getANSISequence('B').process(sessionInfo, "5");
+        DefaultSequenceRepository.executeAnsiSequence('B', sessionInfo, "3");
+        DefaultSequenceRepository.executeAnsiSequence('B', sessionInfo, "5");
     }
 
     @Test
@@ -230,7 +230,7 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
         context.checking(new Expectations() {{
             oneOf(buffer).insertLines(1);
         }});
-        SequenceUtils.getANSISequence('L').process(sessionInfo);
+        DefaultSequenceRepository.executeAnsiSequence('L', sessionInfo);
     }
 
     @Test
@@ -239,6 +239,6 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
             oneOf(buffer).insertLines(2);
         }});
 
-        SequenceUtils.getANSISequence('L').process(sessionInfo, "2");
+        DefaultSequenceRepository.executeAnsiSequence('L', sessionInfo, "2");
     }
 }

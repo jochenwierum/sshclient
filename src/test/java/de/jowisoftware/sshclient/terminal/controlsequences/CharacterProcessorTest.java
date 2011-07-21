@@ -1,6 +1,7 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -31,6 +32,7 @@ public class CharacterProcessorTest {
     private CharacterProcessor<GfxChar> processor;
     private VisualFeedback visualFeedback;
     private Session<GfxChar> sessionInfo;
+    private SequenceRepository<GfxChar> repository;
 
     @SuppressWarnings("unchecked")
     @Before
@@ -42,17 +44,19 @@ public class CharacterProcessorTest {
         sequence2 = context.mock(NonASCIIControlSequence.class, "sequence2");
         gfxChar = context.mock(GfxChar.class);
         sessionInfo = context.mock(Session.class);
+        repository = context.mock(SequenceRepository.class);
 
         processor = new CharacterProcessor<GfxChar>(
                 sessionInfo,
-                Charset.defaultCharset());
-        processor.addControlSequence(sequence1);
-        processor.addControlSequence(sequence2);
+                Charset.defaultCharset(),
+                repository);
 
         context.checking(new Expectations() {{
             allowing(sessionInfo).getBuffer(); will(returnValue(buffer));
             allowing(sessionInfo).getCharSetup(); will(returnValue(setup));
             allowing(sessionInfo).getVisualFeedback(); will(returnValue(visualFeedback));
+            allowing(repository).getNonASCIISequences();
+                will(returnValue(Arrays.asList(sequence1, sequence2)));
         }});
     }
 
