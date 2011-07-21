@@ -15,7 +15,6 @@ public class ApplicationSettings {
     private final Map<String, Profile> profiles = new HashMap<String, Profile>();
     private final List<File> keyFiles = new ArrayList<File>();
 
-    private boolean unlockKeysOnStart = false;
     private TabState logTabState = TabState.CLOSED;
     private TabState keyTabState = TabState.CLOSED;
 
@@ -41,10 +40,6 @@ public class ApplicationSettings {
         return keyFiles;
     }
 
-    public boolean isUnlockKeysOnStart() {
-        return unlockKeysOnStart;
-    }
-
     public TabState getLogTabState() {
         return logTabState;
     }
@@ -59,9 +54,5 @@ public class ApplicationSettings {
 
     public void setLogTabState(final TabState state) {
         logTabState = state;
-    }
-
-    public void setUnlockKeyOnStart(final boolean unlock) {
-        unlockKeysOnStart = unlock;
     }
 }

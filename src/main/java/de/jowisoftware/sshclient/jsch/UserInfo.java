@@ -1,14 +1,15 @@
 package de.jowisoftware.sshclient.jsch;
 
+import java.util.Arrays;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import de.jowisoftware.sshclient.ui.PasswordDialog;
 
-// TODO: delete passwords after request (are they requested more than once?)
 public class UserInfo implements com.jcraft.jsch.UserInfo {
-    private String password;
-    private String passphrase;
+    private char[] password;
+    private char[] passphrase;
     private final JFrame parent;
 
     public UserInfo(final JFrame parent) {
@@ -17,12 +18,18 @@ public class UserInfo implements com.jcraft.jsch.UserInfo {
 
     @Override
     public String getPassphrase() {
-        return passphrase;
+        final String result = new String(passphrase);
+        Arrays.fill(passphrase, (char) 0);
+        passphrase = null;
+        return result;
     }
 
     @Override
     public String getPassword() {
-        return password;
+        final String result = new String(password);
+        Arrays.fill(password, (char) 0);
+        password = null;
+        return result;
     }
 
     @Override
@@ -47,7 +54,7 @@ public class UserInfo implements com.jcraft.jsch.UserInfo {
         JOptionPane.showMessageDialog(parent, message);
     }
 
-    private String readPassword(final String message) {
+    private char[] readPassword(final String message) {
         return new PasswordDialog(parent, message).askPassword();
     }
 }

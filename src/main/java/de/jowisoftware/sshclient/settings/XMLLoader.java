@@ -211,9 +211,6 @@ public class XMLLoader {
     }
 
     private void loadKeys(final XPath xpath, final Element keysNode) {
-        final Boolean loadKeys = getBoolean(xpath, keysNode, "@unlockOnStart", false);
-        settings.setUnlockKeyOnStart(loadKeys);
-
         try {
             final NodeList nodes = (NodeList) xpath.evaluate("key/text()", keysNode, XPathConstants.NODESET);
             for (int i = 0; i < nodes.getLength(); ++i) {
@@ -222,18 +219,6 @@ public class XMLLoader {
             }
         } catch (final XPathExpressionException e) {
             return;
-        }
-    }
-
-    private Boolean getBoolean(final XPath xpath, final Element parent,
-            final String path, final Boolean defaultValue) {
-        final String value = getString(xpath, parent, path, null);
-        if (value != null && value.toLowerCase().equals("false")) {
-            return false;
-        } else if (value != null && value.toLowerCase().equals("true")) {
-            return true;
-        } else {
-            return defaultValue;
         }
     }
 

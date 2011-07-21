@@ -49,6 +49,7 @@ public class MainWindow extends JFrame {
 
     private final File projectDir;
     private JSch jsch;
+    private KeyAgentManager keyManager;
     private MainWindowToolbar toolBar;
 
 
@@ -163,7 +164,7 @@ public class MainWindow extends JFrame {
     }
 
     private void initTabs() {
-        keyPanel = new PrivateKeyTab(jsch, settings);
+        keyPanel = new PrivateKeyTab(jsch, keyManager);
         logPanel = new LogPanel();
 
         if (settings.getKeyTabState() == TabState.ALYWAYS_OPEN
@@ -204,16 +205,14 @@ public class MainWindow extends JFrame {
     private void initJSch() throws JSchException {
         JSch.setLogger(new de.jowisoftware.sshclient.jsch.JschLogger());
         jsch = new JSch();
+        keyManager = new KeyAgentManager(jsch, settings);
 
         jsch.setKnownHosts(new File(projectDir, "known_hosts").getAbsolutePath());
-        final File keyListFile = new File(projectDir, "keyagent");
-        if (keyListFile.isFile()) {
-            new KeyAgentManager(jsch).loadKeyListFromSettings(settings);
-        }
+        keyManager.loadKeyListFromSettings();
 
         final File privKey = new File(projectDir, "id_rsa");
         if (privKey.isFile()) {
-            jsch.addIdentity(privKey.getAbsolutePath());
+            keyManager.loadKey(privKey.getAbsolutePath());
         }
     }
 

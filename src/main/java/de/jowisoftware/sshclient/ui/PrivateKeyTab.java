@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.KeyAgentManager;
 
 public class PrivateKeyTab extends JPanel {
@@ -29,11 +28,12 @@ public class PrivateKeyTab extends JPanel {
     private final JSch jsch;
     private JList list;
     private final DefaultListModel listModel = new DefaultListModel();
-    private final ApplicationSettings settings;
+    private final KeyAgentManager keyAgentManager;
 
-    public PrivateKeyTab(final JSch jsch, final ApplicationSettings settings) {
+    public PrivateKeyTab(final JSch jsch,
+            final KeyAgentManager keyAgentManager) {
         this.jsch = jsch;
-        this.settings = settings;
+        this.keyAgentManager = keyAgentManager;
 
         updateListModel();
         setLayout(new BorderLayout());
@@ -90,18 +90,22 @@ public class PrivateKeyTab extends JPanel {
 
                 final int result = chooser.showOpenDialog(getParent());
                 if (result == JFileChooser.APPROVE_OPTION) {
-                    final File file = chooser.getSelectedFile();
-                    // TODO: check whether file.toLowerCase() is in identity list
-                    LOGGER.info("Adding private key: " + file.getAbsolutePath());
-                    try {
-                        jsch.addIdentity(file.getAbsolutePath());
-                    } catch(final JSchException e2) {
-                        LOGGER.error("Error while adding identity", e2);
-                    }
-                    updateListModel();
+                    assureFileIsLoaded(chooser.getSelectedFile());
                 }
             }
         });
+    }
+
+    private void assureFileIsLoaded(final File file) {
+        if (keyAgentManager.isKeyAlreadyLoaded(file.getAbsolutePath())) {
+            LOGGER.info("Adding private key: " + file.getAbsolutePath());
+            try {
+                jsch.addIdentity(file.getAbsolutePath());
+            } catch(final JSchException e2) {
+                LOGGER.error("Error while adding identity", e2);
+            }
+            updateListModel();
+        }
     }
 
     private void addRemoveButton(final JPanel buttonPanel) {
@@ -118,11 +122,7 @@ public class PrivateKeyTab extends JPanel {
 
                 final String name = (String) list.getSelectedValue();
                 LOGGER.info("Removing private key: " + name);
-                try {
-                    jsch.removeIdentity(name);
-                } catch(final JSchException e2) {
-                    LOGGER.error("Error while removing identity", e2);
-                }
+                keyAgentManager.removeIdentity(name);
                 updateListModel();
             }
         });
@@ -136,8 +136,12 @@ public class PrivateKeyTab extends JPanel {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                new KeyAgentManager(jsch).persistKeyListToSettings(settings);
+                keyAgentManager.persistKeyListToSettings();
             }
         });
+    }
+
+    public KeyAgentManager getKeyManager() {
+        return keyAgentManager;
     }
 }

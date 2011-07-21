@@ -64,13 +64,13 @@ public class PasswordDialog extends JDialog implements ActionListener {
         dispose();
     }
 
-    public String askPassword() {
+    public char[] askPassword() {
         setVisible(true);
 
         if (result == null) {
             return null;
         } else {
-            return new String(result);
+            return result;
         }
     }
 }

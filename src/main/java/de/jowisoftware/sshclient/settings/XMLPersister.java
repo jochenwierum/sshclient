@@ -124,8 +124,6 @@ public class XMLPersister {
             keyNode.appendChild(file);
         }
 
-        keyNode.setAttribute("unlockOnStart", settings.isUnlockKeysOnStart() ? "true" : "false");
-
         return keyNode;
     }
 
