@@ -2,7 +2,7 @@ package de.jowisoftware.sshclient.terminal.buffer;
 
 import org.apache.log4j.Logger;
 
-
+// TODO: extract CursorPosition
 public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     private static final Logger LOGGER = Logger.getLogger(DefaultBuffer.class);
     private static final int NO_MARGIN_DEFINED = -1;
@@ -14,6 +14,7 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     private int bottomMargin = NO_MARGIN_DEFINED;
     private boolean cursorIsRelativeToMargin = false;
     private boolean autoWrap = true;
+    private boolean wouldWrap;
 
 
     public DefaultBuffer(final T clearChar,
@@ -42,6 +43,7 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
                     0, size.y);
         }
         this.position = newPosition.moveInRange(size.toRange());
+        wouldWrap = false;
     }
 
     @Override
@@ -91,18 +93,19 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void addCharacter(final T character) {
         synchronized(this) {
+            if (position.x == getSize().x && wouldWrap && autoWrap) {
+                setAndFixCursorPosition(position.offset(0, 1).withX(0));
+            }
+            wouldWrap = false;
             storage.setCharacter(position.y - 1, position.x - 1, character);
             moveCursorToNextPosition();
         }
     }
 
     private void moveCursorToNextPosition() {
-        final Range size = getSize().toRange();
-        if (!autoWrap || position.x < size.bottomRight.x) {
-            position = position.offset(1, 0).moveInRange(size);
-        } else {
-            setAndFixCursorPosition(position.offset(0, 1).withX(0));
-        }
+        position = position.offset(1, 0);
+        wouldWrap = (position.x == getSize().x + 1);
+        position = position.moveInRange(getSize().toRange());
     }
 
     @Override
@@ -117,14 +120,14 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
             for (int row = 0; row < content.length; ++row) {
                 for (int col = 0; col < content[0].length; ++col) {
                     renderer.renderChar(content[row][col], col, row,
-                            isCursorAt(col, row));
+                            isCursorAt(col, row, content[0].length));
                 }
             }
             renderer.swap();
         }
     }
 
-    private boolean isCursorAt(final int col, final int row) {
+    private boolean isCursorAt(final int col, final int row, final int length) {
         return col == position.x - 1 && row == position.y - 1;
     }
 
@@ -132,6 +135,7 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     public void setMargin(final int rollRangeBegin, final int rollRangeEnd) {
         this.topMargin = rollRangeBegin;
         this.bottomMargin = rollRangeEnd;
+        setCursorPosition(new Position(1, 1));
     }
 
     @Override
@@ -146,11 +150,10 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
             if (topMargin == NO_MARGIN_DEFINED) {
                 this.position = position.offset(0, -1).moveInRange(position.toRange());
             } else {
-                final int y = position.y;
-                if (y == topMargin) {
+                if (position.y == topMargin) {
                     storage.shiftLines(1, topMargin - 1, bottomMargin);
                 } else {
-                    this.position = position.withY(y - 1);
+                    this.position = position.offset(0, -1);
                 }
             }
         }
@@ -200,16 +203,37 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     @Override
-    public void setCursorRelativeToMargin(final boolean b) {
-        cursorIsRelativeToMargin  = b;
+    public void setCursorRelativeToMargin(final boolean cursorIsRelativeToMargin) {
+        this.cursorIsRelativeToMargin = cursorIsRelativeToMargin;
     }
 
     @Override
-    public void tapstop(final Tabstop vertical) {
-        // TODO Auto-generated method stub
+    public void tapstop(final Tabstop orientation) {
+        // TODO do a real implementation here
+        // TODO relative to what?
+        final Position oldPosition = getCursorPosition();
+        final Position size = getSize();
+        int posX = oldPosition.x;
+        int posY = oldPosition.y;
+        if (orientation == Tabstop.HORIZONTAL) {
+            posX = size.x;
+        } else {
+            posY = posY + 1;
+        }
+        final Position newPosition = new Position(posX, posY).moveInRange(size.toRange());
+        setCursorPosition(newPosition);
     }
 
     public void setAutoWrap(final boolean autoWrap) {
         this.autoWrap = autoWrap;
+    }
+
+    @Override
+    public void processBackspace() {
+        if (autoWrap && position.x == 1) {
+            setAndFixCursorPosition(position.offset(getSize().x, -1));
+        } else {
+            setAndFixCursorPosition(position.offset(-1, 0));
+        }
     }
 }

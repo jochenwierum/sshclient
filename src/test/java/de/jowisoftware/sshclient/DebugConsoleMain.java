@@ -29,7 +29,7 @@ public class DebugConsoleMain {
         }
 
         final String text = readFile(stream);
-        SSHConsole console = showFrame(text);
+        final SSHConsole console = showFrame(text);
         console.gotChars(text.getBytes(), text.getBytes().length);
     }
 
@@ -80,6 +80,10 @@ public class DebugConsoleMain {
             m.appendReplacement(builder, rep.replace("\\", "\\\\"));
         }
         m.appendTail(builder);
-        return builder.toString();
+        String result = builder.toString();
+        if (result.contains("---EOF---")) {
+            result = result.substring(0, result.indexOf("---EOF---"));
+        }
+        return result;
     }
 }

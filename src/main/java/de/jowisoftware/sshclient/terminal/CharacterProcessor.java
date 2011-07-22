@@ -21,7 +21,8 @@ public class CharacterProcessor<T extends GfxChar> {
     private static final char CARRIDGE_RETURN_CHAR = '\r';
     private static final char BELL_CHAR = 7;
     private static final char BACKSPACE_CHAR = (char) 8;
-    private static final Character TAB_CHAR = (char) 11;
+    private static final Character VTAB_CHAR = (char) 11;
+    private static final Character HTAB_CHAR = (char) 9;
 
     private final SequenceRepository<T> sequenceRepository;
     private final Stack<CharacterProcessorState<T>> states =
@@ -61,11 +62,12 @@ public class CharacterProcessor<T extends GfxChar> {
     }
 
     private boolean processSpecialChar(final Character character) {
-        if (character == TAB_CHAR) {
+        if (character == VTAB_CHAR) {
             sessionInfo.getBuffer().tapstop(Tabstop.VERTICAL);
+        } else if(character == HTAB_CHAR) {
+            sessionInfo.getBuffer().tapstop(Tabstop.HORIZONTAL);
         } else if (character == BACKSPACE_CHAR) {
-            sessionInfo.getBuffer().setCursorPosition(
-                    sessionInfo.getBuffer().getCursorPosition().offset(-1, 0));
+            sessionInfo.getBuffer().processBackspace();
         } else if (character == NEWLINE_CHAR) {
             sessionInfo.getBuffer().addNewLine();
         } else if (character == CARRIDGE_RETURN_CHAR) {

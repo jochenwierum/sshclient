@@ -162,13 +162,9 @@ public class CharacterProcessorTest {
     @Test
     public void testBackspace() {
         context.checking(new Expectations() {{
-            oneOf(buffer).getCursorPosition(); will(returnValue(new Position(5, 7)));
-            oneOf(buffer).setCursorPosition(new Position(4, 7));
-            oneOf(buffer).getCursorPosition(); will(returnValue(new Position(9, 12)));
-            oneOf(buffer).setCursorPosition(new Position(8, 12));
+            oneOf(buffer).processBackspace();
         }});
 
-        processor.processByte((byte) 8);
         processor.processByte((byte) 8);
     }
 
