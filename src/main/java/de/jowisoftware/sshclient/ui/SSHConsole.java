@@ -119,12 +119,21 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     public void componentResized(final ComponentEvent e) {
         final int pw = getWidth();
         final int ph = getHeight();
-        renderer.setDimensions(pw, ph);
-        final int cw = renderer.getCharsPerLine();
-        final int ch = renderer.getLines();
 
+        final int cw;
+        final int ch;
         if (displayType == DisplayType.DYNAMIC) {
+            renderer.setDimensions(pw, ph);
+            cw = renderer.getCharsPerLine();
+            ch = renderer.getLines();
             session.getBuffer().newSize(cw, ch);
+        } else {
+            ch = 24;
+            if(displayType == DisplayType.FIXED132X24) {
+                cw = 132;
+            } else {
+                cw = 80;
+            }
         }
         session.getBuffer().render(renderer);
 
@@ -152,12 +161,13 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         LOGGER.info("Setting new terminal display type: " + displayType);
         switch(displayType) {
         case DYNAMIC:
-            componentResized(null); break;
+             break;
         case FIXED132X24:
             session.getBuffer().newSize(132, 24); break;
         case FIXED80X24:
             session.getBuffer().newSize(80, 24); break;
         }
+        componentResized(null);
         session.getBuffer().render(renderer);
     }
 
