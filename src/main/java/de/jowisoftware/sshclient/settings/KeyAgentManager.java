@@ -61,7 +61,6 @@ public class KeyAgentManager {
         final String search = fullPath.toLowerCase();
         try {
             for (final Object o : jsch.getIdentityNames()) {
-                LOGGER.debug(o + " vs " + search);
                 if (search.equals(((String) o).toLowerCase())) {
                     return true;
                 }

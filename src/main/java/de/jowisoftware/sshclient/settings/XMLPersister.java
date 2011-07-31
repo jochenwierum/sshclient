@@ -138,6 +138,10 @@ public class XMLPersister {
         tabStateToAttributeValue(settings.getLogTabState(), logTabState);
         element.appendChild(logTabState);
 
+        final Element language = doc.createElement("language");
+        language.appendChild(doc.createTextNode(settings.getLanguage()));
+        element.appendChild(language);
+
         return element;
     }
 

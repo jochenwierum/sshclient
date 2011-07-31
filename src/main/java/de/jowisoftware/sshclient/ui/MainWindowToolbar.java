@@ -1,5 +1,7 @@
 package de.jowisoftware.sshclient.ui;
 
+import static de.jowisoftware.sshclient.i18n.Translation.t;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,7 +37,7 @@ public class MainWindowToolbar {
     }
 
     private JButton createConnectButton() {
-        final JButton button = createButton("connect", "connect_established");
+        final JButton button = createButton(t("mainwindow.toolbar.connect", "connect"), "connect_established");
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {

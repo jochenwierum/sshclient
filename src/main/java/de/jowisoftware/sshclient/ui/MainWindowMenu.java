@@ -1,8 +1,10 @@
 package de.jowisoftware.sshclient.ui;
 
+import static de.jowisoftware.sshclient.i18n.Translation.m;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -29,8 +31,8 @@ public class MainWindowMenu {
     }
 
     private JMenu createFileMenu() {
-        final JMenu fileMenu = new JMenu("File");
-        fileMenu.setMnemonic(KeyEvent.VK_F);
+        final JMenu fileMenu = new JMenu(t("mainwindow.menu.file", "File"));
+        fileMenu.setMnemonic(m("mainwindow.menu.file", 'f'));
 
         fileMenu.add(createConnectEntry());
         fileMenu.add(createQuitMenuEntry());
@@ -40,8 +42,8 @@ public class MainWindowMenu {
 
 
     private JMenu createViewMenu() {
-        final JMenu viewMenu = new JMenu("View");
-        viewMenu.setMnemonic('v');
+        final JMenu viewMenu = new JMenu(t("mainwindow.menu.view", "View"));
+        viewMenu.setMnemonic(m("mainwindow.menu.view", 'v'));
 
         viewMenu.add(createLogVisibilityEntry());
         viewMenu.add(createKeyAgentVisibilityEntry());
@@ -51,8 +53,8 @@ public class MainWindowMenu {
 
 
     private JMenuItem createLogVisibilityEntry() {
-        final JMenuItem entry = new JMenuItem("Show Logs");
-        entry.setMnemonic('l');
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.show_logs", "Show Logs"));
+        entry.setMnemonic(m("mainwindow.menu.show_logs", 'l'));
 
         entry.addActionListener(new ActionListener() {
             @Override
@@ -65,8 +67,8 @@ public class MainWindowMenu {
     }
 
     private JMenuItem createKeyAgentVisibilityEntry() {
-        final JMenuItem entry = new JMenuItem("Key Agent");
-        entry.setMnemonic('a');
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.key_agent", "Key Agent"));
+        entry.setMnemonic(m("mainwindow.menu.key_agent", 'a'));
 
         entry.addActionListener(new ActionListener() {
             @Override
@@ -79,7 +81,8 @@ public class MainWindowMenu {
     }
 
     private JMenuItem createConnectEntry() {
-        final JMenuItem entry = new JMenuItem("Connect...");
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.connect", "Connect..."));
+        entry.setMnemonic(m("mainwindow.menu.connect", 'c'));
         entry.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -90,7 +93,8 @@ public class MainWindowMenu {
     }
 
     private JMenuItem createQuitMenuEntry() {
-        final JMenuItem entry = new JMenuItem("Quit");
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.quit", "Quit"));
+        entry.setMnemonic(m("mainwindow.menu.quit", 'q'));
         entry.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {

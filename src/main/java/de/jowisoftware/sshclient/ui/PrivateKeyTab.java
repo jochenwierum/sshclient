@@ -1,5 +1,8 @@
 package de.jowisoftware.sshclient.ui;
 
+import static de.jowisoftware.sshclient.i18n.Translation.m;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
+
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -75,8 +78,8 @@ public class PrivateKeyTab extends JPanel {
     }
 
     private void addAddButton(final JPanel buttonPanel) {
-        final JButton button = new JButton("Add...");
-        button.setMnemonic('a');
+        final JButton button = new JButton(t("mainwindow.tabs.keys.add", "Add..."));
+        button.setMnemonic(m("mainwindow.tabs.keys.add", 'a'));
         buttonPanel.add(button);
 
         button.addActionListener(new ActionListener() {
@@ -109,8 +112,8 @@ public class PrivateKeyTab extends JPanel {
     }
 
     private void addRemoveButton(final JPanel buttonPanel) {
-        final JButton button = new JButton("Remove");
-        button.setMnemonic('r');
+        final JButton button = new JButton(t("mainwindow.tabs.keys.remove", "Remove"));
+        button.setMnemonic(m("mainwindow.tabs.keys.remove", 'r'));
         buttonPanel.add(button);
 
         button.addActionListener(new ActionListener() {
@@ -129,8 +132,8 @@ public class PrivateKeyTab extends JPanel {
     }
 
     private void addSaveButton(final JPanel buttonPanel) {
-        final JButton button = new JButton("Save");
-        button.setMnemonic('s');
+        final JButton button = new JButton(t("mainwindow.tabs.keys.save", "Save"));
+        button.setMnemonic(m("mainwindow.tabs.keys.save", 's'));
         buttonPanel.add(button);
 
         button.addActionListener(new ActionListener() {

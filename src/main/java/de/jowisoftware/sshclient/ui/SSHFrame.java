@@ -1,5 +1,7 @@
 package de.jowisoftware.sshclient.ui;
 
+import static de.jowisoftware.sshclient.i18n.Translation.t;
+
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -48,7 +50,7 @@ public class SSHFrame extends JPanel {
             close();
             console = null;
             removeAll();
-            add(new ErrorPane("Could not establish connection", e), BorderLayout.CENTER);
+            add(new ErrorPane(t("errors.could_not_establish_connection", "Could not establish connection"), e), BorderLayout.CENTER);
             LOGGER.error("Could not connect", e);
             return;
         }

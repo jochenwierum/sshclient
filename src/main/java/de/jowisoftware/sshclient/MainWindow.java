@@ -1,5 +1,7 @@
 package de.jowisoftware.sshclient;
 
+import static de.jowisoftware.sshclient.i18n.Translation.t;
+
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -21,6 +23,7 @@ import org.apache.log4j.Logger;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
+import de.jowisoftware.sshclient.i18n.Translation;
 import de.jowisoftware.sshclient.log.LogPanel;
 import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
@@ -54,9 +57,10 @@ public class MainWindow extends JFrame {
 
 
     public MainWindow() {
-        super("SSH");
         projectDir = prepareProjectDir();
         new XMLLoader(settings).load(new File(projectDir, "settings.xml"));
+        initTranslation();
+        setTitle("SSH");
 
         try {
             initJSch();
@@ -71,6 +75,11 @@ public class MainWindow extends JFrame {
         initWindowElements();
 
         createTimer();
+    }
+
+    private void initTranslation() {
+        final String language = settings.getLanguage();
+        Translation.initStaticTranslationWithLanguage(language);
     }
 
     private void createTimer() {
@@ -179,11 +188,11 @@ public class MainWindow extends JFrame {
     }
 
     public void setKeyTabVisibility(final boolean isVisible) {
-        setPanelVisibility(isVisible, keyPanel, "keys");
+        setPanelVisibility(isVisible, keyPanel, t("mainwindow.tabs.keys", "keys"));
     }
 
     public void setLogTabVisibility(final boolean isVisible) {
-        setPanelVisibility(isVisible, logPanel, "logs");
+        setPanelVisibility(isVisible, logPanel, t("mainwindow.tabs.logs", "logs"));
     }
 
     private void setPanelVisibility(final boolean isVisible,

@@ -29,6 +29,7 @@ import de.jowisoftware.sshclient.ui.GfxInfo;
 public class XMLLoader {
     private static final Logger LOGGER = Logger.getLogger(XMLLoader.class);
     private final ApplicationSettings settings;
+    private XPath xpath;
 
     public XMLLoader(final ApplicationSettings settings) {
         this.settings = settings;
@@ -37,21 +38,21 @@ public class XMLLoader {
     public void load(final File file) {
         try {
             final Document doc = createDocument(file);
-            final XPath xpath = createXPath();
+            xpath = createXPath();
 
-            final Element settingsNode = getElement(xpath, doc, "/config/settings");
+            final Element settingsNode = getElement(doc, "/config/settings");
             if (settingsNode != null) {
-                loadGeneralSettings(xpath, settingsNode);
+                loadGeneralSettings(settingsNode);
             }
 
-            final Element keysNode = getElement(xpath, doc, "/config/keys");
+            final Element keysNode = getElement(doc, "/config/keys");
             if (keysNode != null) {
-                loadKeys(xpath, keysNode);
+                loadKeys(keysNode);
             }
 
-            final Element profilesNode = getElement(xpath, doc, "/config/profiles");
+            final Element profilesNode = getElement(doc, "/config/profiles");
             if (profilesNode != null) {
-                loadProfiles(xpath, profilesNode);
+                loadProfiles(profilesNode);
             }
         } catch(final Exception e) {
             LOGGER.warn("Unable to load settings file, using default settings", e);
@@ -76,7 +77,7 @@ public class XMLLoader {
         return factory.newXPath();
     }
 
-    private void loadProfiles(final XPath xpath, final Element profilesNode) {
+    private void loadProfiles(final Element profilesNode) {
         final NodeList profileNodes;
         try {
             profileNodes = (NodeList) xpath.evaluate("profile",
@@ -86,24 +87,24 @@ public class XMLLoader {
         }
 
         for (int i = 0; i < profileNodes.getLength(); ++i) {
-            final String name = getString(xpath, profileNodes.item(i), "@name",
+            final String name = getString(profileNodes.item(i), "@name",
                     "unknown profile");
-            final Profile profile = loadProfile(xpath, profileNodes.item(i));
+            final Profile profile = loadProfile(profileNodes.item(i));
             settings.getProfiles().put(name, profile);
         }
     }
 
-    private Profile loadProfile(final XPath xpath, final Node profileNode) {
+    private Profile loadProfile(final Node profileNode) {
         final Profile profile = new Profile();
 
-        final String host = getString(xpath, profileNode, "host/text()", null);
-        final String user = getString(xpath, profileNode, "user/text()", null);
-        final Integer port = getInteger(xpath, profileNode, "port/text()", null);
-        final Integer timeout = getInteger(xpath, profileNode, "timeout/text()", null);
+        final String host = getString(profileNode, "host/text()", null);
+        final String user = getString(profileNode, "user/text()", null);
+        final Integer port = getInteger(profileNode, "port/text()", null);
+        final Integer timeout = getInteger(profileNode, "timeout/text()", null);
 
         Charset charset;
         try {
-            charset = Charset.forName(getString(xpath, profileNode,
+            charset = Charset.forName(getString(profileNode,
                     "charset/text()", "UTF-8"));
         } catch(final RuntimeException e) {
             LOGGER.warn("Ignoring unkown charset", e);
@@ -116,39 +117,39 @@ public class XMLLoader {
         if (timeout != null) { profile.setTimeout(timeout); }
         if (charset != null) { profile.setCharset(charset); }
 
-        final Element gfxNode = getElement(xpath, profileNode, "gfx");
+        final Element gfxNode = getElement(profileNode, "gfx");
         if (gfxNode != null) {
-            loadGfxSettingsToProfile(xpath, gfxNode, profile.getGfxSettings());
+            loadGfxSettingsToProfile(gfxNode, profile.getGfxSettings());
         }
 
         return profile;
     }
 
-    private void loadGfxSettingsToProfile(final XPath xpath, final Element gfxNode,
+    private void loadGfxSettingsToProfile(final Element gfxNode,
             final GfxInfo gfxSettings) {
         gfxSettings.getColorMap().putAll(
-                getColors(xpath, gfxNode, "colors/color[@name][@value]"));
+                getColors(gfxNode, "colors/color[@name][@value]"));
         gfxSettings.getLightColorMap().putAll(
-                getColors(xpath, gfxNode, "colors/color[@name][@value]"));
-        final Color cursorColor = getAWTColor(xpath, gfxNode, "cursorColor/text()");
+                getColors(gfxNode, "colors/color[@name][@value]"));
+        final Color cursorColor = getAWTColor(gfxNode, "cursorColor/text()");
         if (cursorColor != null) {
             gfxSettings.setCursorColor(cursorColor);
         }
-        final Font font = getFont(xpath, gfxNode, "font");
+        final Font font = getFont(gfxNode, "font");
         if (font != null) {
             gfxSettings.setFont(font);
         }
     }
 
-    private Font getFont(final XPath xpath, final Element gfxNode, final String expression) {
-        final Element fontNode = getElement(xpath, gfxNode, expression);
+    private Font getFont(final Element gfxNode, final String expression) {
+        final Element fontNode = getElement(gfxNode, expression);
         if (fontNode == null) {
             return null;
         }
 
-        final String fontName = getString(xpath, fontNode, "@name", null);
-        final Integer fontSize = getInteger(xpath, fontNode, "@size", 11);
-        final Integer fontStyle = getInteger(xpath, fontNode, "@size", 0);
+        final String fontName = getString(fontNode, "@name", null);
+        final Integer fontSize = getInteger(fontNode, "@size", 11);
+        final Integer fontStyle = getInteger(fontNode, "@size", 0);
 
         if (fontName != null) {
             return new Font(fontName, fontStyle, fontSize);
@@ -157,7 +158,7 @@ public class XMLLoader {
     }
 
     private Map<de.jowisoftware.sshclient.terminal.Color, Color> getColors(
-            final XPath xpath, final Element node, final String xpathExpression) {
+            final Element node, final String xpathExpression) {
         final NodeList colorList;
         try {
             colorList = (NodeList) xpath.evaluate(xpathExpression,
@@ -169,9 +170,9 @@ public class XMLLoader {
         final Map<de.jowisoftware.sshclient.terminal.Color, Color> colors  =
                 new HashMap<de.jowisoftware.sshclient.terminal.Color, Color>();
         for (int i = 0; i < colorList.getLength(); ++i) {
-            final Color awtColor = getAWTColor(xpath, colorList.item(i), "@value");
+            final Color awtColor = getAWTColor(colorList.item(i), "@value");
             final de.jowisoftware.sshclient.terminal.Color termColor =
-                    getTermColor(xpath, colorList.item(i));
+                    getTermColor(colorList.item(i));
 
             if (awtColor != null && termColor != null) {
                 colors.put(termColor, awtColor);
@@ -181,8 +182,8 @@ public class XMLLoader {
         return colors;
     }
 
-    private Color getAWTColor(final XPath xpath, final Node item, final String expression) {
-        final String rgbHexValue = getString(xpath, item, expression, null);
+    private Color getAWTColor(final Node item, final String expression) {
+        final String rgbHexValue = getString(item, expression, null);
         if (rgbHexValue == null) {
             return null;
         }
@@ -198,8 +199,8 @@ public class XMLLoader {
         return new Color(rgbValue | 0xFF000000);
     }
 
-    private de.jowisoftware.sshclient.terminal.Color getTermColor(final XPath xpath, final Node item) {
-        final String name = getString(xpath, item, "@name", null);
+    private de.jowisoftware.sshclient.terminal.Color getTermColor(final Node item) {
+        final String name = getString(item, "@name", null);
         if (name == null) {
             return null;
         }
@@ -210,7 +211,7 @@ public class XMLLoader {
         }
     }
 
-    private void loadKeys(final XPath xpath, final Element keysNode) {
+    private void loadKeys(final Element keysNode) {
         try {
             final NodeList nodes = (NodeList) xpath.evaluate("key/text()", keysNode, XPathConstants.NODESET);
             for (int i = 0; i < nodes.getLength(); ++i) {
@@ -222,18 +223,21 @@ public class XMLLoader {
         }
     }
 
-    private void loadGeneralSettings(final XPath xpath, final Element settingsNode) {
-        String state = getString(xpath, settingsNode, "keytab/@state", null);
+    private void loadGeneralSettings(final Element settingsNode) {
+        String state = getString(settingsNode, "keytab/@state", null);
         TabState tabState = restoreTabState(state);
         if (tabState != null) {
             settings.setKeyTabState(tabState);
         }
 
-        state = getString(xpath, settingsNode, "logtab/@state", null);
+        state = getString(settingsNode, "logtab/@state", null);
         tabState = restoreTabState(state);
         if (tabState != null) {
             settings.setLogTabState(tabState);
         }
+
+        final String language = getString(settingsNode, "language/text()", "en_US");
+        settings.setLanguage(language);
     }
 
 
@@ -251,7 +255,7 @@ public class XMLLoader {
         }
     }
 
-    private Element getElement(final XPath xpath, final Node parent, final String path) {
+    private Element getElement(final Node parent, final String path) {
         try {
             return (Element) xpath.evaluate(path, parent, XPathConstants.NODE);
         } catch (final XPathExpressionException e) {
@@ -259,16 +263,21 @@ public class XMLLoader {
         }
     }
 
-    private String getString(final XPath xpath, final Node parent, final String path, final String defaultValue) {
+    private String getString(final Node parent, final String path, final String defaultValue) {
         try {
-            return (String) xpath.evaluate(path, parent, XPathConstants.STRING);
+            final Node result = (Node) xpath.evaluate(path, parent, XPathConstants.NODE);
+            if (result == null) {
+                return defaultValue;
+            } else {
+                return result.getTextContent();
+            }
         } catch (final XPathExpressionException e) {
             return defaultValue;
         }
     }
 
-    private Integer getInteger(final XPath xpath, final Node parent, final String path, final Integer defaultValue) {
-        final String value = getString(xpath, parent, path, null);
+    private Integer getInteger(final Node parent, final String path, final Integer defaultValue) {
+        final String value = getString(parent, path, null);
         if (value != null) {
             try {
                 return Integer.parseInt(value);

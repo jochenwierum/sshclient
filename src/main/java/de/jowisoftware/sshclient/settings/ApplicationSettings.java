@@ -17,6 +17,7 @@ public class ApplicationSettings {
 
     private TabState logTabState = TabState.CLOSED;
     private TabState keyTabState = TabState.CLOSED;
+    private String language;
 
     /*
     public ApplicationSettings() {
@@ -54,5 +55,13 @@ public class ApplicationSettings {
 
     public void setLogTabState(final TabState state) {
         logTabState = state;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(final String language) {
+        this.language = language;
     }
 }

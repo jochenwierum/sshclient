@@ -1,5 +1,7 @@
 package de.jowisoftware.sshclient.ui;
 
+import static de.jowisoftware.sshclient.i18n.Translation.t;
+
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -24,7 +26,7 @@ public class PasswordDialog extends JDialog implements ActionListener {
     private final JPasswordField passwordField;
 
     public PasswordDialog(final JFrame parent, final String message) {
-        super(parent, "Password required");
+        super(parent, t("popups.password_required", "Password required"));
 
         passwordField = new JPasswordField();
         setLayout(new GridLayout(3, 1));
@@ -32,8 +34,8 @@ public class PasswordDialog extends JDialog implements ActionListener {
         add(passwordField);
 
         final JPanel buttons = new JPanel();
-        final JButton ok = new JButton("OK");
-        final JButton cancel = new JButton("Cancel");
+        final JButton ok = new JButton(t("ok", "OK"));
+        final JButton cancel = new JButton(t("cancel", "Cancel"));
         buttons.setLayout(new GridLayout(1, 2));
         buttons.add(ok);
         buttons.add(cancel);
