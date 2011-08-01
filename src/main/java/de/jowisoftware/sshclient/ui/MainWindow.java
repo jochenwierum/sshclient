@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient;
+package de.jowisoftware.sshclient.ui;
 
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
@@ -17,6 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.Timer;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Logger;
 
@@ -31,12 +33,6 @@ import de.jowisoftware.sshclient.settings.KeyAgentManager;
 import de.jowisoftware.sshclient.settings.Profile;
 import de.jowisoftware.sshclient.settings.XMLLoader;
 import de.jowisoftware.sshclient.settings.XMLPersister;
-import de.jowisoftware.sshclient.ui.ClosableTabComponent;
-import de.jowisoftware.sshclient.ui.DnDTabbedPane;
-import de.jowisoftware.sshclient.ui.MainWindowMenu;
-import de.jowisoftware.sshclient.ui.MainWindowToolbar;
-import de.jowisoftware.sshclient.ui.PrivateKeyTab;
-import de.jowisoftware.sshclient.ui.SSHFrame;
 
 public class MainWindow extends JFrame {
     private static final long serialVersionUID = -2951599770927217249L;
@@ -169,7 +165,28 @@ public class MainWindow extends JFrame {
             }
         });
 
+        tabbedPane.addChangeListener(createTabPaneMenuListener());
+
         return tabbedPane;
+    }
+
+    private ChangeListener createTabPaneMenuListener() {
+        return new ChangeListener() {
+            @Override
+            public void stateChanged(final ChangeEvent e) {
+                final Component selectedComponent = pane.getSelectedComponent();
+                SessionMenu sessionMenu = null;
+                if (selectedComponent instanceof SSHFrame) {
+                    sessionMenu = ((SSHFrame) selectedComponent).getSessionMenu();
+                }
+
+                if (sessionMenu != null) {
+                    menu.setSessionMenu(sessionMenu);
+                } else {
+                    menu.unsetSessionMenu();
+                }
+            }
+        };
     }
 
     private void initTabs() {
@@ -203,7 +220,7 @@ public class MainWindow extends JFrame {
             if (tabPos == -1) {
                 pane.addTab(title, panel);
                 pane.setTabComponentAt(pane.getTabCount() - 1,
-                        new ClosableTabComponent(title, panel, pane));
+                        new ClosableTabComponent(title, pane).create());
             }
             pane.setSelectedComponent(panel);
         } else if (isVisible && tabPos >= 0) {
@@ -243,6 +260,7 @@ public class MainWindow extends JFrame {
         pane.setTabComponentAt(pane.getTabCount() - 1,
                 sshFrame.createTabComponent(pane));
         pane.setSelectedComponent(sshFrame);
+        sshFrame.connect();
     }
 
     public void connectToCustomProfile() {

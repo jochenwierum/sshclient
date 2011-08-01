@@ -2,7 +2,6 @@ package de.jowisoftware.sshclient.ui;
 
 import java.awt.event.MouseListener;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 
@@ -11,10 +10,9 @@ public class ClosableTabComponent extends AbstractClosableTabcomponent implement
 
     protected final String title;
 
-    public ClosableTabComponent(final String title, final JComponent parent, final JTabbedPane pane) {
-        super(parent, pane);
+    public ClosableTabComponent(final String title, final JTabbedPane pane) {
+        super(pane);
         this.title = title;
-        init();
     }
 
     @Override

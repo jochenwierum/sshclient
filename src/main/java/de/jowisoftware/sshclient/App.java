@@ -4,6 +4,8 @@ import javax.swing.UIManager;
 
 import org.apache.log4j.Logger;
 
+import de.jowisoftware.sshclient.ui.MainWindow;
+
 public class App {
     private App() { /* This class cannot be intantiated */ }
     private static final Logger LOGGER = Logger.getLogger(App.class);

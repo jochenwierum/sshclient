@@ -15,7 +15,7 @@ public class DefaultSession<T extends GfxChar> implements Session<T> {
 
     private final Buffer<T> buffer;
     private final KeyboardFeedback keyboadFeedback;
-    private final VisualFeedback visualFeedback;
+    private final VisualFeedbackList visualFeedbackList = new VisualFeedbackList();
     private final GfxCharSetup<T> charSetup;
 
     private DisplayType displayType;
@@ -23,11 +23,9 @@ public class DefaultSession<T extends GfxChar> implements Session<T> {
 
     public DefaultSession(final Buffer<T> buffer,
             final KeyboardFeedback keyboardFeedback,
-            final VisualFeedback visualFeedback,
             final GfxCharSetup<T> charSetup) {
         this.buffer = buffer;
         this.keyboadFeedback = keyboardFeedback;
-        this.visualFeedback = visualFeedback;
         this.charSetup = charSetup;
     }
 
@@ -42,8 +40,8 @@ public class DefaultSession<T extends GfxChar> implements Session<T> {
     }
 
     @Override
-    public VisualFeedback getVisualFeedback() {
-        return visualFeedback;
+    public VisualFeedbackList getVisualFeedback() {
+        return visualFeedbackList;
     }
 
     @Override
@@ -92,6 +90,4 @@ public class DefaultSession<T extends GfxChar> implements Session<T> {
             }
         }
     }
-
-
 }

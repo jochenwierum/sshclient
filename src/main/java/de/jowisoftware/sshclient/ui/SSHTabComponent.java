@@ -4,35 +4,44 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 import de.jowisoftware.sshclient.settings.Profile;
 
 public class SSHTabComponent extends AbstractClosableTabcomponent {
     private static final long serialVersionUID = 3033441642594395407L;
-    protected final Profile profile;
+    private final SSHFrame parent;
+    private final JLabel label;
 
     public SSHTabComponent(final SSHFrame parent, final Profile profile,
             final JTabbedPane pane) {
-        super(parent, pane);
-        this.profile = profile;
-        init();
+        super(pane);
+        this.parent = parent;
+
+        label = new JLabel(profile.getTitle());
     }
 
     @Override
     protected JLabel createLabel() {
-        return new JLabel("") {
-            private static final long serialVersionUID = 1007042595244781174L;
-
-            @Override
-            public String getText() {
-                return profile.getTitle();
-            }
-        };
+        return label;
     }
 
     @Override
     public void mouseClicked(final MouseEvent e) {
-        ((SSHFrame) parent).close();
+        (parent).close();
         super.mouseClicked(e);
+    }
+
+    public void updateLabel() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                label.invalidate();
+            }
+        });
+    }
+
+    public void updateLabel(final String title) {
+        label.setText(title);
     }
 }

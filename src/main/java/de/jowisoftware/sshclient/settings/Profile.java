@@ -1,6 +1,8 @@
 package de.jowisoftware.sshclient.settings;
 
 import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.jowisoftware.sshclient.ui.GfxInfo;
 
@@ -58,5 +60,9 @@ public class Profile {
 
     public GfxInfo getGfxSettings() {
         return gfxInfo;
+    }
+
+    public Map<String, String> getEnvironment() {
+        return new HashMap<String, String>();
     }
 }

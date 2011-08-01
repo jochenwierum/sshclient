@@ -10,20 +10,28 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import de.jowisoftware.sshclient.MainWindow;
 
 public class MainWindowMenu {
     private final MainWindow parent;
     private final JMenuBar menu;
+    private final JMenu dummySessionMenu;
+    private JMenu sessionMenu;
 
     public MainWindowMenu(final MainWindow parent) {
         this.parent = parent;
 
         menu = new JMenuBar();
-        final JMenu fileMenu = createFileMenu();
-        final JMenu viewMenu = createViewMenu();
-        menu.add(fileMenu);
-        menu.add(viewMenu);
+        menu.add(createFileMenu());
+        menu.add(createViewMenu());
+        dummySessionMenu = createDummySessionMenu();
+        sessionMenu = dummySessionMenu;
+        menu.add(sessionMenu);
+    }
+
+    private JMenu createDummySessionMenu() {
+        final JMenu dummyMenu = new JMenu(t("mainwindow.menu.session", "Session"));
+        dummyMenu.setEnabled(false);
+        return dummyMenu;
     }
 
     public JMenuBar getMenuBar() {
@@ -102,5 +110,23 @@ public class MainWindowMenu {
             }
         });
         return entry;
+    }
+
+    public void setSessionMenu(final SessionMenu sessionMenu) {
+        newMenu(sessionMenu);
+    }
+
+    public void unsetSessionMenu() {
+        newMenu(dummySessionMenu);
+    }
+
+    private void newMenu(final JMenu newMenu) {
+        final int index = menu.getComponentIndex(sessionMenu);
+        menu.remove(sessionMenu);
+        this.sessionMenu = newMenu;
+        menu.add(sessionMenu, index);
+
+        menu.invalidate();
+        menu.repaint();
     }
 }

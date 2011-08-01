@@ -43,12 +43,13 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
 
     public SSHConsole(final Profile profile) {
         final GfxAwtCharSetup charSetup = new GfxAwtCharSetup(profile.getGfxSettings());
-        final VisualFeedback visualFeedback = new GfxFeedback(this);
+        final VisualFeedback gfxFeedback = new GfxFeedback(this);
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
         final Buffer<GfxAwtChar> buffer = new DefaultBuffer<GfxAwtChar>(
                 profile.getGfxSettings().getEmptyChar(), 80, 24);
         session = new DefaultSession<GfxAwtChar>(buffer,
-                keyboardProcessor, visualFeedback, charSetup);
+                keyboardProcessor, charSetup);
+        session.getVisualFeedback().add(gfxFeedback);
         keyboardProcessor.setSession(session);
 
         renderer = new DoubleBufferedImage(profile.getGfxSettings(), this);
@@ -61,6 +62,10 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         setFocusable(true);
         setRequestFocusEnabled(true);
         setFocusTraversalKeysEnabled(false);
+    }
+
+    public DefaultSession<GfxAwtChar> getSession() {
+        return session;
     }
 
     private CharacterProcessor<GfxAwtChar> initializeProcessor(final Profile profile) {
@@ -169,6 +174,10 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         }
         componentResized(null);
         session.getBuffer().render(renderer);
+    }
+
+    public DisplayType getDisplayType() {
+        return displayType;
     }
 
     public void takeFocusWithKey(final KeyEvent e) {

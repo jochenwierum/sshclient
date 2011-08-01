@@ -15,7 +15,6 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JToolBar;
 
-import de.jowisoftware.sshclient.MainWindow;
 import de.jowisoftware.sshclient.settings.Profile;
 
 public class MainWindowToolbar {

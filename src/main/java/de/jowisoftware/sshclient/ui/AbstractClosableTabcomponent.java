@@ -9,7 +9,6 @@ import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -18,17 +17,16 @@ public abstract class AbstractClosableTabcomponent extends JPanel implements Mou
     private static final long serialVersionUID = 4533946005667886601L;
 
     private JButton button;
-    protected final JComponent parent;
     protected final JTabbedPane pane;
 
-    public AbstractClosableTabcomponent(final JComponent parent, final JTabbedPane pane) {
-        this.parent = parent;
+    public AbstractClosableTabcomponent(final JTabbedPane pane) {
         this.pane = pane;
     }
 
-    protected void init() {
+    public JPanel create() {
         setOpaque(false);
         addComponents();
+        return this;
     }
 
     protected final void addComponents() {
@@ -84,7 +82,7 @@ public abstract class AbstractClosableTabcomponent extends JPanel implements Mou
 
     @Override
     public void mouseClicked(final MouseEvent e) {
-        pane.remove(parent);
+        pane.removeTabAt(pane.indexOfTabComponent(this));
     }
 
     @Override public void mouseEntered(final MouseEvent e) { /* ignored */ }
