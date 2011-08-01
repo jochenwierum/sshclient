@@ -83,8 +83,8 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final Component component = pane.getSelectedComponent();
-                if (component instanceof SSHFrame) {
-                    ((SSHFrame) component).redraw();
+                if (component instanceof ConnectionFrame) {
+                    ((ConnectionFrame) component).redraw();
                 }
             }
         });
@@ -101,8 +101,8 @@ public class MainWindow extends JFrame {
         timer.stop();
         while(pane.getTabCount() > 0) {
             final Component component = pane.getComponentAt(0);
-            if (component instanceof SSHFrame) {
-                final SSHFrame tab = (SSHFrame) component;
+            if (component instanceof ConnectionFrame) {
+                final ConnectionFrame tab = (ConnectionFrame) component;
                 tab.close();
             }
             pane.removeTabAt(0);
@@ -159,8 +159,8 @@ public class MainWindow extends JFrame {
             @Override
             public void keyTyped(final KeyEvent e) {
                 final Component selectedComponent = pane.getSelectedComponent();
-                if (selectedComponent instanceof SSHFrame) {
-                    ((SSHFrame) selectedComponent).takeFocusWithKey(e);
+                if (selectedComponent instanceof ConnectionFrame) {
+                    ((ConnectionFrame) selectedComponent).takeFocusWithKey(e);
                 }
             }
         });
@@ -176,8 +176,8 @@ public class MainWindow extends JFrame {
             public void stateChanged(final ChangeEvent e) {
                 final Component selectedComponent = pane.getSelectedComponent();
                 SessionMenu sessionMenu = null;
-                if (selectedComponent instanceof SSHFrame) {
-                    sessionMenu = ((SSHFrame) selectedComponent).getSessionMenu();
+                if (selectedComponent instanceof ConnectionFrame) {
+                    sessionMenu = ((ConnectionFrame) selectedComponent).getSessionMenu();
                 }
 
                 if (sessionMenu != null) {
@@ -255,7 +255,7 @@ public class MainWindow extends JFrame {
     }
 
     public void connect(final Profile profile) {
-        final SSHFrame sshFrame = new SSHFrame(this, profile, jsch);
+        final ConnectionFrame sshFrame = new ConnectionFrame(this, profile, jsch);
         pane.addTab(profile.getTitle(), sshFrame);
         pane.setTabComponentAt(pane.getTabCount() - 1,
                 sshFrame.createTabComponent(pane));

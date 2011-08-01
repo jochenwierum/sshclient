@@ -4,52 +4,42 @@ import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map.Entry;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
-import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
 
-import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread;
 import de.jowisoftware.sshclient.jsch.UserInfo;
 import de.jowisoftware.sshclient.settings.Profile;
 import de.jowisoftware.sshclient.terminal.DisplayType;
+import de.jowisoftware.sshclient.terminal.JSchConnection;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
 
-public class SSHFrame extends JPanel {
+public class ConnectionFrame extends JPanel {
     private static final long serialVersionUID = 7873084199411017370L;
 
-    private static final Logger LOGGER = Logger.getLogger(SSHFrame.class);
+    private static final Logger LOGGER = Logger.getLogger(ConnectionFrame.class);
     private final Profile profile;
     private final JFrame parent;
     private final JSch jsch;
-
-    private ChannelShell channel;
-    private Session session;
-    private OutputStream outputStream = null;
-    private SSHConsole console = null;
-
-    private SSHTabComponent recentTabComponent;
     private final SessionMenu sessionMenu;
 
-    public SSHFrame(final JFrame parent, final Profile profile, final JSch jsch) {
+    private JSchConnection connnection;
+    private SSHTabComponent recentTabComponent;
+    private SSHConsole console = null;
+
+    public ConnectionFrame(final JFrame parent, final Profile profile, final JSch jsch) {
         this.profile = profile;
         this.parent = parent;
         this.jsch = jsch;
 
         setLayout(new BorderLayout());
-        setContent(new InfoPane("Connecting..."));
+        setContent(new InfoPane(t("connecting", "Connecting...")));
 
         console = new SSHConsole(profile);
         sessionMenu = new SessionMenu(console);
@@ -74,7 +64,12 @@ public class SSHFrame extends JPanel {
 
     public void connect() {
         try {
-            connectToServer();
+            connnection = new JSchConnection(jsch, profile);
+            connnection.setUserInfo(new UserInfo(parent));
+            connnection.setCallBack(console);
+            connnection.connect();
+            console.setOutputStream(connnection.getOutputStream());
+            console.setChannel(connnection.getChannel());
             setContent(console);
             sessionMenu.updateMenuStates();
         } catch(final Exception e) {
@@ -99,56 +94,9 @@ public class SSHFrame extends JPanel {
             console = null;
         }
 
-        if (outputStream != null) {
-            IOUtils.closeQuietly(outputStream);
-            outputStream = null;
+        if (connnection != null) {
+            connnection.close();
         }
-
-        if (channel != null) {
-            channel.disconnect();
-            channel = null;
-        }
-
-        if (session != null) {
-            session.disconnect();
-            session = null;
-        }
-    }
-
-    private void connectToServer() throws JSchException, IOException {
-        LOGGER.warn("Connecting to " + profile.getTitle());
-
-        setupSession();
-        setupPty();
-        channel.connect();
-        setupConsole();
-
-        LOGGER.warn("Connected to " + profile.getTitle());
-    }
-
-    private void setupConsole() throws IOException {
-        new AsyncInputStreamReaderThread(channel, console).start();
-        outputStream = channel.getOutputStream();
-        console.setOutputStream(outputStream);
-        console.setChannel(channel);
-    }
-
-    private void setupSession() throws JSchException {
-        session = jsch.getSession(
-                profile.getUser(), profile.getHost(), profile.getPort());
-        session.setUserInfo(new UserInfo(parent));
-        session.connect(profile.getTimeout());
-        channel = (ChannelShell) session.openChannel("shell");
-    }
-
-    private void setupPty() {
-        for (final Entry<String, String> env : profile.getEnvironment().entrySet()) {
-            channel.setEnv(env.getKey(), env.getValue());
-        }
-
-        channel.setEnv("TERM", "xterm");
-        channel.setPtyType("xterm");
-        channel.setPty(true);
     }
 
     public void redraw() {
