@@ -13,6 +13,7 @@ public class Profile {
     private int timeout = 10000;
     private Charset charset = Charset.forName("UTF-8");
     private final GfxInfo gfxInfo = new GfxInfo();
+    private final HashMap<String, String> environmentMap = new HashMap<String, String>();
 
     public String getTitle() {
         return user + "@" + host;
@@ -63,6 +64,6 @@ public class Profile {
     }
 
     public Map<String, String> getEnvironment() {
-        return new HashMap<String, String>();
+        return environmentMap;
     }
 }

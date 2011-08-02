@@ -117,12 +117,30 @@ public class XMLLoader {
         if (timeout != null) { profile.setTimeout(timeout); }
         if (charset != null) { profile.setCharset(charset); }
 
+        final Element environmentNode = getElement(profileNode, "environment");
+        if (environmentNode != null) {
+            loadEnvironment(environmentNode, profile.getEnvironment());
+        }
+
         final Element gfxNode = getElement(profileNode, "gfx");
         if (gfxNode != null) {
             loadGfxSettingsToProfile(gfxNode, profile.getGfxSettings());
         }
 
         return profile;
+    }
+
+    private void loadEnvironment(final Element environmentNode,
+            final Map<String, String> environment) {
+        final NodeList nodes = environmentNode.getChildNodes();
+        for (int i = 0; i < nodes.getLength(); ++i) {
+            final Node node = nodes.item(i);
+            final String key = getString(node, "./@name", null);
+            final String value = getString(node, "./text()", null);
+            if (key != null && value != null) {
+                environment.put(key, value);
+            }
+        }
     }
 
     private void loadGfxSettingsToProfile(final Element gfxNode,

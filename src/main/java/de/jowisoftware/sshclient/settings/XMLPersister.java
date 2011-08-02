@@ -28,62 +28,75 @@ import de.jowisoftware.sshclient.ui.GfxInfo;
 
 public class XMLPersister {
     private final ApplicationSettings settings;
+    private Document doc;
 
     public XMLPersister(final ApplicationSettings settings) {
         this.settings = settings;
     }
 
     public void save(final File file) {
-        final Document doc = createDocument();
+        createDocument();
 
         final Element root = doc.createElement("config");
 
-        root.appendChild(storeGeneralSettings(doc));
-        root.appendChild(storeKeys(doc));
-        root.appendChild(storeProfiles(doc));
+        root.appendChild(storeGeneralSettings());
+        root.appendChild(storeKeys());
+        root.appendChild(storeProfiles());
         doc.appendChild(root);
 
-        saveXMLToFile(file, doc);
+        saveXMLToFile(file);
     }
 
-    private Node storeProfiles(final Document doc) {
+    private Node storeProfiles() {
         final Element profiles = doc.createElement("profiles");
 
         for (final Entry<String, Profile> profile :
                 settings.getProfiles().entrySet()) {
             final Element profileNode = doc.createElement("profile");
             profileNode.setAttribute("name", profile.getKey());
-            storeProfile(profile.getValue(), profileNode, doc);
+            storeProfile(profile.getValue(), profileNode);
             profiles.appendChild(profileNode);
         }
 
         return profiles;
     }
 
-    private void storeProfile(final Profile profile, final Element profileNode, final Document doc) {
-        profileNode.appendChild(createKeyValue(doc, "host", profile.getHost()));
-        profileNode.appendChild(createKeyValue(doc, "user", profile.getUser()));
-        profileNode.appendChild(createKeyValue(doc, "port", profile.getPort()));
-        profileNode.appendChild(createKeyValue(doc, "timeout", profile.getTimeout()));
-        profileNode.appendChild(createKeyValue(doc, "charset", profile.getCharset().name()));
-        profileNode.appendChild(storeGfxSettings(profile.getGfxSettings(), doc));
+    private void storeProfile(final Profile profile, final Element profileNode) {
+        profileNode.appendChild(createKeyValue("host", profile.getHost()));
+        profileNode.appendChild(createKeyValue("user", profile.getUser()));
+        profileNode.appendChild(createKeyValue("port", profile.getPort()));
+        profileNode.appendChild(createKeyValue("timeout", profile.getTimeout()));
+        profileNode.appendChild(createKeyValue("charset", profile.getCharset().name()));
+        profileNode.appendChild(storeEnvironment(profile.getEnvironment()));
+        profileNode.appendChild(storeGfxSettings(profile.getGfxSettings()));
     }
 
-    private Node storeGfxSettings(final GfxInfo gfxSettings, final Document doc) {
+    private Node storeEnvironment(final Map<String, String> environment) {
+        final Element node = doc.createElement("environment");
+        for (final Entry<String, String> entry : environment.entrySet()) {
+            final Element child = doc.createElement("variable");
+            child.setAttribute("name", entry.getKey());
+            child.appendChild(doc.createTextNode(entry.getValue()));
+            node.appendChild(child);
+        }
+        return node;
+    }
+
+    private Node storeGfxSettings(final GfxInfo gfxSettings) {
         final Element node = doc.createElement("gfx");
-        node.appendChild(createFont(gfxSettings.getFont(), doc));
-        node.appendChild(createKeyValue(doc, "cursorColor", gfxSettings.getCursorColor()));
+        node.appendChild(createFont(gfxSettings.getFont()));
+        node.appendChild(createKeyValue("cursorColor", gfxSettings.getCursorColor()));
         final Element colors = doc.createElement("colors");
-        persistColors(gfxSettings.getColorMap(), colors, doc);
+        persistColors(gfxSettings.getColorMap(), colors);
         node.appendChild(colors);
         final Element lightColors = doc.createElement("lightColors");
-        persistColors(gfxSettings.getLightColorMap(), lightColors, doc);
+        persistColors(gfxSettings.getLightColorMap(), lightColors);
         node.appendChild(lightColors);
         return node;
     }
 
     private void persistColors(final Map<de.jowisoftware.sshclient.terminal.Color, Color> colorMap,
-            final Element parent, final Document doc) {
+            final Element parent) {
         for(final Entry<de.jowisoftware.sshclient.terminal.Color, Color> e : colorMap.entrySet()) {
             final Element color = doc.createElement("color");
             color.setAttribute("name", e.getKey().name());
@@ -92,15 +105,15 @@ public class XMLPersister {
         }
     }
 
-    private Node createKeyValue(final Document doc, final String key, final Color color) {
-        return createKeyValue(doc, key, Integer.toString(color.getRGB() & 0xFFFFFF, 16));
+    private Node createKeyValue(final String key, final Color color) {
+        return createKeyValue(key, Integer.toString(color.getRGB() & 0xFFFFFF, 16));
     }
 
-    private Node createKeyValue(final Document doc, final String key, final int value) {
-        return createKeyValue(doc, key, Integer.toString(value));
+    private Node createKeyValue(final String key, final int value) {
+        return createKeyValue(key, Integer.toString(value));
     }
 
-    private Node createFont(final Font font, final Document doc) {
+    private Node createFont(final Font font) {
         final Element node = doc.createElement("font");
         node.setAttribute("name", font.getName());
         node.setAttribute("size", Integer.toString(font.getSize()));
@@ -108,13 +121,13 @@ public class XMLPersister {
         return node;
     }
 
-    private Node createKeyValue(final Document doc, final String key, final String value) {
+    private Node createKeyValue(final String key, final String value) {
         final Element node = doc.createElement(key);
         node.appendChild(doc.createTextNode(value));
         return node;
     }
 
-    private Element storeKeys(final Document doc) {
+    private Element storeKeys() {
         final Element keyNode = doc.createElement("keys");
 
         for (final File keyFile : settings.getKeyFiles()) {
@@ -127,7 +140,7 @@ public class XMLPersister {
         return keyNode;
     }
 
-    private Element storeGeneralSettings(final Document doc) {
+    private Element storeGeneralSettings() {
         final Element element = doc.createElement("settings");
 
         final Element keyTabState = doc.createElement("keytab");
@@ -150,7 +163,7 @@ public class XMLPersister {
         keyTabState.setAttribute("state", tabState.toString().toLowerCase());
     }
 
-    private void saveXMLToFile(final File file, final Document doc)
+    private void saveXMLToFile(final File file)
             throws TransformerFactoryConfigurationError {
         try {
             final TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -167,7 +180,7 @@ public class XMLPersister {
         }
     }
 
-    private Document createDocument() {
+    private void createDocument() {
         final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder docBuilder;
         try {
@@ -176,7 +189,6 @@ public class XMLPersister {
             throw new RuntimeException(e);
         }
 
-        final Document doc = docBuilder.newDocument();
-        return doc;
+        doc = docBuilder.newDocument();
     }
 }
