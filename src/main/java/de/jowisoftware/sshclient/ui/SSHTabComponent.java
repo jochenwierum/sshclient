@@ -18,7 +18,7 @@ public class SSHTabComponent extends AbstractClosableTabcomponent {
         super(pane);
         this.parent = parent;
 
-        label = new JLabel(profile.getTitle());
+        label = new JLabel(profile.getDefaultTitle());
     }
 
     @Override

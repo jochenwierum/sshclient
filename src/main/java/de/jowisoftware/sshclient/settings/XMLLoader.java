@@ -24,7 +24,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
+import de.jowisoftware.sshclient.settings.validation.ValidationResult;
 import de.jowisoftware.sshclient.ui.GfxInfo;
+import de.jowisoftware.sshclient.util.ValidationUtils;
 
 public class XMLLoader {
     private static final Logger LOGGER = Logger.getLogger(XMLLoader.class);
@@ -90,17 +92,28 @@ public class XMLLoader {
             final String name = getString(profileNodes.item(i), "@name",
                     "unknown profile");
             final Profile profile = loadProfile(profileNodes.item(i));
-            settings.getProfiles().put(name, profile);
+            if (profileIsValid(profile)) {
+                settings.getProfiles().put(name, profile);
+            }
         }
+    }
+
+    private boolean profileIsValid(final Profile profile) {
+        final ValidationResult result = ValidationUtils.validateProfile(profile);
+        if (result.hadErrors()) {
+            LOGGER.warn("Ignoring profile " + profile + ", profile was invalid");
+            return false;
+        }
+        return true;
     }
 
     private Profile loadProfile(final Node profileNode) {
         final Profile profile = new Profile();
 
-        final String host = getString(profileNode, "host/text()", null);
-        final String user = getString(profileNode, "user/text()", null);
-        final Integer port = getInteger(profileNode, "port/text()", null);
-        final Integer timeout = getInteger(profileNode, "timeout/text()", null);
+        profile.setHost(getString(profileNode, "host/text()", null));
+        profile.setUser(getString(profileNode, "user/text()", null));
+        profile.setPort(getInteger(profileNode, "port/text()", -1));
+        profile.setTimeout(getInteger(profileNode, "timeout/text()", -1));
 
         Charset charset;
         try {
@@ -110,12 +123,7 @@ public class XMLLoader {
             LOGGER.warn("Ignoring unkown charset", e);
             charset = null;
         }
-
-        if (host != null) { profile.setHost(host); }
-        if (user != null) { profile.setUser(user); }
-        if (port != null) { profile.setPort(port); }
-        if (timeout != null) { profile.setTimeout(timeout); }
-        if (charset != null) { profile.setCharset(charset); }
+        profile.setCharset(charset);
 
         final Element environmentNode = getElement(profileNode, "environment");
         if (environmentNode != null) {

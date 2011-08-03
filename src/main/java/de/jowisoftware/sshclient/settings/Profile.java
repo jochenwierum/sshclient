@@ -15,7 +15,7 @@ public class Profile {
     private final GfxInfo gfxInfo = new GfxInfo();
     private final HashMap<String, String> environmentMap = new HashMap<String, String>();
 
-    public String getTitle() {
+    public String getDefaultTitle() {
         return user + "@" + host;
     }
 

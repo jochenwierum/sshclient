@@ -14,7 +14,7 @@ public class GfxInfo {
     private final GfxAwtChar emptyChar = new GfxAwtChar(' ', this,
             Color.DEFAULTBG, Color.DEFAULTBG, new HashSet<Attribute>());
     private java.awt.Color cursorColor;
-    private Font font = new Font("Consolas", 0, 11); // TODO hasUniformLineMetrics()
+    private Font font = new Font("Monospaced", 0, 10);
 
     public GfxInfo() {
        colors.put(Color.BLACK, java.awt.Color.BLACK);

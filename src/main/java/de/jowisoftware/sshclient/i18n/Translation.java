@@ -15,7 +15,7 @@ public class Translation {
     private static final Object NEUTRAL_LANGUAGE = "en_US";
     private final Properties translations;
 
-    private static Translation staticTranslation;
+    private static Translation staticTranslation = new Translation();
 
     Translation() {
         this.translations = null;
@@ -61,18 +61,10 @@ public class Translation {
     }
 
     public static String t(final String key, final String string, final Object ... args) {
-        if (staticTranslation == null) {
-            throw new IllegalStateException("initialize translation first");
-        }
-
         return staticTranslation.translate(key, string, args);
     }
 
     public static int m(final String key, final char defaultKey) {
-        if (staticTranslation == null) {
-            throw new IllegalStateException("initialize translation first");
-        }
-
         final String charString = staticTranslation.translate("mnemonic." + key,
                 Character.toString(defaultKey));
 

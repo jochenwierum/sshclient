@@ -256,7 +256,7 @@ public class MainWindow extends JFrame {
 
     public void connect(final Profile profile) {
         final ConnectionFrame sshFrame = new ConnectionFrame(this, profile, jsch);
-        pane.addTab(profile.getTitle(), sshFrame);
+        pane.addTab(profile.getDefaultTitle(), sshFrame);
         pane.setTabComponentAt(pane.getTabCount() - 1,
                 sshFrame.createTabComponent(pane));
         pane.setSelectedComponent(sshFrame);

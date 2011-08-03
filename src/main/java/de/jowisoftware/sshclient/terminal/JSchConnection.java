@@ -42,13 +42,13 @@ public class JSchConnection {
 
     public void connect() throws JSchException, IOException {
         checkState();
-        LOGGER.warn("Connecting to " + profile.getTitle());
+        LOGGER.warn("Connecting to " + profile.getDefaultTitle());
 
         connectSession();
         connectChannel();
         setupStreams();
 
-        LOGGER.warn("Connected to " + profile.getTitle());
+        LOGGER.warn("Connected to " + profile.getDefaultTitle());
     }
 
     private void checkState() {
