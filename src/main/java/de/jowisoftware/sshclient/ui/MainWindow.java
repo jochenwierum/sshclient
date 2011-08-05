@@ -9,8 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -33,6 +31,7 @@ import de.jowisoftware.sshclient.settings.KeyAgentManager;
 import de.jowisoftware.sshclient.settings.Profile;
 import de.jowisoftware.sshclient.settings.XMLLoader;
 import de.jowisoftware.sshclient.settings.XMLPersister;
+import de.jowisoftware.sshclient.ui.settings.ConnectDialog;
 
 public class MainWindow extends JFrame {
     private static final long serialVersionUID = -2951599770927217249L;
@@ -264,28 +263,9 @@ public class MainWindow extends JFrame {
     }
 
     public void connectToCustomProfile() {
-        final Profile profile = new Profile();
-        final String result =
-            JOptionPane.showInputDialog("[user@]host[:port]", "localhost");
-        if (result == null) {
-            return;
+        final Profile profile = new ConnectDialog(this).createProfile();
+        if (profile != null) {
+            connect(profile);
         }
-
-        final Matcher matcher = Pattern.compile("([^@]*)@([^:]+)(?:(:\\d+))?").matcher(result);
-        if (!matcher.matches()) {
-            return;
-        }
-
-        if (matcher.group(1) != null) {
-            profile.setUser(matcher.group(1));
-        }
-        if (matcher.group(2) != null) {
-            profile.setHost(matcher.group(2));
-        }
-        if (matcher.group(3) != null) {
-            profile.setPort(Integer.parseInt(matcher.group(3)));
-        }
-
-        connect(profile);
     }
 }

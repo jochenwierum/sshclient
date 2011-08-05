@@ -1,48 +1,50 @@
 package de.jowisoftware.sshclient.ui;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
-import de.jowisoftware.sshclient.terminal.Color;
+import de.jowisoftware.sshclient.terminal.TerminalColor;
 
 public class GfxInfo {
-    private final Map<Color, java.awt.Color> colors = new HashMap<Color, java.awt.Color>();
-    private final Map<Color, java.awt.Color> brightColors = new HashMap<Color, java.awt.Color>();
+    private final Map<TerminalColor, Color> colors = new HashMap<TerminalColor, Color>();
+    private final Map<TerminalColor, Color> brightColors = new HashMap<TerminalColor, Color>();
     private final GfxAwtChar emptyChar = new GfxAwtChar(' ', this,
-            Color.DEFAULTBG, Color.DEFAULTBG, new HashSet<Attribute>());
-    private java.awt.Color cursorColor;
-    private Font font = new Font("Monospaced", 0, 10);
+            TerminalColor.DEFAULTBG, TerminalColor.DEFAULTBG, new HashSet<Attribute>());
+    private Color cursorColor;
+    private Font font = new Font(Font.MONOSPACED, 0, 10);
 
     public GfxInfo() {
-       colors.put(Color.BLACK, java.awt.Color.BLACK);
-       colors.put(Color.BLUE, java.awt.Color.BLUE);
-       colors.put(Color.CYAN, java.awt.Color.CYAN);
-       colors.put(Color.DEFAULT, java.awt.Color.LIGHT_GRAY);
-       colors.put(Color.DEFAULTBG, java.awt.Color.BLACK);
-       colors.put(Color.GREEN, java.awt.Color.GREEN);
-       colors.put(Color.MAGENTA, java.awt.Color.MAGENTA);
-       colors.put(Color.RED, java.awt.Color.RED);
-       colors.put(Color.WHITE, java.awt.Color.WHITE);
-       colors.put(Color.YELLOW, java.awt.Color.YELLOW);
+       colors.put(TerminalColor.BLACK, Color.BLACK);
+       colors.put(TerminalColor.BLUE, Color.BLUE.darker());
+       colors.put(TerminalColor.CYAN, Color.CYAN.darker());
+       colors.put(TerminalColor.DEFAULT, Color.LIGHT_GRAY.darker());
+       colors.put(TerminalColor.DEFAULTBG, Color.BLACK);
+       colors.put(TerminalColor.GREEN, Color.GREEN.darker());
+       colors.put(TerminalColor.MAGENTA, Color.MAGENTA.darker());
+       colors.put(TerminalColor.RED, Color.RED.darker());
+       colors.put(TerminalColor.WHITE, Color.WHITE);
+       colors.put(TerminalColor.YELLOW, Color.YELLOW.darker());
 
-       brightColors.put(Color.BLACK, java.awt.Color.BLACK);
-       brightColors.put(Color.BLUE, java.awt.Color.BLUE.brighter().brighter());
-       brightColors.put(Color.CYAN, java.awt.Color.CYAN.brighter().brighter());
-       brightColors.put(Color.DEFAULT, java.awt.Color.WHITE);
-       brightColors.put(Color.DEFAULTBG, java.awt.Color.BLACK);
-       brightColors.put(Color.GREEN, java.awt.Color.GREEN.brighter().brighter());
-       brightColors.put(Color.MAGENTA, java.awt.Color.MAGENTA.brighter().brighter());
-       brightColors.put(Color.RED, java.awt.Color.RED.brighter().brighter());
-       brightColors.put(Color.WHITE, java.awt.Color.WHITE.brighter().brighter());
-       brightColors.put(Color.YELLOW, java.awt.Color.YELLOW.brighter().brighter());
+       brightColors.put(TerminalColor.BLACK, Color.BLACK);
+       brightColors.put(TerminalColor.BLUE, Color.BLUE);
+       brightColors.put(TerminalColor.CYAN, Color.CYAN);
+       brightColors.put(TerminalColor.DEFAULT, Color.WHITE);
+       brightColors.put(TerminalColor.DEFAULTBG, Color.BLACK);
+       brightColors.put(TerminalColor.GREEN, Color.GREEN);
+       brightColors.put(TerminalColor.MAGENTA, Color.MAGENTA);
+       brightColors.put(TerminalColor.RED, Color.RED);
+       brightColors.put(TerminalColor.WHITE, Color.WHITE);
+       brightColors.put(TerminalColor.YELLOW, Color.YELLOW);
 
-       cursorColor = java.awt.Color.GREEN;
+       cursorColor = Color.GREEN;
     }
 
-    public java.awt.Color mapColor(final Color color, final boolean light) {
+    public Color mapColor(final TerminalColor color, final boolean light) {
         if (!light) {
             return colors.get(color);
         } else {
@@ -58,23 +60,37 @@ public class GfxInfo {
         return emptyChar;
     }
 
-    public java.awt.Color getCursorColor() {
+    public Color getCursorColor() {
         return cursorColor;
     }
 
-    public Map<Color, java.awt.Color> getColorMap() {
+    public Map<TerminalColor, Color> getColorMap() {
         return colors;
     }
 
-    public Map<Color, java.awt.Color> getLightColorMap() {
+    public Map<TerminalColor, Color> getLightColorMap() {
         return brightColors;
     }
 
-    public void setCursorColor(final java.awt.Color color) {
+    public void setCursorColor(final Color color) {
         this.cursorColor = color;
     }
 
     public void setFont(final Font font) {
         this.font = font;
+    }
+
+    @Override
+    public Object clone() {
+        final GfxInfo g = new GfxInfo();
+        for (final Entry<TerminalColor, Color> e : brightColors.entrySet()) {
+            g.brightColors.put(e.getKey(), e.getValue());
+        }
+        for (final Entry<TerminalColor, Color> e : colors.entrySet()) {
+            g.colors.put(e.getKey(), e.getValue());
+        }
+        g.cursorColor = cursorColor;
+        g.font = font;
+        return g;
     }
 }

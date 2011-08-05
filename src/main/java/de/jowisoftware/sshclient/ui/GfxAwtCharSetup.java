@@ -4,14 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
-import de.jowisoftware.sshclient.terminal.Color;
+import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 
 public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
     private final GfxInfo gfxInfo;
     private final Set<Attribute> attributes = new HashSet<Attribute>();
-    private Color fgColor;
-    private Color bgColor;
+    private TerminalColor fgColor;
+    private TerminalColor bgColor;
 
     public GfxAwtCharSetup(final GfxInfo gfxInfo) {
         this.gfxInfo = gfxInfo;
@@ -20,8 +20,8 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
 
     @Override
     public void reset() {
-        fgColor = Color.DEFAULT;
-        bgColor = Color.DEFAULTBG;
+        fgColor = TerminalColor.DEFAULT;
+        bgColor = TerminalColor.DEFAULTBG;
         attributes.clear();
     }
 
@@ -39,12 +39,12 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
     }
 
     @Override
-    public void setForeground(final Color color) {
+    public void setForeground(final TerminalColor color) {
         fgColor = color;
     }
 
     @Override
-    public void setBackground(final Color color) {
+    public void setBackground(final TerminalColor color) {
         bgColor = color;
     }
 
@@ -57,7 +57,7 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
     @Override
     public void removeAttribute(final Attribute attribute) {
         if (attribute.equals(Attribute.HIDDEN)) {
-            fgColor = Color.DEFAULT;
+            fgColor = TerminalColor.DEFAULT;
         } else {
             attributes.remove(attribute);
         }

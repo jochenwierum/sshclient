@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import de.jowisoftware.sshclient.terminal.Color;
+import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 
 public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
@@ -45,7 +45,7 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
         for (int i = 0; i < 2; ++i) {
             images[i] = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             graphics[i] = images[i].createGraphics();
-            graphics[i].setBackground(gfxInfo.mapColor(Color.DEFAULTBG, false));
+            graphics[i].setBackground(gfxInfo.mapColor(TerminalColor.DEFAULTBG, false));
             graphics[i].setFont(gfxInfo.getFont());
         }
 

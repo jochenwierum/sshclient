@@ -5,18 +5,18 @@ import java.awt.Graphics2D;
 import java.util.Set;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
-import de.jowisoftware.sshclient.terminal.Color;
+import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public class GfxAwtChar implements GfxChar {
     private final GfxInfo gfxInfo;
     private final Attribute[] attributes;
-    private final Color fgColor;
-    private final Color bgColor;
+    private final TerminalColor fgColor;
+    private final TerminalColor bgColor;
     private final char character;
 
     public GfxAwtChar(final char character,
-            final GfxInfo gfxInfo, final Color fgColor, final Color bgColor,
+            final GfxInfo gfxInfo, final TerminalColor fgColor, final TerminalColor bgColor,
             final Set<Attribute> attributes) {
         this.character = character;
         this.gfxInfo = gfxInfo;

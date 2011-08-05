@@ -25,6 +25,7 @@ import org.xml.sax.SAXException;
 
 import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.settings.validation.ValidationResult;
+import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.ui.GfxInfo;
 import de.jowisoftware.sshclient.util.ValidationUtils;
 
@@ -183,7 +184,7 @@ public class XMLLoader {
         return null;
     }
 
-    private Map<de.jowisoftware.sshclient.terminal.Color, Color> getColors(
+    private Map<TerminalColor, Color> getColors(
             final Element node, final String xpathExpression) {
         final NodeList colorList;
         try {
@@ -193,11 +194,11 @@ public class XMLLoader {
             return null;
         }
 
-        final Map<de.jowisoftware.sshclient.terminal.Color, Color> colors  =
-                new HashMap<de.jowisoftware.sshclient.terminal.Color, Color>();
+        final Map<TerminalColor, Color> colors  =
+                new HashMap<TerminalColor, Color>();
         for (int i = 0; i < colorList.getLength(); ++i) {
             final Color awtColor = getAWTColor(colorList.item(i), "@value");
-            final de.jowisoftware.sshclient.terminal.Color termColor =
+            final TerminalColor termColor =
                     getTermColor(colorList.item(i));
 
             if (awtColor != null && termColor != null) {
@@ -225,13 +226,13 @@ public class XMLLoader {
         return new Color(rgbValue | 0xFF000000);
     }
 
-    private de.jowisoftware.sshclient.terminal.Color getTermColor(final Node item) {
+    private TerminalColor getTermColor(final Node item) {
         final String name = getString(item, "@name", null);
         if (name == null) {
             return null;
         }
         try {
-            return de.jowisoftware.sshclient.terminal.Color.valueOf(name.toUpperCase());
+            return TerminalColor.valueOf(name.toUpperCase());
         } catch(final IllegalArgumentException e) {
             return null;
         }

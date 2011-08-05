@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
-import de.jowisoftware.sshclient.terminal.Color;
+import de.jowisoftware.sshclient.terminal.TerminalColor;
 
 @RunWith(JMock.class)
 public class ANSISequenceAttributeTest extends AbstractSequenceTest {
@@ -18,7 +18,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, Integer.toString(attr));
     }
 
-    private void callWithAttrAndExpectFGColor(final int attr, final Color expect) {
+    private void callWithAttrAndExpectFGColor(final int attr, final TerminalColor expect) {
         context.checking(new Expectations() {{
             oneOf(charSetup).setForeground(expect);
         }});
@@ -26,7 +26,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, Integer.toString(attr));
     }
 
-    private void callWithAttrAndExpectBGColor(final int attr, final Color expect) {
+    private void callWithAttrAndExpectBGColor(final int attr, final TerminalColor expect) {
         context.checking(new Expectations() {{
             oneOf(charSetup).setBackground(expect);
         }});
@@ -64,28 +64,28 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
 
     @Test
     public void testForegroundColors() {
-        callWithAttrAndExpectFGColor(30, Color.BLACK);
-        callWithAttrAndExpectFGColor(31, Color.RED);
-        callWithAttrAndExpectFGColor(32, Color.GREEN);
-        callWithAttrAndExpectFGColor(33, Color.YELLOW);
-        callWithAttrAndExpectFGColor(34, Color.BLUE);
-        callWithAttrAndExpectFGColor(35, Color.MAGENTA);
-        callWithAttrAndExpectFGColor(36, Color.CYAN);
-        callWithAttrAndExpectFGColor(37, Color.WHITE);
-        callWithAttrAndExpectFGColor(38, Color.DEFAULT);
+        callWithAttrAndExpectFGColor(30, TerminalColor.BLACK);
+        callWithAttrAndExpectFGColor(31, TerminalColor.RED);
+        callWithAttrAndExpectFGColor(32, TerminalColor.GREEN);
+        callWithAttrAndExpectFGColor(33, TerminalColor.YELLOW);
+        callWithAttrAndExpectFGColor(34, TerminalColor.BLUE);
+        callWithAttrAndExpectFGColor(35, TerminalColor.MAGENTA);
+        callWithAttrAndExpectFGColor(36, TerminalColor.CYAN);
+        callWithAttrAndExpectFGColor(37, TerminalColor.WHITE);
+        callWithAttrAndExpectFGColor(38, TerminalColor.DEFAULT);
     }
 
     @Test
     public void testBackgroundColors() {
-        callWithAttrAndExpectBGColor(40, Color.BLACK);
-        callWithAttrAndExpectBGColor(41, Color.RED);
-        callWithAttrAndExpectBGColor(42, Color.GREEN);
-        callWithAttrAndExpectBGColor(43, Color.YELLOW);
-        callWithAttrAndExpectBGColor(44, Color.BLUE);
-        callWithAttrAndExpectBGColor(45, Color.MAGENTA);
-        callWithAttrAndExpectBGColor(46, Color.CYAN);
-        callWithAttrAndExpectBGColor(47, Color.WHITE);
-        callWithAttrAndExpectBGColor(48, Color.DEFAULTBG);
+        callWithAttrAndExpectBGColor(40, TerminalColor.BLACK);
+        callWithAttrAndExpectBGColor(41, TerminalColor.RED);
+        callWithAttrAndExpectBGColor(42, TerminalColor.GREEN);
+        callWithAttrAndExpectBGColor(43, TerminalColor.YELLOW);
+        callWithAttrAndExpectBGColor(44, TerminalColor.BLUE);
+        callWithAttrAndExpectBGColor(45, TerminalColor.MAGENTA);
+        callWithAttrAndExpectBGColor(46, TerminalColor.CYAN);
+        callWithAttrAndExpectBGColor(47, TerminalColor.WHITE);
+        callWithAttrAndExpectBGColor(48, TerminalColor.DEFAULTBG);
     }
 
     @Test
@@ -103,8 +103,8 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     public void testMultipleAttributes() {
         context.checking(new Expectations() {{
             oneOf(charSetup).reset();
-            oneOf(charSetup).setBackground(Color.RED);
-            oneOf(charSetup).setForeground(Color.BLUE);
+            oneOf(charSetup).setBackground(TerminalColor.RED);
+            oneOf(charSetup).setForeground(TerminalColor.BLUE);
             oneOf(charSetup).setAttribute(Attribute.BLINK);
         }});
 

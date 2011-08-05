@@ -3,7 +3,7 @@ package de.jowisoftware.sshclient.terminal.controlsequences;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
-import de.jowisoftware.sshclient.terminal.Color;
+import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
@@ -34,7 +34,7 @@ public class ANSISequencem<T extends GfxChar> implements ANSISequence<T> {
     }
 
     private boolean processColors(final Session<T> sessionInfo, final int seq) {
-        for (final Color color : Color.values()) {
+        for (final TerminalColor color : TerminalColor.values()) {
             if (color.isForegroundSequence(seq)) {
                 sessionInfo.getCharSetup().setForeground(color);
                 return true;
