@@ -117,7 +117,7 @@ public class SettingsPanel extends JPanel {
 
     private void addMainControls(final JPanel frame, final String profileName,
             final boolean profileNameSettable) {
-        addControl(frame, newFormattedLabel(t("profile.general.profilename", "profile name:")), normalColumn);
+        addControl(frame, newFormattedLabel(t("profiles.general.profilename", "profile name:")), normalColumn);
         profileNameTextField = new JTextField(profileName);
         profileNameTextField.setEnabled(profileNameSettable);
         addControl(frame, profileNameTextField, lastColumn);
@@ -485,5 +485,9 @@ public class SettingsPanel extends JPanel {
         } catch(final Exception e) {
             return defaultValue;
         }
+    }
+
+    public String getProfileName() {
+        return profileNameTextField.getText();
     }
 }

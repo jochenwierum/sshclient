@@ -140,7 +140,7 @@ public class MainWindow extends JFrame {
     }
 
     private void initWindowElements() {
-        menu = new MainWindowMenu(this);
+        menu = new MainWindowMenu(this, settings);
         setJMenuBar(menu.getMenuBar());
 
         setLayout(new BorderLayout());
@@ -154,6 +154,7 @@ public class MainWindow extends JFrame {
         initTabs();
 
         setSize(640, 480);
+        setLocationRelativeTo(null);
         setVisible(true);
     }
 
@@ -268,9 +269,15 @@ public class MainWindow extends JFrame {
     }
 
     public void connectToCustomProfile() {
-        final Profile profile = new ConnectDialog(this).createProfile();
+        final ConnectDialog connectDialog = new ConnectDialog(this);
+        final Profile profile = connectDialog.createProfile();
+        connectDialog.dispose();
         if (profile != null) {
             connect(profile);
         }
+    }
+
+    public void updateProfiles() {
+        toolBar.updateProfiles();
     }
 }

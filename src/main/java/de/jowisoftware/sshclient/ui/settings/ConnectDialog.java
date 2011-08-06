@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.ui.settings;
 
+import static de.jowisoftware.sshclient.i18n.Translation.m;
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 import java.awt.BorderLayout;
@@ -27,19 +28,17 @@ public class ConnectDialog extends JDialog implements WindowListener {
     private Profile profile = new Profile();
 
     public ConnectDialog(final Frame parent) {
-        super(parent, t("connect.title", "direct connect"));
+        super(parent, t("connect.connect.title", "Direct connect"));
         settingsFrame = new SettingsPanel(profile, "", false);
 
         addWindowListener(this);
         setLayout(new BorderLayout());
-
         addControls();
 
-        apllyVisibility();
+        applyVisibility(parent);
     }
 
     private void addControls() {
-        setModalityType(ModalityType.APPLICATION_MODAL);
         add(settingsFrame, BorderLayout.CENTER);
         add(createButtonBar(), BorderLayout.SOUTH);
     }
@@ -59,12 +58,14 @@ public class ConnectDialog extends JDialog implements WindowListener {
 
     private JButton createOKButton() {
         final JButton button = new JButton(t("ok", "OK"));
+        button.setMnemonic(m("ok", 'o'));
         button.addActionListener(createActionListener(true));
         return button;
     }
 
     private JButton createCancelButton() {
         final JButton button = new JButton(t("cancel", "Cancel"));
+        button.setMnemonic(m("cancel", 'c'));
         button.addActionListener(createActionListener(false));
         return button;
     }
@@ -78,9 +79,11 @@ public class ConnectDialog extends JDialog implements WindowListener {
         };
     }
 
-    private void apllyVisibility() {
+    private void applyVisibility(final Frame parent) {
+        setModalityType(ModalityType.APPLICATION_MODAL);
         setSize(400, 300);
         setResizable(false);
+        setLocationRelativeTo(parent);
         setVisible(true);
     }
 

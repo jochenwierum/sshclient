@@ -10,15 +10,20 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
+import de.jowisoftware.sshclient.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.ui.settings.ProfilesDialog;
+
 
 public class MainWindowMenu {
     private final MainWindow parent;
     private final JMenuBar menu;
     private final JMenu dummySessionMenu;
     private JMenu sessionMenu;
+    private final ApplicationSettings settings;
 
-    public MainWindowMenu(final MainWindow parent) {
+    public MainWindowMenu(final MainWindow parent, final ApplicationSettings settings) {
         this.parent = parent;
+        this.settings = settings;
 
         menu = new JMenuBar();
         menu.add(createFileMenu());
@@ -43,11 +48,11 @@ public class MainWindowMenu {
         fileMenu.setMnemonic(m("mainwindow.menu.file", 'f'));
 
         fileMenu.add(createConnectEntry());
+        fileMenu.add(createSessionsEntry());
         fileMenu.add(createQuitMenuEntry());
 
         return fileMenu;
     }
-
 
     private JMenu createViewMenu() {
         final JMenu viewMenu = new JMenu(t("mainwindow.menu.view", "View"));
@@ -88,8 +93,24 @@ public class MainWindowMenu {
         return entry;
     }
 
+    private JMenuItem createSessionsEntry() {
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.profiles", "Profiles"));
+        entry.setMnemonic(m("mainwindow.menu.profiles", 'p'));
+
+        entry.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final ProfilesDialog dialog = new ProfilesDialog(parent, settings);
+                dialog.showSettings();
+                dialog.dispose();
+                parent.updateProfiles();
+            }
+        });
+        return entry;
+    }
+
     private JMenuItem createConnectEntry() {
-        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.connect", "Connect..."));
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.connect", "Connect"));
         entry.setMnemonic(m("mainwindow.menu.connect", 'c'));
         entry.addActionListener(new ActionListener() {
             @Override
