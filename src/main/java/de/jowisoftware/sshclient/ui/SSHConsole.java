@@ -127,8 +127,8 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
 
         final int cw;
         final int ch;
+        renderer.setDimensions(pw, ph);
         if (displayType == DisplayType.DYNAMIC) {
-            renderer.setDimensions(pw, ph);
             cw = renderer.getCharsPerLine();
             ch = renderer.getLines();
             session.getBuffer().newSize(cw, ch);
