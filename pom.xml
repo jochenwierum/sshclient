@@ -11,25 +11,27 @@
 	<description>A simple but powerful and platform independent SSH client with tab support.</description>
 	<url>https://jowisoftware.de:4443/trac/ssh</url>
 
-    <organization>
-        <name>JoWiSoftware</name>
-        <url>http://www.jowisoftware.de</url>
-    </organization>
+	<organization>
+		<name>JoWiSoftware</name>
+		<url>http://www.jowisoftware.de</url>
+	</organization>
 
-    <issueManagement>
-        <system>Trac</system>
-        <url>https://jowisoftware.de:4443/trac/ssh</url>
-    </issueManagement>
-    
-    <scm>
-        <connection>scm:svn:https://jowisoftware.de:4443/svn/ssh</connection>
-        <developerConnection>scm:svn:https://jowisoftware.de:4443/svn/ssh</developerConnection>
-        <tag>HEAD</tag>
-        <url>https://jowisoftware.de:4443/svn/ssh</url>
-    </scm>
+	<issueManagement>
+		<system>Trac</system>
+		<url>https://jowisoftware.de:4443/trac/ssh</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:svn:https://jowisoftware.de:4443/svn/ssh</connection>
+		<developerConnection>scm:svn:https://jowisoftware.de:4443/svn/ssh</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://jowisoftware.de:4443/svn/ssh</url>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.6</java.version>
+		<finalname>ssh</finalname>
 	</properties>
 
 	<repositories>
@@ -74,16 +76,35 @@
 	</dependencies>
 
 	<build>
+		<defaultGoal>package</defaultGoal>
+		<finalName>${finalname}</finalName>
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<excludeDefaultDirectories>true</excludeDefaultDirectories>
+					<filesets>
+						<fileset>
+							<directory>target</directory>
+							<includes>
+								<include>**/*</include>
+							</includes>
+						</fileset>
+					</filesets>
 				</configuration>
 			</plugin>
 
@@ -101,7 +122,7 @@
 				</configuration>
 				<executions>
 					<execution>
-					   <phase>package</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>single</goal>
 						</goals>
@@ -110,4 +131,49 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/resources.release</directory>
+					</resource>
+					<resource>
+						<directory>src/main/resources</directory>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+
+		<profile>
+			<id>applet</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jarsigner-plugin</artifactId>
+						<version>1.2</version>
+						<executions>
+							<execution>
+								<id>sign</id>
+								<phase>package</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<removeExistingSignatures>true</removeExistingSignatures>
+							<keystore>${sign.file}</keystore>
+							<alias>${sign.alias}</alias>
+							<storepass>${sign.storepass}</storepass>
+							<keypass>${sign.keypass}</keypass>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

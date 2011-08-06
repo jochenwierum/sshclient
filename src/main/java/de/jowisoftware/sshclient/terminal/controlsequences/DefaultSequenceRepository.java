@@ -10,7 +10,7 @@ import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public class DefaultSequenceRepository <T extends GfxChar> implements SequenceRepository<T> {
     private static class WarnSequenceHandler<T extends GfxChar> implements ANSISequence<T> {
-        private static final Logger LOGGER = Logger.getLogger(DefaultSequenceRepositoryTest.class);
+        private static final Logger LOGGER = Logger.getLogger(DefaultSequenceRepository.class);
 
         private final char c;
         public WarnSequenceHandler(final char c) {
