@@ -17,7 +17,7 @@ public class ApplicationSettings {
 
     private TabState logTabState = TabState.CLOSED;
     private TabState keyTabState = TabState.CLOSED;
-    private String language;
+    private String language = "en_US";
 
     /*
     public ApplicationSettings() {

@@ -55,7 +55,10 @@ public class MainWindow extends JFrame {
     public MainWindow() {
         FontUtils.fillAsyncCache();
         projectDir = prepareProjectDir();
-        new XMLLoader(settings).load(new File(projectDir, "settings.xml"));
+        final File settingsFile = new File(projectDir, "settings.xml");
+        if (settingsFile.isFile()) {
+            new XMLLoader(settings).load(settingsFile);
+        }
         initTranslation();
         setTitle("SSH");
 
