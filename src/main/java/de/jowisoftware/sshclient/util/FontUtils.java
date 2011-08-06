@@ -11,6 +11,8 @@ import java.util.List;
 public final class FontUtils {
     private FontUtils() { /* util class */ }
 
+    private static final List<String> fontCache = new ArrayList<String>();
+
     public static boolean isMonospacedFont(final Font font) {
         final BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         final Graphics graphics = bufferedImage.createGraphics();
@@ -44,20 +46,36 @@ public final class FontUtils {
         return true;
     }
 
-    public static String[] getMonospacedFonts() {
-        final List<String> result = new ArrayList<String>();
-        final String[] fontList = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-
-        final BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-        final Graphics graphics = bufferedImage.createGraphics();
-
-        for (final String font : fontList) {
-            if (isMonospacedFont(new Font(font, 0, 12), graphics)) {
-                result.add(font);
-            }
+    public static String[] getCachedMonospacedFonts() {
+        synchronized (fontCache) {
+            return fontCache.toArray(new String[fontCache.size()]);
         }
+    }
 
-        graphics.dispose();
-        return result.toArray(new String[result.size()]);
+    public static void fillAsyncCache() {
+        new Thread() {
+            @Override
+            public void run() {
+                fillFontCache();
+            }
+        }.start();
+    }
+
+    private static void fillFontCache() {
+        synchronized(fontCache) {
+            fontCache.clear();
+            final String[] fontList = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+
+            final BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+            final Graphics graphics = bufferedImage.createGraphics();
+
+            for (final String font : fontList) {
+                if (isMonospacedFont(new Font(font, 0, 12), graphics)) {
+                    fontCache.add(font);
+                }
+            }
+
+            graphics.dispose();
+        }
     }
 }

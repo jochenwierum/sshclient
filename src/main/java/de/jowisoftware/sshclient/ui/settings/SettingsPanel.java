@@ -230,7 +230,7 @@ public class SettingsPanel extends JPanel {
     }
 
     private JComboBox createFontSelectionBox() {
-        final String names[] = FontUtils.getMonospacedFonts();
+        final String names[] = FontUtils.getCachedMonospacedFonts();
         Arrays.sort(names);
         return new JComboBox(names);
     }
@@ -266,9 +266,7 @@ public class SettingsPanel extends JPanel {
     }
 
     private void addColors(final JPanel frame) {
-        for (final TerminalColor color :
-                profile.getGfxSettings().getColorMap().keySet()) {
-
+        for (final TerminalColor color : TerminalColor.values()) {
             addControl(frame, newFormattedLabel(
                     t(colorTranslation(color, COLORTYPE_DEFAULT),
                             color.nicename().toLowerCase())), normalColumn);
@@ -338,7 +336,7 @@ public class SettingsPanel extends JPanel {
     }
 
     protected void saveColor(final String actionCommand, final Color newColor) {
-        final String[] colorTypes = actionCommand.split(".");
+        final String[] colorTypes = actionCommand.split("\\.");
 
         final GfxInfo gfxSettings = profile.getGfxSettings();
         if (COLORTYPE_CURSOR.equals(colorTypes[0])) {
@@ -347,7 +345,7 @@ public class SettingsPanel extends JPanel {
             gfxSettings.getColorMap().put(
                     TerminalColor.valueOf(colorTypes[1]),
                     newColor);
-        } else if (COLORTYPE_LIGHT.equals(colorTypes[2])) {
+        } else if (COLORTYPE_LIGHT.equals(colorTypes[0])) {
             gfxSettings.getLightColorMap().put(
                     TerminalColor.valueOf(colorTypes[1]), newColor);
         }
@@ -364,7 +362,7 @@ public class SettingsPanel extends JPanel {
 
     private void addAdvancedControls(final JPanel frame) {
         addControl(frame, newFormattedLabel(
-                t("profiles.advanced.environment", "environment")), normalColumn);
+                t("profiles.advanced.environment", "environment:")), normalColumn);
 
         addControl(frame, createEnvironmentPanel(), lastColumn);
     }
@@ -409,7 +407,7 @@ public class SettingsPanel extends JPanel {
     }
 
     private JButton createRemoveEnvironmentButton() {
-        final JButton button = new JButton(t("profiles.advanced.add", "remove"));
+        final JButton button = new JButton(t("profiles.advanced.remove", "remove"));
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {

@@ -32,6 +32,7 @@ import de.jowisoftware.sshclient.settings.Profile;
 import de.jowisoftware.sshclient.settings.XMLLoader;
 import de.jowisoftware.sshclient.settings.XMLPersister;
 import de.jowisoftware.sshclient.ui.settings.ConnectDialog;
+import de.jowisoftware.sshclient.util.FontUtils;
 
 public class MainWindow extends JFrame {
     private static final long serialVersionUID = -2951599770927217249L;
@@ -52,6 +53,7 @@ public class MainWindow extends JFrame {
 
 
     public MainWindow() {
+        FontUtils.fillAsyncCache();
         projectDir = prepareProjectDir();
         new XMLLoader(settings).load(new File(projectDir, "settings.xml"));
         initTranslation();

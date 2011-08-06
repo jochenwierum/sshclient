@@ -34,7 +34,7 @@ public class Translation {
             if (result != null) {
                 formatString = result;
             } else {
-                LOGGER.warn("Missing translation: " + key + " (\"" + string + "\")");
+                LOGGER.warn("Missing translation: " + key.toLowerCase() + " (\"" + string + "\")");
             }
         }
         return String.format(formatString, args);
