@@ -147,4 +147,25 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
     public void testEraseLine2() {
         testEraseLine(new Position(7, 8), new Position(60, 30));
     }
+
+    private void testEraseXChars(final Position position, final int charCount,
+            final String ... args) {
+        context.checking(new Expectations() {{
+            oneOf(buffer).getCursorPosition();
+            will(returnValue(position));
+            oneOf(buffer).erase(new Range(
+                    position,
+                    position.offset(charCount, 0)));
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('X', sessionInfo, args);
+    }
+
+    @Test
+    public void testEraseChars() {
+        testEraseXChars(new Position(2, 2), 1);
+        testEraseXChars(new Position(3, 6), 1, "0");
+        testEraseXChars(new Position(1, 7), 3, "3");
+        testEraseXChars(new Position(2, 5), 6, "6");
+    }
 }
