@@ -147,4 +147,40 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
 
         DefaultSequenceRepository.executeAnsiSequence('h', sessionInfo, "?1049");
     }
+
+    @Test
+    public void testHandleWrapAroundOn() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).setAutoWrap(true);
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('h', sessionInfo, "?7");
+    }
+
+    @Test
+    public void testHandleWrapAroundOff() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).setAutoWrap(false);
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo, "?7");
+    }
+
+    @Test
+    public void testHandleShowCursorOn() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).setShowCursor(true);
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('h', sessionInfo, "?25");
+    }
+
+    @Test
+    public void testHandleShowCursorOff() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).setShowCursor(false);
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo, "?25");
+    }
 }

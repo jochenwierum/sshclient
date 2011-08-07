@@ -18,6 +18,7 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     private boolean autoWrap = true;
     private boolean wouldWrap;
     private Position savedCursorPosition;
+    private boolean showCursor = true;
 
 
     public DefaultBuffer(final T clearChar,
@@ -129,7 +130,7 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
             for (int row = 0; row < content.length; ++row) {
                 for (int col = 0; col < content[0].length; ++col) {
                     renderer.renderChar(content[row][col], col, row,
-                            isCursorAt(col, row, content[0].length));
+                            showCursor && isCursorAt(col, row, content[0].length));
                 }
             }
             renderer.swap();
@@ -219,7 +220,6 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void tapstop(final Tabstop orientation) {
         // TODO do a real implementation here
-        // TODO relative to what?
         final Position oldPosition = getCursorPosition();
         final Position size = getSize();
         int posX = oldPosition.x;
@@ -233,6 +233,7 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
         setCursorPosition(newPosition);
     }
 
+    @Override
     public void setAutoWrap(final boolean autoWrap) {
         this.autoWrap = autoWrap;
     }
@@ -272,5 +273,10 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
         } else {
             return BufferSelection.ALTERNATIVE;
         }
+    }
+
+    @Override
+    public void setShowCursor(final boolean doIt) {
+        this.showCursor = doIt;
     }
 }

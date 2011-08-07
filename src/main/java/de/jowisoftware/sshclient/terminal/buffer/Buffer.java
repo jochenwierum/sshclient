@@ -15,6 +15,7 @@ public interface Buffer<T extends GfxChar> {
     T getCharacter(final int row, final int column);
     void processBackspace();
     void tapstop(Tabstop vertical);
+    void setAutoWrap(boolean autoWrap);
 
     void erase(Range range);
     void insertLines(int lines);
@@ -25,6 +26,7 @@ public interface Buffer<T extends GfxChar> {
     void moveCursorDownAndRoll(boolean resetToFirstColumn);
 
     void render(Renderer<T> renderer);
+    void setShowCursor(boolean doIt);
 
     void switchBuffer(BufferSelection selection);
     BufferSelection getSelectedBuffer();

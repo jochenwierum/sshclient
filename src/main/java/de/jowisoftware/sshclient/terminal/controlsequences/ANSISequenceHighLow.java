@@ -26,6 +26,10 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
             processDisplayType(sessionInfo);
         } else if (args[0].equals("?6")) {
             processOriginMode(sessionInfo);
+        } else if (args[0].equals("?7")) {
+            processAutoWrap(sessionInfo);
+        } else if (args[0].equals("?25")) {
+            processShowCursor(sessionInfo);
         } else if (args[0].equals("?1047")) {
             processAlternateScreen(sessionInfo);
         } else if (args[0].equals("?1048")) {
@@ -35,6 +39,14 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
         } else {
             LOGGER.warn("Ignoring unknown high/low flag: " + StringUtils.join(";", args));
         }
+    }
+
+    private void processShowCursor(final Session<T> sessionInfo) {
+        sessionInfo.getBuffer().setShowCursor(isHigh);
+    }
+
+    private void processAutoWrap(final Session<T> sessionInfo) {
+        sessionInfo.getBuffer().setAutoWrap(isHigh);
     }
 
     private void processCursorStorageWithCursorSave(final Session<T> sessionInfo) {
