@@ -24,11 +24,15 @@ import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.DefaultBuffer;
+import de.jowisoftware.sshclient.terminal.controlsequences.CharsetControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.CursorControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.DebugControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.DefaultSequenceRepository;
 import de.jowisoftware.sshclient.terminal.controlsequences.KeyboardControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.OperatingSystemCommandSequence;
+import de.jowisoftware.sshclient.ui.terminal.GfxAwtChar;
+import de.jowisoftware.sshclient.ui.terminal.GfxAwtCharSetup;
+import de.jowisoftware.sshclient.ui.terminal.GfxFeedback;
 
 public class SSHConsole extends JPanel implements Callback, ComponentListener,
         MouseListener {
@@ -74,6 +78,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         repository.addControlSequence(new KeyboardControlSequence<GfxAwtChar>());
         repository.addControlSequence(new OperatingSystemCommandSequence<GfxAwtChar>());
         repository.addControlSequence(new DebugControlSequence<GfxAwtChar>());
+        repository.addControlSequence(new CharsetControlSequence<GfxAwtChar>());
         return new CharacterProcessor<GfxAwtChar>(session, profile.getCharset(), repository);
     }
 

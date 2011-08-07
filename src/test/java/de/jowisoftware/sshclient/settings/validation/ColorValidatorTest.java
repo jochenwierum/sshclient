@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.jowisoftware.sshclient.terminal.TerminalColor;
-import de.jowisoftware.sshclient.ui.GfxInfo;
+import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
 
 public class ColorValidatorTest extends ValidationTest {
     @Before

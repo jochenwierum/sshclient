@@ -4,7 +4,7 @@ import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public interface NonASCIIControlSequence<T extends GfxChar> {
-    boolean isPartialStart(CharSequence sequence);
-    boolean canHandleSequence(CharSequence sequence);
+    boolean isPartialStart(String sequence);
+    boolean canHandleSequence(String sequence);
     void handleSequence(String sequence, Session<T> sessionInfo);
 }

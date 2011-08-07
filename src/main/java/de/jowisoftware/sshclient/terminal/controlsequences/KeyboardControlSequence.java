@@ -12,12 +12,12 @@ public class KeyboardControlSequence<T extends GfxChar> implements NonASCIIContr
     private static final Pattern PATTERN = Pattern.compile("=|>");
 
     @Override
-    public boolean isPartialStart(final CharSequence sequence) {
+    public boolean isPartialStart(final String sequence) {
         return false;
     }
 
     @Override
-    public boolean canHandleSequence(final CharSequence sequence) {
+    public boolean canHandleSequence(final String sequence) {
         return PATTERN.matcher(sequence).matches();
     }
 

@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.ui;
+package de.jowisoftware.sshclient.ui.terminal;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -14,11 +14,14 @@ public class GfxAwtChar implements GfxChar {
     private final TerminalColor fgColor;
     private final TerminalColor bgColor;
     private final char character;
+    private final GfxAwtCharset charset;
 
     public GfxAwtChar(final char character,
-            final GfxInfo gfxInfo, final TerminalColor fgColor, final TerminalColor bgColor,
+            final GfxAwtCharset charset, final GfxInfo gfxInfo,
+            final TerminalColor fgColor, final TerminalColor bgColor,
             final Set<Attribute> attributes) {
         this.character = character;
+        this.charset = charset;
         this.gfxInfo = gfxInfo;
         this.fgColor = fgColor;
         this.bgColor = bgColor;
@@ -35,7 +38,7 @@ public class GfxAwtChar implements GfxChar {
                 g.setColor(getBackColor());
             }
         }
-        g.drawString(Character.toString(character), x, y);
+        charset.drawCharacter(g, character, x, y);
         if (hasAttribute(Attribute.UNDERSCORE)) {
             g.drawLine(x, y, x + w, y);
         }

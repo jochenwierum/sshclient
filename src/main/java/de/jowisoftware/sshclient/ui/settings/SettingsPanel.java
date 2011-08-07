@@ -33,7 +33,7 @@ import javax.swing.JTextField;
 
 import de.jowisoftware.sshclient.settings.Profile;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
-import de.jowisoftware.sshclient.ui.GfxInfo;
+import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
 import de.jowisoftware.sshclient.util.FontUtils;
 
 public class SettingsPanel extends JPanel {

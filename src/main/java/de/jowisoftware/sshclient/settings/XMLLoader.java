@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
 import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.settings.validation.ValidationResult;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
-import de.jowisoftware.sshclient.ui.GfxInfo;
+import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
 import de.jowisoftware.sshclient.util.ValidationUtils;
 
 public class XMLLoader {

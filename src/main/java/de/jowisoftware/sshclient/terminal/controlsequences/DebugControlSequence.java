@@ -8,13 +8,13 @@ import de.jowisoftware.sshclient.terminal.buffer.Position;
 public class DebugControlSequence<T extends GfxChar> implements NonASCIIControlSequence<T> {
 
     @Override
-    public boolean isPartialStart(final CharSequence sequence) {
-        return sequence.toString().equals("#");
+    public boolean isPartialStart(final String sequence) {
+        return sequence.equals("#");
     }
 
     @Override
-    public boolean canHandleSequence(final CharSequence sequence) {
-        return sequence.toString().equals("#8");
+    public boolean canHandleSequence(final String sequence) {
+        return sequence.equals("#8");
     }
 
     @Override

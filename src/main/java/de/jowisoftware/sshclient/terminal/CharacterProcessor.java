@@ -141,7 +141,7 @@ public class CharacterProcessor<T extends GfxChar> {
 
         while(it.hasNext()) {
             final NonASCIIControlSequence<T> seq = it.next();
-            if (seq.canHandleSequence(currentState().cachedChars)) {
+            if (seq.canHandleSequence(currentState().getCachedString())) {
                 if (LOGGER.isInfoEnabled()) {
                     LOGGER.trace("Will handle " +
                             currentState().getCachedString() +
@@ -162,7 +162,7 @@ public class CharacterProcessor<T extends GfxChar> {
 
         while(it.hasNext()) {
             final NonASCIIControlSequence<T> seq = it.next();
-            if (!seq.isPartialStart(currentState().cachedChars)) {
+            if (!seq.isPartialStart(currentState().getCachedString())) {
                 it.remove();
             }
         }

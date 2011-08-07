@@ -25,7 +25,7 @@ import org.w3c.dom.Text;
 
 import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
-import de.jowisoftware.sshclient.ui.GfxInfo;
+import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
 
 public class XMLPersister {
     private final ApplicationSettings settings;

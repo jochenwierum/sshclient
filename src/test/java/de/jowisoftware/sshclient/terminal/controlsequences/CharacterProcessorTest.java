@@ -19,7 +19,6 @@ import de.jowisoftware.sshclient.terminal.VisualFeedback;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.test.matches.StringBuilderEquals;
 
 @RunWith(JMock.class)
 public class CharacterProcessorTest {
@@ -109,15 +108,15 @@ public class CharacterProcessorTest {
     @Test
     public void testSequence() {
         context.checking(new Expectations() {{
-            oneOf(sequence1).canHandleSequence(with(new StringBuilderEquals("t")));
+            oneOf(sequence1).canHandleSequence("t");
                 will(returnValue(false));
-            oneOf(sequence2).canHandleSequence(with(new StringBuilderEquals("t")));
+            oneOf(sequence2).canHandleSequence("t");
                 will(returnValue(false));
-            oneOf(sequence1).isPartialStart(with(new StringBuilderEquals("t")));
+            oneOf(sequence1).isPartialStart("t");
                 will(returnValue(true));
-            oneOf(sequence2).isPartialStart(with(new StringBuilderEquals("t")));
+            oneOf(sequence2).isPartialStart("t");
                 will(returnValue(false));
-            oneOf(sequence1).canHandleSequence(with(new StringBuilderEquals("ts")));
+            oneOf(sequence1).canHandleSequence("ts");
                 will(returnValue(true));
             oneOf(sequence1).handleSequence("ts", sessionInfo);
             oneOf(setup).createChar('3'); will(returnValue(gfxChar));
@@ -217,16 +216,14 @@ public class CharacterProcessorTest {
 
             protected void handleSeq(final NonASCIIControlSequence<GfxChar> sequence,
                     final String expected, final boolean value) {
-                oneOf(sequence).canHandleSequence(
-                        with(new StringBuilderEquals(expected)));
+                oneOf(sequence).canHandleSequence(expected);
                     will(returnValue(value));
             }
 
             private void handlePartialStart(
                     final NonASCIIControlSequence<GfxChar> sequence, final String expected,
                     final boolean value) {
-                oneOf(sequence).isPartialStart(
-                        with(new StringBuilderEquals(expected)));
+                oneOf(sequence).isPartialStart(expected);
                     will(returnValue(value));
             }
         });

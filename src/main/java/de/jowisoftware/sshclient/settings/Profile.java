@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.jowisoftware.sshclient.ui.GfxInfo;
+import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
 
 public class Profile {
     private String user = System.getProperty("user.name");

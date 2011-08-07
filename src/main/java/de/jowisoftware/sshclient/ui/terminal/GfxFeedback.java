@@ -1,7 +1,8 @@
-package de.jowisoftware.sshclient.ui;
+package de.jowisoftware.sshclient.ui.terminal;
 
 import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.VisualFeedback;
+import de.jowisoftware.sshclient.ui.SSHConsole;
 
 public class GfxFeedback implements VisualFeedback {
     private final SSHConsole parent;
@@ -16,9 +17,7 @@ public class GfxFeedback implements VisualFeedback {
     }
 
     @Override
-    public void setTitle(final String title) {
-        System.out.println("Title: " + title);
-    }
+    public void setTitle(final String title) { /* ignored */ }
 
     @Override
     public void setDisplayType(final DisplayType displayType) {

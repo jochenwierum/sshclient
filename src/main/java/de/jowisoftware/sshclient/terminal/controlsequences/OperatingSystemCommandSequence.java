@@ -10,12 +10,12 @@ public class OperatingSystemCommandSequence<T extends GfxChar> implements NonASC
     private static final Pattern PARTIAL_PATTERN = Pattern.compile("(?:\\](?:[012](?:;.*)?)?)");
 
     @Override
-    public boolean isPartialStart(final CharSequence sequence) {
+    public boolean isPartialStart(final String sequence) {
         return PARTIAL_PATTERN.matcher(sequence).matches();
     }
 
     @Override
-    public boolean canHandleSequence(final CharSequence sequence) {
+    public boolean canHandleSequence(final String sequence) {
         return PATTERN.matcher(sequence).matches();
     }
 

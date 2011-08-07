@@ -9,5 +9,8 @@ public interface GfxCharSetup<T extends GfxChar> {
     void setForeground(TerminalColor color);
     void setBackground(TerminalColor color);
 
+    void setCharset(TerminalCharsetSelection selection, TerminalCharset charset);
+    void selectCharset(TerminalCharsetSelection selection);
+
     T createChar(char character);
 }
