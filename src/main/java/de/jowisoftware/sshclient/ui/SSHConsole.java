@@ -133,13 +133,13 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         final int cw;
         final int ch;
         renderer.setDimensions(pw, ph);
-        if (displayType == DisplayType.DYNAMIC) {
+        if (displayType.equals(DisplayType.DYNAMIC)) {
             cw = renderer.getCharsPerLine();
             ch = renderer.getLines();
             session.getBuffer().newSize(cw, ch);
         } else {
             ch = 24;
-            if(displayType == DisplayType.FIXED132X24) {
+            if(displayType.equals(DisplayType.FIXED132X24)) {
                 cw = 132;
             } else {
                 cw = 80;

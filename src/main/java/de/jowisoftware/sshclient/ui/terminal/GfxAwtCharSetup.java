@@ -106,7 +106,12 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
 
     @Override
     public GfxAwtChar createClearChar() {
+        final HashSet<Attribute> newAttributes = new HashSet<Attribute>();
+        if (attributes.contains(Attribute.BRIGHT)) {
+            newAttributes.add(Attribute.BRIGHT);
+        }
+
         return new GfxAwtChar(' ', new USASCIICharset(),
-                gfxInfo, fgColor, bgColor, new HashSet<Attribute>());
+                gfxInfo, fgColor, bgColor, newAttributes);
     }
 }
