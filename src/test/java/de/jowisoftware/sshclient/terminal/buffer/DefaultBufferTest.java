@@ -426,4 +426,13 @@ public class DefaultBufferTest {
         prepareChar(1, 2, gfxChar);
         buffer.addCharacter(gfxChar);
     }
+
+    @Test
+    public void testClearChar() {
+        final GfxChar gfxChar = context.mock(GfxChar.class);
+        context.checking(new Expectations() {{
+            oneOf(storage).setClearChar(gfxChar);
+        }});
+        buffer.setClearChar(gfxChar);
+    }
 }

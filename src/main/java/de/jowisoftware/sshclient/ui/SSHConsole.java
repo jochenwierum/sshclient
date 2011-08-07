@@ -50,7 +50,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         final VisualFeedback gfxFeedback = new GfxFeedback(this);
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
         final Buffer<GfxAwtChar> buffer = new DefaultBuffer<GfxAwtChar>(
-                profile.getGfxSettings().getEmptyChar(), 80, 24);
+                charSetup.createClearChar(), 80, 24);
         session = new DefaultSession<GfxAwtChar>(buffer,
                 keyboardProcessor, charSetup);
         session.getVisualFeedback().add(gfxFeedback);

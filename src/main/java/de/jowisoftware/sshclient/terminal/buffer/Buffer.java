@@ -17,6 +17,7 @@ public interface Buffer<T extends GfxChar> {
     void tapstop(Tabstop vertical);
     void setAutoWrap(boolean autoWrap);
 
+    void setClearChar(T clearChar);
     void erase(Range range);
     void insertLines(int lines);
 

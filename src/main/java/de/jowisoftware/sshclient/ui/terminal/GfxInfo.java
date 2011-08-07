@@ -3,20 +3,14 @@ package de.jowisoftware.sshclient.ui.terminal;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.jowisoftware.sshclient.terminal.Attribute;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
-import de.jowisoftware.sshclient.ui.terminal.charsets.USASCIICharset;
 
 public class GfxInfo {
     private final Map<TerminalColor, Color> colors = new HashMap<TerminalColor, Color>();
     private final Map<TerminalColor, Color> brightColors = new HashMap<TerminalColor, Color>();
-    private final GfxAwtChar emptyChar = new GfxAwtChar(' ', new USASCIICharset(),
-            this, TerminalColor.DEFAULTBG, TerminalColor.DEFAULTBG,
-            new HashSet<Attribute>());
     private Color cursorColor;
     private Font font = new Font(Font.MONOSPACED, 0, 10);
 
@@ -56,10 +50,6 @@ public class GfxInfo {
 
     public Font getFont() {
         return font;
-    }
-
-    public GfxAwtChar getEmptyChar() {
-        return emptyChar;
     }
 
     public Color getCursorColor() {

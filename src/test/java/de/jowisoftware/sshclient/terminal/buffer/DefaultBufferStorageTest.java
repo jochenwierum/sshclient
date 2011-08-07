@@ -198,4 +198,16 @@ public class DefaultBufferStorageTest {
         assertChar(0, 3, nullChar);
         assertChar(0, 4, char1);
     }
+
+    @Test
+    public void testSetClearChar() {
+        assertChar(0, 0, nullChar);
+
+        final GfxChar nullChar2 = context.mock(GfxChar.class, "nullChar2");
+        storage.setClearChar(nullChar2);
+        storage.erase(new Range(new Position(2, 2), new Position(2, 2)));
+        assertChar(2, 2, nullChar2);
+        assertChar(3, 2, nullChar);
+        assertChar(1, 2, nullChar);
+    }
 }

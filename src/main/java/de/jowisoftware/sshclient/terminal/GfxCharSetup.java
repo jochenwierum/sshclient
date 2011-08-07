@@ -13,4 +13,5 @@ public interface GfxCharSetup<T extends GfxChar> {
     void selectCharset(TerminalCharsetSelection selection);
 
     T createChar(char character);
+    T createClearChar();
 }

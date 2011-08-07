@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 @RunWith(JMock.class)
 public class ANSISequenceAttributeTest extends AbstractSequenceTest {
@@ -27,8 +28,12 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     }
 
     private void callWithAttrAndExpectBGColor(final int attr, final TerminalColor expect) {
+        final GfxChar gfxChar = context.mock(GfxChar.class, "color-" + attr);
+
         context.checking(new Expectations() {{
             oneOf(charSetup).setBackground(expect);
+            oneOf(charSetup).createClearChar(); will(returnValue(gfxChar));
+            oneOf(buffer).setClearChar(gfxChar);
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, Integer.toString(attr));
@@ -101,11 +106,15 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
 
     @Test
     public void testMultipleAttributes() {
+        final GfxChar gfxChar = context.mock(GfxChar.class, "color");
+
         context.checking(new Expectations() {{
             oneOf(charSetup).reset();
             oneOf(charSetup).setBackground(TerminalColor.RED);
             oneOf(charSetup).setForeground(TerminalColor.BLUE);
             oneOf(charSetup).setAttribute(Attribute.BLINK);
+            oneOf(charSetup).createClearChar(); will(returnValue(gfxChar));
+            oneOf(buffer).setClearChar(gfxChar);
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "0", "5", "34", "41");

@@ -60,12 +60,6 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
     }
 
     @Override
-    public GfxAwtChar createChar(final char character) {
-        return new GfxAwtChar(character, selectedCharset,
-                gfxInfo, fgColor, bgColor, attributes);
-    }
-
-    @Override
     public void removeAttribute(final Attribute attribute) {
         if (attribute.equals(Attribute.HIDDEN)) {
             fgColor = TerminalColor.DEFAULT;
@@ -102,5 +96,17 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
         } else if (selection.equals(TerminalCharsetSelection.G1)) {
             this.selectedCharset = charsetG1;
         }
+    }
+
+    @Override
+    public GfxAwtChar createChar(final char character) {
+        return new GfxAwtChar(character, selectedCharset,
+                gfxInfo, fgColor, bgColor, attributes);
+    }
+
+    @Override
+    public GfxAwtChar createClearChar() {
+        return new GfxAwtChar(' ', new USASCIICharset(),
+                gfxInfo, fgColor, bgColor, new HashSet<Attribute>());
     }
 }

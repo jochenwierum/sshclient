@@ -8,6 +8,8 @@ public interface BufferStorage<T extends GfxChar> {
 
     void setCharacter(final int y, final int x, final T character);
     T getCharacterAt(final int row, final int column);
+
+    void setClearChar(T clearChar);
     void erase(final Range range);
 
     T[][] cloneContent();

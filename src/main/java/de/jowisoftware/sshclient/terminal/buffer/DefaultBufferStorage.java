@@ -11,11 +11,16 @@ public class DefaultBufferStorage<T extends GfxChar> implements BufferStorage<T>
      * 1. dimension = row, 2. dimension = row
      */
     private volatile GfxChar[][] lines;
-    private final T clearChar;
+    private T clearChar;
 
     public DefaultBufferStorage(final T clearChar, final int width, final int height) {
         this.clearChar = clearChar;
         newSize(width, height);
+    }
+
+    @Override
+    public void setClearChar(final T clearChar) {
+        this.clearChar = clearChar;
     }
 
     @Override

@@ -58,6 +58,7 @@ public class DefaultSequenceRepository <T extends GfxChar> implements SequenceRe
         case 'L': return new ANSISequenceL<T>();
         case 'r': return new ANSISequencer<T>();
         case 'c': return new ANSISequencec<T>();
+        case 'd': return new ANSISequenced<T>();
         case 'f': return new ANSISequenceHf<T>();
         case 'h': return new ANSISequenceHighLow<T>(true);
         case 'l': return new ANSISequenceHighLow<T>(false);

@@ -3,8 +3,8 @@ package de.jowisoftware.sshclient.terminal.controlsequences;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
-import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.Session;
+import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public class ANSISequencem<T extends GfxChar> implements ANSISequence<T> {
@@ -40,6 +40,8 @@ public class ANSISequencem<T extends GfxChar> implements ANSISequence<T> {
                 return true;
             } else if (color.isBackgroundSequence(seq)) {
                 sessionInfo.getCharSetup().setBackground(color);
+                final T clearChar = sessionInfo.getCharSetup().createClearChar();
+                sessionInfo.getBuffer().setClearChar(clearChar);
                 return true;
             }
         }

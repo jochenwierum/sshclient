@@ -241,4 +241,31 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
 
         DefaultSequenceRepository.executeAnsiSequence('L', sessionInfo, "2");
     }
+
+    @Test
+    public void testSetRow() {
+        final Position pos = new Position(4, 5);
+        context.checking(new Expectations() {{
+            oneOf(buffer).getCursorPosition(); will(returnValue(pos));
+            oneOf(buffer).setCursorPosition(pos.withY(7));
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('d', sessionInfo, "7");
+
+        final Position pos2 = new Position(9, 8);
+        context.checking(new Expectations() {{
+            oneOf(buffer).getCursorPosition(); will(returnValue(pos2));
+            oneOf(buffer).setCursorPosition(pos2.withY(1));
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('d', sessionInfo);
+
+        final Position pos3 = new Position(10, 10);
+        context.checking(new Expectations() {{
+            oneOf(buffer).getCursorPosition(); will(returnValue(pos3));
+            oneOf(buffer).setCursorPosition(pos3.withY(1));
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('d', sessionInfo, "0");
+    }
 }

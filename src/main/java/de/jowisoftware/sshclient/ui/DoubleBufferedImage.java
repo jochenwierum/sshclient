@@ -27,6 +27,8 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
     private int charHeight = 1;
     private int baseLinePos = 1;
 
+    private boolean queued = false;
+
     public DoubleBufferedImage(final GfxInfo gfxInfo, final JPanel parent) {
         this.gfxInfo = gfxInfo;
         this.parent = parent;
@@ -59,6 +61,7 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
 
     @Override
     public synchronized void clear() {
+        queued = false;
         if (images != null) {
             graphics[1 - currentImage].clearRect(0, 0, width, height);
         }
@@ -93,12 +96,15 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
     }
 
     private void requestRepaint() {
+        if (!queued) {
+            queued = true;
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                parent.repaint();
-            }
-        });
+                    parent.repaint();
+                }
+            });
+        }
     }
 
     public Image getImage() {

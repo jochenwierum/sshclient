@@ -20,7 +20,6 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     private Position savedCursorPosition;
     private boolean showCursor = true;
 
-
     public DefaultBuffer(final T clearChar,
             final int width, final int height) {
         defaultStorage = new DefaultBufferStorage<T>(clearChar, width, height);
@@ -278,5 +277,10 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void setShowCursor(final boolean doIt) {
         this.showCursor = doIt;
+    }
+
+    @Override
+    public void setClearChar(final T clearChar) {
+        storage.setClearChar(clearChar);
     }
 }
