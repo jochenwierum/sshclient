@@ -8,6 +8,8 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     private static final int NO_MARGIN_DEFINED = -1;
 
     private volatile BufferStorage<T> storage;
+    private volatile BufferStorage<T> defaultStorage;
+    private volatile BufferStorage<T> alternativeStorage;
     private volatile Position position = new Position(1, 1);
 
     private int topMargin = NO_MARGIN_DEFINED;
@@ -15,21 +17,28 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     private boolean cursorIsRelativeToMargin = false;
     private boolean autoWrap = true;
     private boolean wouldWrap;
+    private Position savedCursorPosition;
 
 
     public DefaultBuffer(final T clearChar,
             final int width, final int height) {
-        storage = new DefaultBufferStorage<T>(clearChar, width, height);
+        defaultStorage = new DefaultBufferStorage<T>(clearChar, width, height);
+        alternativeStorage = new DefaultBufferStorage<T>(clearChar, width, height);
+        storage = defaultStorage;
     }
 
-    public DefaultBuffer(final BufferStorage<T> storage) {
+    public DefaultBuffer(final BufferStorage<T> storage,
+            final BufferStorage<T> alternativeStorage) {
         this.storage = storage;
+        this.defaultStorage = storage;
+        this.alternativeStorage = alternativeStorage;
     }
 
     @Override
     public final void newSize(final int width, final int height) {
         synchronized(this) {
-            storage.newSize(width, height);
+            defaultStorage.newSize(width, height);
+            alternativeStorage.newSize(width, height);
             setAndFixCursorPosition(position);
         }
     }
@@ -234,6 +243,34 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
             setAndFixCursorPosition(position.offset(getSize().x, -1));
         } else {
             setAndFixCursorPosition(position.offset(-1, 0));
+        }
+    }
+
+    @Override
+    public void saveCursorPosition() {
+        savedCursorPosition = position;
+    }
+
+    @Override
+    public void restoreCursorPosition() {
+        setAndFixCursorPosition(savedCursorPosition);
+    }
+
+    @Override
+    public void switchBuffer(final BufferSelection selection) {
+        if (selection.equals(BufferSelection.PRIMARY)) {
+            storage = defaultStorage;
+        } else {
+            storage = alternativeStorage;
+        }
+    }
+
+    @Override
+    public BufferSelection getSelectedBuffer() {
+        if (storage == defaultStorage) {
+            return BufferSelection.PRIMARY;
+        } else {
+            return BufferSelection.ALTERNATIVE;
         }
     }
 }

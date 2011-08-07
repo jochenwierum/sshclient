@@ -14,25 +14,35 @@ public class DefaultBufferTest {
     private final Mockery context = new Mockery();
     private DefaultBuffer<GfxChar> buffer;
     private BufferStorage<GfxChar> storage;
+    private BufferStorage<GfxChar> altStorage;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         storage = context.mock(BufferStorage.class);
-        buffer = new DefaultBuffer<GfxChar>(storage);
+        altStorage = context.mock(BufferStorage.class, "altStorage");
+        buffer = new DefaultBuffer<GfxChar>(storage, altStorage);
     }
 
-    private void prepareSize(final int count, final int width, final int height) {
+    private void prepareSize(final BufferStorage<GfxChar> selectedStorage,
+            final int count, final int width, final int height) {
         context.checking(new Expectations() {{
             if (count <= 0) {
-                allowing(storage).size();
+                allowing(selectedStorage).size();
             } else {
-                exactly(count).of(storage).size();
+                exactly(count).of(selectedStorage).size();
             }
             will(returnValue(new Position(width, height)));
         }});
     }
 
+    private void prepareSize(final int count, final int width, final int height) {
+        prepareSize(storage, count, width, height);
+    }
+
+    private void prepareSize(final int width, final int height) {
+        prepareSize(storage, 0, width, height);
+    }
 
     private void prepareShift(final int offset, final int from, final int to) {
         context.checking(new Expectations() {{
@@ -40,10 +50,15 @@ public class DefaultBufferTest {
         }});
     }
 
-    private void prepareChar(final int y, final int x, final GfxChar character) {
+    private void prepareChar(final BufferStorage<GfxChar> selectedStorage,
+            final int y, final int x, final GfxChar character) {
         context.checking(new Expectations() {{
-            oneOf(storage).setCharacter(y, x, character);
+            oneOf(selectedStorage).setCharacter(y, x, character);
         }});
+    }
+
+    private void prepareChar(final int y, final int x, final GfxChar character) {
+        prepareChar(storage, y, x, character);
     }
 
     private void assertPosition(final int y, final int x) {
@@ -67,7 +82,7 @@ public class DefaultBufferTest {
     @Test
     public void testAddChar() {
         final GfxChar character = context.mock(GfxChar.class);
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
         prepareChar(0, 0, character);
         buffer.addCharacter(character);
         assertPosition(1, 2);
@@ -75,7 +90,7 @@ public class DefaultBufferTest {
 
     @Test
     public void testAddTwoChars() {
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
         final GfxChar char1 = context.mock(GfxChar.class, "char1");
         final GfxChar char2 = context.mock(GfxChar.class, "char2");
         prepareChar(0, 0, char1);
@@ -88,7 +103,7 @@ public class DefaultBufferTest {
 
     @Test
     public void testAddNewLineChars() {
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
         final GfxChar char1 = context.mock(GfxChar.class, "char1");
         final GfxChar char2 = context.mock(GfxChar.class, "char2");
         prepareChar(0, 0, char1);
@@ -109,6 +124,7 @@ public class DefaultBufferTest {
         prepareSize(2, 30, 24);
         context.checking(new Expectations() {{
             oneOf(storage).newSize(30, 24);
+            oneOf(altStorage).newSize(30, 24);
         }});
         buffer.setCursorPosition(new Position(10, 11));
         buffer.newSize(30, 24);
@@ -117,6 +133,7 @@ public class DefaultBufferTest {
         prepareSize(2, 50, 44);
         context.checking(new Expectations() {{
             oneOf(storage).newSize(50, 44);
+            oneOf(altStorage).newSize(50, 44);
         }});
         buffer.setCursorPosition(new Position(80, 10));
         buffer.newSize(50, 44);
@@ -128,7 +145,7 @@ public class DefaultBufferTest {
         buffer.setAutoWrap(false);
         final GfxChar char1 = context.mock(GfxChar.class, "char1");
         final GfxChar char2 = context.mock(GfxChar.class, "char2");
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
         prepareChar(0, 79, char1);
         prepareChar(0, 79, char2);
 
@@ -141,7 +158,7 @@ public class DefaultBufferTest {
 
     @Test
     public void setRollRangedCursorSet() {
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
 
         final GfxChar char1 = context.mock(GfxChar.class, "char1");
         prepareChar(3, 0, char1);
@@ -158,7 +175,7 @@ public class DefaultBufferTest {
 
     @Test
     public void testFullBuffer() {
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
         final GfxChar char1 = context.mock(GfxChar.class, "char1");
         final GfxChar char2 = context.mock(GfxChar.class, "char2");
         prepareChar(23, 0, char2);
@@ -172,7 +189,7 @@ public class DefaultBufferTest {
 
     @Test
     public void testMoveCursorUpAndRoll() {
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
         buffer.setMargin(2, 3);
         assertPosition(1, 1);
         buffer.setCursorPosition(new Position(2, 3));
@@ -198,7 +215,7 @@ public class DefaultBufferTest {
 
     @Test
     public void testMoveCursorDownAndRoll() {
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
         buffer.setMargin(2, 3);
         assertPosition(1, 1);
         buffer.setCursorPosition(new Position(2, 2));
@@ -221,7 +238,7 @@ public class DefaultBufferTest {
 
     @Test
     public void testMoveCursorDownAndRollColReset() {
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
         buffer.setMargin(2, 3);
 
         buffer.setCursorPosition(new Position(1, 2));
@@ -274,7 +291,7 @@ public class DefaultBufferTest {
 
     @Test
     public void testSetCursorInMargin() {
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
         buffer.setMargin(4, 23);
         buffer.setCursorPosition(new Position(3, 3));
         assertEquals(new Position(3, 3),
@@ -299,7 +316,7 @@ public class DefaultBufferTest {
         final GfxChar character = context.mock(GfxChar.class);
 
         buffer.setAutoWrap(true);
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
 
         buffer.setCursorPosition(new Position(80, 1));
 
@@ -317,7 +334,7 @@ public class DefaultBufferTest {
         final GfxChar character = context.mock(GfxChar.class);
 
         buffer.setAutoWrap(true);
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
 
         buffer.setCursorPosition(new Position(80, 24));
 
@@ -330,9 +347,8 @@ public class DefaultBufferTest {
     }
 
     @Test
-    //TODO: check this in XTerm
     public void testLongLineWithBackspace() {
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
         buffer.setAutoWrap(true);
         buffer.setCursorPosition(new Position(1, 2));
         buffer.processBackspace();
@@ -347,7 +363,7 @@ public class DefaultBufferTest {
     @Test
     public void testNoWrongWrap() {
         final GfxChar character = context.mock(GfxChar.class);
-        prepareSize(0, 80, 24);
+        prepareSize(80, 24);
         buffer.setCursorPosition(new Position(80, 1));
 
         prepareChar(0, 79, character);
@@ -370,5 +386,44 @@ public class DefaultBufferTest {
         assertPosition(1, 80);
         buffer.processBackspace();
         assertPosition(1, 79);
+    }
+
+    @Test
+    public void testSaveRestore() {
+        prepareSize(80, 24);
+
+        buffer.setCursorPosition(new Position(22, 5));
+        buffer.saveCursorPosition();
+        assertPosition(5, 22);
+        buffer.setCursorPosition(new Position(1, 1));
+
+        buffer.restoreCursorPosition();
+        assertPosition(5, 22);
+
+        buffer.setCursorPosition(new Position(7, 7));
+        buffer.saveCursorPosition();
+        buffer.setCursorPosition(new Position(9, 9));
+        buffer.restoreCursorPosition();
+        assertPosition(7, 7);
+    }
+
+    @Test
+    public void testSwitchBuffer() {
+        final GfxChar gfxChar = context.mock(GfxChar.class);
+        prepareSize(80, 24);
+        prepareSize(altStorage, 0, 80, 24);
+
+        assertEquals(BufferSelection.PRIMARY, buffer.getSelectedBuffer());
+        buffer.switchBuffer(BufferSelection.ALTERNATIVE);
+        assertEquals(BufferSelection.ALTERNATIVE, buffer.getSelectedBuffer());
+        buffer.setCursorPosition(new Position(2, 2));
+
+        prepareChar(altStorage, 1, 1, gfxChar);
+        buffer.addCharacter(gfxChar);
+
+        buffer.switchBuffer(BufferSelection.PRIMARY);
+        assertEquals(BufferSelection.PRIMARY, buffer.getSelectedBuffer());
+        prepareChar(1, 2, gfxChar);
+        buffer.addCharacter(gfxChar);
     }
 }

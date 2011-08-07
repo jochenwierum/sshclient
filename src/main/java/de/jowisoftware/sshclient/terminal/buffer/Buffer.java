@@ -7,6 +7,8 @@ public interface Buffer<T extends GfxChar> {
     void setCursorRelativeToMargin(boolean b);
     void setCursorPosition(final Position position);
     Position getCursorPosition();
+    void saveCursorPosition();
+    void restoreCursorPosition();
 
     void addCharacter(final T character);
     void addNewLine();
@@ -23,4 +25,7 @@ public interface Buffer<T extends GfxChar> {
     void moveCursorDownAndRoll(boolean resetToFirstColumn);
 
     void render(Renderer<T> renderer);
+
+    void switchBuffer(BufferSelection selection);
+    BufferSelection getSelectedBuffer();
 }
