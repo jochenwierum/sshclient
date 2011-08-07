@@ -72,7 +72,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
         callWithAttrAndExpectFGColor(35, TerminalColor.MAGENTA);
         callWithAttrAndExpectFGColor(36, TerminalColor.CYAN);
         callWithAttrAndExpectFGColor(37, TerminalColor.WHITE);
-        callWithAttrAndExpectFGColor(38, TerminalColor.DEFAULT);
+        callWithAttrAndExpectFGColor(39, TerminalColor.DEFAULT);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
         callWithAttrAndExpectBGColor(45, TerminalColor.MAGENTA);
         callWithAttrAndExpectBGColor(46, TerminalColor.CYAN);
         callWithAttrAndExpectBGColor(47, TerminalColor.WHITE);
-        callWithAttrAndExpectBGColor(48, TerminalColor.DEFAULTBG);
+        callWithAttrAndExpectBGColor(49, TerminalColor.DEFAULTBG);
     }
 
     @Test
