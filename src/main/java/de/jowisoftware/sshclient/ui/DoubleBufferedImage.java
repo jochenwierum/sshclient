@@ -98,9 +98,9 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
     private void requestRepaint() {
         if (!queued) {
             queued = true;
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
                     parent.repaint();
                 }
             });

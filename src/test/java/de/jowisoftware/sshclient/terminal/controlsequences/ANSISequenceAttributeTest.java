@@ -1,6 +1,7 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
 import org.jmock.Expectations;
+import org.jmock.Sequence;
 import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -94,27 +95,46 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testResetAttributes() {
+    public void resetAttributes() {
+        final GfxChar gfxChar = context.mock(GfxChar.class, "color");
+
         context.checking(new Expectations() {{
             oneOf(charSetup).reset();
-            oneOf(charSetup).reset();
+            oneOf(charSetup).createClearChar(); will(returnValue(gfxChar));
+            oneOf(buffer).setClearChar(gfxChar);
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "0");
+    }
+
+    @Test
+    public void defaultAttributes() {
+        final GfxChar gfxChar = context.mock(GfxChar.class, "color");
+
+        context.checking(new Expectations() {{
+            oneOf(charSetup).reset();
+            oneOf(charSetup).createClearChar(); will(returnValue(gfxChar));
+            oneOf(buffer).setClearChar(gfxChar);
+        }});
+
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo);
     }
 
     @Test
     public void testMultipleAttributes() {
         final GfxChar gfxChar = context.mock(GfxChar.class, "color");
+        final Sequence sequence = context.sequence("seq");
 
         context.checking(new Expectations() {{
-            oneOf(charSetup).reset();
-            oneOf(charSetup).setBackground(TerminalColor.RED);
-            oneOf(charSetup).setForeground(TerminalColor.BLUE);
-            oneOf(charSetup).setAttribute(Attribute.BLINK);
-            oneOf(charSetup).createClearChar(); will(returnValue(gfxChar));
-            oneOf(buffer).setClearChar(gfxChar);
+            oneOf(charSetup).reset(); inSequence(sequence);
+            oneOf(charSetup).createClearChar(); will(returnValue(gfxChar)); inSequence(sequence);
+            oneOf(buffer).setClearChar(gfxChar); inSequence(sequence);
+
+            oneOf(charSetup).setAttribute(Attribute.BLINK); inSequence(sequence);
+            oneOf(charSetup).setForeground(TerminalColor.BLUE); inSequence(sequence);
+            oneOf(charSetup).setBackground(TerminalColor.RED); inSequence(sequence);
+            oneOf(charSetup).createClearChar(); will(returnValue(gfxChar)); inSequence(sequence);
+            oneOf(buffer).setClearChar(gfxChar); inSequence(sequence);
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "0", "5", "34", "41");

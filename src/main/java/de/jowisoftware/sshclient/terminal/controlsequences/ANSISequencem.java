@@ -23,14 +23,17 @@ public class ANSISequencem<T extends GfxChar> implements ANSISequence<T> {
 
     private void processSequence(final Session<T> sessionInfo, final int seq) {
         if (seq == 0) {
-            sessionInfo.getCharSetup().reset();
-            return;
-        }
-
-        if (!processAttributes(sessionInfo, seq) &&
+            resetAttributes(sessionInfo);
+        } else if (!processAttributes(sessionInfo, seq) &&
             !processColors(sessionInfo, seq)) {
                 LOGGER.error("Unknown attribute: <ESC>[" + seq + "m");
         }
+    }
+
+    private void resetAttributes(final Session<T> sessionInfo) {
+        sessionInfo.getCharSetup().reset();
+        final T clearChar = sessionInfo.getCharSetup().createClearChar();
+        sessionInfo.getBuffer().setClearChar(clearChar);
     }
 
     private boolean processColors(final Session<T> sessionInfo, final int seq) {

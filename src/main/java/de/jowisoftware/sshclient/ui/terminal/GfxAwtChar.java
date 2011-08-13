@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.ui.terminal;
 
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.Set;
@@ -29,22 +30,47 @@ public class GfxAwtChar implements GfxChar {
     }
 
     public void drawAt(final int x, final int y, final int w, final Graphics g) {
-        if (!hasAttribute(Attribute.BLINK)) {
-            g.setColor(getForeColor());
-        } else {
-            if (blinkIsForeGround()) {
-                g.setColor(getForeColor());
-            } else {
-                g.setColor(getBackColor());
-            }
-        }
+        applyColors(g);
+        final Font oldFont = applyFont(g);
+
+        drawChar(x, y, w, g);
+
+        restoreFont(g, oldFont);
+    }
+
+    private void drawChar(final int x, final int y, final int w,
+            final Graphics g) {
         charset.drawCharacter(g, character, x, y);
         if (hasAttribute(Attribute.UNDERSCORE)) {
             g.drawLine(x, y, x + w, y);
         }
     }
 
-    private boolean blinkIsForeGround() {
+    private void restoreFont(final Graphics g, final Font oldFont) {
+        g.setFont(oldFont);
+    }
+
+    private Font applyFont(final Graphics g) {
+        final Font oldFont = g.getFont();
+        if (hasAttribute(Attribute.BRIGHT)) {
+            g.setFont(oldFont.deriveFont(Font.BOLD));
+        }
+        return oldFont;
+    }
+
+    private void applyColors(final Graphics g) {
+        if (!hasAttribute(Attribute.BLINK)) {
+            g.setColor(getForeColor());
+        } else {
+            if (blinkIsForeground()) {
+                g.setColor(getForeColor());
+            } else {
+                g.setColor(getBackColor());
+            }
+        }
+    }
+
+    private boolean blinkIsForeground() {
         return (System.currentTimeMillis() / 400) % 2 == 0;
     }
 
@@ -55,9 +81,9 @@ public class GfxAwtChar implements GfxChar {
 
     private java.awt.Color getBackColor() {
         if (!hasAttribute(Attribute.INVERSE)) {
-            return gfxInfo.mapColor(bgColor, hasAttribute(Attribute.BRIGHT));
+            return gfxInfo.mapColor(bgColor, false);
         } else {
-            return gfxInfo.mapColor(fgColor, hasAttribute(Attribute.BRIGHT));
+            return gfxInfo.mapColor(fgColor, false);
         }
     }
 

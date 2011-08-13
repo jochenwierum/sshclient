@@ -29,13 +29,13 @@ public class DefaultBufferStorageTest {
     }
 
     @Test
-    public void testInitialValue() {
+    public void initialValues() {
         assertChar(0, 0, nullChar);
         assertChar(23, 79, nullChar);
     }
 
     @Test
-    public void testGetSet() {
+    public void setAndGetChars() {
         storage.setCharacter(2, 3, char1);
         storage.setCharacter(3, 2, char2);
         assertChar(2, 3, char1);
@@ -44,7 +44,7 @@ public class DefaultBufferStorageTest {
     }
 
     @Test
-    public void testResize() {
+    public void resizeTo24x30() {
         storage.setCharacter(0, 0, char1);
         storage.setCharacter(23, 23, char2);
         storage.newSize(24, 30);
@@ -58,7 +58,10 @@ public class DefaultBufferStorageTest {
     }
 
     @Test
-    public void testRollDown() {
+    public void rollDown() {
+        final GfxChar clearChar2 = context.mock(GfxChar.class, "clearChar2");
+        storage.setClearChar(clearChar2);
+
         storage.setCharacter(0, 0, char2);
         storage.setCharacter(1, 0, char1);
         storage.setCharacter(2, 0, char2);
@@ -89,7 +92,10 @@ public class DefaultBufferStorageTest {
     }
 
     @Test
-    public void testRollUp() {
+    public void rollUp() {
+        final GfxChar clearChar2 = context.mock(GfxChar.class, "clearChar2");
+        storage.setClearChar(clearChar2);
+
         storage.setCharacter(0, 0, char2);
         storage.setCharacter(1, 0, char1);
         storage.setCharacter(2, 0, char2);
@@ -118,7 +124,7 @@ public class DefaultBufferStorageTest {
     }
 
     @Test
-    public void testEraseOneLine() {
+    public void eraseOneLine() {
         storage.setCharacter(0, 0, char1);
         storage.setCharacter(1, 0, char1);
             storage.setCharacter(1, 1, char1);
@@ -147,7 +153,7 @@ public class DefaultBufferStorageTest {
     }
 
     @Test
-    public void testEraseAll() {
+    public void eraseAll() {
         storage.setCharacter(0, 0, char1);
         storage.setCharacter(1, 0, char1);
         storage.setCharacter(23, 79, char1);
@@ -162,7 +168,7 @@ public class DefaultBufferStorageTest {
     }
 
     @Test
-    public void testReaseRange() {
+    public void eraseRange() {
         storage.setCharacter(2, 1, char1);
         storage.setCharacter(2, 2, char2);
 
@@ -182,7 +188,7 @@ public class DefaultBufferStorageTest {
     }
 
     @Test
-    public void testReaseInLineRange() {
+    public void eraseInLineRange() {
         storage.setCharacter(0, 0, char1);
         storage.setCharacter(0, 1, char2);
         storage.setCharacter(0, 2, char2);
@@ -200,7 +206,7 @@ public class DefaultBufferStorageTest {
     }
 
     @Test
-    public void testSetClearChar() {
+    public void setClearCharAndErase() {
         assertChar(0, 0, nullChar);
 
         final GfxChar nullChar2 = context.mock(GfxChar.class, "nullChar2");

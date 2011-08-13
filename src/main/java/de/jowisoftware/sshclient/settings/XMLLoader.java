@@ -157,7 +157,7 @@ public class XMLLoader {
         gfxSettings.getColorMap().putAll(
                 getColors(gfxNode, "colors/color[@name][@value]"));
         gfxSettings.getLightColorMap().putAll(
-                getColors(gfxNode, "colors/color[@name][@value]"));
+                getColors(gfxNode, "lightcolors/color[@name][@value]"));
         final Color cursorColor = getAWTColor(gfxNode, "cursorColor/text()");
         if (cursorColor != null) {
             gfxSettings.setCursorColor(cursorColor);
