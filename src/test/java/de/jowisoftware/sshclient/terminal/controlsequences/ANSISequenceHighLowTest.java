@@ -12,7 +12,7 @@ import de.jowisoftware.sshclient.terminal.buffer.Position;
 @RunWith(JMock.class)
 public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     @Test
-    public void testHandleNumblock() {
+    public void handleNumblock() {
         context.checking(new Expectations() {{
             oneOf(keyboardFeedback).setCursorKeysIsAppMode(false);
         }});
@@ -21,7 +21,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testHandleNumblockOff() {
+    public void handleNumblockOff() {
         context.checking(new Expectations() {{
             oneOf(keyboardFeedback).setCursorKeysIsAppMode(true);
         }});
@@ -76,7 +76,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testHandleAlternateScreenBuffer() {
+    public void handleAlternateScreenBuffer() {
         context.checking(new Expectations() {{
             oneOf(buffer).switchBuffer(BufferSelection.ALTERNATIVE);
         }});
@@ -85,7 +85,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testHandleNormalScreenBufferFromAlternativeScreenBuffer() {
+    public void handleNormalScreenBufferFromAlternativeScreenBuffer() {
         final Position size = new Position(80, 24);
         context.checking(new Expectations() {{
             oneOf(buffer).getSelectedBuffer(); will(returnValue(BufferSelection.ALTERNATIVE));
@@ -98,7 +98,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testHandleNormalScreenBufferFromNormalScreenBuffer() {
+    public void handleNormalScreenBufferFromNormalScreenBuffer() {
         context.checking(new Expectations() {{
             oneOf(buffer).getSelectedBuffer(); will(returnValue(BufferSelection.PRIMARY));
             oneOf(buffer).switchBuffer(BufferSelection.PRIMARY);
@@ -126,7 +126,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testHandleAlternateScreenBufferWithRestoredCursor() {
+    public void handleAlternateScreenBufferWithRestoredCursor() {
         context.checking(new Expectations() {{
             oneOf(buffer).switchBuffer(BufferSelection.PRIMARY);
             oneOf(buffer).restoreCursorPosition();
@@ -136,7 +136,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testHandleAlternateScreenBufferWithSavedCursor() {
+    public void handleAlternateScreenBufferWithSavedCursor() {
         final Position size = new Position(80, 24);
         context.checking(new Expectations() {{
             oneOf(buffer).saveCursorPosition();
@@ -149,7 +149,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testHandleWrapAroundOn() {
+    public void handleWrapAroundOn() {
         context.checking(new Expectations() {{
             oneOf(buffer).setAutoWrap(true);
         }});
@@ -158,7 +158,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testHandleWrapAroundOff() {
+    public void handleWrapAroundOff() {
         context.checking(new Expectations() {{
             oneOf(buffer).setAutoWrap(false);
         }});
@@ -167,7 +167,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testHandleShowCursorOn() {
+    public void handleShowCursorOn() {
         context.checking(new Expectations() {{
             oneOf(buffer).setShowCursor(true);
         }});
@@ -176,11 +176,26 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testHandleShowCursorOff() {
+    public void handleShowCursorOff() {
         context.checking(new Expectations() {{
             oneOf(buffer).setShowCursor(false);
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo, "?25");
+    }
+
+    @Test
+    public void handleMultipleArguments() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).setAutoWrap(false);
+            oneOf(buffer).setShowCursor(false);
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo, "?25", "7");
+    }
+
+    @Test
+    public void noExceptionWhenNoArgumentsAreGiven() {
+        DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo);
     }
 }

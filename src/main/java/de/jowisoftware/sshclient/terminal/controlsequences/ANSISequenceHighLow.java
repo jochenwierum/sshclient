@@ -8,7 +8,6 @@ import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.BufferSelection;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.util.StringUtils;
 
 public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
     private static final Logger LOGGER = Logger.getLogger(ANSISequenceHighLow.class);
@@ -20,25 +19,50 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
 
     @Override
     public void process(final Session<T> sessionInfo, final String... args) {
-        if (args[0].equals("?1")) {
-            sessionInfo.getKeyboardFeedback().setCursorKeysIsAppMode(isHigh);
-        } else if (args[0].equals("?3")) {
-            processDisplayType(sessionInfo);
-        } else if (args[0].equals("?6")) {
-            processOriginMode(sessionInfo);
-        } else if (args[0].equals("?7")) {
-            processAutoWrap(sessionInfo);
-        } else if (args[0].equals("?25")) {
-            processShowCursor(sessionInfo);
-        } else if (args[0].equals("?1047")) {
-            processAlternateScreen(sessionInfo);
-        } else if (args[0].equals("?1048")) {
-            processCursorStorage(sessionInfo);
-        } else if (args[0].equals("?1049")) {
-            processCursorStorageWithCursorSave(sessionInfo);
+        if (args.length > 0 && args[0].startsWith("?")) {
+            args[0] = args[0].substring(1);
+            processSpecialArgs(sessionInfo, args);
         } else {
-            LOGGER.warn("Ignoring unknown high/low flag: " + StringUtils.join(";", args));
+            processArgs(sessionInfo, args);
         }
+    }
+
+    private void processArgs(final Session<T> sessionInfo, final String[] args) {
+        for (int i = 0; i < args.length; ++i) {
+            /*
+             * 4: smooth-scroll
+             */
+            LOGGER.warn("High/low flag not implemented: " + args[i]);
+        }
+    }
+
+    private void processSpecialArgs(final Session<T> sessionInfo,
+            final String[] args) {
+        for (int i = 0; i < args.length; ++i) {
+            if (args[i].equals("1")) {
+                processAppMode(sessionInfo);
+            } else if (args[i].equals("3")) {
+                processDisplayType(sessionInfo);
+            } else if (args[i].equals("6")) {
+                processOriginMode(sessionInfo);
+            } else if (args[i].equals("7")) {
+                processAutoWrap(sessionInfo);
+            } else if (args[i].equals("25")) {
+                processShowCursor(sessionInfo);
+            } else if (args[i].equals("1047")) {
+                processAlternateScreen(sessionInfo);
+            } else if (args[i].equals("1048")) {
+                processCursorStorage(sessionInfo);
+            } else if (args[i].equals("1049")) {
+                processCursorStorageWithCursorSave(sessionInfo);
+            } else {
+                LOGGER.warn("High/low flag not implemented: ?" + args[i]);
+            }
+        }
+    }
+
+    private void processAppMode(final Session<T> sessionInfo) {
+        sessionInfo.getKeyboardFeedback().setCursorKeysIsAppMode(isHigh);
     }
 
     private void processShowCursor(final Session<T> sessionInfo) {
