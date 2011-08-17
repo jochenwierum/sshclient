@@ -30,6 +30,7 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
 
     private void processArgs(final Session<T> sessionInfo, final String[] args) {
         for (int i = 0; i < args.length; ++i) {
+            // 4: insert mode
             LOGGER.warn("High/low flag not implemented: " + args[i]);
         }
     }
@@ -41,6 +42,8 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
              * 4: smooth-scroll
              * 5: Reverse Video (DECSCNM) (swap default fore- and background)
              * 8: DECARM: don't auto-repeat keypresses
+             * 12:
+             * 1000: Send mouse clicks
              */
 
             if (args[i].equals("1")) {

@@ -3,7 +3,7 @@ package de.jowisoftware.sshclient.terminal.controlsequences;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
-public class ANSISequenceL<T extends GfxChar> implements ANSISequence<T> {
+public class ANSISequenceCapitalL<T extends GfxChar> implements ANSISequence<T> {
     @Override
     public void process(final Session<T> sessionInfo, final String... args) {
         int lines = 1;

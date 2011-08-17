@@ -48,20 +48,20 @@ public class DefaultSequenceRepository <T extends GfxChar> implements SequenceRe
     @Override
     public ANSISequence<T> getANSISequence(final char c) {
         switch(c) {
-        case 'A': return new ANSISequenceABCD<T>(0, -1);
-        case 'B': return new ANSISequenceABCD<T>(0, 1);
-        case 'C': return new ANSISequenceABCD<T>(1, 0);
-        case 'D': return new ANSISequenceABCD<T>(-1, 0);
-        case 'G': return new ANSISequenceG<T>();
-        case 'H': return new ANSISequenceHf<T>();
-        case 'J': return new ANSISequenceJ<T>();
-        case 'K': return new ANSISequenceK<T>();
-        case 'L': return new ANSISequenceL<T>();
-        case 'X': return new ANSISequenceX<T>();
+        case 'A': return new ANSISequenceCapitalABCD<T>(0, -1);
+        case 'B': return new ANSISequenceCapitalABCD<T>(0, 1);
+        case 'C': return new ANSISequenceCapitalABCD<T>(1, 0);
+        case 'D': return new ANSISequenceCapitalABCD<T>(-1, 0);
+        case 'G': return new ANSISequenceCapitalG<T>();
+        case 'H': return new ANSISequenceCapitalHf<T>();
+        case 'J': return new ANSISequenceCapitalJ<T>();
+        case 'K': return new ANSISequenceCapitalK<T>();
+        case 'L': return new ANSISequenceCapitalL<T>();
+        case 'X': return new ANSISequenceCapitalX<T>();
         case 'r': return new ANSISequencer<T>();
         case 'c': return new ANSISequencec<T>();
         case 'd': return new ANSISequenced<T>();
-        case 'f': return new ANSISequenceHf<T>();
+        case 'f': return new ANSISequenceCapitalHf<T>();
         case 'h': return new ANSISequenceHighLow<T>(true);
         case 'l': return new ANSISequenceHighLow<T>(false);
         case 'm': return new ANSISequencem<T>();

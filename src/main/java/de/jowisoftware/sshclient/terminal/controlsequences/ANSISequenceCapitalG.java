@@ -4,7 +4,7 @@ import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 
-public class ANSISequenceG<T extends GfxChar> implements ANSISequence<T> {
+public class ANSISequenceCapitalG<T extends GfxChar> implements ANSISequence<T> {
     @Override
     public void process(final Session<T> sessionInfo, final String... args) {
         int x = 1;

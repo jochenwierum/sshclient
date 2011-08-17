@@ -5,11 +5,11 @@ import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 
-public class ANSISequenceABCD<T extends GfxChar> implements ANSISequence<T> {
+public class ANSISequenceCapitalABCD<T extends GfxChar> implements ANSISequence<T> {
     private final int dx;
     private final int dy;
 
-    public ANSISequenceABCD(final int dx, final int dy) {
+    public ANSISequenceCapitalABCD(final int dx, final int dy) {
         this.dx = dx;
         this.dy = dy;
     }

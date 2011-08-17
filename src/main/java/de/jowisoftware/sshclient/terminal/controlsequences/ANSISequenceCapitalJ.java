@@ -7,8 +7,8 @@ import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Range;
 
-public class ANSISequenceJ<T extends GfxChar> implements ANSISequence<T> {
-    private static final Logger LOGGER = Logger.getLogger(ANSISequenceK.class);
+public class ANSISequenceCapitalJ<T extends GfxChar> implements ANSISequence<T> {
+    private static final Logger LOGGER = Logger.getLogger(ANSISequenceCapitalK.class);
 
     @Override
     public void process(final Session<T> sessionInfo, final String... args) {
