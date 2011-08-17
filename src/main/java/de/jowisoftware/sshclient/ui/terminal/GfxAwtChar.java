@@ -40,7 +40,7 @@ public class GfxAwtChar implements GfxChar {
 
     private void drawChar(final int x, final int y, final int w,
             final Graphics g) {
-        charset.drawCharacter(g, character, x, y);
+        g.drawString(Character.toString(charset.getUnicodeChar(character)), x, y);
         if (hasAttribute(Attribute.UNDERSCORE)) {
             g.drawLine(x, y, x + w, y);
         }

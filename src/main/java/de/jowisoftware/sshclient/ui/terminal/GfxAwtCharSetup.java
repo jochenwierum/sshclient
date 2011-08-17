@@ -10,6 +10,8 @@ import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.TerminalCharset;
 import de.jowisoftware.sshclient.terminal.TerminalCharsetSelection;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
+import de.jowisoftware.sshclient.ui.terminal.charsets.DECCharset;
+import de.jowisoftware.sshclient.ui.terminal.charsets.UKCharset;
 import de.jowisoftware.sshclient.ui.terminal.charsets.USASCIICharset;
 
 public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
@@ -20,7 +22,7 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
     private final Set<Attribute> attributes = new HashSet<Attribute>();
     private TerminalColor fgColor;
     private TerminalColor bgColor;
-    private GfxAwtCharset selectedCharset = new USASCIICharset();
+    private TerminalCharsetSelection selectedCharset = TerminalCharsetSelection.G0;
     private GfxAwtCharset charsetG0 = new USASCIICharset();
     private GfxAwtCharset charsetG1 = new USASCIICharset();
 
@@ -73,37 +75,53 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
     @Override
     public void setCharset(final TerminalCharsetSelection selection,
             final TerminalCharset newCharset) {
+
+        final GfxAwtCharset charset;
+
         switch(newCharset) {
         case USASCII:
-            if (selection.equals(TerminalCharsetSelection.G0)) {
-                this.charsetG0 = new USASCIICharset();
-            } else {
-                this.charsetG1 = new USASCIICharset();
-            }
+            charset = new USASCIICharset();
+            break;
+        case DECCHARS:
+            charset = new DECCharset();
+            break;
+        case UK:
+            charset = new UKCharset();
             break;
         default:
-            if (selection.equals(TerminalCharsetSelection.G0)) {
-                this.charsetG0 = new USASCIICharset();
-            } else {
-                this.charsetG0 = new USASCIICharset();
-            }
+            charset = new USASCIICharset();
             LOGGER.warn("Switch to unknown charset: " + newCharset);
         }
+
+        if (selection.equals(TerminalCharsetSelection.G0)) {
+            this.charsetG0 = charset;
+        } else {
+            this.charsetG1 = charset;
+        }
+
+        LOGGER.info("Charset " + selection + " is now " +
+                charset.getClass().getSimpleName());
     }
 
     @Override
     public void selectCharset(final TerminalCharsetSelection selection) {
-        if (selection.equals(TerminalCharsetSelection.G0)) {
-            this.selectedCharset = charsetG0;
-        } else if (selection.equals(TerminalCharsetSelection.G1)) {
-            this.selectedCharset = charsetG1;
-        }
+        this.selectedCharset = selection;
+        LOGGER.info("Switched charset to " + selection + " ("
+                + selectedCharset.getClass().getSimpleName() + ")");
     }
 
     @Override
     public GfxAwtChar createChar(final char character) {
-        return new GfxAwtChar(character, selectedCharset,
+        return new GfxAwtChar(character, getCharset(selectedCharset),
                 gfxInfo, mapColors(fgColor), mapColors(bgColor), attributes);
+    }
+
+    private GfxAwtCharset getCharset(final TerminalCharsetSelection selectedCharset2) {
+        if (selectedCharset.equals(TerminalCharsetSelection.G1)) {
+            return charsetG1;
+        } else {
+            return charsetG0;
+        }
     }
 
     @Override
