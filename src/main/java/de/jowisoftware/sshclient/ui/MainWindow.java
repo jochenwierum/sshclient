@@ -266,6 +266,7 @@ public class MainWindow extends JFrame {
                 sshFrame.createTabComponent(pane));
         pane.setSelectedComponent(sshFrame);
         sshFrame.connect();
+        sshFrame.takeFocus();
     }
 
     public void connectToCustomProfile() {

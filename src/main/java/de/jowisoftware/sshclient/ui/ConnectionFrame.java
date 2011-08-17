@@ -112,8 +112,13 @@ public class ConnectionFrame extends JPanel {
 
     public void takeFocusWithKey(final KeyEvent e) {
         if (console != null) {
-            console.takeFocusWithKey(e);
+            console.takeFocus();
+            console.processKey(e);
         }
+    }
+
+    public void takeFocus() {
+        console.takeFocus();
     }
 
     public SessionMenu getSessionMenu() {

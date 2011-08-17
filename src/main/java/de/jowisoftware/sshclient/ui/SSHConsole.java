@@ -185,8 +185,11 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         return displayType;
     }
 
-    public void takeFocusWithKey(final KeyEvent e) {
+    public void takeFocus() {
         this.requestFocusInWindow();
+    }
+
+    public void processKey(final KeyEvent e) {
         ((KeyListener) session.getKeyboardFeedback()).keyPressed(e);
     }
 
