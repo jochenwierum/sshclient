@@ -3,6 +3,7 @@ package de.jowisoftware.sshclient.terminal.controlsequences;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.DisplayType;
+import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.BufferSelection;
@@ -29,9 +30,6 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
 
     private void processArgs(final Session<T> sessionInfo, final String[] args) {
         for (int i = 0; i < args.length; ++i) {
-            /*
-             * 4: smooth-scroll
-             */
             LOGGER.warn("High/low flag not implemented: " + args[i]);
         }
     }
@@ -39,10 +37,18 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
     private void processSpecialArgs(final Session<T> sessionInfo,
             final String[] args) {
         for (int i = 0; i < args.length; ++i) {
+            /*
+             * 4: smooth-scroll
+             * 5: Reverse Video (DECSCNM) (swap default fore- and background)
+             * 8: DECARM: don't auto-repeat keypresses
+             */
+
             if (args[i].equals("1")) {
                 processAppMode(sessionInfo);
             } else if (args[i].equals("3")) {
                 processDisplayType(sessionInfo);
+            } else if (args[i].equals("5")) {
+                processReverseVideo(sessionInfo);
             } else if (args[i].equals("6")) {
                 processOriginMode(sessionInfo);
             } else if (args[i].equals("7")) {
@@ -59,6 +65,12 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
                 LOGGER.warn("High/low flag not implemented: ?" + args[i]);
             }
         }
+    }
+
+    private void processReverseVideo(final Session<T> sessionInfo) {
+        final GfxCharSetup<T> charSetup = sessionInfo.getCharSetup();
+        charSetup.setInverseMode(isHigh);
+        sessionInfo.getBuffer().setClearChar(charSetup.createClearChar());
     }
 
     private void processAppMode(final Session<T> sessionInfo) {

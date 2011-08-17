@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.buffer.BufferSelection;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 
 @RunWith(JMock.class)
@@ -197,5 +198,29 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     @Test
     public void noExceptionWhenNoArgumentsAreGiven() {
         DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo);
+    }
+
+    @Test
+    public void handleInverseModeOff() {
+        final GfxChar clearChar = context.mock(GfxChar.class);
+        context.checking(new Expectations() {{
+            oneOf(charSetup).setInverseMode(false);
+            oneOf(charSetup).createClearChar(); will(returnValue(clearChar));
+            oneOf(buffer).setClearChar(clearChar);
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo, "?5");
+    }
+
+    @Test
+    public void handleInverseModeOn() {
+        final GfxChar clearChar = context.mock(GfxChar.class);
+        context.checking(new Expectations() {{
+            oneOf(charSetup).setInverseMode(true);
+            oneOf(charSetup).createClearChar(); will(returnValue(clearChar));
+            oneOf(buffer).setClearChar(clearChar);
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('h', sessionInfo, "?5");
     }
 }

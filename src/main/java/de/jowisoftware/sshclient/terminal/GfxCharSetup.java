@@ -12,6 +12,8 @@ public interface GfxCharSetup<T extends GfxChar> {
     void setCharset(TerminalCharsetSelection selection, TerminalCharset charset);
     void selectCharset(TerminalCharsetSelection selection);
 
+    void setInverseMode(boolean b);
+
     T createChar(char character);
     T createClearChar();
 }

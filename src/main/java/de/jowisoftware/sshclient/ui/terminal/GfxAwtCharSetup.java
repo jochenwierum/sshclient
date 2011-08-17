@@ -24,6 +24,8 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
     private GfxAwtCharset charsetG0 = new USASCIICharset();
     private GfxAwtCharset charsetG1 = new USASCIICharset();
 
+    private boolean inverseMode;
+
     public GfxAwtCharSetup(final GfxInfo gfxInfo) {
         this.gfxInfo = gfxInfo;
         reset();
@@ -101,7 +103,7 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
     @Override
     public GfxAwtChar createChar(final char character) {
         return new GfxAwtChar(character, selectedCharset,
-                gfxInfo, fgColor, bgColor, attributes);
+                gfxInfo, mapColors(fgColor), mapColors(bgColor), attributes);
     }
 
     @Override
@@ -112,6 +114,20 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
         }
 
         return new GfxAwtChar(' ', new USASCIICharset(),
-                gfxInfo, fgColor, bgColor, newAttributes);
+                gfxInfo, mapColors(fgColor), mapColors(bgColor), newAttributes);
+    }
+
+    private TerminalColor mapColors(final TerminalColor color) {
+        if (inverseMode && color.equals(TerminalColor.DEFAULT)) {
+            return TerminalColor.DEFAULTBG;
+        } else if (inverseMode && color.equals(TerminalColor.DEFAULTBG)) {
+            return TerminalColor.DEFAULT;
+        }
+        return color;
+    }
+
+    @Override
+    public void setInverseMode(final boolean inverseMode) {
+        this.inverseMode = inverseMode;
     }
 }
