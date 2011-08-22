@@ -1,5 +1,8 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.log4j.Logger;
 
 // TODO: extract CursorPosition
@@ -129,11 +132,20 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
             for (int row = 0; row < content.length; ++row) {
                 for (int col = 0; col < content[0].length; ++col) {
                     renderer.renderChar(content[row][col], col, row,
-                            showCursor && isCursorAt(col, row, content[0].length));
+                            makeRenderFlags(row, col, content[0].length));
                 }
             }
             renderer.swap();
         }
+    }
+
+    private Set<RenderFlag> makeRenderFlags(final int row, final int col,
+            final int length) {
+        final Set<RenderFlag> flags = new HashSet<RenderFlag>();
+        if (showCursor && isCursorAt(col, row, length)) {
+            flags.add(RenderFlag.CURSOR);
+        }
+        return flags;
     }
 
     private boolean isCursorAt(final int col, final int row, final int length) {

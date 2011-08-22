@@ -3,12 +3,16 @@ package de.jowisoftware.sshclient.ui;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.Set;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import de.jowisoftware.sshclient.terminal.TerminalColor;
+import de.jowisoftware.sshclient.terminal.buffer.Position;
+import de.jowisoftware.sshclient.terminal.buffer.RenderFlag;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.ui.terminal.GfxAwtChar;
 import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
@@ -69,21 +73,15 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
 
     @Override
     public synchronized void renderChar(final GfxAwtChar character,
-            final int x, final int y, final boolean isCursor) {
+            final int x, final int y, final Set<RenderFlag> flags) {
         if (images != null) {
             final int posx = x * charWidth;
             final int posy = y * charHeight;
 
-            character.drawBackground(posx, posy, charWidth,
-                    charHeight, graphics[1 - currentImage]);
-            character.drawAt(posx, posy + baseLinePos,
-                    charWidth, graphics[1 - currentImage]);
-
-            if (isCursor) {
-                graphics[1 - currentImage].setColor(gfxInfo.getCursorColor());
-                graphics[1 - currentImage].drawRect(posx, posy,
-                        charWidth - 1, charHeight - 1);
-            }
+            final Rectangle rect = new Rectangle(posx, posy,
+                    charWidth, charHeight);
+            character.drawAt(rect, baseLinePos, graphics[1 - currentImage],
+                    flags);
         }
     }
 
@@ -123,5 +121,14 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
     @Override
     public int getCharsPerLine() {
         return width / charWidth;
+    }
+
+    @Override
+    public Position translateMousePosition(final int x, final int y) {
+        final int charx = x / charWidth + 1;
+        final int chary = y / charHeight + 1;
+
+        return new Position(charx, chary).moveInRange(
+                        new Position(getCharsPerLine(), getLines()).toRange());
     }
 }

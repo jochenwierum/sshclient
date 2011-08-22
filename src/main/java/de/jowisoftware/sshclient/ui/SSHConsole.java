@@ -163,6 +163,9 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     public void mousePressed(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             requestFocusInWindow();
+
+            System.out.println(e.getX() + "/" + e.getY());
+            System.out.println(renderer.translateMousePosition(e.getX(), e.getY()));
         }
     }
 

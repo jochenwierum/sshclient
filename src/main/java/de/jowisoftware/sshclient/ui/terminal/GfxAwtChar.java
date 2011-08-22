@@ -1,17 +1,20 @@
 package de.jowisoftware.sshclient.ui.terminal;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.util.HashSet;
 import java.util.Set;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.RenderFlag;
 
 public class GfxAwtChar implements GfxChar {
     private final GfxInfo gfxInfo;
-    private final Attribute[] attributes;
+    private final HashSet<Attribute> attributes;
     private final TerminalColor fgColor;
     private final TerminalColor bgColor;
     private final char character;
@@ -26,23 +29,55 @@ public class GfxAwtChar implements GfxChar {
         this.gfxInfo = gfxInfo;
         this.fgColor = fgColor;
         this.bgColor = bgColor;
-        this.attributes = attributes.toArray(new Attribute[attributes.size()]);
+        this.attributes = new HashSet<Attribute>(attributes);
     }
 
-    public void drawAt(final int x, final int y, final int w, final Graphics g) {
-        applyColors(g);
+    public void drawAt(final Rectangle rect, final int baseLinePos,
+            final Graphics g, final Set<RenderFlag> flags) {
+        drawBackground(rect, g, flags);
+        drawForeground(rect, baseLinePos, g, flags);
+    }
+
+    private void drawForeground(final Rectangle rect, final int baseLinePos,
+            final Graphics g, final Set<RenderFlag> flags) {
         final Font oldFont = applyFont(g);
 
-        drawChar(x, y, w, g);
+        applyColors(g, flags);
+        drawChar(rect, baseLinePos, g, flags);
 
-        restoreFont(g, oldFont);
+        if (oldFont != null) {
+            restoreFont(g, oldFont);
+        }
     }
 
-    private void drawChar(final int x, final int y, final int w,
-            final Graphics g) {
-        g.drawString(Character.toString(charset.getUnicodeChar(character)), x, y);
-        if (hasAttribute(Attribute.UNDERSCORE)) {
-            g.drawLine(x, y, x + w, y);
+    private void drawBackground(final Rectangle rect, final Graphics g,
+            final Set<RenderFlag> flags) {
+        eraseArea(rect, g, flags);
+
+        if (flags.contains(RenderFlag.CURSOR)) {
+            drawCursor(rect, g);
+        }
+    }
+
+    private void drawCursor(final Rectangle rect, final Graphics g) {
+        g.setColor(gfxInfo.getCursorColor());
+        g.drawRect(rect.x, rect.y, rect.width - 1, rect.height - 1);
+    }
+
+    private void eraseArea(final Rectangle rect, final Graphics g,
+            final Set<RenderFlag> flags) {
+        g.setColor(getBackColor(flags));
+        g.fillRect(rect.x, rect.y, rect.width, rect.height);
+    }
+
+    private void drawChar(final Rectangle rect, final int baseLinePos,
+            final Graphics g, final Set<RenderFlag> flags) {
+        g.drawString(Character.toString(
+                charset.getUnicodeChar(character)), rect.x,
+                rect.y + baseLinePos);
+
+        if (attributes.contains(Attribute.UNDERSCORE)) {
+            g.drawLine(rect.x, rect.y, rect.x + rect.width, rect.y);
         }
     }
 
@@ -51,21 +86,24 @@ public class GfxAwtChar implements GfxChar {
     }
 
     private Font applyFont(final Graphics g) {
-        final Font oldFont = g.getFont();
-        if (hasAttribute(Attribute.BRIGHT)) {
+        final Font oldFont;
+        if (attributes.contains(Attribute.BRIGHT)) {
+            oldFont = g.getFont();
             g.setFont(oldFont.deriveFont(Font.BOLD));
+        } else {
+            oldFont = null;
         }
         return oldFont;
     }
 
-    private void applyColors(final Graphics g) {
-        if (!hasAttribute(Attribute.BLINK)) {
-            g.setColor(getForeColor());
+    private void applyColors(final Graphics g, final Set<RenderFlag> flags) {
+        if (!attributes.contains(Attribute.BLINK)) {
+            g.setColor(getForeColor(flags));
         } else {
             if (blinkIsForeground()) {
-                g.setColor(getForeColor());
+                g.setColor(getForeColor(flags));
             } else {
-                g.setColor(getBackColor());
+                g.setColor(getBackColor(flags));
             }
         }
     }
@@ -74,34 +112,31 @@ public class GfxAwtChar implements GfxChar {
         return (System.currentTimeMillis() / 400) % 2 == 0;
     }
 
-    public void drawBackground(final int x, final int y, final int w, final int h, final Graphics2D g) {
-        g.setColor(getBackColor());
-        g.fillRect(x, y, w, h);
-    }
-
-    private java.awt.Color getBackColor() {
-        if (!hasAttribute(Attribute.INVERSE)) {
-            return gfxInfo.mapColor(bgColor, false);
+    private Color getBackColor(final Set<RenderFlag> flags) {
+        final TerminalColor color;
+        if (invertBackground(flags)) {
+            color = fgColor;
         } else {
-            return gfxInfo.mapColor(fgColor, false);
+            color = bgColor;
         }
+        return gfxInfo.mapColor(color, false);
     }
 
-    private java.awt.Color getForeColor() {
-        if (!hasAttribute(Attribute.INVERSE)) {
-            return gfxInfo.mapColor(fgColor, hasAttribute(Attribute.BRIGHT));
+    private boolean invertBackground(final Set<RenderFlag> flags) {
+        final boolean inversed = attributes.contains(Attribute.INVERSE);
+        final boolean selected = flags.contains(RenderFlag.SELECTED);
+
+        return inversed != selected;
+    }
+
+    private Color getForeColor(final Set<RenderFlag> flags) {
+        final TerminalColor color;
+        if (invertBackground(flags)) {
+            color = bgColor;
         } else {
-            return gfxInfo.mapColor(bgColor, hasAttribute(Attribute.BRIGHT));
+            color = fgColor;
         }
-    }
-
-    private boolean hasAttribute(final Attribute attribute) {
-        for (final Attribute attrib : attributes) {
-            if (attrib.equals(attribute)) {
-                return true;
-            }
-        }
-        return false;
+        return gfxInfo.mapColor(color, attributes.contains(Attribute.BRIGHT));
     }
 
     @Override
