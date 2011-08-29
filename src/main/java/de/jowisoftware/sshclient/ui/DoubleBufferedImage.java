@@ -10,6 +10,8 @@ import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.apache.log4j.Logger;
+
 import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.RenderFlag;
@@ -18,6 +20,9 @@ import de.jowisoftware.sshclient.ui.terminal.GfxAwtChar;
 import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
 
 public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
+    private static final Logger LOGGER = Logger
+            .getLogger(DoubleBufferedImage.class);
+
     private final GfxInfo gfxInfo;
     private final JPanel parent;
 
@@ -95,11 +100,19 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
 
     private void requestRepaint() {
         if (!queued) {
+            final long startTime = System.currentTimeMillis();
             queued = true;
+
             SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     parent.repaint();
+
+                    if (LOGGER.isTraceEnabled()){
+                        LOGGER.trace("Repainting took "
+                                + (System.currentTimeMillis() - startTime)
+                                + " until rendered");
+                    }
                 }
             });
         }

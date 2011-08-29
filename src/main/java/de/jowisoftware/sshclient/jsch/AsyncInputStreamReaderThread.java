@@ -37,14 +37,19 @@ public class AsyncInputStreamReaderThread extends Thread {
                                 StringUtils.escapeForLogs(buffer, 0, read));
                     }
                     try {
+                        final long startTime = System.currentTimeMillis();
                         callback.gotChars(buffer, read);
+                        if (LOGGER.isTraceEnabled()) {
+                            LOGGER.trace("Took " + (System.currentTimeMillis()
+                                    - startTime) + " ms to process");
+                        }
                     } catch(final RuntimeException e) {
                         LOGGER.error("Reader thread catched exception", e);
                     }
                 }
 
                 try {
-                    Thread.sleep(80);
+                    Thread.sleep(30);
                 } catch (final InterruptedException e) {
                     /* no error handling here, just go on in the loop */
                 }
