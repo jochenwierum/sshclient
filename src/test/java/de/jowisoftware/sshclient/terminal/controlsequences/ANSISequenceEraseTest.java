@@ -1,10 +1,13 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
+import static org.junit.Assert.assertEquals;
+
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Range;
 
@@ -25,12 +28,12 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testEraseCursorToBottom1() {
+    public void eraseCursorToBottom1() {
         testEraseCursorToButtom(new Position(5, 7), new Position(24, 80));
     }
 
     @Test
-    public void testEraseCursorToBottom2() {
+    public void eraseCursorToBottom2() {
         testEraseCursorToButtom(new Position(4, 9), new Position(12, 60));
     }
 
@@ -45,12 +48,12 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testEraseFromTop1() {
+    public void eraseFromTop1() {
         testEraseFromTop(new Position(2, 5));
     }
 
     @Test
-    public void testEraseFromTop2() {
+    public void eraseFromTop2() {
         testEraseFromTop(new Position(4, 8));
     }
 
@@ -65,13 +68,13 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testErase1() {
+    public void erase1() {
         final Position position = new Position(80, 24);
         testErase(position);
     }
 
     @Test
-    public void testErase2() {
+    public void erase2() {
         testErase(new Position(60, 60));
     }
 
@@ -92,16 +95,16 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testEraseRestOfLine1() {
+    public void eraseRestOfLine1() {
         testEraseRestOfLine(new Position(2, 5), new Position(80, 24));
     }
 
     @Test
-    public void testEraseRestOfLine2() {
+    public void eraseRestOfLine2() {
         testEraseRestOfLine(new Position(4, 7), new Position(60, 60));
     }
 
-    private void testStartOfLine(final Position position) {
+    private void testEraseFromStartOfLine(final Position position) {
         context.checking(new Expectations() {{
             allowing(buffer).getCursorPosition();
             will(returnValue(position));
@@ -114,13 +117,13 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testEraseStartOfLine1() {
-        testStartOfLine(new Position(2, 5));
+    public void eraseStartOfLine1() {
+        testEraseFromStartOfLine(new Position(2, 5));
     }
 
     @Test
-    public void testEraseStartOfLine2() {
-        testStartOfLine(new Position(4, 7));
+    public void eraseStartOfLine2() {
+        testEraseFromStartOfLine(new Position(4, 7));
     }
 
     private void testEraseLine(final Position cursorPos,
@@ -139,12 +142,12 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testEraseLine1() {
+    public void eraseLine1() {
         testEraseLine(new Position(2, 5), new Position(80, 24));
     }
 
     @Test
-    public void testEraseLine2() {
+    public void eraseLine2() {
         testEraseLine(new Position(7, 8), new Position(60, 30));
     }
 
@@ -167,5 +170,11 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
         testEraseXChars(new Position(3, 6), 1, "0");
         testEraseXChars(new Position(1, 7), 3, "3");
         testEraseXChars(new Position(2, 5), 6, "6");
+    }
+
+    @Test
+    public void xAndPRepresentSameClass() {
+        assertEquals(new DefaultSequenceRepository<GfxChar>().getANSISequence('X').getClass(),
+                new DefaultSequenceRepository<GfxChar>().getANSISequence('P').getClass());
     }
 }

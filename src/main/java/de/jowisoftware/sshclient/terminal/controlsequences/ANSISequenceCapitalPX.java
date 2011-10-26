@@ -6,7 +6,7 @@ import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Range;
 
-public class ANSISequenceCapitalX<T extends GfxChar> implements ANSISequence<T> {
+public class ANSISequenceCapitalPX<T extends GfxChar> implements ANSISequence<T> {
     @Override
     public void process(final Session<T> sessionInfo, final String... args) {
         int length = 1;
