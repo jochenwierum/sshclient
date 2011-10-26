@@ -187,6 +187,7 @@ public class CharacterProcessor<T extends GfxChar> {
     }
 
     private void enterNewState() {
-        states.push(new CharacterProcessorState<T>(sequenceRepository.getNonASCIISequences()));
+        states.push(new CharacterProcessorState<T>(
+                sequenceRepository.getNonASCIISequences()));
     }
 }

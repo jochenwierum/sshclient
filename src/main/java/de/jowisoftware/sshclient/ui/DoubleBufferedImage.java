@@ -12,7 +12,7 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.TerminalColor;
+import de.jowisoftware.sshclient.terminal.ColorName;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.RenderFlag;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
@@ -58,7 +58,7 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
         for (int i = 0; i < 2; ++i) {
             images[i] = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
             graphics[i] = images[i].createGraphics();
-            graphics[i].setBackground(gfxInfo.mapColor(TerminalColor.DEFAULTBG, false));
+            graphics[i].setBackground(gfxInfo.mapColor(ColorName.DEFAULT_BACKGROUND, false));
             graphics[i].setFont(gfxInfo.getFont());
         }
 
@@ -111,7 +111,7 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
                     if (LOGGER.isTraceEnabled()){
                         LOGGER.trace("Repainting took "
                                 + (System.currentTimeMillis() - startTime)
-                                + " until rendered");
+                                + " ms until rendered");
                     }
                 }
             });

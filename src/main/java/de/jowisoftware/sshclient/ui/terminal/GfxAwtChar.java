@@ -119,7 +119,7 @@ public class GfxAwtChar implements GfxChar {
         } else {
             color = bgColor;
         }
-        return gfxInfo.mapColor(color, false);
+        return (Color) color.getColor(attributes.contains(Attribute.BRIGHT));
     }
 
     private boolean invertBackground(final Set<RenderFlag> flags) {
@@ -136,7 +136,7 @@ public class GfxAwtChar implements GfxChar {
         } else {
             color = fgColor;
         }
-        return gfxInfo.mapColor(color, attributes.contains(Attribute.BRIGHT));
+        return (Color) color.getColor(attributes.contains(Attribute.BRIGHT));
     }
 
     @Override

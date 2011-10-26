@@ -32,7 +32,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 import de.jowisoftware.sshclient.settings.Profile;
-import de.jowisoftware.sshclient.terminal.TerminalColor;
+import de.jowisoftware.sshclient.terminal.ColorName;
 import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
 import de.jowisoftware.sshclient.util.FontUtils;
 
@@ -266,17 +266,17 @@ public class SettingsPanel extends JPanel {
     }
 
     private void addColors(final JPanel frame) {
-        for (final TerminalColor color : TerminalColor.values()) {
+        for (final ColorName color : ColorName.values()) {
             addControl(frame, newFormattedLabel(
                     t(colorTranslation(color, COLORTYPE_DEFAULT),
-                            color.nicename().toLowerCase())), normalColumn);
+                            color.niceName().toLowerCase())), normalColumn);
             addControl(frame, createColorButton(
                     profile.getGfxSettings().getColorMap().get(color),
                     COLORTYPE_DEFAULT + "." + color.name()), spacedColumn);
 
             addControl(frame, newFormattedLabel(
                     t(colorTranslation(color, COLORTYPE_LIGHT),
-                            color.nicename().toLowerCase())), normalColumn);
+                            color.niceName().toLowerCase())), normalColumn);
             addControl(frame, createColorButton(
                     profile.getGfxSettings().getLightColorMap().get(color),
                     COLORTYPE_LIGHT + "." + color.name()), normalColumn);
@@ -289,7 +289,7 @@ public class SettingsPanel extends JPanel {
         addControl(frame, new JLabel(""), lastColumn);
     }
 
-    private String colorTranslation(final TerminalColor color, final String colorPrefix) {
+    private String colorTranslation(final ColorName color, final String colorPrefix) {
         return "profiles." + colorPrefix + "." + color.name();
     }
 
@@ -343,11 +343,11 @@ public class SettingsPanel extends JPanel {
             gfxSettings.setCursorColor(newColor);
         } else if (COLORTYPE_DEFAULT.equals(colorTypes[1])) {
             gfxSettings.getColorMap().put(
-                    TerminalColor.valueOf(colorTypes[1]),
+                    ColorName.valueOf(colorTypes[1]),
                     newColor);
         } else if (COLORTYPE_LIGHT.equals(colorTypes[0])) {
             gfxSettings.getLightColorMap().put(
-                    TerminalColor.valueOf(colorTypes[1]), newColor);
+                    ColorName.valueOf(colorTypes[1]), newColor);
         }
     }
 

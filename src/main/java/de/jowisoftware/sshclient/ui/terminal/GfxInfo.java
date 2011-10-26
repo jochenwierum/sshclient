@@ -6,41 +6,41 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.jowisoftware.sshclient.terminal.TerminalColor;
+import de.jowisoftware.sshclient.terminal.ColorName;
 
 public class GfxInfo {
-    private final Map<TerminalColor, Color> colors = new HashMap<TerminalColor, Color>();
-    private final Map<TerminalColor, Color> lightColors = new HashMap<TerminalColor, Color>();
+    private final Map<ColorName, Color> colors = new HashMap<ColorName, Color>();
+    private final Map<ColorName, Color> lightColors = new HashMap<ColorName, Color>();
     private Color cursorColor;
     private Font font = new Font(Font.MONOSPACED, 0, 10);
 
     public GfxInfo() {
-       colors.put(TerminalColor.BLACK, Color.BLACK);
-       colors.put(TerminalColor.BLUE, Color.BLUE.darker());
-       colors.put(TerminalColor.CYAN, Color.CYAN.darker());
-       colors.put(TerminalColor.DEFAULT, Color.WHITE.darker());
-       colors.put(TerminalColor.DEFAULTBG, Color.BLACK);
-       colors.put(TerminalColor.GREEN, Color.GREEN.darker());
-       colors.put(TerminalColor.MAGENTA, Color.MAGENTA.darker());
-       colors.put(TerminalColor.RED, Color.RED.darker());
-       colors.put(TerminalColor.WHITE, Color.WHITE.darker());
-       colors.put(TerminalColor.YELLOW, Color.YELLOW.darker());
+       colors.put(ColorName.BLACK, Color.BLACK);
+       colors.put(ColorName.BLUE, Color.BLUE.darker());
+       colors.put(ColorName.CYAN, Color.CYAN.darker());
+       colors.put(ColorName.DEFAULT, Color.WHITE.darker());
+       colors.put(ColorName.DEFAULT_BACKGROUND, Color.BLACK);
+       colors.put(ColorName.GREEN, Color.GREEN.darker());
+       colors.put(ColorName.MAGENTA, Color.MAGENTA.darker());
+       colors.put(ColorName.RED, Color.RED.darker());
+       colors.put(ColorName.WHITE, Color.WHITE.darker());
+       colors.put(ColorName.YELLOW, Color.YELLOW.darker());
 
-       lightColors.put(TerminalColor.BLACK, Color.BLACK.brighter().brighter());
-       lightColors.put(TerminalColor.BLUE, Color.BLUE);
-       lightColors.put(TerminalColor.CYAN, Color.CYAN);
-       lightColors.put(TerminalColor.DEFAULT, Color.WHITE);
-       lightColors.put(TerminalColor.DEFAULTBG, Color.BLACK.brighter().brighter());
-       lightColors.put(TerminalColor.GREEN, Color.GREEN);
-       lightColors.put(TerminalColor.MAGENTA, Color.MAGENTA);
-       lightColors.put(TerminalColor.RED, Color.RED);
-       lightColors.put(TerminalColor.WHITE, Color.WHITE);
-       lightColors.put(TerminalColor.YELLOW, Color.YELLOW);
+       lightColors.put(ColorName.BLACK, Color.BLACK.brighter().brighter());
+       lightColors.put(ColorName.BLUE, Color.BLUE);
+       lightColors.put(ColorName.CYAN, Color.CYAN);
+       lightColors.put(ColorName.DEFAULT, Color.WHITE);
+       lightColors.put(ColorName.DEFAULT_BACKGROUND, Color.BLACK.brighter().brighter());
+       lightColors.put(ColorName.GREEN, Color.GREEN);
+       lightColors.put(ColorName.MAGENTA, Color.MAGENTA);
+       lightColors.put(ColorName.RED, Color.RED);
+       lightColors.put(ColorName.WHITE, Color.WHITE);
+       lightColors.put(ColorName.YELLOW, Color.YELLOW);
 
        cursorColor = Color.GREEN;
     }
 
-    public Color mapColor(final TerminalColor color, final boolean light) {
+    public Color mapColor(final ColorName color, final boolean light) {
         if (!light) {
             return colors.get(color);
         } else {
@@ -56,11 +56,11 @@ public class GfxInfo {
         return cursorColor;
     }
 
-    public Map<TerminalColor, Color> getColorMap() {
+    public Map<ColorName, Color> getColorMap() {
         return colors;
     }
 
-    public Map<TerminalColor, Color> getLightColorMap() {
+    public Map<ColorName, Color> getLightColorMap() {
         return lightColors;
     }
 
@@ -75,14 +75,19 @@ public class GfxInfo {
     @Override
     public Object clone() {
         final GfxInfo g = new GfxInfo();
-        for (final Entry<TerminalColor, Color> e : lightColors.entrySet()) {
+        for (final Entry<ColorName, Color> e : lightColors.entrySet()) {
             g.lightColors.put(e.getKey(), e.getValue());
         }
-        for (final Entry<TerminalColor, Color> e : colors.entrySet()) {
+        for (final Entry<ColorName, Color> e : colors.entrySet()) {
             g.colors.put(e.getKey(), e.getValue());
         }
         g.cursorColor = cursorColor;
         g.font = font;
         return g;
+    }
+
+    public Color mapCustomColor(final int colorCode) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

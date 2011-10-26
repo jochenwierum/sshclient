@@ -3,6 +3,8 @@ package de.jowisoftware.sshclient.terminal;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 public interface GfxCharSetup<T extends GfxChar> {
+    ColorFactory getColorFactory();
+
     void reset();
     void setAttribute(Attribute attribute);
     void removeAttribute(Attribute attribute);

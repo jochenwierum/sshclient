@@ -3,15 +3,27 @@ package de.jowisoftware.sshclient.terminal.controlsequences;
 import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.jmock.integration.junit4.JMock;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
+import de.jowisoftware.sshclient.terminal.ColorFactory;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 @RunWith(JMock.class)
 public class ANSISequenceAttributeTest extends AbstractSequenceTest {
+    private ColorFactory colorFactory;
+
+    @Before
+    public void setUpColorFactory() {
+        colorFactory = context.mock(ColorFactory.class);
+        context.checking(new Expectations(){{
+            allowing(charSetup).getColorFactory(); will(returnValue(colorFactory));
+        }});
+    }
+
     private void callWithAttrAndExpect(final int attr, final Attribute expect) {
         context.checking(new Expectations() {{
             oneOf(charSetup).setAttribute(expect);
@@ -20,20 +32,29 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, Integer.toString(attr));
     }
 
-    private void callWithAttrAndExpectFGColor(final int attr, final TerminalColor expect) {
+    private void callWithAttrAndExpectFGColor(final int attr) {
+        final TerminalColor color = context.mock(TerminalColor.class, "TerminalColor" + attr);
+
         context.checking(new Expectations() {{
-            oneOf(charSetup).setForeground(expect);
+            oneOf(colorFactory).createStandardColor(attr); will(returnValue(color));
+            oneOf(color).isForeground(); will(returnValue(true));
+            oneOf(charSetup).setForeground(color);
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, Integer.toString(attr));
     }
 
-    private void callWithAttrAndExpectBGColor(final int attr, final TerminalColor expect) {
-        final GfxChar gfxChar = context.mock(GfxChar.class, "color-" + attr);
+    private void callWithAttrAndExpectBGColor(final int attr) {
+        final TerminalColor color = context.mock(TerminalColor.class, "TerminalColor" + attr);
+        final GfxChar gfxChar = context.mock(GfxChar.class, "gfxChar" + attr);
 
         context.checking(new Expectations() {{
-            oneOf(charSetup).setBackground(expect);
-            oneOf(charSetup).createClearChar(); will(returnValue(gfxChar));
+            oneOf(colorFactory).createStandardColor(attr);
+                will(returnValue(color));
+            oneOf(color).isForeground(); will(returnValue(false));
+            oneOf(charSetup).setBackground(color);
+            oneOf(charSetup).createClearChar();
+                will(returnValue(gfxChar));
             oneOf(buffer).setClearChar(gfxChar);
         }});
 
@@ -70,28 +91,14 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
 
     @Test
     public void testForegroundColors() {
-        callWithAttrAndExpectFGColor(30, TerminalColor.BLACK);
-        callWithAttrAndExpectFGColor(31, TerminalColor.RED);
-        callWithAttrAndExpectFGColor(32, TerminalColor.GREEN);
-        callWithAttrAndExpectFGColor(33, TerminalColor.YELLOW);
-        callWithAttrAndExpectFGColor(34, TerminalColor.BLUE);
-        callWithAttrAndExpectFGColor(35, TerminalColor.MAGENTA);
-        callWithAttrAndExpectFGColor(36, TerminalColor.CYAN);
-        callWithAttrAndExpectFGColor(37, TerminalColor.WHITE);
-        callWithAttrAndExpectFGColor(39, TerminalColor.DEFAULT);
+        callWithAttrAndExpectFGColor(30);
+        callWithAttrAndExpectFGColor(31);
     }
 
     @Test
     public void testBackgroundColors() {
-        callWithAttrAndExpectBGColor(40, TerminalColor.BLACK);
-        callWithAttrAndExpectBGColor(41, TerminalColor.RED);
-        callWithAttrAndExpectBGColor(42, TerminalColor.GREEN);
-        callWithAttrAndExpectBGColor(43, TerminalColor.YELLOW);
-        callWithAttrAndExpectBGColor(44, TerminalColor.BLUE);
-        callWithAttrAndExpectBGColor(45, TerminalColor.MAGENTA);
-        callWithAttrAndExpectBGColor(46, TerminalColor.CYAN);
-        callWithAttrAndExpectBGColor(47, TerminalColor.WHITE);
-        callWithAttrAndExpectBGColor(49, TerminalColor.DEFAULTBG);
+        callWithAttrAndExpectBGColor(40);
+        callWithAttrAndExpectBGColor(41);
     }
 
     @Test
@@ -125,18 +132,28 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
         final GfxChar gfxChar = context.mock(GfxChar.class, "color");
         final Sequence sequence = context.sequence("seq");
 
+        final TerminalColor color1 = context.mock(TerminalColor.class, "color1");
+        final TerminalColor color2 = context.mock(TerminalColor.class, "color2");
+
         context.checking(new Expectations() {{
             oneOf(charSetup).reset(); inSequence(sequence);
             oneOf(charSetup).createClearChar(); will(returnValue(gfxChar)); inSequence(sequence);
             oneOf(buffer).setClearChar(gfxChar); inSequence(sequence);
 
+            oneOf(colorFactory).createStandardColor(34); will(returnValue(color1));
+            oneOf(colorFactory).createStandardColor(41); will(returnValue(color2));
+
             oneOf(charSetup).setAttribute(Attribute.BLINK); inSequence(sequence);
-            oneOf(charSetup).setForeground(TerminalColor.BLUE); inSequence(sequence);
-            oneOf(charSetup).setBackground(TerminalColor.RED); inSequence(sequence);
+            oneOf(color1).isForeground(); will(returnValue(true));
+            oneOf(charSetup).setForeground(color1); inSequence(sequence);
+            oneOf(color2).isForeground(); will(returnValue(false));
+            oneOf(charSetup).setBackground(color2); inSequence(sequence);
             oneOf(charSetup).createClearChar(); will(returnValue(gfxChar)); inSequence(sequence);
             oneOf(buffer).setClearChar(gfxChar); inSequence(sequence);
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "0", "5", "34", "41");
     }
+
+
 }

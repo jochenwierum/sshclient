@@ -3,6 +3,8 @@ package de.jowisoftware.sshclient.terminal.controlsequences;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
+import de.jowisoftware.sshclient.terminal.ColorFactory;
+import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
@@ -25,7 +27,7 @@ public class ANSISequencem<T extends GfxChar> implements ANSISequence<T> {
         if (seq == 0) {
             resetAttributes(sessionInfo);
         } else if (!processAttributes(sessionInfo, seq) &&
-            !processColors(sessionInfo, seq)) {
+            !processDefaultColors(sessionInfo, seq)) {
                 LOGGER.error("Unknown attribute: <ESC>[" + seq + "m");
         }
     }
@@ -36,19 +38,23 @@ public class ANSISequencem<T extends GfxChar> implements ANSISequence<T> {
         sessionInfo.getBuffer().setClearChar(clearChar);
     }
 
-    private boolean processColors(final Session<T> sessionInfo, final int seq) {
-        for (final TerminalColor color : TerminalColor.values()) {
-            if (color.isForegroundSequence(seq)) {
-                sessionInfo.getCharSetup().setForeground(color);
-                return true;
-            } else if (color.isBackgroundSequence(seq)) {
-                sessionInfo.getCharSetup().setBackground(color);
-                final T clearChar = sessionInfo.getCharSetup().createClearChar();
-                sessionInfo.getBuffer().setClearChar(clearChar);
-                return true;
-            }
+    private boolean processDefaultColors(final Session<T> sessionInfo, final int seq) {
+        final GfxCharSetup<T> charSetup = sessionInfo.getCharSetup();
+        final ColorFactory factory = charSetup.getColorFactory();
+        final TerminalColor color = factory.createStandardColor(seq);
+
+        if (color == null) {
+            return false;
         }
-        return false;
+
+        if (color.isForeground()) {
+            charSetup.setForeground(color);
+        } else {
+            charSetup.setBackground(color);
+            final T clearChar = charSetup.createClearChar();
+            sessionInfo.getBuffer().setClearChar(clearChar);
+        }
+        return true;
     }
 
     private boolean processAttributes(final Session<T> sessionInfo,

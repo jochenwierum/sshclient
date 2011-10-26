@@ -24,7 +24,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
-import de.jowisoftware.sshclient.terminal.TerminalColor;
+import de.jowisoftware.sshclient.terminal.ColorName;
 import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
 
 public class XMLPersister {
@@ -96,9 +96,9 @@ public class XMLPersister {
         return node;
     }
 
-    private void persistColors(final Map<TerminalColor, Color> colorMap,
+    private void persistColors(final Map<ColorName, Color> colorMap,
             final Element parent) {
-        for(final Entry<TerminalColor, Color> e : colorMap.entrySet()) {
+        for(final Entry<ColorName, Color> e : colorMap.entrySet()) {
             final Element color = doc.createElement("color");
             color.setAttribute("name", e.getKey().name());
             color.setAttribute("value", Integer.toString(e.getValue().getRGB() & 0xFFFFFF, 16));
