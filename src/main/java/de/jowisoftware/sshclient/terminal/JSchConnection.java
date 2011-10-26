@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map.Entry;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
+import com.google.common.io.Closeables;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -89,7 +89,7 @@ public class JSchConnection {
 
     public void close() {
         if (outputStream != null) {
-            IOUtils.closeQuietly(outputStream);
+            Closeables.closeQuietly(outputStream);
             outputStream = null;
         }
 

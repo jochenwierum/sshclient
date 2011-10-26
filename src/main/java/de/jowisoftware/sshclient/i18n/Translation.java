@@ -7,8 +7,9 @@ import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+
+import com.google.common.io.Closeables;
 
 public class Translation {
     private static final Logger LOGGER = Logger.getLogger(Translation.class);
@@ -50,7 +51,7 @@ public class Translation {
             if (stream != null) {
                 try {
                     staticTranslation = new Translation(new InputStreamReader(stream, Charset.forName("UTF-8")));
-                    IOUtils.closeQuietly(stream);
+                    Closeables.closeQuietly(stream);
                 } catch (final IOException e) {
                     LOGGER.error("Could not read language file: " + language, e);
                 }

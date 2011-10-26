@@ -3,9 +3,9 @@ package de.jowisoftware.sshclient.jsch;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
+import com.google.common.io.Closeables;
 import com.jcraft.jsch.Channel;
 
 import de.jowisoftware.sshclient.util.StringUtils;
@@ -57,7 +57,7 @@ public class AsyncInputStreamReaderThread extends Thread {
         } catch (final IOException e) {
             LOGGER.warn("Exception while reading from socket", e);
         }
-        IOUtils.closeQuietly(stream);
+        Closeables.closeQuietly(stream);
         LOGGER.info("Thread ended");
     }
 

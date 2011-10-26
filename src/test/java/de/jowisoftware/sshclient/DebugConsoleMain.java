@@ -2,8 +2,11 @@ package de.jowisoftware.sshclient;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,7 +14,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
-import org.apache.commons.io.IOUtils;
+import com.google.common.io.Closeables;
 
 import de.jowisoftware.sshclient.settings.Profile;
 import de.jowisoftware.sshclient.ui.SSHConsole;
@@ -60,8 +63,11 @@ public class DebugConsoleMain {
     }
 
     private String readFile(final InputStream stream) throws IOException {
-        final String text = IOUtils.toString(stream, "UTF-8").replace("\n", "").replace("\r", "");
-        IOUtils.closeQuietly(stream);
+        final BufferedReader reader = new BufferedReader(
+                new InputStreamReader(stream, Charset.forName("UTF-8")));
+        final String text = getStreamContent(reader)
+                .replace("\n", "").replace("\r", "");
+        Closeables.closeQuietly(reader);
 
         final StringBuffer builder = new StringBuffer();
         final Matcher m = Pattern.compile("(\\\\(\\\\|n|r|u[0-9a-fA-F]{4}))").matcher(text);
@@ -85,5 +91,15 @@ public class DebugConsoleMain {
             result = result.substring(0, result.indexOf("---EOF---"));
         }
         return result;
+    }
+
+    private String getStreamContent(final BufferedReader reader) throws IOException {
+        final StringBuilder builder = new StringBuilder();
+        String line = reader.readLine();
+        while(line != null) {
+            builder.append(line);
+            line = reader.readLine();
+        }
+        return builder.toString();
     }
 }
