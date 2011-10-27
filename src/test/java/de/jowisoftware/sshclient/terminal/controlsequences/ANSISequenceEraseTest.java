@@ -1,13 +1,10 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
-import static org.junit.Assert.assertEquals;
-
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Range;
 
@@ -170,11 +167,5 @@ public class ANSISequenceEraseTest extends AbstractSequenceTest {
         testEraseXChars(new Position(3, 6), 1, "0");
         testEraseXChars(new Position(1, 7), 3, "3");
         testEraseXChars(new Position(2, 5), 6, "6");
-    }
-
-    @Test
-    public void xAndPRepresentSameClass() {
-        assertEquals(new DefaultSequenceRepository<GfxChar>().getANSISequence('X').getClass(),
-                new DefaultSequenceRepository<GfxChar>().getANSISequence('P').getClass());
     }
 }

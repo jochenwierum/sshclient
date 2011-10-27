@@ -117,4 +117,36 @@ public class DefaultBufferStorage<T extends GfxChar> implements BufferStorage<T>
             }
         }
     }
+
+    @Override
+    public void shiftColumns(final int offset, final int x, final int y) {
+        final int width = lines[0].length;
+        if (offset > 0) {
+            shiftColumnWithPositiveOffset(offset, x, y, width);
+        } else {
+            shiftColumnWithNegativeOffset(offset, x, y, width);
+        }
+    }
+
+    private void shiftColumnWithNegativeOffset(final int offset, final int x,
+            final int y, final int width) {
+        for (int i = width - 1; i >= x; --i) {
+            if (i + offset < x) {
+                lines[y][i] = clearChar;
+            } else {
+                lines[y][i] = lines[y][i + offset];
+            }
+        }
+    }
+
+    private void shiftColumnWithPositiveOffset(final int offset, final int x,
+            final int y, final int width) {
+        for (int i = x; i < width; ++i) {
+            if (i + offset < width) {
+                lines[y][i] = lines[y][i + offset];
+            } else {
+                lines[y][i] = clearChar;
+            }
+        }
+    }
 }

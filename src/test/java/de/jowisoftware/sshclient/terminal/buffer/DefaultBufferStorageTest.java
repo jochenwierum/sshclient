@@ -216,4 +216,85 @@ public class DefaultBufferStorageTest {
         assertChar(3, 2, nullChar);
         assertChar(1, 2, nullChar);
     }
+
+    @Test
+    public void shiftLeft3Columns() {
+        storage.newSize(11, 6);
+
+        storage.setCharacter(4, 3, char1);
+        storage.setCharacter(4, 4, char1);
+        storage.setCharacter(4, 5, char1);
+        storage.setCharacter(4, 6, char1);
+        storage.setCharacter(4, 7, char2);
+        storage.setCharacter(4, 8, char1);
+        storage.setCharacter(4, 9, char1);
+        storage.setCharacter(4, 10, char2);
+
+        storage.shiftColumns(3, 4, 4);
+
+        assertChar(4, 3, char1);
+        assertChar(4, 4, char2);
+        assertChar(4, 5, char1);
+        assertChar(4, 6, char1);
+        assertChar(4, 7, char2);
+        assertChar(4, 8, nullChar);
+        assertChar(4, 10, nullChar);
+    }
+
+    @Test
+    public void shiftLeft1Column() {
+        storage.newSize(8, 6);
+
+        storage.setCharacter(3, 3, char1);
+        storage.setCharacter(3, 4, char2);
+        storage.setCharacter(3, 5, char1);
+        storage.setCharacter(3, 6, char2);
+        storage.setCharacter(3, 7, char1);
+
+        storage.shiftColumns(1, 5, 3);
+
+        assertChar(3, 3, char1);
+        assertChar(3, 4, char2);
+        assertChar(3, 5, char2);
+        assertChar(3, 6, char1);
+        assertChar(3, 7, nullChar);
+    }
+
+    @Test
+    public void shiftRight1Column() {
+        storage.newSize(8, 6);
+
+        storage.setCharacter(3, 3, char1);
+        storage.setCharacter(3, 4, char2);
+        storage.setCharacter(3, 5, char1);
+        storage.setCharacter(3, 6, char2);
+        storage.setCharacter(3, 7, char1);
+
+        storage.shiftColumns(-1, 4, 3);
+
+        assertChar(3, 3, char1);
+        assertChar(3, 4, nullChar);
+        assertChar(3, 5, char2);
+        assertChar(3, 6, char1);
+        assertChar(3, 7, char2);
+    }
+
+    @Test
+    public void shiftRight3Columns() {
+        storage.newSize(8, 6);
+
+        storage.setCharacter(3, 3, char1);
+        storage.setCharacter(3, 4, char2);
+        storage.setCharacter(3, 5, char1);
+        storage.setCharacter(3, 6, char2);
+        storage.setCharacter(3, 7, char1);
+
+        storage.shiftColumns(-3, 4, 3);
+
+        assertChar(3, 3, char1);
+        assertChar(3, 4, nullChar);
+        assertChar(3, 5, nullChar);
+        assertChar(3, 6, nullChar);
+        assertChar(3, 7, char2);
+    }
 }

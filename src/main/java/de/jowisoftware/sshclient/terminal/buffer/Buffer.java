@@ -14,12 +14,13 @@ public interface Buffer<T extends GfxChar> {
     void addNewLine();
     T getCharacter(final int row, final int column);
     void processBackspace();
-    void tapstop(Tabstop vertical);
+    void tabstop(Tabstop vertical);
     void setAutoWrap(boolean autoWrap);
 
     void setClearChar(T clearChar);
     void erase(Range range);
     void insertLines(int lines);
+    void shift(int charCount);
 
     void setMargin(int start, int end);
     void resetMargin();

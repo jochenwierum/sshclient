@@ -435,4 +435,25 @@ public class DefaultBufferTest {
         }});
         buffer.setClearChar(gfxChar);
     }
+
+    private void testShift(final int x, final int y, final int count) {
+        prepareSize(80, 60);
+        buffer.setCursorPosition(new Position(x, y));
+
+        context.checking(new Expectations() {{
+            oneOf(storage).shiftColumns(count, x - 1, y - 1);
+        }});
+
+        buffer.shift(count);
+    }
+
+    @Test
+    public void rightShift3() {
+        testShift(3, 4, 3);
+    }
+
+    @Test
+    public void rightShiftMinus6() {
+        testShift(5, 1, -6);
+    }
 }

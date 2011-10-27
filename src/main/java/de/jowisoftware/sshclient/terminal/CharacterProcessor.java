@@ -63,9 +63,9 @@ public class CharacterProcessor<T extends GfxChar> {
 
     private boolean processSpecialChar(final Character character) {
         if (character == VTAB_CHAR) {
-            sessionInfo.getBuffer().tapstop(Tabstop.VERTICAL);
+            sessionInfo.getBuffer().tabstop(Tabstop.VERTICAL);
         } else if(character == HTAB_CHAR) {
-            sessionInfo.getBuffer().tapstop(Tabstop.HORIZONTAL);
+            sessionInfo.getBuffer().tabstop(Tabstop.HORIZONTAL);
         } else if (character == BACKSPACE_CHAR) {
             sessionInfo.getBuffer().processBackspace();
         } else if (character == NEWLINE_CHAR) {

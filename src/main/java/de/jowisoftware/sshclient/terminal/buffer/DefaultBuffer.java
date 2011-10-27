@@ -229,7 +229,7 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     @Override
-    public void tapstop(final Tabstop orientation) {
+    public void tabstop(final Tabstop orientation) {
         // TODO do a real implementation here
         final Position oldPosition = getCursorPosition();
         final Position size = getSize();
@@ -294,5 +294,10 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     @Override
     public void setClearChar(final T clearChar) {
         storage.setClearChar(clearChar);
+    }
+
+    @Override
+    public void shift(final int charCount) {
+        storage.shiftColumns(charCount, position.x - 1, position.y - 1);
     }
 }
