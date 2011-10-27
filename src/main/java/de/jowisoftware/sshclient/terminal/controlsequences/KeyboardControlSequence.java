@@ -25,9 +25,9 @@ public class KeyboardControlSequence<T extends GfxChar> implements NonASCIIContr
     public void handleSequence(final String sequence,
             final Session<T> sessionInfo) {
         if (sequence.equals("=")) {
-            sessionInfo.getKeyboardFeedback().setNumblockIsAppMode(true);
+            sessionInfo.getKeyboardFeedback().fire().newNumblockAppMode(true);
         } else if (sequence.equals(">")) {
-            sessionInfo.getKeyboardFeedback().setNumblockIsAppMode(false);
+            sessionInfo.getKeyboardFeedback().fire().newNumblockAppMode(false);
         } else {
             LOGGER.error("Unknown control sequence: <ESC>" + sequence);
         }

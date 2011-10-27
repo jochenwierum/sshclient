@@ -83,7 +83,7 @@ public class CharacterProcessor<T extends GfxChar> {
 
     private void processStandardChar(final char character) {
         if (character == BELL_CHAR) {
-            sessionInfo.getVisualFeedback().bell();
+            sessionInfo.getVisualFeedback().fire().bell();
         } else {
             sessionInfo.getBuffer().addCharacter(
                 sessionInfo.getCharSetup().createChar(character));

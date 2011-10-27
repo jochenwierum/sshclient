@@ -77,7 +77,7 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
     }
 
     private void processAppMode(final Session<T> sessionInfo) {
-        sessionInfo.getKeyboardFeedback().setCursorKeysIsAppMode(isHigh);
+        sessionInfo.getKeyboardFeedback().fire().newCursorKeysIsAppMode(isHigh);
     }
 
     private void processShowCursor(final Session<T> sessionInfo) {
@@ -127,9 +127,9 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
 
     private void processDisplayType(final Session<T> sessionInfo) {
         if (isHigh) {
-            sessionInfo.getVisualFeedback().setDisplayType(DisplayType.FIXED132X24);
+            sessionInfo.getVisualFeedback().fire().setDisplayType(DisplayType.FIXED132X24);
         } else {
-            sessionInfo.getVisualFeedback().setDisplayType(DisplayType.FIXED80X24);
+            sessionInfo.getVisualFeedback().fire().setDisplayType(DisplayType.FIXED80X24);
         }
         final Buffer<T> buffer = sessionInfo.getBuffer();
         buffer.erase(buffer.getSize().toRange());

@@ -15,7 +15,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     @Test
     public void handleNumblock() {
         context.checking(new Expectations() {{
-            oneOf(keyboardFeedback).setCursorKeysIsAppMode(false);
+            oneOf(keyboardFeedback).newCursorKeysIsAppMode(false);
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo, "?1");
@@ -24,7 +24,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     @Test
     public void handleNumblockOff() {
         context.checking(new Expectations() {{
-            oneOf(keyboardFeedback).setCursorKeysIsAppMode(true);
+            oneOf(keyboardFeedback).newCursorKeysIsAppMode(true);
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('h', sessionInfo, "?1");

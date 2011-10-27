@@ -12,10 +12,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.terminal.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.terminal.VisualFeedback;
+import de.jowisoftware.sshclient.terminal.VisualEvent;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
@@ -29,7 +30,7 @@ public class CharacterProcessorTest {
     private NonASCIIControlSequence<GfxChar> sequence2;
     private GfxChar gfxChar;
     private CharacterProcessor<GfxChar> processor;
-    private VisualFeedback visualFeedback;
+    private VisualEvent visualFeedback;
     private Session<GfxChar> sessionInfo;
     private SequenceRepository<GfxChar> repository;
 
@@ -38,12 +39,13 @@ public class CharacterProcessorTest {
     public void setUp() {
         buffer = context.mock(Buffer.class);
         setup = context.mock(GfxCharSetup.class);
-        visualFeedback = context.mock(VisualFeedback.class);
+        visualFeedback = context.mock(VisualEvent.class);
         sequence1 = context.mock(NonASCIIControlSequence.class, "sequence1");
         sequence2 = context.mock(NonASCIIControlSequence.class, "sequence2");
         gfxChar = context.mock(GfxChar.class);
         sessionInfo = context.mock(Session.class);
         repository = context.mock(SequenceRepository.class);
+        final EventHub<?> eventHub = context.mock(EventHub.class);
 
         processor = new CharacterProcessor<GfxChar>(
                 sessionInfo,
@@ -53,9 +55,10 @@ public class CharacterProcessorTest {
         context.checking(new Expectations() {{
             allowing(sessionInfo).getBuffer(); will(returnValue(buffer));
             allowing(sessionInfo).getCharSetup(); will(returnValue(setup));
-            allowing(sessionInfo).getVisualFeedback(); will(returnValue(visualFeedback));
             allowing(repository).getNonASCIISequences();
                 will(returnValue(Arrays.asList(sequence1, sequence2)));
+            allowing(sessionInfo).getVisualFeedback(); will(returnValue(eventHub));
+            allowing(eventHub).fire(); will(returnValue(visualFeedback));
         }});
     }
 

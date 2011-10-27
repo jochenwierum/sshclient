@@ -6,6 +6,8 @@ import java.nio.charset.Charset;
 
 import org.apache.log4j.Logger;
 
+import de.jowisoftware.sshclient.events.EventHub;
+import de.jowisoftware.sshclient.events.LinkedListEventHub;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.util.StringUtils;
@@ -14,18 +16,18 @@ public class DefaultSession<T extends GfxChar> implements Session<T> {
     private static final Logger LOGGER = Logger.getLogger(DefaultSession.class);
 
     private final Buffer<T> buffer;
-    private final KeyboardFeedback keyboadFeedback;
-    private final VisualFeedbackList visualFeedbackList = new VisualFeedbackList();
+    private final EventHub<KeyboardEvent> keyboadFeedback =
+            LinkedListEventHub.forEventClass(KeyboardEvent.class);
+    private final EventHub<VisualEvent> visualEvents =
+            LinkedListEventHub.forEventClass(VisualEvent.class);
     private final GfxCharSetup<T> charSetup;
 
     private DisplayType displayType;
     private OutputStream responseStream;
 
     public DefaultSession(final Buffer<T> buffer,
-            final KeyboardFeedback keyboardFeedback,
             final GfxCharSetup<T> charSetup) {
         this.buffer = buffer;
-        this.keyboadFeedback = keyboardFeedback;
         this.charSetup = charSetup;
     }
 
@@ -35,13 +37,13 @@ public class DefaultSession<T extends GfxChar> implements Session<T> {
     }
 
     @Override
-    public KeyboardFeedback getKeyboardFeedback() {
+    public EventHub<KeyboardEvent> getKeyboardFeedback() {
         return keyboadFeedback;
     }
 
     @Override
-    public VisualFeedbackList getVisualFeedback() {
-        return visualFeedbackList;
+    public EventHub<VisualEvent> getVisualFeedback() {
+        return visualEvents;
     }
 
     @Override

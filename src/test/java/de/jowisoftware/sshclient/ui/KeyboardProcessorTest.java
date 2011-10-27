@@ -127,13 +127,13 @@ public class KeyboardProcessorTest {
         assertSequence(makeEvent(KeyEvent.VK_RIGHT), ESC, '[', 'C');
         assertSequence(makeEvent(KeyEvent.VK_LEFT), ESC, '[', 'D');
 
-        processor.setCursorKeysIsAppMode(true);
+        processor.newCursorKeysIsAppMode(true);
         assertSequence(makeEvent(KeyEvent.VK_UP), ESC, 'O', 'A');
         assertSequence(makeEvent(KeyEvent.VK_DOWN), ESC, 'O', 'B');
         assertSequence(makeEvent(KeyEvent.VK_RIGHT), ESC, 'O', 'C');
         assertSequence(makeEvent(KeyEvent.VK_LEFT), ESC, 'O', 'D');
 
-        processor.setCursorKeysIsAppMode(false);
+        processor.newCursorKeysIsAppMode(false);
         assertSequence(makeEvent(KeyEvent.VK_UP), ESC, '[', 'A');
     }
 
@@ -156,7 +156,7 @@ public class KeyboardProcessorTest {
         assertSequence(makeEvent(KeyEvent.VK_MINUS, KeyEvent.KEY_LOCATION_NUMPAD), '-');
         assertSequence(makeEvent(KeyEvent.VK_COMMA, KeyEvent.KEY_LOCATION_NUMPAD), ',');
 
-        processor.setNumblockIsAppMode(true);
+        processor.newNumblockAppMode(true);
         assertSequence(makeEvent(KeyEvent.VK_NUMPAD0), ESC, 'O', 'p');
         assertSequence(makeEvent(KeyEvent.VK_NUMPAD1), ESC, 'O', 'q');
         assertSequence(makeEvent(KeyEvent.VK_NUMPAD2), ESC, 'O', 'r');
@@ -173,7 +173,7 @@ public class KeyboardProcessorTest {
         assertSequence(makeEvent(KeyEvent.VK_DIVIDE, KeyEvent.KEY_LOCATION_NUMPAD), '/');
         assertSequence(makeEvent(KeyEvent.VK_COMMA, KeyEvent.KEY_LOCATION_NUMPAD), ESC, 'O', 'n');
 
-        processor.setNumblockIsAppMode(false);
+        processor.newNumblockAppMode(false);
         assertSequence(makeEvent(KeyEvent.VK_NUMPAD0), '0');
     }
 

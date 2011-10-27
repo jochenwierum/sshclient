@@ -5,10 +5,10 @@ import java.awt.event.KeyListener;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
+import de.jowisoftware.sshclient.terminal.KeyboardEvent;
 import de.jowisoftware.sshclient.terminal.Session;
 
-public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
+public class KeyboardProcessor implements KeyListener, KeyboardEvent {
     private static final Logger LOGGER = Logger.getLogger(KeyboardProcessor.class);
 
     private static final char ESC = 27;
@@ -296,12 +296,12 @@ public class KeyboardProcessor implements KeyListener, KeyboardFeedback {
     @Override public void keyTyped(final KeyEvent e) { /* ignored */ }
 
     @Override
-    public void setCursorKeysIsAppMode(final boolean value) {
+    public void newCursorKeysIsAppMode(final boolean value) {
         cursorsInAppMode = value;
     }
 
     @Override
-    public void setNumblockIsAppMode(final boolean b) {
+    public void newNumblockAppMode(final boolean b) {
         numpadInAppMode = b;
     }
 }

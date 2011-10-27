@@ -21,7 +21,7 @@ import de.jowisoftware.sshclient.settings.Profile;
 import de.jowisoftware.sshclient.terminal.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.DefaultSession;
 import de.jowisoftware.sshclient.terminal.DisplayType;
-import de.jowisoftware.sshclient.terminal.VisualFeedback;
+import de.jowisoftware.sshclient.terminal.VisualEvent;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.DefaultBuffer;
 import de.jowisoftware.sshclient.terminal.controlsequences.CharsetControlSequence;
@@ -47,13 +47,13 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
 
     public SSHConsole(final Profile profile) {
         final GfxAwtCharSetup charSetup = new GfxAwtCharSetup(profile.getGfxSettings());
-        final VisualFeedback gfxFeedback = new GfxFeedback(this);
+        final VisualEvent gfxFeedback = new GfxFeedback(this);
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
         final Buffer<GfxAwtChar> buffer = new DefaultBuffer<GfxAwtChar>(
                 charSetup.createClearChar(), 80, 24);
-        session = new DefaultSession<GfxAwtChar>(buffer,
-                keyboardProcessor, charSetup);
-        session.getVisualFeedback().add(gfxFeedback);
+        session = new DefaultSession<GfxAwtChar>(buffer, charSetup);
+        session.getKeyboardFeedback().register(keyboardProcessor);
+        session.getVisualFeedback().register(gfxFeedback);
         keyboardProcessor.setSession(session);
 
         renderer = new DoubleBufferedImage(profile.getGfxSettings(), this);

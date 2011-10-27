@@ -18,7 +18,7 @@ import de.jowisoftware.sshclient.jsch.UserInfo;
 import de.jowisoftware.sshclient.settings.Profile;
 import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.JSchConnection;
-import de.jowisoftware.sshclient.terminal.VisualFeedback;
+import de.jowisoftware.sshclient.terminal.VisualEvent;
 
 public class ConnectionFrame extends JPanel {
     private static final long serialVersionUID = 7873084199411017370L;
@@ -47,9 +47,9 @@ public class ConnectionFrame extends JPanel {
     }
 
     private void registerListener() {
-        console.getSession().getVisualFeedback().add(new VisualFeedback() {
+        console.getSession().getVisualFeedback().register(new VisualEvent() {
             @Override
-            public void setTitle(final String title) {
+            public void newTitle(final String title) {
                 recentTabComponent.updateLabel(title);
             }
 

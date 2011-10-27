@@ -11,8 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.terminal.VisualFeedback;
+import de.jowisoftware.sshclient.terminal.VisualEvent;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 @RunWith(JMock.class)
@@ -20,16 +21,18 @@ public class OperatingSystemCommandSequenceTest {
     private final Mockery context = new JUnit4Mockery();
     private OperatingSystemCommandSequence<GfxChar> sequence;
     private Session<GfxChar> sessionInfo;
-    private VisualFeedback visualFeedback;
+    private VisualEvent visualFeedback;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         sequence = new OperatingSystemCommandSequence<GfxChar>();
         sessionInfo = context.mock(Session.class);
-        visualFeedback = context.mock(VisualFeedback.class);
+        visualFeedback = context.mock(VisualEvent.class);
+        final EventHub<?> eventHub = context.mock(EventHub.class);
         context.checking(new Expectations() {{
-            allowing(sessionInfo).getVisualFeedback(); will(returnValue(visualFeedback));
+            allowing(sessionInfo).getVisualFeedback(); will(returnValue(eventHub));
+            allowing(eventHub).fire(); will(returnValue(visualFeedback));
         }});
     }
 
@@ -60,9 +63,9 @@ public class OperatingSystemCommandSequenceTest {
     @Test
     public void testSetTitle() {
         context.checking(new Expectations() {{
-            oneOf(visualFeedback).setTitle("Title 1");
-            oneOf(visualFeedback).setTitle("Another window title");
-            oneOf(visualFeedback).setTitle("Title 2");
+            oneOf(visualFeedback).newTitle("Title 1");
+            oneOf(visualFeedback).newTitle("Another window title");
+            oneOf(visualFeedback).newTitle("Title 2");
         }});
 
         sequence.handleSequence("]0;Title 1\u0007", sessionInfo);

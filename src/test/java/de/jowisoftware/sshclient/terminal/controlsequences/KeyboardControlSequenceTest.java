@@ -10,7 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.terminal.KeyboardFeedback;
+import de.jowisoftware.sshclient.events.EventHub;
+import de.jowisoftware.sshclient.terminal.KeyboardEvent;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
@@ -18,17 +19,19 @@ import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 public class KeyboardControlSequenceTest {
     private final Mockery context = new JUnit4Mockery();
     private KeyboardControlSequence<GfxChar> sequence;
-    private KeyboardFeedback feedback;
+    private KeyboardEvent feedback;
     private Session<GfxChar> sessionInfo;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         sequence = new KeyboardControlSequence<GfxChar>();
-        feedback = context.mock(KeyboardFeedback.class);
+        feedback = context.mock(KeyboardEvent.class);
         sessionInfo = context.mock(Session.class);
+        final EventHub<?> eventHub = context.mock(EventHub.class);
         context.checking(new Expectations() {{
-            allowing(sessionInfo).getKeyboardFeedback(); will(returnValue(feedback));
+            allowing(sessionInfo).getKeyboardFeedback(); will(returnValue(eventHub));
+            allowing(eventHub).fire(); will(returnValue(feedback));
         }});
     }
 
@@ -41,7 +44,7 @@ public class KeyboardControlSequenceTest {
     @Test
     public void testHandleNumblock() {
         context.checking(new Expectations() {{
-            oneOf(feedback).setNumblockIsAppMode(true);
+            oneOf(feedback).newNumblockAppMode(true);
         }});
 
         sequence.handleSequence("=", sessionInfo);
@@ -50,7 +53,7 @@ public class KeyboardControlSequenceTest {
     @Test
     public void testHandleNumblockOff() {
         context.checking(new Expectations() {{
-            oneOf(feedback).setNumblockIsAppMode(false);
+            oneOf(feedback).newNumblockAppMode(false);
         }});
 
         sequence.handleSequence(">", sessionInfo);

@@ -23,6 +23,6 @@ public class OperatingSystemCommandSequence<T extends GfxChar> implements NonASC
     public void handleSequence(final String sequence,
             final Session<T> sessionInfo) {
         final String title = sequence.substring(3, sequence.length() - 1);
-        sessionInfo.getVisualFeedback().setTitle(title);
+        sessionInfo.getVisualFeedback().fire().newTitle(title);
     }
 }
