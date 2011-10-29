@@ -23,7 +23,7 @@ public class KeyboardProcessorTest {
     final char ESC = (char) 27;
 
     private KeyboardProcessor processor;
-    private Session<?> session;
+    private Session session;
 
     @Before
     public void setUp() {

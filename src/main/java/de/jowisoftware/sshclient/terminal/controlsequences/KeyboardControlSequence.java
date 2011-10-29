@@ -5,9 +5,8 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
-public class KeyboardControlSequence<T extends GfxChar> implements NonASCIIControlSequence<T> {
+public class KeyboardControlSequence implements NonASCIIControlSequence {
     private static final Logger LOGGER = Logger.getLogger(KeyboardControlSequence.class);
     private static final Pattern PATTERN = Pattern.compile("=|>");
 
@@ -23,7 +22,7 @@ public class KeyboardControlSequence<T extends GfxChar> implements NonASCIIContr
 
     @Override
     public void handleSequence(final String sequence,
-            final Session<T> sessionInfo) {
+            final Session sessionInfo) {
         if (sequence.equals("=")) {
             sessionInfo.getKeyboardFeedback().fire().newNumblockAppMode(true);
         } else if (sequence.equals(">")) {

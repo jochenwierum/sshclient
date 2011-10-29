@@ -1,6 +1,7 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-public interface Buffer<T extends GfxChar> {
+
+public interface Buffer {
     void newSize(int width, int height);
     Position getSize();
 
@@ -10,14 +11,14 @@ public interface Buffer<T extends GfxChar> {
     void saveCursorPosition();
     void restoreCursorPosition();
 
-    void addCharacter(final T character);
+    void addCharacter(final GfxChar character);
     void addNewLine();
-    T getCharacter(final int row, final int column);
+    GfxChar getCharacter(final int row, final int column);
     void processBackspace();
     void tabstop(Tabstop vertical);
     void setAutoWrap(boolean autoWrap);
 
-    void setClearChar(T clearChar);
+    void setClearChar(GfxChar clearChar);
     void erase(Range range);
     void insertLines(int lines);
     void shift(int charCount);
@@ -27,7 +28,7 @@ public interface Buffer<T extends GfxChar> {
     void moveCursorUpAndRoll();
     void moveCursorDownAndRoll(boolean resetToFirstColumn);
 
-    void render(Renderer<T> renderer);
+    void render(Renderer renderer);
     void setShowCursor(boolean doIt);
 
     void switchBuffer(BufferSelection selection);

@@ -8,8 +8,8 @@ import org.apache.log4j.Logger;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
-public class DefaultSequenceRepository <T extends GfxChar> implements SequenceRepository<T> {
-    private static class WarnSequenceHandler<T extends GfxChar> implements ANSISequence<T> {
+public class DefaultSequenceRepository implements SequenceRepository {
+    private static class WarnSequenceHandler implements ANSISequence {
         private static final Logger LOGGER = Logger.getLogger(DefaultSequenceRepository.class);
 
         private final char c;
@@ -18,7 +18,7 @@ public class DefaultSequenceRepository <T extends GfxChar> implements SequenceRe
         }
 
         @Override
-        public void process(final Session<T> sessionInfo,
+        public void process(final Session sessionInfo,
                 final String... args) {
             final StringBuilder builder = new StringBuilder();
             builder.append("Ignoring unknown ANSI Sequence: <ESC>[");
@@ -33,46 +33,46 @@ public class DefaultSequenceRepository <T extends GfxChar> implements SequenceRe
         }
     }
 
-    private final List<NonASCIIControlSequence<T>> knownSequences =
-        new LinkedList<NonASCIIControlSequence<T>>();
+    private final List<NonASCIIControlSequence> knownSequences =
+        new LinkedList<NonASCIIControlSequence>();
 
-    public void addControlSequence(final NonASCIIControlSequence<T> seq) {
+    public void addControlSequence(final NonASCIIControlSequence seq) {
         knownSequences.add(seq);
     }
 
     @Override
-    public LinkedList<NonASCIIControlSequence<T>> getNonASCIISequences() {
-        return new LinkedList<NonASCIIControlSequence<T>>(knownSequences);
+    public LinkedList<NonASCIIControlSequence> getNonASCIISequences() {
+        return new LinkedList<NonASCIIControlSequence>(knownSequences);
     }
 
     @Override
-    public ANSISequence<T> getANSISequence(final char c) {
+    public ANSISequence getANSISequence(final char c) {
         switch(c) {
-        case 'A': return new ANSISequenceCapitalABCD<T>(0, -1);
-        case 'B': return new ANSISequenceCapitalABCD<T>(0, 1);
-        case 'C': return new ANSISequenceCapitalABCD<T>(1, 0);
-        case 'D': return new ANSISequenceCapitalABCD<T>(-1, 0);
-        case 'G': return new ANSISequenceCapitalG<T>();
-        case 'H': return new ANSISequenceCapitalHf<T>();
-        case 'J': return new ANSISequenceCapitalJ<T>();
-        case 'K': return new ANSISequenceCapitalK<T>();
-        case 'L': return new ANSISequenceCapitalL<T>();
-        case 'P': return new ANSISequenceCapitalP<T>();
-        case 'X': return new ANSISequenceCapitalX<T>();
-        case 'r': return new ANSISequencer<T>();
-        case 'c': return new ANSISequencec<T>();
-        case 'd': return new ANSISequenced<T>();
-        case 'f': return new ANSISequenceCapitalHf<T>();
-        case 'h': return new ANSISequenceHighLow<T>(true);
-        case 'l': return new ANSISequenceHighLow<T>(false);
-        case 'm': return new ANSISequencem<T>();
-        case '@': return new ANSISequenceAt<T>();
-        default: return new WarnSequenceHandler<T>(c);
+        case 'A': return new ANSISequenceCapitalABCD(0, -1);
+        case 'B': return new ANSISequenceCapitalABCD(0, 1);
+        case 'C': return new ANSISequenceCapitalABCD(1, 0);
+        case 'D': return new ANSISequenceCapitalABCD(-1, 0);
+        case 'G': return new ANSISequenceCapitalG();
+        case 'H': return new ANSISequenceCapitalHf();
+        case 'J': return new ANSISequenceCapitalJ();
+        case 'K': return new ANSISequenceCapitalK();
+        case 'L': return new ANSISequenceCapitalL();
+        case 'P': return new ANSISequenceCapitalP();
+        case 'X': return new ANSISequenceCapitalX();
+        case 'r': return new ANSISequencer();
+        case 'c': return new ANSISequencec();
+        case 'd': return new ANSISequenced();
+        case 'f': return new ANSISequenceCapitalHf();
+        case 'h': return new ANSISequenceHighLow(true);
+        case 'l': return new ANSISequenceHighLow(false);
+        case 'm': return new ANSISequencem();
+        case '@': return new ANSISequenceAt();
+        default: return new WarnSequenceHandler(c);
         }
     }
 
     public static <T extends GfxChar> void executeAnsiSequence(
-            final char c, final Session<T> sessionInfo, final String... args) {
-        new DefaultSequenceRepository<T>().getANSISequence(c).process(sessionInfo, args);
+            final char c, final Session sessionInfo, final String... args) {
+        new DefaultSequenceRepository().getANSISequence(c).process(sessionInfo, args);
     }
 }

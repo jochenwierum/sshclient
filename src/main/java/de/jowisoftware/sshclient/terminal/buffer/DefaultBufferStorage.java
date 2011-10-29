@@ -5,23 +5,23 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class DefaultBufferStorage<T extends GfxChar> implements BufferStorage<T> {
+public class DefaultBufferStorage implements BufferStorage {
     /**
      * displayed characters
      * 1. dimension = row, 2. dimension = row
      */
     private volatile GfxChar[][] lines;
-    private final T backgroundChar;
-    private T clearChar;
+    private final GfxChar backgroundChar;
+    private GfxChar clearChar;
 
-    public DefaultBufferStorage(final T backgroundChar, final int width, final int height) {
+    public DefaultBufferStorage(final GfxChar backgroundChar, final int width, final int height) {
         this.backgroundChar = backgroundChar;
         this.clearChar = backgroundChar;
         newSize(width, height);
     }
 
     @Override
-    public void setClearChar(final T clearChar) {
+    public void setClearChar(final GfxChar clearChar) {
         this.clearChar = clearChar;
     }
 
@@ -75,20 +75,18 @@ public class DefaultBufferStorage<T extends GfxChar> implements BufferStorage<T>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T getCharacterAt(final int row, final int column) {
-        return (T) lines[row][column];
+    public GfxChar getCharacterAt(final int row, final int column) {
+        return lines[row][column];
     }
 
     @Override
-    public void setCharacter(final int y, final int x, final T character) {
+    public void setCharacter(final int y, final int x, final GfxChar character) {
         lines[y][x] = character;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public T[][] cloneContent() {
-        final T[][] content = (T[][]) new GfxChar[lines.length][lines[0].length];
+    public GfxChar[][] cloneContent() {
+        final GfxChar[][] content = new GfxChar[lines.length][lines[0].length];
 
         for (int i = 0; i < lines.length; ++i) {
             System.arraycopy(lines[i], 0, content[i], 0, lines[0].length);

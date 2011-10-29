@@ -12,19 +12,18 @@ import org.junit.runner.RunWith;
 @RunWith(JMock.class)
 public class DefaultBufferTest {
     private final Mockery context = new Mockery();
-    private DefaultBuffer<GfxChar> buffer;
-    private BufferStorage<GfxChar> storage;
-    private BufferStorage<GfxChar> altStorage;
+    private DefaultBuffer buffer;
+    private BufferStorage storage;
+    private BufferStorage altStorage;
 
-    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         storage = context.mock(BufferStorage.class);
         altStorage = context.mock(BufferStorage.class, "altStorage");
-        buffer = new DefaultBuffer<GfxChar>(storage, altStorage);
+        buffer = new DefaultBuffer(storage, altStorage);
     }
 
-    private void prepareSize(final BufferStorage<GfxChar> selectedStorage,
+    private void prepareSize(final BufferStorage selectedStorage,
             final int count, final int width, final int height) {
         context.checking(new Expectations() {{
             if (count <= 0) {
@@ -50,7 +49,7 @@ public class DefaultBufferTest {
         }});
     }
 
-    private void prepareChar(final BufferStorage<GfxChar> selectedStorage,
+    private void prepareChar(final BufferStorage selectedStorage,
             final int y, final int x, final GfxChar character) {
         context.checking(new Expectations() {{
             oneOf(selectedStorage).setCharacter(y, x, character);

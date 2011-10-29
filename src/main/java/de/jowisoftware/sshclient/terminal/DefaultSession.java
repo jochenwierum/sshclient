@@ -9,30 +9,29 @@ import org.apache.log4j.Logger;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.LinkedListEventHub;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.util.StringUtils;
 
-public class DefaultSession<T extends GfxChar> implements Session<T> {
+public class DefaultSession implements Session {
     private static final Logger LOGGER = Logger.getLogger(DefaultSession.class);
 
-    private final Buffer<T> buffer;
+    private final Buffer buffer;
     private final EventHub<KeyboardEvent> keyboadFeedback =
             LinkedListEventHub.forEventClass(KeyboardEvent.class);
     private final EventHub<VisualEvent> visualEvents =
             LinkedListEventHub.forEventClass(VisualEvent.class);
-    private final GfxCharSetup<T> charSetup;
+    private final GfxCharSetup charSetup;
 
     private DisplayType displayType;
     private OutputStream responseStream;
 
-    public DefaultSession(final Buffer<T> buffer,
-            final GfxCharSetup<T> charSetup) {
+    public DefaultSession(final Buffer buffer,
+            final GfxCharSetup charSetup) {
         this.buffer = buffer;
         this.charSetup = charSetup;
     }
 
     @Override
-    public Buffer<T> getBuffer() {
+    public Buffer getBuffer() {
         return buffer;
     }
 
@@ -47,7 +46,7 @@ public class DefaultSession<T extends GfxChar> implements Session<T> {
     }
 
     @Override
-    public GfxCharSetup<T> getCharSetup() {
+    public GfxCharSetup getCharSetup() {
         return charSetup;
     }
 

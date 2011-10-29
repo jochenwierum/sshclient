@@ -14,9 +14,9 @@ public class KeyboardProcessor implements KeyListener, KeyboardEvent {
     private static final char ESC = 27;
     private boolean cursorsInAppMode = false;
     private boolean numpadInAppMode;
-    private Session<?> session;
+    private Session session;
 
-    public void setSession(final Session<?> session) {
+    public void setSession(final Session session) {
         this.session = session;
     }
 

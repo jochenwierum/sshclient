@@ -6,10 +6,8 @@ import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.TerminalCharset;
 import de.jowisoftware.sshclient.terminal.TerminalCharsetSelection;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
-public class CharsetControlSequence<T extends GfxChar> implements
-        NonASCIIControlSequence<T> {
+public class CharsetControlSequence implements NonASCIIControlSequence {
     public final static Pattern PATTERN = Pattern.compile("[NO]|[()][0AB]");
     public final static Pattern PATTERN_PARTIAL = Pattern.compile("[()]");
 
@@ -25,8 +23,8 @@ public class CharsetControlSequence<T extends GfxChar> implements
 
     @Override
     public void handleSequence(final String sequence,
-            final Session<T> sessionInfo) {
-        final GfxCharSetup<T> setup = sessionInfo.getCharSetup();
+            final Session sessionInfo) {
+        final GfxCharSetup setup = sessionInfo.getCharSetup();
         final char selectionCharacter = sequence.charAt(0);
 
         if (selectionCharacter == 'N') {

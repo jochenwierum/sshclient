@@ -1,12 +1,11 @@
 package de.jowisoftware.sshclient.terminal.controlsequences;
 
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 
-public class ANSISequenceCapitalHf<T extends GfxChar> implements ANSISequence<T> {
+public class ANSISequenceCapitalHf implements ANSISequence {
     @Override
-    public void process(final Session<T> sessionInfo, final String... args) {
+    public void process(final Session sessionInfo, final String... args) {
         int x = 1;
         int y = 1;
 

@@ -25,7 +25,7 @@ public class DebugTest extends AbstractSequenceTest {
             oneOf(buffer).addCharacter(gfxChar); oneOf(buffer).addCharacter(gfxChar);
         }});
 
-        final DebugControlSequence<GfxChar> seq = new DebugControlSequence<GfxChar>();
+        final DebugControlSequence seq = new DebugControlSequence();
         seq.handleSequence("#8", sessionInfo);
 
         context.checking(new Expectations() {{
@@ -43,14 +43,14 @@ public class DebugTest extends AbstractSequenceTest {
 
     @Test
     public void testHandlePartial() {
-        final DebugControlSequence<GfxChar> seq = new DebugControlSequence<GfxChar>();
+        final DebugControlSequence seq = new DebugControlSequence();
         assertTrue(seq.isPartialStart("#"));
         assertFalse(seq.isPartialStart("8"));
     }
 
     @Test
     public void testHandleDebugWithE() {
-        final DebugControlSequence<GfxChar> seq = new DebugControlSequence<GfxChar>();
+        final DebugControlSequence seq = new DebugControlSequence();
         assertTrue(seq.canHandleSequence("#8"));
     }
 }

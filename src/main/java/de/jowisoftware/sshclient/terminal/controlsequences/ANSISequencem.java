@@ -9,11 +9,11 @@ import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
-public class ANSISequencem<T extends GfxChar> implements ANSISequence<T> {
+public class ANSISequencem implements ANSISequence {
     private static final Logger LOGGER = Logger.getLogger(ANSISequencem.class);
 
     @Override
-    public void process(final Session<T> sessionInfo, final String... args) {
+    public void process(final Session sessionInfo, final String... args) {
         if (args.length == 0) {
             processSequence(sessionInfo, 0);
         } else {
@@ -23,7 +23,7 @@ public class ANSISequencem<T extends GfxChar> implements ANSISequence<T> {
         }
     }
 
-    private void processSequence(final Session<T> sessionInfo, final int seq) {
+    private void processSequence(final Session sessionInfo, final int seq) {
         if (seq == 0) {
             resetAttributes(sessionInfo);
         } else if (!processAttributes(sessionInfo, seq) &&
@@ -32,14 +32,14 @@ public class ANSISequencem<T extends GfxChar> implements ANSISequence<T> {
         }
     }
 
-    private void resetAttributes(final Session<T> sessionInfo) {
+    private void resetAttributes(final Session sessionInfo) {
         sessionInfo.getCharSetup().reset();
-        final T clearChar = sessionInfo.getCharSetup().createClearChar();
+        final GfxChar clearChar = sessionInfo.getCharSetup().createClearChar();
         sessionInfo.getBuffer().setClearChar(clearChar);
     }
 
-    private boolean processDefaultColors(final Session<T> sessionInfo, final int seq) {
-        final GfxCharSetup<T> charSetup = sessionInfo.getCharSetup();
+    private boolean processDefaultColors(final Session sessionInfo, final int seq) {
+        final GfxCharSetup charSetup = sessionInfo.getCharSetup();
         final ColorFactory factory = charSetup.getColorFactory();
         final TerminalColor color = factory.createStandardColor(seq);
 
@@ -51,13 +51,13 @@ public class ANSISequencem<T extends GfxChar> implements ANSISequence<T> {
             charSetup.setForeground(color);
         } else {
             charSetup.setBackground(color);
-            final T clearChar = charSetup.createClearChar();
+            final GfxChar clearChar = charSetup.createClearChar();
             sessionInfo.getBuffer().setClearChar(clearChar);
         }
         return true;
     }
 
-    private boolean processAttributes(final Session<T> sessionInfo,
+    private boolean processAttributes(final Session sessionInfo,
             final int seq) {
         for (final Attribute attr : Attribute.values()) {
             if (attr.isActivateSequence(seq)) {

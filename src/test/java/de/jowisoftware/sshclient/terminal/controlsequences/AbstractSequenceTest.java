@@ -13,18 +13,16 @@ import de.jowisoftware.sshclient.terminal.KeyboardEvent;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.VisualEvent;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 @RunWith(JMock.class)
 public abstract class AbstractSequenceTest {
     protected final Mockery context = new JUnit4Mockery();
-    protected Buffer<GfxChar> buffer;
-    protected Session<GfxChar> sessionInfo;
-    protected GfxCharSetup<GfxChar> charSetup;
+    protected Buffer buffer;
+    protected Session sessionInfo;
+    protected GfxCharSetup charSetup;
     protected KeyboardEvent keyboardFeedback;
     protected VisualEvent visualFeedback;
 
-    @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
         buffer = context.mock(Buffer.class);

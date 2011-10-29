@@ -13,13 +13,14 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.ColorName;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.RenderFlag;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.terminal.GfxAwtChar;
 
-public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
+public class DoubleBufferedImage implements Renderer {
     private static final Logger LOGGER = Logger
             .getLogger(DoubleBufferedImage.class);
 
@@ -77,7 +78,7 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
     }
 
     @Override
-    public synchronized void renderChar(final GfxAwtChar character,
+    public synchronized void renderChar(final GfxChar character,
             final int x, final int y, final Set<RenderFlag> flags) {
         if (images != null) {
             final int posx = x * charWidth;
@@ -85,7 +86,7 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
 
             final Rectangle rect = new Rectangle(posx, posy,
                     charWidth, charHeight);
-            character.drawAt(rect, baseLinePos, graphics[1 - currentImage],
+            ((GfxAwtChar)character).drawAt(rect, baseLinePos, graphics[1 - currentImage],
                     flags);
         }
     }

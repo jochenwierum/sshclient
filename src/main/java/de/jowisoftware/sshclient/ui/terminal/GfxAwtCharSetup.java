@@ -18,7 +18,7 @@ import de.jowisoftware.sshclient.terminal.charsets.UKCharset;
 import de.jowisoftware.sshclient.terminal.charsets.USASCIICharset;
 import de.jowisoftware.sshclient.ui.AWTColorFactory;
 
-public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
+public class GfxAwtCharSetup implements GfxCharSetup {
     private static final Logger LOGGER = Logger
             .getLogger(GfxAwtCharSetup.class);
 

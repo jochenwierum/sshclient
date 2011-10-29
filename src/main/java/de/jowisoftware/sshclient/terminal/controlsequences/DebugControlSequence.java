@@ -5,7 +5,7 @@ import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 
-public class DebugControlSequence<T extends GfxChar> implements NonASCIIControlSequence<T> {
+public class DebugControlSequence implements NonASCIIControlSequence {
 
     @Override
     public boolean isPartialStart(final String sequence) {
@@ -18,11 +18,11 @@ public class DebugControlSequence<T extends GfxChar> implements NonASCIIControlS
     }
 
     @Override
-    public void handleSequence(final String sequence, final Session<T> sessionInfo) {
+    public void handleSequence(final String sequence, final Session sessionInfo) {
         sessionInfo.getCharSetup().reset();
-        final T gfxChar = sessionInfo.getCharSetup().createChar('E');
+        final GfxChar gfxChar = sessionInfo.getCharSetup().createChar('E');
 
-        final Buffer<T> buffer = sessionInfo.getBuffer();
+        final Buffer buffer = sessionInfo.getBuffer();
         final Position size = buffer.getSize();
 
         buffer.setCursorPosition(new Position(1, 1));

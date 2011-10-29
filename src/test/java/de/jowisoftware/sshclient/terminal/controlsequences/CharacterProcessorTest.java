@@ -24,15 +24,15 @@ import de.jowisoftware.sshclient.terminal.buffer.Position;
 @RunWith(JMock.class)
 public class CharacterProcessorTest {
     private final Mockery context = new JUnit4Mockery();
-    private Buffer<GfxChar> buffer;
-    private GfxCharSetup<GfxChar> setup;
-    private NonASCIIControlSequence<GfxChar> sequence1;
-    private NonASCIIControlSequence<GfxChar> sequence2;
+    private Buffer buffer;
+    private GfxCharSetup setup;
+    private NonASCIIControlSequence sequence1;
+    private NonASCIIControlSequence sequence2;
     private GfxChar gfxChar;
-    private CharacterProcessor<GfxChar> processor;
+    private CharacterProcessor processor;
     private VisualEvent visualFeedback;
-    private Session<GfxChar> sessionInfo;
-    private SequenceRepository<GfxChar> repository;
+    private Session sessionInfo;
+    private SequenceRepository repository;
 
     @SuppressWarnings("unchecked")
     @Before
@@ -47,7 +47,7 @@ public class CharacterProcessorTest {
         repository = context.mock(SequenceRepository.class);
         final EventHub<?> eventHub = context.mock(EventHub.class);
 
-        processor = new CharacterProcessor<GfxChar>(
+        processor = new CharacterProcessor(
                 sessionInfo,
                 Charset.defaultCharset(),
                 repository);
@@ -217,14 +217,14 @@ public class CharacterProcessorTest {
                     inSequence(seq);
             }
 
-            protected void handleSeq(final NonASCIIControlSequence<GfxChar> sequence,
+            protected void handleSeq(final NonASCIIControlSequence sequence,
                     final String expected, final boolean value) {
                 oneOf(sequence).canHandleSequence(expected);
                     will(returnValue(value));
             }
 
             private void handlePartialStart(
-                    final NonASCIIControlSequence<GfxChar> sequence, final String expected,
+                    final NonASCIIControlSequence sequence, final String expected,
                     final boolean value) {
                 oneOf(sequence).isPartialStart(expected);
                     will(returnValue(value));

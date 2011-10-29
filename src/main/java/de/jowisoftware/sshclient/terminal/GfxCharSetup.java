@@ -2,7 +2,8 @@ package de.jowisoftware.sshclient.terminal;
 
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
-public interface GfxCharSetup<T extends GfxChar> {
+
+public interface GfxCharSetup {
     ColorFactory getColorFactory();
 
     void reset();
@@ -16,6 +17,6 @@ public interface GfxCharSetup<T extends GfxChar> {
 
     void setInverseMode(boolean b);
 
-    T createChar(char character);
-    T createClearChar();
+    GfxChar createChar(char character);
+    GfxChar createClearChar();
 }

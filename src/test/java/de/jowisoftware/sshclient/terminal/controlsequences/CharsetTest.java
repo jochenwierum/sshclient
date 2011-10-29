@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.TerminalCharset;
 import de.jowisoftware.sshclient.terminal.TerminalCharsetSelection;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 @RunWith(JMock.class)
 public class CharsetTest extends AbstractSequenceTest {
@@ -50,15 +49,15 @@ public class CharsetTest extends AbstractSequenceTest {
             oneOf(charSetup).setCharset(selection, charset);
         }});
 
-        final CharsetControlSequence<GfxChar> seq =
-            new CharsetControlSequence<GfxChar>();
+        final CharsetControlSequence seq =
+            new CharsetControlSequence();
         seq.handleSequence(input, sessionInfo);
     }
 
     @Test
     public void testCanHandle() {
-        final CharsetControlSequence<GfxChar> seq =
-            new CharsetControlSequence<GfxChar>();
+        final CharsetControlSequence seq =
+            new CharsetControlSequence();
 
         assertTrue(seq.canHandleSequence("(0"));
         assertTrue(seq.canHandleSequence("(A"));
@@ -78,7 +77,7 @@ public class CharsetTest extends AbstractSequenceTest {
 
     @Test
     public void testCanHandlePartial() {
-        final CharsetControlSequence<GfxChar> seq = new CharsetControlSequence<GfxChar>();
+        final CharsetControlSequence seq = new CharsetControlSequence();
 
         assertTrue(seq.isPartialStart("("));
         assertTrue(seq.isPartialStart(")"));
@@ -91,8 +90,8 @@ public class CharsetTest extends AbstractSequenceTest {
             oneOf(charSetup).selectCharset(TerminalCharsetSelection.G0);
         }});
 
-        final CharsetControlSequence<GfxChar> seq =
-            new CharsetControlSequence<GfxChar>();
+        final CharsetControlSequence seq =
+            new CharsetControlSequence();
         seq.handleSequence("O", sessionInfo);
     }
 
@@ -102,8 +101,8 @@ public class CharsetTest extends AbstractSequenceTest {
             oneOf(charSetup).selectCharset(TerminalCharsetSelection.G1);
         }});
 
-        final CharsetControlSequence<GfxChar> seq =
-            new CharsetControlSequence<GfxChar>();
+        final CharsetControlSequence seq =
+            new CharsetControlSequence();
         seq.handleSequence("N", sessionInfo);
     }
 }

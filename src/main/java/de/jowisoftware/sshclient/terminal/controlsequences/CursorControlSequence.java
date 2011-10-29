@@ -6,10 +6,8 @@ import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
-public class CursorControlSequence<T extends GfxChar> implements
-        NonASCIIControlSequence<T> {
+public class CursorControlSequence implements NonASCIIControlSequence {
     private static final Logger LOGGER = Logger.getLogger(CursorControlSequence.class);
     private static final Pattern PATTERN = Pattern.compile("[DEM]");
 
@@ -24,9 +22,7 @@ public class CursorControlSequence<T extends GfxChar> implements
     }
 
     @Override
-    public void handleSequence(final String sequence,
-            final Session<T> sessionInfo) {
-
+    public void handleSequence(final String sequence, final Session sessionInfo) {
         if (sequence.equals("D") || sequence.equals("E") || sequence.endsWith("M")) {
             processRollCursor(sessionInfo.getBuffer(), sequence);
         } else {
@@ -34,7 +30,7 @@ public class CursorControlSequence<T extends GfxChar> implements
         }
     }
 
-    private void processRollCursor(final Buffer<T> buffer, final String sequence) {
+    private void processRollCursor(final Buffer buffer, final String sequence) {
         if (sequence.equals("D")) {
             buffer.moveCursorDownAndRoll(false);
         } else if (sequence.endsWith("E")) {

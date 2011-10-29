@@ -3,9 +3,9 @@ package de.jowisoftware.sshclient.terminal.buffer;
 import java.util.Set;
 
 
-public interface Renderer<T extends GfxChar> {
+public interface Renderer {
     void clear();
-    void renderChar(T character, int x, int y, Set<RenderFlag> flags);
+    void renderChar(GfxChar character, int x, int y, Set<RenderFlag> flags);
     void swap();
 
     int getLines();

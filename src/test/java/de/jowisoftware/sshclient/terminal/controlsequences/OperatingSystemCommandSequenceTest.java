@@ -14,19 +14,17 @@ import org.junit.runner.RunWith;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.VisualEvent;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 @RunWith(JMock.class)
 public class OperatingSystemCommandSequenceTest {
     private final Mockery context = new JUnit4Mockery();
-    private OperatingSystemCommandSequence<GfxChar> sequence;
-    private Session<GfxChar> sessionInfo;
+    private OperatingSystemCommandSequence sequence;
+    private Session sessionInfo;
     private VisualEvent visualFeedback;
 
-    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
-        sequence = new OperatingSystemCommandSequence<GfxChar>();
+        sequence = new OperatingSystemCommandSequence();
         sessionInfo = context.mock(Session.class);
         visualFeedback = context.mock(VisualEvent.class);
         final EventHub<?> eventHub = context.mock(EventHub.class);

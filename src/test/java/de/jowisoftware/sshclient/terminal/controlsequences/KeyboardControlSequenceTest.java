@@ -13,19 +13,17 @@ import org.junit.runner.RunWith;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.terminal.KeyboardEvent;
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
 @RunWith(JMock.class)
 public class KeyboardControlSequenceTest {
     private final Mockery context = new JUnit4Mockery();
-    private KeyboardControlSequence<GfxChar> sequence;
+    private KeyboardControlSequence sequence;
     private KeyboardEvent feedback;
-    private Session<GfxChar> sessionInfo;
+    private Session sessionInfo;
 
-    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
-        sequence = new KeyboardControlSequence<GfxChar>();
+        sequence = new KeyboardControlSequence();
         feedback = context.mock(KeyboardEvent.class);
         sessionInfo = context.mock(Session.class);
         final EventHub<?> eventHub = context.mock(EventHub.class);

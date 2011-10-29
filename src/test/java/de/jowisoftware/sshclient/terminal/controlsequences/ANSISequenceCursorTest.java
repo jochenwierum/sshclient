@@ -8,15 +8,14 @@ import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 
 @RunWith(JMock.class)
 public class ANSISequenceCursorTest extends AbstractSequenceTest {
     @Test
     public void testFEqualsH() {
-        assertEquals(new DefaultSequenceRepository<GfxChar>().getANSISequence('H').getClass(),
-                new DefaultSequenceRepository<GfxChar>().getANSISequence('f').getClass());
+        assertEquals(new DefaultSequenceRepository().getANSISequence('H').getClass(),
+                new DefaultSequenceRepository().getANSISequence('f').getClass());
     }
 
     @Test

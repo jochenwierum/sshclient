@@ -6,13 +6,13 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 // TODO: extract CursorPosition
-public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
+public class DefaultBuffer implements Buffer {
     private static final Logger LOGGER = Logger.getLogger(DefaultBuffer.class);
     private static final int NO_MARGIN_DEFINED = -1;
 
-    private volatile BufferStorage<T> storage;
-    private volatile BufferStorage<T> defaultStorage;
-    private volatile BufferStorage<T> alternativeStorage;
+    private volatile BufferStorage storage;
+    private volatile BufferStorage defaultStorage;
+    private volatile BufferStorage alternativeStorage;
     private volatile Position position = new Position(1, 1);
 
     private int topMargin = NO_MARGIN_DEFINED;
@@ -23,15 +23,15 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     private Position savedCursorPosition;
     private boolean showCursor = true;
 
-    public DefaultBuffer(final T clearChar,
+    public DefaultBuffer(final GfxChar clearChar,
             final int width, final int height) {
-        defaultStorage = new DefaultBufferStorage<T>(clearChar, width, height);
-        alternativeStorage = new DefaultBufferStorage<T>(clearChar, width, height);
+        defaultStorage = new DefaultBufferStorage(clearChar, width, height);
+        alternativeStorage = new DefaultBufferStorage(clearChar, width, height);
         storage = defaultStorage;
     }
 
-    public DefaultBuffer(final BufferStorage<T> storage,
-            final BufferStorage<T> alternativeStorage) {
+    public DefaultBuffer(final BufferStorage storage,
+            final BufferStorage alternativeStorage) {
         this.storage = storage;
         this.defaultStorage = storage;
         this.alternativeStorage = alternativeStorage;
@@ -89,7 +89,7 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     @Override
-    public T getCharacter(final int row, final int column) {
+    public GfxChar getCharacter(final int row, final int column) {
         synchronized(this) {
             return storage.getCharacterAt(row - 1, column - 1);
         }
@@ -103,7 +103,7 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     @Override
-    public void addCharacter(final T character) {
+    public void addCharacter(final GfxChar character) {
         synchronized(this) {
             if (position.x == getSize().x && wouldWrap && autoWrap) {
                 setAndFixCursorPosition(position.offset(0, 1).withX(0));
@@ -121,8 +121,8 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     @Override
-    public void render(final Renderer<T> renderer) {
-        final T[][] content;
+    public void render(final Renderer renderer) {
+        final GfxChar[][] content;
         synchronized(this) {
             content = storage.cloneContent();
         }
@@ -292,7 +292,7 @@ public class DefaultBuffer<T extends GfxChar> implements Buffer<T> {
     }
 
     @Override
-    public void setClearChar(final T clearChar) {
+    public void setClearChar(final GfxChar clearChar) {
         storage.setClearChar(clearChar);
     }
 

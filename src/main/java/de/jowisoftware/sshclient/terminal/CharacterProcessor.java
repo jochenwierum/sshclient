@@ -7,14 +7,13 @@ import java.util.Stack;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.CharacterProcessorState.State;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Tabstop;
 import de.jowisoftware.sshclient.terminal.controlsequences.ANSISequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.NonASCIIControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.SequenceRepository;
 
-public class CharacterProcessor<T extends GfxChar> {
+public class CharacterProcessor {
     private static final Logger LOGGER = Logger.getLogger(CharacterProcessor.class);
     private static final char ESC_CHAR = (char) 27;
     private static final char NEWLINE_CHAR = '\n';
@@ -24,15 +23,15 @@ public class CharacterProcessor<T extends GfxChar> {
     private static final Character VTAB_CHAR = (char) 11;
     private static final Character HTAB_CHAR = (char) 9;
 
-    private final SequenceRepository<T> sequenceRepository;
-    private final Stack<CharacterProcessorState<T>> states =
-        new Stack<CharacterProcessorState<T>>();
+    private final SequenceRepository sequenceRepository;
+    private final Stack<CharacterProcessorState> states =
+        new Stack<CharacterProcessorState>();
 
     private final EncodingDecoder decoder;
-    private final Session<T> sessionInfo;
+    private final Session sessionInfo;
 
-    public CharacterProcessor(final Session<T> sessionInfo,
-            final Charset charset, final SequenceRepository<T> repository) {
+    public CharacterProcessor(final Session sessionInfo,
+            final Charset charset, final SequenceRepository repository) {
         this.sessionInfo = sessionInfo;
         this.decoder = new EncodingDecoder(charset);
         sequenceRepository = repository;
@@ -103,7 +102,7 @@ public class CharacterProcessor<T extends GfxChar> {
         if (isLeagalANSISequenceContent(c)) {
             currentState().cachedChars.append(c);
         } else {
-            final ANSISequence<T> seq = sequenceRepository.getANSISequence(c);
+            final ANSISequence seq = sequenceRepository.getANSISequence(c);
             LOGGER.trace("Will handle <ESC>[" + currentState().getCachedString()
                     + c + " with " + seq.getClass().getSimpleName());
 
@@ -136,11 +135,11 @@ public class CharacterProcessor<T extends GfxChar> {
     }
 
     private boolean handleFullMatches() {
-        final Iterator<NonASCIIControlSequence<T>> it =
+        final Iterator<NonASCIIControlSequence> it =
                 currentState().availableSequences.iterator();
 
         while(it.hasNext()) {
-            final NonASCIIControlSequence<T> seq = it.next();
+            final NonASCIIControlSequence seq = it.next();
             if (seq.canHandleSequence(currentState().getCachedString())) {
                 if (LOGGER.isInfoEnabled()) {
                     LOGGER.trace("Will handle " +
@@ -157,11 +156,11 @@ public class CharacterProcessor<T extends GfxChar> {
     }
 
     private void handlePartialMatches() {
-        final Iterator<NonASCIIControlSequence<T>> it =
+        final Iterator<NonASCIIControlSequence> it =
                 currentState().availableSequences.iterator();
 
         while(it.hasNext()) {
-            final NonASCIIControlSequence<T> seq = it.next();
+            final NonASCIIControlSequence seq = it.next();
             if (!seq.isPartialStart(currentState().getCachedString())) {
                 it.remove();
             }
@@ -178,7 +177,7 @@ public class CharacterProcessor<T extends GfxChar> {
         return states.isEmpty();
     }
 
-    private CharacterProcessorState<T> currentState() {
+    private CharacterProcessorState currentState() {
         return states.peek();
     }
 
@@ -187,7 +186,7 @@ public class CharacterProcessor<T extends GfxChar> {
     }
 
     private void enterNewState() {
-        states.push(new CharacterProcessorState<T>(
+        states.push(new CharacterProcessorState(
                 sequenceRepository.getNonASCIISequences()));
     }
 }

@@ -7,10 +7,9 @@ import de.jowisoftware.sshclient.terminal.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.BufferSelection;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 
-public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
+public class ANSISequenceHighLow implements ANSISequence {
     private static final Logger LOGGER = Logger.getLogger(ANSISequenceHighLow.class);
     private final boolean isHigh;
 
@@ -19,7 +18,7 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
     }
 
     @Override
-    public void process(final Session<T> sessionInfo, final String... args) {
+    public void process(final Session sessionInfo, final String... args) {
         if (args.length > 0 && args[0].startsWith("?")) {
             args[0] = args[0].substring(1);
             processSpecialArgs(sessionInfo, args);
@@ -28,14 +27,14 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
         }
     }
 
-    private void processArgs(final Session<T> sessionInfo, final String[] args) {
+    private void processArgs(final Session sessionInfo, final String[] args) {
         for (int i = 0; i < args.length; ++i) {
             // 4: insert mode
             LOGGER.warn("High/low flag not implemented: " + args[i]);
         }
     }
 
-    private void processSpecialArgs(final Session<T> sessionInfo,
+    private void processSpecialArgs(final Session sessionInfo,
             final String[] args) {
         for (int i = 0; i < args.length; ++i) {
             /*
@@ -70,26 +69,26 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
         }
     }
 
-    private void processReverseVideo(final Session<T> sessionInfo) {
-        final GfxCharSetup<T> charSetup = sessionInfo.getCharSetup();
+    private void processReverseVideo(final Session sessionInfo) {
+        final GfxCharSetup charSetup = sessionInfo.getCharSetup();
         charSetup.setInverseMode(isHigh);
         sessionInfo.getBuffer().setClearChar(charSetup.createClearChar());
     }
 
-    private void processAppMode(final Session<T> sessionInfo) {
+    private void processAppMode(final Session sessionInfo) {
         sessionInfo.getKeyboardFeedback().fire().newCursorKeysIsAppMode(isHigh);
     }
 
-    private void processShowCursor(final Session<T> sessionInfo) {
+    private void processShowCursor(final Session sessionInfo) {
         sessionInfo.getBuffer().setShowCursor(isHigh);
     }
 
-    private void processAutoWrap(final Session<T> sessionInfo) {
+    private void processAutoWrap(final Session sessionInfo) {
         sessionInfo.getBuffer().setAutoWrap(isHigh);
     }
 
-    private void processCursorStorageWithCursorSave(final Session<T> sessionInfo) {
-        final Buffer<T> buffer = sessionInfo.getBuffer();
+    private void processCursorStorageWithCursorSave(final Session sessionInfo) {
+        final Buffer buffer = sessionInfo.getBuffer();
         if (isHigh) {
             buffer.switchBuffer(BufferSelection.ALTERNATIVE);
             buffer.saveCursorPosition();
@@ -100,7 +99,7 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
         }
     }
 
-    private void processCursorStorage(final Session<T> sessionInfo) {
+    private void processCursorStorage(final Session sessionInfo) {
         if (isHigh) {
             sessionInfo.getBuffer().saveCursorPosition();
         } else {
@@ -108,8 +107,8 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
         }
     }
 
-    private void processAlternateScreen(final Session<T> sessionInfo) {
-        final Buffer<T> buffer = sessionInfo.getBuffer();
+    private void processAlternateScreen(final Session sessionInfo) {
+        final Buffer buffer = sessionInfo.getBuffer();
         if (isHigh) {
             buffer.switchBuffer(BufferSelection.ALTERNATIVE);
         } else {
@@ -120,18 +119,18 @@ public class ANSISequenceHighLow<T extends GfxChar> implements ANSISequence<T> {
         }
     }
 
-    private void processOriginMode(final Session<T> sessionInfo) {
+    private void processOriginMode(final Session sessionInfo) {
         sessionInfo.getBuffer().setCursorRelativeToMargin(isHigh);
         sessionInfo.getBuffer().setCursorPosition(new Position(1, 1));
     }
 
-    private void processDisplayType(final Session<T> sessionInfo) {
+    private void processDisplayType(final Session sessionInfo) {
         if (isHigh) {
             sessionInfo.getVisualFeedback().fire().setDisplayType(DisplayType.FIXED132X24);
         } else {
             sessionInfo.getVisualFeedback().fire().setDisplayType(DisplayType.FIXED80X24);
         }
-        final Buffer<T> buffer = sessionInfo.getBuffer();
+        final Buffer buffer = sessionInfo.getBuffer();
         buffer.erase(buffer.getSize().toRange());
         buffer.setCursorPosition(new Position(1, 1));
     }

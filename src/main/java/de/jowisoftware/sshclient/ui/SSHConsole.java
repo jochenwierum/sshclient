@@ -30,7 +30,6 @@ import de.jowisoftware.sshclient.terminal.controlsequences.DebugControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.DefaultSequenceRepository;
 import de.jowisoftware.sshclient.terminal.controlsequences.KeyboardControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.OperatingSystemCommandSequence;
-import de.jowisoftware.sshclient.ui.terminal.GfxAwtChar;
 import de.jowisoftware.sshclient.ui.terminal.GfxAwtCharSetup;
 import de.jowisoftware.sshclient.ui.terminal.GfxFeedback;
 
@@ -39,9 +38,9 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
     private static final long serialVersionUID = 5102110929763645596L;
     private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
 
-    private final DefaultSession<GfxAwtChar> session;
+    private final DefaultSession session;
     private final DoubleBufferedImage renderer;
-    private final CharacterProcessor<GfxAwtChar> outputProcessor;
+    private final CharacterProcessor outputProcessor;
     private ChannelShell channel;
     private DisplayType displayType = DisplayType.DYNAMIC;
 
@@ -49,9 +48,9 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         final GfxAwtCharSetup charSetup = new GfxAwtCharSetup(profile.getGfxSettings());
         final VisualEvent gfxFeedback = new GfxFeedback(this);
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
-        final Buffer<GfxAwtChar> buffer = new DefaultBuffer<GfxAwtChar>(
+        final Buffer buffer = new DefaultBuffer(
                 charSetup.createClearChar(), 80, 24);
-        session = new DefaultSession<GfxAwtChar>(buffer, charSetup);
+        session = new DefaultSession(buffer, charSetup);
         session.getKeyboardFeedback().register(keyboardProcessor);
         session.getVisualFeedback().register(gfxFeedback);
         keyboardProcessor.setSession(session);
@@ -68,18 +67,18 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         setFocusTraversalKeysEnabled(false);
     }
 
-    public DefaultSession<GfxAwtChar> getSession() {
+    public DefaultSession getSession() {
         return session;
     }
 
-    private CharacterProcessor<GfxAwtChar> initializeProcessor(final AWTProfile profile) {
-        final DefaultSequenceRepository<GfxAwtChar> repository = new DefaultSequenceRepository<GfxAwtChar>();
-        repository.addControlSequence(new CursorControlSequence<GfxAwtChar>());
-        repository.addControlSequence(new KeyboardControlSequence<GfxAwtChar>());
-        repository.addControlSequence(new OperatingSystemCommandSequence<GfxAwtChar>());
-        repository.addControlSequence(new DebugControlSequence<GfxAwtChar>());
-        repository.addControlSequence(new CharsetControlSequence<GfxAwtChar>());
-        return new CharacterProcessor<GfxAwtChar>(session, profile.getCharset(), repository);
+    private CharacterProcessor initializeProcessor(final AWTProfile profile) {
+        final DefaultSequenceRepository repository = new DefaultSequenceRepository();
+        repository.addControlSequence(new CursorControlSequence());
+        repository.addControlSequence(new KeyboardControlSequence());
+        repository.addControlSequence(new OperatingSystemCommandSequence());
+        repository.addControlSequence(new DebugControlSequence());
+        repository.addControlSequence(new CharsetControlSequence());
+        return new CharacterProcessor(session, profile.getCharset(), repository);
     }
 
     @Override

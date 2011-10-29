@@ -3,12 +3,11 @@ package de.jowisoftware.sshclient.terminal.controlsequences;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 
-public class ANSISequencec<T extends GfxChar> implements ANSISequence<T> {
+public class ANSISequencec implements ANSISequence {
     private static final Logger LOGGER = Logger.getLogger(ANSISequencec.class);
     @Override
-    public void process(final Session<T> sessionInfo, final String... args) {
+    public void process(final Session sessionInfo, final String... args) {
         if (args.length == 0 || args[0].equals("0") || args[0].equals("1")) {
             sessionInfo.sendToServer("\u001b[?6c");
         } else if(args[0].equals(">") || args[0].equals(">0") || args[0].equals(">1")) {
