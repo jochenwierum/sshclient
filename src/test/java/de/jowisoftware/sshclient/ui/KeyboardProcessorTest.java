@@ -15,6 +15,8 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.Session;
 
+// TODO: the whole test class and keyboard processor is a mess
+// try to reduce complexity here, get rid of AWT and make the tests more expressive
 @RunWith(JMock.class)
 public class KeyboardProcessorTest {
     private final Mockery context = new JUnit4Mockery();
@@ -65,6 +67,16 @@ public class KeyboardProcessorTest {
         pressKeys(x, e, x);
     }
 
+    private void assertSequence(final KeyEvent e, final String text) {
+        expectString("x");
+        expectString(text);
+        expectString("x");
+
+        final KeyEvent x = new KeyEvent(new Label(), 0, 0, 0, KeyEvent.VK_X,
+                'x');
+        pressKeys(x, e, x);
+    }
+
     private void pressKeys(final KeyEvent... events) {
         for (final KeyEvent e : events) {
             processor.keyPressed(e);
@@ -80,11 +92,16 @@ public class KeyboardProcessorTest {
     }
 
     private KeyEvent makeEvent(final int code) {
-        return new KeyEvent(new Label(), 0, 0, 0, code, (char) 0);
+        return makeEvent(code, 0, 0, ' ');
     }
 
     private KeyEvent makeEvent(final int code, final int location) {
-        return new KeyEvent(new Label(), 0, 0, 0, code, (char) 0, location);
+        return makeEvent(code, location, 0, ' ');
+    }
+
+    private KeyEvent makeEvent(final int code, final int location, final int modifier, final char text) {
+        // FIXME: new Label() is a problem with headless testing!
+        return new KeyEvent(new Label(), 0, 0, modifier, code, text, location);
     }
 
     @Test
@@ -181,5 +198,12 @@ public class KeyboardProcessorTest {
     public void testErrorHandling() {
         processor.setSession(null);
         makeEvent(KeyEvent.VK_UP);
+    }
+
+    @Test
+    public void testUnderscore() {
+        assertSequence(makeEvent(KeyEvent.VK_MINUS, KeyEvent.KEY_LOCATION_NUMPAD), '-');
+        assertSequence(makeEvent(KeyEvent.VK_MINUS, KeyEvent.KEY_LOCATION_STANDARD, 0, '-'), "-");
+        assertSequence(makeEvent(KeyEvent.VK_MINUS, KeyEvent.KEY_LOCATION_STANDARD, InputEvent.SHIFT_DOWN_MASK, '_'), "_");
     }
 }

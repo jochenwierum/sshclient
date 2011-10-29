@@ -63,111 +63,79 @@ public class KeyboardProcessor implements KeyListener, KeyboardEvent {
     }
 
     private boolean processNumblock(final KeyEvent e) {
+        final boolean isOnNumpad = e.getKeyLocation() == KeyEvent.KEY_LOCATION_NUMPAD;
+        boolean processed = false;
+
         switch (e.getKeyCode()) {
         case KeyEvent.VK_NUMPAD0:
-            if (numpadInAppMode) {
-                send(ESC, 'O', 'p');
-            } else {
-                send('0');
-            }
-            return true;
+            processed = sendNumpadNumber('0', 'p');
+            break;
         case KeyEvent.VK_NUMPAD1:
-            if (numpadInAppMode) {
-                send(ESC, 'O', 'q');
-            } else {
-                send('1');
-            }
-            return true;
+            processed = sendNumpadNumber('1', 'q');
+            break;
         case KeyEvent.VK_NUMPAD2:
-            if (numpadInAppMode) {
-                send(ESC, 'O', 'r');
-            } else {
-                send('2');
-            }
-            return true;
+            processed = sendNumpadNumber('2', 'r');
+            break;
         case KeyEvent.VK_NUMPAD3:
-            if (numpadInAppMode) {
-                send(ESC, 'O', 's');
-            } else {
-                send('3');
-            }
-            return true;
+            processed = sendNumpadNumber('3', 's');
+            break;
         case KeyEvent.VK_NUMPAD4:
-            if (numpadInAppMode) {
-                send(ESC, 'O', 't');
-            } else {
-                send('4');
-            }
-            return true;
+            processed = sendNumpadNumber('4', 't');
+            break;
         case KeyEvent.VK_NUMPAD5:
-            if (numpadInAppMode) {
-                send(ESC, 'O', 'u');
-            } else {
-                send('5');
-            }
-            return true;
+            processed = sendNumpadNumber('5', 'u');
+            break;
         case KeyEvent.VK_NUMPAD6:
-            if (numpadInAppMode) {
-                send(ESC, 'O', 'v');
-            } else {
-                send('6');
-            }
-            return true;
+            processed = sendNumpadNumber('6', 'v');
+            break;
         case KeyEvent.VK_NUMPAD7:
-            if (numpadInAppMode) {
-                send(ESC, 'O', 'w');
-            } else {
-                send('7');
-            }
-            return true;
+            processed = sendNumpadNumber('7', 'w');
+            break;
         case KeyEvent.VK_NUMPAD8:
-            if (numpadInAppMode) {
-                send(ESC, 'O', 'x');
-            } else {
-                send('8');
-            }
-            return true;
+            processed = sendNumpadNumber('8', 'x');
+            break;
         case KeyEvent.VK_NUMPAD9:
-            if (numpadInAppMode) {
-                send(ESC, 'O', 'y');
-            } else {
-                send('9');
-            }
-            return true;
+            processed = sendNumpadNumber('9', 'y');
+            break;
         case KeyEvent.VK_PLUS:
-            if (numpadInAppMode && e.getKeyLocation() == KeyEvent.KEY_LOCATION_NUMPAD) {
-                send(ESC, 'O', 'M');
-            } else {
-                send('+');
-            }
-            return true;
+            processed = sendNumpadKey('+', 'M', isOnNumpad);
+            break;
         case KeyEvent.VK_MINUS:
-            if (numpadInAppMode && e.getKeyLocation() == KeyEvent.KEY_LOCATION_NUMPAD) {
-                send(ESC, 'O', 'm');
-            } else {
-                send('-');
-            }
-            return true;
+            processed = sendNumpadKey('-', 'm', isOnNumpad);
+            break;
         case KeyEvent.VK_MULTIPLY:
-            if (numpadInAppMode && e.getKeyLocation() == KeyEvent.KEY_LOCATION_NUMPAD) {
-                send(ESC, 'O', 'l');
-            } else {
-                send('*');
-            }
-            return true;
+            processed = sendNumpadKey('*', 'l', isOnNumpad);
+            break;
         case KeyEvent.VK_DIVIDE:
             send('/');
-            return true;
+            processed = true;
+            break;
         case KeyEvent.VK_COMMA:
-            if (numpadInAppMode && e.getKeyLocation() == KeyEvent.KEY_LOCATION_NUMPAD) {
-                send(ESC, 'O', 'n');
-            } else {
-                send(',');
-            }
-            return true;
-        default:
+            processed = sendNumpadKey(',', 'n', isOnNumpad);
+            break;
+        }
+        return processed;
+    }
+
+    private boolean sendNumpadKey(final char normalChar, final char appModeChar,
+            final boolean isOnNumpad) {
+        if (numpadInAppMode && isOnNumpad) {
+            send(ESC, 'O', appModeChar);
+        } else if (isOnNumpad) {
+            send(normalChar);
+        } else {
             return false;
         }
+        return true;
+    }
+
+    private boolean sendNumpadNumber(final char normalChar, final char appModeChar) {
+        if (numpadInAppMode) {
+            send(ESC, 'O', appModeChar);
+        } else {
+            send(normalChar);
+        }
+        return true;
     }
 
     private boolean processMiscKeys(final KeyEvent e) {
