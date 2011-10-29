@@ -12,7 +12,7 @@ public class ApplicationSettings {
         OPENED, CLOSED, ALYWAYS_OPEN, ALWAYS_CLOSED
     }
 
-    private final Map<String, Profile> profiles = new HashMap<String, Profile>();
+    private final Map<String, AWTProfile> profiles = new HashMap<String, AWTProfile>();
     private final List<File> keyFiles = new ArrayList<File>();
 
     private TabState logTabState = TabState.CLOSED;
@@ -33,7 +33,7 @@ public class ApplicationSettings {
     }
     */
 
-    public Map<String, Profile> getProfiles() {
+    public Map<String, AWTProfile> getProfiles() {
         return profiles;
     }
 

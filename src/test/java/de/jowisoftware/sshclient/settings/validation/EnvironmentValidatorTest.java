@@ -3,7 +3,10 @@ package de.jowisoftware.sshclient.settings.validation;
 import org.junit.Before;
 import org.junit.Test;
 
-public class EnvironmentValidatorTest extends ValidationTest {
+import de.jowisoftware.sshclient.settings.AWTProfile;
+import de.jowisoftware.sshclient.terminal.Profile;
+
+public class EnvironmentValidatorTest extends ValidationTest<Profile<?>> {
     @Before
     public void setUp() {
         validator = new EnvironmentValidator();
@@ -25,5 +28,10 @@ public class EnvironmentValidatorTest extends ValidationTest {
 
         profile.getEnvironment().put(".*", "test");
         assertError("environment", "illegal environment variable: .*");
+    }
+
+    @Override
+    protected Profile<?> newProfile() {
+        return new AWTProfile();
     }
 }

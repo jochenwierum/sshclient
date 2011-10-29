@@ -3,7 +3,10 @@ package de.jowisoftware.sshclient.settings.validation;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PortValidatorTest extends ValidationTest {
+import de.jowisoftware.sshclient.settings.AWTProfile;
+import de.jowisoftware.sshclient.terminal.Profile;
+
+public class PortValidatorTest extends ValidationTest<Profile<?>> {
     @Before
     public void setUp() {
         validator = new PortValidator();
@@ -42,5 +45,10 @@ public class PortValidatorTest extends ValidationTest {
         assertError("port", expected);
         profile.setPort(Integer.MAX_VALUE - 2);
         assertError("port", expected);
+    }
+
+    @Override
+    protected Profile<?> newProfile() {
+        return new AWTProfile();
     }
 }

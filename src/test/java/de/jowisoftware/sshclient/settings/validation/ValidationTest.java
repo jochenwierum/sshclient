@@ -8,11 +8,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import de.jowisoftware.sshclient.i18n.Translation;
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.terminal.Profile;
 
-public abstract class ValidationTest {
-    protected Profile profile;
-    protected Validator validator;
+public abstract class ValidationTest<T extends Profile<?>> {
+    protected T profile;
+    protected Validator<T> validator;
 
     @BeforeClass
     public static void setUpTranslation() {
@@ -21,8 +21,10 @@ public abstract class ValidationTest {
 
     @Before
     public void setUpProfile() {
-        profile = new Profile();
+        profile = newProfile();
     }
+
+    protected abstract T newProfile();
 
     protected ValidationResult doValidation() {
         final ValidationResult result = new DefaultValidationResult();

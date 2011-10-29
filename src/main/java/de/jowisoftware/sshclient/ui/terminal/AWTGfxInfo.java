@@ -7,14 +7,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.jowisoftware.sshclient.terminal.ColorName;
+import de.jowisoftware.sshclient.terminal.GfxInfo;
 
-public class GfxInfo {
+public class AWTGfxInfo implements GfxInfo<Color> {
     private final Map<ColorName, Color> colors = new HashMap<ColorName, Color>();
     private final Map<ColorName, Color> lightColors = new HashMap<ColorName, Color>();
     private Color cursorColor;
     private Font font = new Font(Font.MONOSPACED, 0, 10);
 
-    public GfxInfo() {
+    public AWTGfxInfo() {
        colors.put(ColorName.BLACK, Color.BLACK);
        colors.put(ColorName.BLUE, Color.BLUE.darker());
        colors.put(ColorName.CYAN, Color.CYAN.darker());
@@ -40,6 +41,7 @@ public class GfxInfo {
        cursorColor = Color.GREEN;
     }
 
+    @Override
     public Color mapColor(final ColorName color, final boolean light) {
         if (!light) {
             return colors.get(color);
@@ -52,18 +54,22 @@ public class GfxInfo {
         return font;
     }
 
+    @Override
     public Color getCursorColor() {
         return cursorColor;
     }
 
+    @Override
     public Map<ColorName, Color> getColorMap() {
         return colors;
     }
 
+    @Override
     public Map<ColorName, Color> getLightColorMap() {
         return lightColors;
     }
 
+    @Override
     public void setCursorColor(final Color color) {
         this.cursorColor = color;
     }
@@ -74,7 +80,7 @@ public class GfxInfo {
 
     @Override
     public Object clone() {
-        final GfxInfo g = new GfxInfo();
+        final AWTGfxInfo g = new AWTGfxInfo();
         for (final Entry<ColorName, Color> e : lightColors.entrySet()) {
             g.lightColors.put(e.getKey(), e.getValue());
         }
@@ -86,6 +92,7 @@ public class GfxInfo {
         return g;
     }
 
+    @Override
     public Color mapCustomColor(final int colorCode) {
         // TODO Auto-generated method stub
         return null;

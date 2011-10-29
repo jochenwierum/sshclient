@@ -13,7 +13,7 @@ import javax.swing.Timer;
 
 import org.apache.commons.io.IOUtils;
 
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.ui.SSHConsole;
 
 public class DebugConsoleMain {
@@ -35,7 +35,7 @@ public class DebugConsoleMain {
 
     private SSHConsole showFrame(final String text) {
         final JFrame frame = new JFrame("test");
-        final SSHConsole console = new SSHConsole(new Profile());
+        final SSHConsole console = new SSHConsole(new AWTProfile());
         frame.add(console);
         startTimer(console);
 

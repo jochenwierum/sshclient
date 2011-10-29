@@ -3,19 +3,19 @@ package de.jowisoftware.sshclient.settings.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.terminal.Profile;
 
-public class ValidatorCollection implements Validator {
-    private final List<Validator> validators = new ArrayList<Validator>();
+public class ValidatorCollection<T extends Profile<?>> implements Validator<T> {
+    private final List<Validator<? super T>> validators = new ArrayList<Validator<? super T>>();
 
     @Override
-    public void validate(final Profile profile, final ValidationResult result) {
-        for (final Validator validator : validators) {
+    public void validate(final T profile, final ValidationResult result) {
+        for (final Validator<? super T> validator : validators) {
             validator.validate(profile, result);
         }
     }
 
-    public void addValidator(final Validator validator) {
+    public void addValidator(final Validator<? super T> validator) {
         validators.add(validator);
     }
 }

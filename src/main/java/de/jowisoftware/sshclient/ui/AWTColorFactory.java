@@ -1,8 +1,11 @@
-package de.jowisoftware.sshclient.terminal;
+package de.jowisoftware.sshclient.ui;
 
 import java.awt.Color;
 
-import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
+import de.jowisoftware.sshclient.terminal.ColorFactory;
+import de.jowisoftware.sshclient.terminal.ColorName;
+import de.jowisoftware.sshclient.terminal.TerminalColor;
+import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 
 public class AWTColorFactory implements ColorFactory {
     private class SystemColor implements TerminalColor {
@@ -55,9 +58,9 @@ public class AWTColorFactory implements ColorFactory {
         }
     }
 
-    private final GfxInfo gfxInfo;
+    private final AWTGfxInfo gfxInfo;
 
-    public AWTColorFactory(final GfxInfo gfxInfo) {
+    public AWTColorFactory(final AWTGfxInfo gfxInfo) {
         this.gfxInfo = gfxInfo;
     }
 

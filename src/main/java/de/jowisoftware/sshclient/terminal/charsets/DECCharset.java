@@ -1,11 +1,12 @@
-package de.jowisoftware.sshclient.ui.terminal.charsets;
+package de.jowisoftware.sshclient.terminal.charsets;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import de.jowisoftware.sshclient.ui.terminal.GfxAwtCharset;
+import de.jowisoftware.sshclient.terminal.GfxCharset;
 
-public class DECCharset implements GfxAwtCharset {
+
+public class DECCharset implements GfxCharset {
     private static final Map<Integer, Character> charMap
             = new HashMap<Integer, Character>();
 

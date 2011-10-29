@@ -3,7 +3,10 @@ package de.jowisoftware.sshclient.settings.validation;
 import org.junit.Before;
 import org.junit.Test;
 
-public class HostNameValidatorTest extends ValidationTest {
+import de.jowisoftware.sshclient.settings.AWTProfile;
+import de.jowisoftware.sshclient.terminal.Profile;
+
+public class HostNameValidatorTest extends ValidationTest<Profile<?>> {
     @Before
     public void setUp() {
         validator = new HostNameValidator();
@@ -38,5 +41,10 @@ public class HostNameValidatorTest extends ValidationTest {
 
         profile.setHost("also/invalid");
         assertError("host", message);
+    }
+
+    @Override
+    protected Profile<?> newProfile() {
+        return new AWTProfile();
     }
 }

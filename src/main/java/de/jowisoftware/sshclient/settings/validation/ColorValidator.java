@@ -1,15 +1,15 @@
 package de.jowisoftware.sshclient.settings.validation;
 
 import static de.jowisoftware.sshclient.i18n.Translation.t;
-import de.jowisoftware.sshclient.settings.Profile;
 import de.jowisoftware.sshclient.terminal.ColorName;
+import de.jowisoftware.sshclient.terminal.Profile;
 
-public class ColorValidator implements Validator {
+public class ColorValidator<T extends Profile<?>> implements Validator<T> {
     private static final String COLORFIELD = "gfx.colors";
     private static final String LIGHTCOLORFIELD = "gfx.lightcolors";
 
     @Override
-    public void validate(final Profile profile, final ValidationResult result) {
+    public void validate(final T profile, final ValidationResult result) {
         for (final ColorName color : ColorName.values()) {
             if (profile.getGfxSettings().getColorMap().get(color) == null) {
                 result.addError(COLORFIELD, t("error.colors.missing",

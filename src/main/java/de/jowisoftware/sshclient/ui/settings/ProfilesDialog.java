@@ -32,9 +32,9 @@ import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 
 import de.jowisoftware.sshclient.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.settings.validation.ValidationResult;
-import de.jowisoftware.sshclient.util.ValidationUtils;
+import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 
 public class ProfilesDialog extends JDialog {
     private static final long serialVersionUID = 4811060219661889812L;
@@ -48,7 +48,7 @@ public class ProfilesDialog extends JDialog {
     private JButton addButton;
     private JButton removeButton;
     private JButton editButton;
-    private Profile profileUnderConstruction;
+    private AWTProfile profileUnderConstruction;
     private String profileUnderConstructionName;
     private JPanel buttonPanel;
 
@@ -117,8 +117,9 @@ public class ProfilesDialog extends JDialog {
             public void actionPerformed(final ActionEvent e) {
                 if (save) {
                     settingsFrame.applyUnboundValues();
-                    final ValidationResult errors = ValidationUtils.validateProfile(
-                            profileUnderConstruction);
+                    final ValidationResult errors =
+                            new AWTProfileValidator(profileUnderConstruction)
+                                .validateProfile();
                     if (errors.hadErrors()) {
                         final String message = buildErrorMessage(errors.getErrors());
                         JOptionPane.showMessageDialog(ProfilesDialog.this, message);
@@ -208,7 +209,7 @@ public class ProfilesDialog extends JDialog {
 
     private void edit(final String selectedValue) {
         profileUnderConstructionName = selectedValue;
-        profileUnderConstruction = (Profile) settings.getProfiles().get(selectedValue).clone();
+        profileUnderConstruction = (AWTProfile) settings.getProfiles().get(selectedValue).clone();
 
         settingsFrame = new SettingsPanel(profileUnderConstruction,
                 selectedValue, true);
@@ -247,7 +248,7 @@ public class ProfilesDialog extends JDialog {
     }
 
     private void createProfile() {
-        final Profile profile = new Profile();
+        final AWTProfile profile = new AWTProfile();
         String name = t("profiles.new", "new profile");
 
         if (settings.getProfiles().containsKey(name)) {

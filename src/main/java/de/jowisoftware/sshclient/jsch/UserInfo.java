@@ -5,7 +5,7 @@ import java.util.Arrays;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import de.jowisoftware.sshclient.ui.PasswordDialog;
+import de.jowisoftware.sshclient.jsch.ui.PasswordDialog;
 
 public class UserInfo implements com.jcraft.jsch.UserInfo {
     private char[] password;

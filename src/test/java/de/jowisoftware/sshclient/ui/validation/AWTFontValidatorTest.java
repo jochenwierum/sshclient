@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.settings.validation;
+package de.jowisoftware.sshclient.ui.validation;
 
 import static org.junit.Assert.assertFalse;
 
@@ -7,10 +7,15 @@ import java.awt.Font;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FontValidatorTest extends ValidationTest {
+import de.jowisoftware.sshclient.settings.AWTProfile;
+import de.jowisoftware.sshclient.settings.validation.ValidationResult;
+import de.jowisoftware.sshclient.settings.validation.ValidationTest;
+import de.jowisoftware.sshclient.ui.settings.validation.AWTFontValidator;
+
+public class AWTFontValidatorTest extends ValidationTest<AWTProfile> {
     @Before
     public void setUp() {
-        validator = new FontValidator();
+        validator = new AWTFontValidator();
     }
 
     @Test
@@ -46,5 +51,10 @@ public class FontValidatorTest extends ValidationTest {
 
         profile.getGfxSettings().setFont(new Font("Arial", 0, 12));
         assertError("gfx.font", message);
+    }
+
+    @Override
+    protected AWTProfile newProfile() {
+        return new AWTProfile();
     }
 }

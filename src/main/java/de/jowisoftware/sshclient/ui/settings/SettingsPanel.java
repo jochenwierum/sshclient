@@ -31,9 +31,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.terminal.ColorName;
-import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
+import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.util.FontUtils;
 
 public class SettingsPanel extends JPanel {
@@ -44,7 +44,7 @@ public class SettingsPanel extends JPanel {
     private static final String COLORTYPE_LIGHT = "lightcolor";
     private static final String COLORTYPE_CURSOR = "cursor";
 
-    private final Profile profile;
+    private final AWTProfile profile;
     private final JTabbedPane tabbedPane;
 
     private JTextField hostTextField;
@@ -63,7 +63,7 @@ public class SettingsPanel extends JPanel {
     private JList environmentList;
 
 
-    public SettingsPanel(final Profile profile, final String profileName, final boolean profileNameSettable) {
+    public SettingsPanel(final AWTProfile profile, final String profileName, final boolean profileNameSettable) {
         this.profile = profile;
 
         tabbedPane = new JTabbedPane();
@@ -338,7 +338,7 @@ public class SettingsPanel extends JPanel {
     protected void saveColor(final String actionCommand, final Color newColor) {
         final String[] colorTypes = actionCommand.split("\\.");
 
-        final GfxInfo gfxSettings = profile.getGfxSettings();
+        final AWTGfxInfo gfxSettings = profile.getGfxSettings();
         if (COLORTYPE_CURSOR.equals(colorTypes[0])) {
             gfxSettings.setCursorColor(newColor);
         } else if (COLORTYPE_DEFAULT.equals(colorTypes[1])) {
@@ -472,7 +472,7 @@ public class SettingsPanel extends JPanel {
         profile.setPort(getInteger(portTextField.getText(), -1));
         profile.setTimeout(getInteger(timeoutTextField.getText(), -1));
 
-        final GfxInfo gfxSettings = profile.getGfxSettings();
+        final AWTGfxInfo gfxSettings = profile.getGfxSettings();
         gfxSettings.setFont(new Font(
                 (String) fontBox.getSelectedItem(),
                 fontStyleBox.getSelectedIndex(),

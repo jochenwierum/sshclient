@@ -15,11 +15,10 @@ import com.jcraft.jsch.Session;
 import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread;
 import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread.Callback;
 import de.jowisoftware.sshclient.jsch.UserInfo;
-import de.jowisoftware.sshclient.settings.Profile;
 
 public class JSchConnection {
     private static final Logger LOGGER = Logger.getLogger(JSchConnection.class);
-    private final Profile profile;
+    private final Profile<?> profile;
     private ChannelShell channel;
     private Callback callback;
     private OutputStream outputStream;
@@ -27,7 +26,7 @@ public class JSchConnection {
     private UserInfo userInfo;
     private Session session;
 
-    public JSchConnection(final JSch jsch, final Profile profile) {
+    public JSchConnection(final JSch jsch, final Profile<?> profile) {
         this.profile = profile;
         this.jsch = jsch;
     }

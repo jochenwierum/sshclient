@@ -8,20 +8,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 import de.jowisoftware.sshclient.terminal.Attribute;
+import de.jowisoftware.sshclient.terminal.GfxCharset;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.RenderFlag;
 
 public class GfxAwtChar implements GfxChar {
-    private final GfxInfo gfxInfo;
+    private final AWTGfxInfo gfxInfo;
     private final HashSet<Attribute> attributes;
     private final TerminalColor fgColor;
     private final TerminalColor bgColor;
     private final char character;
-    private final GfxAwtCharset charset;
+    private final GfxCharset charset;
 
     public GfxAwtChar(final char character,
-            final GfxAwtCharset charset, final GfxInfo gfxInfo,
+            final GfxCharset charset, final AWTGfxInfo gfxInfo,
             final TerminalColor fgColor, final TerminalColor bgColor,
             final Set<Attribute> attributes) {
         this.character = character;

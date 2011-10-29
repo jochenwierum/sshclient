@@ -25,7 +25,7 @@ import org.w3c.dom.Text;
 
 import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.terminal.ColorName;
-import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
+import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 
 public class XMLPersister {
     private final ApplicationSettings settings;
@@ -51,7 +51,7 @@ public class XMLPersister {
     private Node storeProfiles() {
         final Element profiles = doc.createElement("profiles");
 
-        for (final Entry<String, Profile> profile :
+        for (final Entry<String, AWTProfile> profile :
                 settings.getProfiles().entrySet()) {
             final Element profileNode = doc.createElement("profile");
             profileNode.setAttribute("name", profile.getKey());
@@ -62,7 +62,7 @@ public class XMLPersister {
         return profiles;
     }
 
-    private void storeProfile(final Profile profile, final Element profileNode) {
+    private void storeProfile(final AWTProfile profile, final Element profileNode) {
         profileNode.appendChild(createKeyValue("host", profile.getHost()));
         profileNode.appendChild(createKeyValue("user", profile.getUser()));
         profileNode.appendChild(createKeyValue("port", profile.getPort()));
@@ -83,7 +83,7 @@ public class XMLPersister {
         return node;
     }
 
-    private Node storeGfxSettings(final GfxInfo gfxSettings) {
+    private Node storeGfxSettings(final AWTGfxInfo gfxSettings) {
         final Element node = doc.createElement("gfx");
         node.appendChild(createFont(gfxSettings.getFont()));
         node.appendChild(createKeyValue("cursorColor", gfxSettings.getCursorColor()));

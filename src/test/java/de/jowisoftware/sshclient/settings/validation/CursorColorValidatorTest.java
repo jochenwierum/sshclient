@@ -5,10 +5,12 @@ import java.awt.Color;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CursorColorValidatorTest extends ValidationTest {
+import de.jowisoftware.sshclient.settings.AWTProfile;
+
+public class CursorColorValidatorTest extends ValidationTest<AWTProfile> {
     @Before
     public void setUp() {
-        validator = new CursorColorValidator();
+        validator = new CursorColorValidator<AWTProfile>();
     }
 
     @Test
@@ -23,5 +25,10 @@ public class CursorColorValidatorTest extends ValidationTest {
 
         profile.getGfxSettings().setCursorColor(Color.RED);
         assertNoError();
+    }
+
+    @Override
+    protected AWTProfile newProfile() {
+        return new AWTProfile();
     }
 }

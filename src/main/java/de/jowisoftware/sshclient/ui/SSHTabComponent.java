@@ -6,14 +6,14 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.settings.AWTProfile;
 
 public class SSHTabComponent extends AbstractClosableTabcomponent {
     private static final long serialVersionUID = 3033441642594395407L;
     private final ConnectionFrame parent;
     private final JLabel label;
 
-    public SSHTabComponent(final ConnectionFrame parent, final Profile profile,
+    public SSHTabComponent(final ConnectionFrame parent, final AWTProfile profile,
             final JTabbedPane pane) {
         super(pane);
         this.parent = parent;

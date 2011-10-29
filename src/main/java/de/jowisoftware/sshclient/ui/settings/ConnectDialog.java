@@ -18,14 +18,14 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.settings.validation.ValidationResult;
-import de.jowisoftware.sshclient.util.ValidationUtils;
+import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 
 public class ConnectDialog extends JDialog implements WindowListener {
     private static final long serialVersionUID = 4811060219661889812L;
     private final SettingsPanel settingsFrame;
-    private Profile profile = new Profile();
+    private AWTProfile profile = new AWTProfile();
 
     public ConnectDialog(final Frame parent) {
         super(parent, t("connect.connect.title", "Direct connect"));
@@ -95,7 +95,7 @@ public class ConnectDialog extends JDialog implements WindowListener {
         }
 
         settingsFrame.applyUnboundValues();
-        final ValidationResult errors = ValidationUtils.validateProfile(profile);
+        final ValidationResult errors = new AWTProfileValidator(profile).validateProfile();
         if (errors.hadErrors()) {
             final String message = buildErrorMessage(errors.getErrors());
             JOptionPane.showMessageDialog(this, message);
@@ -118,7 +118,7 @@ public class ConnectDialog extends JDialog implements WindowListener {
         return message.toString();
     }
 
-    public Profile createProfile() {
+    public AWTProfile createProfile() {
         return profile;
     }
 

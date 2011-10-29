@@ -5,34 +5,35 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.AWTColorFactory;
 import de.jowisoftware.sshclient.terminal.Attribute;
 import de.jowisoftware.sshclient.terminal.ColorFactory;
 import de.jowisoftware.sshclient.terminal.ColorName;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
+import de.jowisoftware.sshclient.terminal.GfxCharset;
 import de.jowisoftware.sshclient.terminal.TerminalCharset;
 import de.jowisoftware.sshclient.terminal.TerminalCharsetSelection;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
-import de.jowisoftware.sshclient.ui.terminal.charsets.DECCharset;
-import de.jowisoftware.sshclient.ui.terminal.charsets.UKCharset;
-import de.jowisoftware.sshclient.ui.terminal.charsets.USASCIICharset;
+import de.jowisoftware.sshclient.terminal.charsets.DECCharset;
+import de.jowisoftware.sshclient.terminal.charsets.UKCharset;
+import de.jowisoftware.sshclient.terminal.charsets.USASCIICharset;
+import de.jowisoftware.sshclient.ui.AWTColorFactory;
 
 public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
     private static final Logger LOGGER = Logger
             .getLogger(GfxAwtCharSetup.class);
 
     private final AWTColorFactory colorFactory;
-    private final GfxInfo gfxInfo;
+    private final AWTGfxInfo gfxInfo;
     private final Set<Attribute> attributes = new HashSet<Attribute>();
     private TerminalColor fgColor;
     private TerminalColor bgColor;
     private TerminalCharsetSelection selectedCharset = TerminalCharsetSelection.G0;
-    private GfxAwtCharset charsetG0 = new USASCIICharset();
-    private GfxAwtCharset charsetG1 = new USASCIICharset();
+    private GfxCharset charsetG0 = new USASCIICharset();
+    private GfxCharset charsetG1 = new USASCIICharset();
 
     private boolean inverseMode;
 
-    public GfxAwtCharSetup(final GfxInfo gfxInfo) {
+    public GfxAwtCharSetup(final AWTGfxInfo gfxInfo) {
         this.gfxInfo = gfxInfo;
         colorFactory = new AWTColorFactory(gfxInfo);
         reset();
@@ -81,7 +82,7 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
     public void setCharset(final TerminalCharsetSelection selection,
             final TerminalCharset newCharset) {
 
-        final GfxAwtCharset charset;
+        final GfxCharset charset;
 
         switch(newCharset) {
         case USASCII:
@@ -121,7 +122,7 @@ public class GfxAwtCharSetup implements GfxCharSetup<GfxAwtChar> {
                 gfxInfo, inverseColorIfWanted(fgColor), inverseColorIfWanted(bgColor), attributes);
     }
 
-    private GfxAwtCharset getCharset(final TerminalCharsetSelection selectedCharset2) {
+    private GfxCharset getCharset(final TerminalCharsetSelection selectedCharset2) {
         if (selectedCharset.equals(TerminalCharsetSelection.G1)) {
             return charsetG1;
         } else {

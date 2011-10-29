@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.ui;
+package de.jowisoftware.sshclient.jsch.ui;
 
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 

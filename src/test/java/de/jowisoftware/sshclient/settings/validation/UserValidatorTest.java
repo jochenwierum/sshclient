@@ -3,7 +3,10 @@ package de.jowisoftware.sshclient.settings.validation;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UserValidatorTest extends ValidationTest {
+import de.jowisoftware.sshclient.settings.AWTProfile;
+import de.jowisoftware.sshclient.terminal.Profile;
+
+public class UserValidatorTest extends ValidationTest<Profile<?>> {
     @Before
     public void setUp() {
         validator = new UserValidator();
@@ -25,5 +28,10 @@ public class UserValidatorTest extends ValidationTest {
 
         profile.setUser("myUser");
         assertNoError();
+    }
+
+    @Override
+    protected Profile<?> newProfile() {
+        return new AWTProfile();
     }
 }

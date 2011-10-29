@@ -3,7 +3,10 @@ package de.jowisoftware.sshclient.settings.validation;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TimeoutValidatorTest extends ValidationTest {
+import de.jowisoftware.sshclient.settings.AWTProfile;
+import de.jowisoftware.sshclient.terminal.Profile;
+
+public class TimeoutValidatorTest extends ValidationTest<Profile<?>> {
     @Before
     public void setUp() {
         validator = new TimeoutValidator();
@@ -24,5 +27,10 @@ public class TimeoutValidatorTest extends ValidationTest {
         assertNoError();
         profile.setTimeout(50000);
         assertNoError();
+    }
+
+    @Override
+    protected Profile<?> newProfile() {
+        return new AWTProfile();
     }
 }

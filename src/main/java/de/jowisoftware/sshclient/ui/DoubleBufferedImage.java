@@ -16,14 +16,14 @@ import de.jowisoftware.sshclient.terminal.ColorName;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.RenderFlag;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
+import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.terminal.GfxAwtChar;
-import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
 
 public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
     private static final Logger LOGGER = Logger
             .getLogger(DoubleBufferedImage.class);
 
-    private final GfxInfo gfxInfo;
+    private final AWTGfxInfo gfxInfo;
     private final JPanel parent;
 
     private BufferedImage[] images;
@@ -38,7 +38,7 @@ public class DoubleBufferedImage implements Renderer<GfxAwtChar> {
 
     private boolean queued = false;
 
-    public DoubleBufferedImage(final GfxInfo gfxInfo, final JPanel parent) {
+    public DoubleBufferedImage(final AWTGfxInfo gfxInfo, final JPanel parent) {
         this.gfxInfo = gfxInfo;
         this.parent = parent;
     }

@@ -15,7 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JToolBar;
 
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.settings.AWTProfile;
 
 public class MainWindowToolbar {
     private final MainWindow parent;
@@ -58,7 +58,7 @@ public class MainWindowToolbar {
         final Object oldValue = comboBox.getSelectedItem();
         int i = 0;
 
-        for (final Entry<String, Profile> p : parent.settings.getProfiles().entrySet()) {
+        for (final Entry<String, AWTProfile> p : parent.settings.getProfiles().entrySet()) {
             profileNames[i++] = p.getKey();
         }
 
@@ -81,7 +81,7 @@ public class MainWindowToolbar {
     private void connectToSelectedProfile() {
         final String profileName = (String) comboBox.getSelectedItem();
         if (profileName != null) {
-            final Profile profile = parent.settings.getProfiles().get(profileName);
+            final AWTProfile profile = parent.settings.getProfiles().get(profileName);
             if (profile != null) {
                 parent.connect(profile);
             }

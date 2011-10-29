@@ -1,7 +1,7 @@
 package de.jowisoftware.sshclient.settings.validation;
 
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.terminal.Profile;
 
-public interface Validator {
-    void validate(Profile profile, ValidationResult result);
+public interface Validator<T extends Profile<?>> {
+    void validate(T profile, ValidationResult result);
 }

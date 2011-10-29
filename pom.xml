@@ -176,4 +176,8 @@
 			</build>
 		</profile>
 	</profiles>
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://tomcat.twoprogrammers.de/jenkins</url>
+	</ciManagement>
 </project>

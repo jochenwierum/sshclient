@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import com.jcraft.jsch.JSch;
 
 import de.jowisoftware.sshclient.jsch.UserInfo;
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.JSchConnection;
 import de.jowisoftware.sshclient.terminal.VisualEvent;
@@ -24,7 +24,7 @@ public class ConnectionFrame extends JPanel {
     private static final long serialVersionUID = 7873084199411017370L;
 
     private static final Logger LOGGER = Logger.getLogger(ConnectionFrame.class);
-    private final Profile profile;
+    private final AWTProfile profile;
     private final JFrame parent;
     private final JSch jsch;
     private final SessionMenu sessionMenu;
@@ -33,7 +33,7 @@ public class ConnectionFrame extends JPanel {
     private SSHTabComponent recentTabComponent;
     private SSHConsole console = null;
 
-    public ConnectionFrame(final JFrame parent, final Profile profile, final JSch jsch) {
+    public ConnectionFrame(final JFrame parent, final AWTProfile profile, final JSch jsch) {
         this.profile = profile;
         this.parent = parent;
         this.jsch = jsch;

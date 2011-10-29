@@ -25,10 +25,10 @@ import com.jcraft.jsch.JSchException;
 
 import de.jowisoftware.sshclient.i18n.Translation;
 import de.jowisoftware.sshclient.log.LogPanel;
+import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.settings.KeyAgentManager;
-import de.jowisoftware.sshclient.settings.Profile;
 import de.jowisoftware.sshclient.settings.XMLLoader;
 import de.jowisoftware.sshclient.settings.XMLPersister;
 import de.jowisoftware.sshclient.ui.settings.ConnectDialog;
@@ -259,7 +259,7 @@ public class MainWindow extends JFrame {
         return finalProjectDir;
     }
 
-    public void connect(final Profile profile) {
+    public void connect(final AWTProfile profile) {
         final ConnectionFrame sshFrame = new ConnectionFrame(this, profile, jsch);
         pane.addTab(profile.getDefaultTitle(), sshFrame);
         pane.setTabComponentAt(pane.getTabCount() - 1,
@@ -271,7 +271,7 @@ public class MainWindow extends JFrame {
 
     public void connectToCustomProfile() {
         final ConnectDialog connectDialog = new ConnectDialog(this);
-        final Profile profile = connectDialog.createProfile();
+        final AWTProfile profile = connectDialog.createProfile();
         connectDialog.dispose();
         if (profile != null) {
             connect(profile);

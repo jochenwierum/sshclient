@@ -7,21 +7,22 @@ import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.settings.AWTProfile;
 
 @RunWith(JMock.class)
 public class ValidatorCollectionTest {
     private final Mockery context = new JUnit4Mockery();
 
+    @SuppressWarnings("unchecked")
     @Test
-    public void testCallsAll() {
-        final Validator v1 = context.mock(Validator.class, "v1");
-        final Validator v2 = context.mock(Validator.class, "v2");
-        final Validator v3 = context.mock(Validator.class, "v3");
+    public void callsAllItemsInCollection() {
+        final Validator<AWTProfile> v1 = context.mock(Validator.class, "v1");
+        final Validator<AWTProfile> v2 = context.mock(Validator.class, "v2");
+        final Validator<AWTProfile> v3 = context.mock(Validator.class, "v3");
         final ValidationResult result = context.mock(ValidationResult.class);
-        final Profile profile = new Profile();
+        final AWTProfile profile = new AWTProfile();
 
-        final ValidatorCollection collection = new ValidatorCollection();
+        final ValidatorCollection<AWTProfile> collection = new ValidatorCollection<AWTProfile>();
         collection.addValidator(v1);
         collection.addValidator(v2);
         collection.addValidator(v3);

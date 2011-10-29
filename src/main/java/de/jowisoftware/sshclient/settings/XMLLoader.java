@@ -26,8 +26,8 @@ import org.xml.sax.SAXException;
 import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.settings.validation.ValidationResult;
 import de.jowisoftware.sshclient.terminal.ColorName;
-import de.jowisoftware.sshclient.ui.terminal.GfxInfo;
-import de.jowisoftware.sshclient.util.ValidationUtils;
+import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
+import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 
 public class XMLLoader {
     private static final Logger LOGGER = Logger.getLogger(XMLLoader.class);
@@ -92,15 +92,15 @@ public class XMLLoader {
         for (int i = 0; i < profileNodes.getLength(); ++i) {
             final String name = getString(profileNodes.item(i), "@name",
                     "unknown profile");
-            final Profile profile = loadProfile(profileNodes.item(i));
+            final AWTProfile profile = loadProfile(profileNodes.item(i));
             if (profileIsValid(profile)) {
                 settings.getProfiles().put(name, profile);
             }
         }
     }
 
-    private boolean profileIsValid(final Profile profile) {
-        final ValidationResult result = ValidationUtils.validateProfile(profile);
+    private boolean profileIsValid(final AWTProfile profile) {
+        final ValidationResult result = new AWTProfileValidator(profile).validateProfile();
         if (result.hadErrors()) {
             LOGGER.warn("Ignoring profile " + profile + ", profile was invalid");
             return false;
@@ -108,8 +108,8 @@ public class XMLLoader {
         return true;
     }
 
-    private Profile loadProfile(final Node profileNode) {
-        final Profile profile = new Profile();
+    private AWTProfile loadProfile(final Node profileNode) {
+        final AWTProfile profile = new AWTProfile();
 
         profile.setHost(getString(profileNode, "host/text()", null));
         profile.setUser(getString(profileNode, "user/text()", null));
@@ -153,7 +153,7 @@ public class XMLLoader {
     }
 
     private void loadGfxSettingsToProfile(final Element gfxNode,
-            final GfxInfo gfxSettings) {
+            final AWTGfxInfo gfxSettings) {
         gfxSettings.getColorMap().putAll(
                 getColors(gfxNode, "colors/color[@name][@value]"));
         gfxSettings.getLightColorMap().putAll(
