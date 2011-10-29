@@ -4,35 +4,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.jmock.Expectations;
-import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.events.EventHub;
-import de.jowisoftware.sshclient.terminal.SSHSession;
-import de.jowisoftware.sshclient.terminal.events.VisualEvent;
-import de.jowisoftware.sshclient.terminal.input.controlsequences.OperatingSystemCommandSequence;
-
 @RunWith(JMock.class)
-public class OperatingSystemCommandSequenceTest {
-    private final Mockery context = new JUnit4Mockery();
+public class OperatingSystemCommandSequenceTest extends AbstractSequenceTest {
     private OperatingSystemCommandSequence sequence;
-    private SSHSession sessionInfo;
-    private VisualEvent visualFeedback;
 
     @Before
     public void setUp() {
         sequence = new OperatingSystemCommandSequence();
-        sessionInfo = context.mock(SSHSession.class);
-        visualFeedback = context.mock(VisualEvent.class);
-        final EventHub<?> eventHub = context.mock(EventHub.class);
-        context.checking(new Expectations() {{
-            allowing(sessionInfo).getVisualFeedback(); will(returnValue(eventHub));
-            allowing(eventHub).fire(); will(returnValue(visualFeedback));
-        }});
     }
 
     @Test

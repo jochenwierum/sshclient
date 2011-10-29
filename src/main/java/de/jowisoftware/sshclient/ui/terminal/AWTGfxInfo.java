@@ -93,10 +93,4 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
         g.font = font;
         return g;
     }
-
-    @Override
-    public Color mapCustomColor(final int colorCode) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 }

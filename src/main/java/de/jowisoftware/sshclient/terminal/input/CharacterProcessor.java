@@ -41,12 +41,12 @@ public class CharacterProcessor {
     public void processByte(final byte value) {
         final Character c = decoder.nextByte(value);
         if (c != null) {
-            processChar(c);
+            processChar(c, false);
         }
     }
 
-    private void processChar(final Character c) {
-        if (processSpecialChar(c)) {
+    private void processChar(final Character c, final boolean handleAsNormalChar) {
+        if (!handleAsNormalChar && processSpecialChar(c)) {
             return;
         }
 
@@ -91,7 +91,11 @@ public class CharacterProcessor {
     }
 
     private void processFirstSequenceChar(final Character c) {
-        if (c == '[') {
+        if (c == '\\') {
+            resetState();
+            processChar(ESC_CHAR, true);
+            processChar('\\', true);
+        } else if (c == '[') {
             currentState().state = State.ANSI_SEQUENCE;
         } else {
             currentState().state = State.UNKNOWN_SEQUENCE;
@@ -139,15 +143,16 @@ public class CharacterProcessor {
         final Iterator<NonASCIIControlSequence> it =
                 currentState().availableSequences.iterator();
 
+        final String cachedString = currentState().getCachedString();
         while(it.hasNext()) {
             final NonASCIIControlSequence seq = it.next();
-            if (seq.canHandleSequence(currentState().getCachedString())) {
+            if (seq.canHandleSequence(cachedString)) {
                 if (LOGGER.isInfoEnabled()) {
                     LOGGER.trace("Will handle " +
-                            currentState().getCachedString() +
+                            cachedString +
                             " with " + seq.getClass().getSimpleName());
                 }
-                seq.handleSequence(currentState().getCachedString(), sessionInfo);
+                seq.handleSequence(cachedString, sessionInfo);
                 resetState();
                 return true;
             }
@@ -160,9 +165,10 @@ public class CharacterProcessor {
         final Iterator<NonASCIIControlSequence> it =
                 currentState().availableSequences.iterator();
 
+        final String cachedString = currentState().getCachedString();
         while(it.hasNext()) {
             final NonASCIIControlSequence seq = it.next();
-            if (!seq.isPartialStart(currentState().getCachedString())) {
+            if (!seq.isPartialStart(cachedString)) {
                 it.remove();
             }
         }

@@ -10,5 +10,4 @@ public interface GfxInfo<C> extends Serializable {
     Map<ColorName, C> getColorMap();
     Map<ColorName, C> getLightColorMap();
     void setCursorColor(final C color);
-    C mapCustomColor(final int colorCode);
 }

@@ -18,19 +18,14 @@ import com.jcraft.jsch.ChannelShell;
 
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.settings.AWTProfile;
-import de.jowisoftware.sshclient.terminal.SimpleSSHSession;
 import de.jowisoftware.sshclient.terminal.SSHSession;
+import de.jowisoftware.sshclient.terminal.SimpleSSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.SynchronizedBuffer;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 import de.jowisoftware.sshclient.terminal.input.CharacterProcessor;
-import de.jowisoftware.sshclient.terminal.input.controlsequences.CharsetControlSequence;
-import de.jowisoftware.sshclient.terminal.input.controlsequences.CursorControlSequence;
-import de.jowisoftware.sshclient.terminal.input.controlsequences.DebugControlSequence;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequenceRepository;
-import de.jowisoftware.sshclient.terminal.input.controlsequences.KeyboardControlSequence;
-import de.jowisoftware.sshclient.terminal.input.controlsequences.OperatingSystemCommandSequence;
 import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 import de.jowisoftware.sshclient.ui.terminal.GfxAwtCharSetup;
 
@@ -74,11 +69,6 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
 
     private CharacterProcessor initializeProcessor(final AWTProfile profile) {
         final DefaultSequenceRepository repository = new DefaultSequenceRepository();
-        repository.addControlSequence(new CursorControlSequence());
-        repository.addControlSequence(new KeyboardControlSequence());
-        repository.addControlSequence(new OperatingSystemCommandSequence());
-        repository.addControlSequence(new DebugControlSequence());
-        repository.addControlSequence(new CharsetControlSequence());
         return new CharacterProcessor(session, profile.getCharset(), repository);
     }
 

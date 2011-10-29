@@ -36,12 +36,17 @@ public class DefaultSequenceRepository implements SequenceRepository {
     private final List<NonASCIIControlSequence> knownSequences =
         new LinkedList<NonASCIIControlSequence>();
 
-    public void addControlSequence(final NonASCIIControlSequence seq) {
-        knownSequences.add(seq);
+    public DefaultSequenceRepository() {
+        knownSequences.add(new CursorControlSequence());
+        knownSequences.add(new KeyboardControlSequence());
+        knownSequences.add(new OperatingSystemCommandSequence());
+        knownSequences.add(new DebugControlSequence());
+        knownSequences.add(new CharsetControlSequence());
+        knownSequences.add(new ColorCommandSequence());
     }
 
     @Override
-    public LinkedList<NonASCIIControlSequence> getNonASCIISequences() {
+    public List<NonASCIIControlSequence> getNonASCIISequences() {
         return new LinkedList<NonASCIIControlSequence>(knownSequences);
     }
 

@@ -24,7 +24,7 @@ public abstract class AbstractSequenceTest {
     protected VisualEvent visualFeedback;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUpMocks() throws Exception {
         buffer = context.mock(Buffer.class);
         sessionInfo = context.mock(SSHSession.class);
         charSetup = context.mock(GfxCharSetup.class);

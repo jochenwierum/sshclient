@@ -62,6 +62,19 @@ public class CharacterProcessorTest {
         }});
     }
 
+    private void handleSeq(final NonASCIIControlSequence sequence,
+            final String expected, final boolean value, final Expectations exp) {
+        exp.oneOf(sequence).canHandleSequence(expected);
+            exp.will(Expectations.returnValue(value));
+    }
+
+    private void handlePartialStart(
+            final NonASCIIControlSequence sequence, final String expected,
+            final boolean value, final Expectations exp) {
+        exp.oneOf(sequence).isPartialStart(expected);
+            exp.will(Expectations.returnValue(value));
+    }
+
     @Test
     public void testDefaultChars() {
         final Sequence seq = context.sequence("seq");
@@ -200,34 +213,21 @@ public class CharacterProcessorTest {
                 oneOf(buffer).addNewLine();
                     inSequence(seq);
 
-                handleSeq(sequence1, "1", false);
-                handleSeq(sequence2, "1", false);
-                handlePartialStart(sequence1, "1", false);
-                handlePartialStart(sequence2, "1", true);
-                handleSeq(sequence2, "12", true);
+                handleSeq(sequence1, "1", false, this);
+                handleSeq(sequence2, "1", false, this);
+                handlePartialStart(sequence1, "1", false, this);
+                handlePartialStart(sequence2, "1", true, this);
+                handleSeq(sequence2, "12", true, this);
                 oneOf(sequence2).handleSequence("12", sessionInfo);
                     inSequence(seq);
 
-                handleSeq(sequence1, "a", false);
-                handleSeq(sequence2, "a", false);
-                handlePartialStart(sequence1, "a", true);
-                handlePartialStart(sequence2, "a", false);
-                handleSeq(sequence1, "ab", true);
+                handleSeq(sequence1, "a", false, this);
+                handleSeq(sequence2, "a", false, this);
+                handlePartialStart(sequence1, "a", true, this);
+                handlePartialStart(sequence2, "a", false, this);
+                handleSeq(sequence1, "ab", true, this);
                 oneOf(sequence1).handleSequence("ab", sessionInfo);
                     inSequence(seq);
-            }
-
-            protected void handleSeq(final NonASCIIControlSequence sequence,
-                    final String expected, final boolean value) {
-                oneOf(sequence).canHandleSequence(expected);
-                    will(returnValue(value));
-            }
-
-            private void handlePartialStart(
-                    final NonASCIIControlSequence sequence, final String expected,
-                    final boolean value) {
-                oneOf(sequence).isPartialStart(expected);
-                    will(returnValue(value));
             }
         });
 
@@ -238,5 +238,28 @@ public class CharacterProcessorTest {
         processor.processByte((byte) Character.codePointAt("1", 0));
         processor.processByte((byte) Character.codePointAt("2", 0));
         processor.processByte((byte) Character.codePointAt("b", 0));
+    }
+
+
+    @Test
+    public void escapeBackslashIsForwardedInStackedStates() {
+        context.checking(new Expectations() {{
+                handleSeq(sequence1, "a", false, this);
+                handleSeq(sequence2, "a", false, this);
+                handlePartialStart(sequence1, "a", true, this);
+                handlePartialStart(sequence2, "a", false, this);
+
+                handleSeq(sequence1, "a\u001b", false, this);
+                handlePartialStart(sequence1, "a\u001b", true, this);
+
+                handleSeq(sequence1, "a\u001b\\", true, this);
+                oneOf(sequence1).handleSequence("a\u001b\\", sessionInfo);
+            }
+        });
+
+        processor.processByte((byte) 27);
+        processor.processByte((byte) Character.codePointAt("a", 0));
+        processor.processByte((byte) 27);
+        processor.processByte((byte) '\\');
     }
 }

@@ -1,6 +1,8 @@
 package de.jowisoftware.sshclient.ui.terminal;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.jowisoftware.sshclient.terminal.gfx.ColorFactory;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
@@ -43,7 +45,7 @@ public class AWTColorFactory implements ColorFactory {
 
         @Override
         public Color getColor(final boolean bright) {
-            return gfxInfo.mapCustomColor(colorCode);
+            return customColors.get(colorCode);
         }
 
         @Override
@@ -58,9 +60,11 @@ public class AWTColorFactory implements ColorFactory {
     }
 
     private final AWTGfxInfo gfxInfo;
+    private final Map<Integer, Color> customColors;
 
     public AWTColorFactory(final AWTGfxInfo gfxInfo) {
         this.gfxInfo = gfxInfo;
+        this.customColors = new HashMap<Integer, Color>();
     }
 
     @Override
@@ -80,5 +84,11 @@ public class AWTColorFactory implements ColorFactory {
     @Override
     public TerminalColor getCustomColor(final int colorCode, final boolean isForeground) {
         return new CustomColor(colorCode, isForeground);
+    }
+
+    @Override
+    public void updateCustomColor(final int colorCode,
+            final int red, final int green, final int blue) {
+        customColors.put(colorCode, new Color(red, green, blue));
     }
 }
