@@ -31,8 +31,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.AWTProfile;
+import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.validation.ValidationResult;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 

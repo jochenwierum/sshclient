@@ -21,6 +21,7 @@ import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.terminal.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.DefaultSession;
 import de.jowisoftware.sshclient.terminal.DisplayType;
+import de.jowisoftware.sshclient.terminal.Session;
 import de.jowisoftware.sshclient.terminal.VisualEvent;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.DefaultBuffer;
@@ -30,8 +31,8 @@ import de.jowisoftware.sshclient.terminal.controlsequences.DebugControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.DefaultSequenceRepository;
 import de.jowisoftware.sshclient.terminal.controlsequences.KeyboardControlSequence;
 import de.jowisoftware.sshclient.terminal.controlsequences.OperatingSystemCommandSequence;
+import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 import de.jowisoftware.sshclient.ui.terminal.GfxAwtCharSetup;
-import de.jowisoftware.sshclient.ui.terminal.GfxFeedback;
 
 public class SSHConsole extends JPanel implements Callback, ComponentListener,
         MouseListener {
@@ -67,7 +68,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         setFocusTraversalKeysEnabled(false);
     }
 
-    public DefaultSession getSession() {
+    public Session getSession() {
         return session;
     }
 

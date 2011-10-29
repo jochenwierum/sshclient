@@ -20,7 +20,7 @@ import de.jowisoftware.sshclient.terminal.Session;
 @RunWith(JMock.class)
 public class KeyboardProcessorTest {
     private final Mockery context = new JUnit4Mockery();
-    final char ESC = (char) 27;
+    private final static char ESC = (char) 27;
 
     private KeyboardProcessor processor;
     private Session session;

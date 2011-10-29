@@ -14,7 +14,7 @@ public class CharsetValidatorTest extends ValidationTest<Profile<?>> {
 
     @Test
     public void testNullCharset() {
-        profile.setCharset(null);
+        profile.setCharsetName(null);
         assertError("charset", "no charset selected");
     }
 

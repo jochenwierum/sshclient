@@ -113,7 +113,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>de.jowisoftware.sshclient.App</mainClass>
+							<mainClass>de.jowisoftware.sshclient.SSHApp</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

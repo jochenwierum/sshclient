@@ -3,7 +3,6 @@ package de.jowisoftware.sshclient.terminal.charsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.jowisoftware.sshclient.terminal.GfxCharset;
 
 
 public class DECCharset implements GfxCharset {

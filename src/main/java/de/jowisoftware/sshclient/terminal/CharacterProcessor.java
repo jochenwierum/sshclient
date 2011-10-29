@@ -20,8 +20,8 @@ public class CharacterProcessor {
     private static final char CARRIDGE_RETURN_CHAR = '\r';
     private static final char BELL_CHAR = 7;
     private static final char BACKSPACE_CHAR = (char) 8;
-    private static final Character VTAB_CHAR = (char) 11;
-    private static final Character HTAB_CHAR = (char) 9;
+    private static final char VTAB_CHAR = (char) 11;
+    private static final char HTAB_CHAR = (char) 9;
 
     private final SequenceRepository sequenceRepository;
     private final Stack<CharacterProcessorState> states =

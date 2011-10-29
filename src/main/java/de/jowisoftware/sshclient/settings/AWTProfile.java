@@ -1,6 +1,5 @@
 package de.jowisoftware.sshclient.settings;
 
-import java.awt.Color;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,12 +8,15 @@ import java.util.Map.Entry;
 import de.jowisoftware.sshclient.terminal.Profile;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 
-public class AWTProfile implements Profile<Color> {
+public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
+    private static final long serialVersionUID = 2986196714920783085L;
+
     private String user = System.getProperty("user.name");
     private String host = "localhost";
     private int port = 22;
     private int timeout = 10000;
-    private Charset charset = Charset.forName("UTF-8");
+    private String charsetName = "UTF-8";
+    private transient Charset charset;
     private AWTGfxInfo gfxInfo = new AWTGfxInfo();
     private final HashMap<String, String> environmentMap = new HashMap<String, String>();
 
@@ -65,12 +67,22 @@ public class AWTProfile implements Profile<Color> {
 
     @Override
     public Charset getCharset() {
+        if (charset == null) {
+            if (charsetName != null) {
+                charset = Charset.forName(charsetName);
+            }
+        }
         return charset;
     }
 
     @Override
-    public void setCharset(final Charset charset) {
-        this.charset = charset;
+    public void setCharsetName(final String charsetName) {
+        this.charsetName = charsetName;
+    }
+
+    @Override
+    public String getCharsetName() {
+        return charsetName;
     }
 
     @Override

@@ -9,14 +9,13 @@ import de.jowisoftware.sshclient.terminal.Attribute;
 import de.jowisoftware.sshclient.terminal.ColorFactory;
 import de.jowisoftware.sshclient.terminal.ColorName;
 import de.jowisoftware.sshclient.terminal.GfxCharSetup;
-import de.jowisoftware.sshclient.terminal.GfxCharset;
 import de.jowisoftware.sshclient.terminal.TerminalCharset;
 import de.jowisoftware.sshclient.terminal.TerminalCharsetSelection;
 import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.charsets.DECCharset;
+import de.jowisoftware.sshclient.terminal.charsets.GfxCharset;
 import de.jowisoftware.sshclient.terminal.charsets.UKCharset;
 import de.jowisoftware.sshclient.terminal.charsets.USASCIICharset;
-import de.jowisoftware.sshclient.ui.AWTColorFactory;
 
 public class GfxAwtCharSetup implements GfxCharSetup {
     private static final Logger LOGGER = Logger
@@ -50,9 +49,9 @@ public class GfxAwtCharSetup implements GfxCharSetup {
     public void setAttribute(final Attribute attribute) {
         if (attribute.equals(Attribute.BRIGHT)) {
             attributes.remove(Attribute.DIM);
-        } else if (attributes.equals(Attribute.DIM)) {
+        } else if (attribute.equals(Attribute.DIM)) {
             attributes.remove(Attribute.BRIGHT);
-        } else if (attributes.equals(Attribute.HIDDEN)) {
+        } else if (attribute.equals(Attribute.HIDDEN)) {
             fgColor = bgColor;
         }
 

@@ -418,16 +418,22 @@ public class DnDTabbedPane extends JTabbedPane {
 
     class GhostGlassPane extends JPanel {
         private static final long serialVersionUID = 551018231278424824L;
-        private final AlphaComposite composite;
+        private transient AlphaComposite composite;
         private Point location = new Point(0, 0);
         private BufferedImage draggingGhost = null;
 
         public GhostGlassPane() {
             setOpaque(false);
-            composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
-                    0.5f);
             // http://bugs.sun.com/view_bug.do?bug_id=6700748
             // setCursor(null);
+        }
+
+        AlphaComposite getComposite() {
+            if (composite == null) {
+                composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+                        0.5f);
+            }
+            return composite;
         }
 
         public void setImage(final BufferedImage draggingGhost) {
@@ -441,7 +447,7 @@ public class DnDTabbedPane extends JTabbedPane {
         @Override
         public void paintComponent(final Graphics g) {
             final Graphics2D g2 = (Graphics2D) g;
-            g2.setComposite(composite);
+            g2.setComposite(getComposite());
             if (isPaintScrollArea()
                     && getTabLayoutPolicy() == SCROLL_TAB_LAYOUT) {
                 g2.setPaint(Color.RED);

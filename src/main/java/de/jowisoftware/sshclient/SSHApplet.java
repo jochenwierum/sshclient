@@ -6,11 +6,10 @@ import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.ui.MainWindow;
 
-public class Applet extends java.applet.Applet {
+public class SSHApplet extends java.applet.Applet {
     private static final long serialVersionUID = -4143101114325971711L;
-    private static final Logger LOGGER = Logger.getLogger(App.class);
+    private static final Logger LOGGER = Logger.getLogger(SSHApplet.class);
 
-    @SuppressWarnings("unused")
     @Override
     public void init() {
         try {

@@ -9,7 +9,9 @@ import java.util.Map.Entry;
 import de.jowisoftware.sshclient.terminal.ColorName;
 import de.jowisoftware.sshclient.terminal.GfxInfo;
 
-public class AWTGfxInfo implements GfxInfo<Color> {
+public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
+    private static final long serialVersionUID = -7450299438843092065L;
+
     private final Map<ColorName, Color> colors = new HashMap<ColorName, Color>();
     private final Map<ColorName, Color> lightColors = new HashMap<ColorName, Color>();
     private Color cursorColor;

@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 import com.jcraft.jsch.JSch;
 
-import de.jowisoftware.sshclient.jsch.UserInfo;
+import de.jowisoftware.sshclient.jsch.SSHUserInfo;
 import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.JSchConnection;
@@ -65,7 +65,7 @@ public class ConnectionFrame extends JPanel {
     public void connect() {
         try {
             connnection = new JSchConnection(jsch, profile);
-            connnection.setUserInfo(new UserInfo(parent));
+            connnection.setUserInfo(new SSHUserInfo(parent));
             connnection.setCallBack(console);
             connnection.connect();
             console.setOutputStream(connnection.getOutputStream());

@@ -11,7 +11,7 @@ public class LinkedListEventHubTest {
         public void test2(String param);
     }
 
-    public class EventProbe implements EventHubTestEvent {
+    public static class EventProbe implements EventHubTestEvent {
         private boolean test1Called;
         private String test2Value;
 

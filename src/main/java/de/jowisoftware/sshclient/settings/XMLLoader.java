@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,6 +85,7 @@ public class XMLLoader {
             profileNodes = (NodeList) xpath.evaluate("profile",
                     profilesNode, XPathConstants.NODESET);
         } catch (final XPathExpressionException e) {
+            LOGGER.warn("Could not find profile tag", e);
             return;
         }
 
@@ -116,15 +116,9 @@ public class XMLLoader {
         profile.setPort(getInteger(profileNode, "port/text()", -1));
         profile.setTimeout(getInteger(profileNode, "timeout/text()", -1));
 
-        Charset charset;
-        try {
-            charset = Charset.forName(getString(profileNode,
-                    "charset/text()", "UTF-8"));
-        } catch(final RuntimeException e) {
-            LOGGER.warn("Ignoring unkown charset", e);
-            charset = null;
-        }
-        profile.setCharset(charset);
+        final String charset = getString(profileNode,
+                    "charset/text()", "UTF-8");
+        profile.setCharsetName(charset);
 
         final Element environmentNode = getElement(profileNode, "environment");
         if (environmentNode != null) {

@@ -1,8 +1,7 @@
-package de.jowisoftware.sshclient.ui.terminal;
+package de.jowisoftware.sshclient.ui;
 
 import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.VisualEvent;
-import de.jowisoftware.sshclient.ui.SSHConsole;
 
 public class GfxFeedback implements VisualEvent {
     private final SSHConsole parent;

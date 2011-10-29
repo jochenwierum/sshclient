@@ -7,12 +7,12 @@ import javax.swing.JOptionPane;
 
 import de.jowisoftware.sshclient.jsch.ui.PasswordDialog;
 
-public class UserInfo implements com.jcraft.jsch.UserInfo {
+public class SSHUserInfo implements com.jcraft.jsch.UserInfo {
     private char[] password;
     private char[] passphrase;
     private final JFrame parent;
 
-    public UserInfo(final JFrame parent) {
+    public SSHUserInfo(final JFrame parent) {
         this.parent = parent;
     }
 

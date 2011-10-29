@@ -1,9 +1,10 @@
 package de.jowisoftware.sshclient.terminal;
 
+import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Map;
 
-public interface Profile<C> {
+public interface Profile<C extends GfxInfo<?>> extends Serializable {
     String getDefaultTitle();
     String getUser();
     void setUser(final String user);
@@ -13,8 +14,9 @@ public interface Profile<C> {
     int getPort();
     void setTimeout(final int timeout);
     int getTimeout();
-    Charset getCharset();
-    void setCharset(final Charset charset);
-    GfxInfo<C> getGfxSettings();
+    C getGfxSettings();
     Map<String, String> getEnvironment();
+    void setCharsetName(String charsetName);
+    String getCharsetName();
+    Charset getCharset();
 }

@@ -461,12 +461,7 @@ public class SettingsPanel extends JPanel {
     }
 
     public void applyUnboundValues() {
-        try {
-            profile.setCharset(Charset.forName((String) encodingBox.getSelectedItem()));
-        } catch(final Exception e) {
-            profile.setCharset(null);
-        }
-
+        profile.setCharsetName((String) encodingBox.getSelectedItem());
         profile.setUser(userTextField.getText());
         profile.setHost(hostTextField.getText());
         profile.setPort(getInteger(portTextField.getText(), -1));

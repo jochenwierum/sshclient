@@ -253,7 +253,10 @@ public class MainWindow extends JFrame {
         final File finalProjectDir = new File(home, ".ssh");
         if (finalProjectDir.isDirectory()) {
             if (!finalProjectDir.exists()) {
-                finalProjectDir.mkdir();
+                if(!finalProjectDir.mkdir()) {
+                    throw new RuntimeException("Could not create directory: " +
+                            finalProjectDir.getAbsolutePath());
+                }
             }
         }
         return finalProjectDir;

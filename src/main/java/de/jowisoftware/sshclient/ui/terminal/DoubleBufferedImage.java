@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.ui;
+package de.jowisoftware.sshclient.ui.terminal;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -17,8 +17,6 @@ import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.RenderFlag;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
-import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
-import de.jowisoftware.sshclient.ui.terminal.GfxAwtChar;
 
 public class DoubleBufferedImage implements Renderer {
     private static final Logger LOGGER = Logger
@@ -44,8 +42,12 @@ public class DoubleBufferedImage implements Renderer {
         this.parent = parent;
     }
 
-    public void dispose() {
+    public synchronized void dispose() {
         images = null;
+        if (graphics != null) {
+            graphics[0].dispose();
+            graphics[1].dispose();
+        }
         graphics = null;
     }
 
@@ -53,6 +55,7 @@ public class DoubleBufferedImage implements Renderer {
         this.width = width;
         this.height = height;
 
+        dispose();
         images = new BufferedImage[2];
         graphics = new Graphics2D[2];
 
@@ -92,7 +95,7 @@ public class DoubleBufferedImage implements Renderer {
     }
 
     @Override
-    public void swap() {
+    public synchronized void swap() {
         if (images != null) {
             currentImage = 1 - currentImage;
         }
@@ -119,7 +122,7 @@ public class DoubleBufferedImage implements Renderer {
         }
     }
 
-    public Image getImage() {
+    public synchronized Image getImage() {
         if (images != null) {
             return images[currentImage];
         } else {
@@ -128,17 +131,17 @@ public class DoubleBufferedImage implements Renderer {
     }
 
     @Override
-    public int getLines() {
+    public synchronized int getLines() {
         return height / charHeight;
     }
 
     @Override
-    public int getCharsPerLine() {
+    public synchronized int getCharsPerLine() {
         return width / charWidth;
     }
 
     @Override
-    public Position translateMousePosition(final int x, final int y) {
+    public synchronized Position translateMousePosition(final int x, final int y) {
         final int charx = x / charWidth + 1;
         final int chary = y / charHeight + 1;
 

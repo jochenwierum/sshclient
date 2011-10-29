@@ -62,7 +62,7 @@ public class DefaultBuffer implements Buffer {
     public void setCursorPosition(final Position position) {
         synchronized (this) {
             final boolean isMarginDefined =
-                    topMargin != NO_MARGIN_DEFINED && topMargin != NO_MARGIN_DEFINED;
+                    topMargin != NO_MARGIN_DEFINED && bottomMargin != NO_MARGIN_DEFINED;
             if (isMarginDefined && cursorIsRelativeToMargin) {
                 setAndFixCursorPosition(position.offset(0, topMargin - 1));
             } else {
