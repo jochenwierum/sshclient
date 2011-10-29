@@ -7,11 +7,11 @@ import java.awt.Rectangle;
 import java.util.HashSet;
 import java.util.Set;
 
-import de.jowisoftware.sshclient.terminal.Attribute;
-import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.RenderFlag;
 import de.jowisoftware.sshclient.terminal.charsets.GfxCharset;
+import de.jowisoftware.sshclient.terminal.gfx.Attribute;
+import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
 
 public class GfxAwtChar implements GfxChar {
     private final AWTGfxInfo gfxInfo;

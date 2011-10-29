@@ -4,8 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.jowisoftware.sshclient.settings.AWTProfile;
-import de.jowisoftware.sshclient.terminal.ColorName;
-import de.jowisoftware.sshclient.terminal.GfxInfo;
+import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 
 public class ColorValidatorTest extends ValidationTest<AWTProfile> {
     @Before

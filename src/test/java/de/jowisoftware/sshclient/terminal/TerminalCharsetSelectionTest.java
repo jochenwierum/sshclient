@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
+
 public class TerminalCharsetSelectionTest {
     @Test
     public void testGetByIdentifier() {

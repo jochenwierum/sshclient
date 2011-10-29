@@ -13,11 +13,11 @@ import de.jowisoftware.sshclient.util.StringUtils;
 public class AsyncInputStreamReaderThread extends Thread {
     private static final Logger LOGGER = Logger
             .getLogger(AsyncInputStreamReaderThread.class);
-    private final Callback callback;
+    private final InputStreamEvent callback;
     private final Channel channel;
 
     public AsyncInputStreamReaderThread(final Channel channel,
-            final Callback callback) {
+            final InputStreamEvent callback) {
         super("AsyncReader-" + channel.getId());
         this.channel = channel;
         this.callback = callback;
@@ -59,9 +59,5 @@ public class AsyncInputStreamReaderThread extends Thread {
         }
         IOUtils.closeQuietly(stream);
         LOGGER.info("Thread ended");
-    }
-
-    public interface Callback {
-        void gotChars(byte[] buffer, int read);
     }
 }

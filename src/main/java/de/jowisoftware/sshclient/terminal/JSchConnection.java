@@ -13,29 +13,24 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread;
-import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread.Callback;
+import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
 
 public class JSchConnection {
     private static final Logger LOGGER = Logger.getLogger(JSchConnection.class);
     private final Profile<?> profile;
     private ChannelShell channel;
-    private Callback callback;
+    private final InputStreamEvent callback;
     private OutputStream outputStream;
     private final JSch jsch;
-    private SSHUserInfo userInfo;
+    private final SSHUserInfo userInfo;
     private Session session;
 
-    public JSchConnection(final JSch jsch, final Profile<?> profile) {
+    public JSchConnection(final JSch jsch, final Profile<?> profile,
+            final SSHUserInfo userInfo, final InputStreamEvent callback) {
         this.profile = profile;
         this.jsch = jsch;
-    }
-
-    public void setCallBack(final Callback callback) {
         this.callback = callback;
-    }
-
-    public void setUserInfo(final SSHUserInfo userInfo) {
         this.userInfo = userInfo;
     }
 

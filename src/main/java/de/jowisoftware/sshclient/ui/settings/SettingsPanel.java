@@ -32,7 +32,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 import de.jowisoftware.sshclient.settings.AWTProfile;
-import de.jowisoftware.sshclient.terminal.ColorName;
+import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.util.FontUtils;
 

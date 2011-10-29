@@ -16,30 +16,30 @@ import org.apache.log4j.Logger;
 
 import com.jcraft.jsch.ChannelShell;
 
-import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread.Callback;
+import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.settings.AWTProfile;
-import de.jowisoftware.sshclient.terminal.CharacterProcessor;
-import de.jowisoftware.sshclient.terminal.DefaultSession;
-import de.jowisoftware.sshclient.terminal.DisplayType;
-import de.jowisoftware.sshclient.terminal.Session;
-import de.jowisoftware.sshclient.terminal.VisualEvent;
+import de.jowisoftware.sshclient.terminal.SimpleSSHSession;
+import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
-import de.jowisoftware.sshclient.terminal.buffer.DefaultBuffer;
-import de.jowisoftware.sshclient.terminal.controlsequences.CharsetControlSequence;
-import de.jowisoftware.sshclient.terminal.controlsequences.CursorControlSequence;
-import de.jowisoftware.sshclient.terminal.controlsequences.DebugControlSequence;
-import de.jowisoftware.sshclient.terminal.controlsequences.DefaultSequenceRepository;
-import de.jowisoftware.sshclient.terminal.controlsequences.KeyboardControlSequence;
-import de.jowisoftware.sshclient.terminal.controlsequences.OperatingSystemCommandSequence;
+import de.jowisoftware.sshclient.terminal.buffer.SynchronizedBuffer;
+import de.jowisoftware.sshclient.terminal.events.DisplayType;
+import de.jowisoftware.sshclient.terminal.events.VisualEvent;
+import de.jowisoftware.sshclient.terminal.input.CharacterProcessor;
+import de.jowisoftware.sshclient.terminal.input.controlsequences.CharsetControlSequence;
+import de.jowisoftware.sshclient.terminal.input.controlsequences.CursorControlSequence;
+import de.jowisoftware.sshclient.terminal.input.controlsequences.DebugControlSequence;
+import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequenceRepository;
+import de.jowisoftware.sshclient.terminal.input.controlsequences.KeyboardControlSequence;
+import de.jowisoftware.sshclient.terminal.input.controlsequences.OperatingSystemCommandSequence;
 import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 import de.jowisoftware.sshclient.ui.terminal.GfxAwtCharSetup;
 
-public class SSHConsole extends JPanel implements Callback, ComponentListener,
+public class SSHConsole extends JPanel implements InputStreamEvent, ComponentListener,
         MouseListener {
     private static final long serialVersionUID = 5102110929763645596L;
     private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
 
-    private final DefaultSession session;
+    private final SimpleSSHSession session;
     private final DoubleBufferedImage renderer;
     private final CharacterProcessor outputProcessor;
     private ChannelShell channel;
@@ -49,9 +49,9 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         final GfxAwtCharSetup charSetup = new GfxAwtCharSetup(profile.getGfxSettings());
         final VisualEvent gfxFeedback = new GfxFeedback(this);
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
-        final Buffer buffer = new DefaultBuffer(
+        final Buffer buffer = new SynchronizedBuffer(
                 charSetup.createClearChar(), 80, 24);
-        session = new DefaultSession(buffer, charSetup);
+        session = new SimpleSSHSession(buffer, charSetup);
         session.getKeyboardFeedback().register(keyboardProcessor);
         session.getVisualFeedback().register(gfxFeedback);
         keyboardProcessor.setSession(session);
@@ -68,7 +68,7 @@ public class SSHConsole extends JPanel implements Callback, ComponentListener,
         setFocusTraversalKeysEnabled(false);
     }
 
-    public Session getSession() {
+    public SSHSession getSession() {
         return session;
     }
 

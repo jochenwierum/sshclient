@@ -5,17 +5,17 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.Attribute;
-import de.jowisoftware.sshclient.terminal.ColorFactory;
-import de.jowisoftware.sshclient.terminal.ColorName;
-import de.jowisoftware.sshclient.terminal.GfxCharSetup;
-import de.jowisoftware.sshclient.terminal.TerminalCharset;
-import de.jowisoftware.sshclient.terminal.TerminalCharsetSelection;
-import de.jowisoftware.sshclient.terminal.TerminalColor;
 import de.jowisoftware.sshclient.terminal.charsets.DECCharset;
 import de.jowisoftware.sshclient.terminal.charsets.GfxCharset;
+import de.jowisoftware.sshclient.terminal.charsets.TerminalCharset;
+import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
 import de.jowisoftware.sshclient.terminal.charsets.UKCharset;
 import de.jowisoftware.sshclient.terminal.charsets.USASCIICharset;
+import de.jowisoftware.sshclient.terminal.gfx.Attribute;
+import de.jowisoftware.sshclient.terminal.gfx.ColorFactory;
+import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
+import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
 
 public class GfxAwtCharSetup implements GfxCharSetup {
     private static final Logger LOGGER = Logger

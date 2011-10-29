@@ -12,11 +12,11 @@ import javax.swing.SwingUtilities;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.ColorName;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.RenderFlag;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
+import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 
 public class DoubleBufferedImage implements Renderer {
     private static final Logger LOGGER = Logger

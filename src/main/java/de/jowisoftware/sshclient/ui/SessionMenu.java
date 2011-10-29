@@ -10,7 +10,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
 
-import de.jowisoftware.sshclient.terminal.DisplayType;
+import de.jowisoftware.sshclient.terminal.events.DisplayType;
 
 public class SessionMenu extends JMenu {
     private static final long serialVersionUID = -6737261270811373874L;
@@ -65,11 +65,6 @@ public class SessionMenu extends JMenu {
         return new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                System.out.println(DisplayType.valueOf(e.getActionCommand()));
-
-                System.out.println(dynamicSizeItem.getModel().isSelected() + " "
-                        + fixedSize80Item.isSelected() + " "
-                        + fixedSize132Item.isSelected());
                 if (dynamicSizeItem.isSelected()) {
                     console.setDisplayType(DisplayType.DYNAMIC);
                 } else if (fixedSize80Item.isSelected()) {

@@ -16,9 +16,9 @@ import com.jcraft.jsch.JSch;
 
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
 import de.jowisoftware.sshclient.settings.AWTProfile;
-import de.jowisoftware.sshclient.terminal.DisplayType;
 import de.jowisoftware.sshclient.terminal.JSchConnection;
-import de.jowisoftware.sshclient.terminal.VisualEvent;
+import de.jowisoftware.sshclient.terminal.events.DisplayType;
+import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 
 public class ConnectionFrame extends JPanel {
     private static final long serialVersionUID = 7873084199411017370L;
@@ -64,9 +64,8 @@ public class ConnectionFrame extends JPanel {
 
     public void connect() {
         try {
-            connnection = new JSchConnection(jsch, profile);
-            connnection.setUserInfo(new SSHUserInfo(parent));
-            connnection.setCallBack(console);
+            final SSHUserInfo userInfo = new SSHUserInfo(parent);
+            connnection = new JSchConnection(jsch, profile, userInfo, console);
             connnection.connect();
             console.setOutputStream(connnection.getOutputStream());
             console.setChannel(connnection.getChannel());

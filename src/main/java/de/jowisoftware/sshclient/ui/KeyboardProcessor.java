@@ -5,8 +5,8 @@ import java.awt.event.KeyListener;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.terminal.KeyboardEvent;
-import de.jowisoftware.sshclient.terminal.Session;
+import de.jowisoftware.sshclient.terminal.SSHSession;
+import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
 
 public class KeyboardProcessor implements KeyListener, KeyboardEvent {
     private static final Logger LOGGER = Logger.getLogger(KeyboardProcessor.class);
@@ -14,9 +14,9 @@ public class KeyboardProcessor implements KeyListener, KeyboardEvent {
     private static final char ESC = 27;
     private boolean cursorsInAppMode = false;
     private boolean numpadInAppMode;
-    private Session session;
+    private SSHSession session;
 
-    public void setSession(final Session session) {
+    public void setSession(final SSHSession session) {
         this.session = session;
     }
 

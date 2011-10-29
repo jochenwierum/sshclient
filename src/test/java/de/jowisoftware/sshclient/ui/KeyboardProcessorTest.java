@@ -13,7 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.terminal.Session;
+import de.jowisoftware.sshclient.terminal.SSHSession;
 
 // TODO: the whole test class and keyboard processor is a mess
 // try to reduce complexity here, get rid of AWT and make the tests more expressive
@@ -23,11 +23,11 @@ public class KeyboardProcessorTest {
     private final static char ESC = (char) 27;
 
     private KeyboardProcessor processor;
-    private Session session;
+    private SSHSession session;
 
     @Before
     public void setUp() {
-        session = context.mock(Session.class);
+        session = context.mock(SSHSession.class);
         processor = new KeyboardProcessor();
         processor.setSession(session);
     }

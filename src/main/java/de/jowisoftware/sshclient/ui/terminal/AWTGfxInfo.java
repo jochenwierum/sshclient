@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import de.jowisoftware.sshclient.terminal.ColorName;
-import de.jowisoftware.sshclient.terminal.GfxInfo;
+import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 
 public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
     private static final long serialVersionUID = -7450299438843092065L;
