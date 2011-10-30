@@ -1,5 +1,5 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-public enum Tabstop {
+public enum TabulatorOrientation {
     HORIZONTAL, VERTICAL
 }

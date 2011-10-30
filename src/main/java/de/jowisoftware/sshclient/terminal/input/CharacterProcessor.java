@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.terminal.buffer.Tabstop;
+import de.jowisoftware.sshclient.terminal.buffer.TabulatorOrientation;
 import de.jowisoftware.sshclient.terminal.input.CharacterProcessorState.State;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.ANSISequence;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.NonASCIIControlSequence;
@@ -63,9 +63,9 @@ public class CharacterProcessor {
 
     private boolean processSpecialChar(final Character character) {
         if (character == VTAB_CHAR) {
-            sessionInfo.getBuffer().tabstop(Tabstop.VERTICAL);
+            sessionInfo.getBuffer().tabulator(TabulatorOrientation.VERTICAL);
         } else if(character == HTAB_CHAR) {
-            sessionInfo.getBuffer().tabstop(Tabstop.HORIZONTAL);
+            sessionInfo.getBuffer().tabulator(TabulatorOrientation.HORIZONTAL);
         } else if (character == BACKSPACE_CHAR) {
             sessionInfo.getBuffer().processBackspace();
         } else if (character == NEWLINE_CHAR) {

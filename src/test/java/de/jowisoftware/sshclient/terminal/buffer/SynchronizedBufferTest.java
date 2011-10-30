@@ -15,12 +15,14 @@ public class SynchronizedBufferTest {
     private SynchronizedBuffer buffer;
     private BufferStorage storage;
     private BufferStorage altStorage;
+    private TabStopManager tabstops;
 
     @Before
     public void setUp() {
         storage = context.mock(BufferStorage.class);
         altStorage = context.mock(BufferStorage.class, "altStorage");
-        buffer = new SynchronizedBuffer(storage, altStorage);
+        tabstops = context.mock(TabStopManager.class);
+        buffer = new SynchronizedBuffer(storage, altStorage, tabstops);
     }
 
     private void prepareSize(final BufferStorage selectedStorage,
@@ -124,6 +126,7 @@ public class SynchronizedBufferTest {
         context.checking(new Expectations() {{
             oneOf(storage).newSize(30, 24);
             oneOf(altStorage).newSize(30, 24);
+            oneOf(tabstops).newWidth(30);
         }});
         buffer.setCursorPosition(new Position(10, 11));
         buffer.newSize(30, 24);
@@ -133,6 +136,7 @@ public class SynchronizedBufferTest {
         context.checking(new Expectations() {{
             oneOf(storage).newSize(50, 44);
             oneOf(altStorage).newSize(50, 44);
+            oneOf(tabstops).newWidth(50);
         }});
         buffer.setCursorPosition(new Position(80, 10));
         buffer.newSize(50, 44);
@@ -454,5 +458,34 @@ public class SynchronizedBufferTest {
     @Test
     public void rightShiftMinus6() {
         testShift(5, 1, -6);
+    }
+
+    @Test
+    public void horizontalTabulatorMovesCuros1() {
+        prepareSize(80, 24);
+        final Position pos = new Position(2, 3);
+        final Position pos2 = new Position(5, 7);
+
+        assertTabulatorTransition(pos, pos2);
+    }
+
+    @Test
+    public void horizontalTabulatorMovesCuros2() {
+        prepareSize(80, 24);
+        final Position pos = new Position(9, 5);
+        final Position pos2 = new Position(8, 4);
+
+        assertTabulatorTransition(pos, pos2);
+    }
+
+    private void assertTabulatorTransition(final Position pos,
+            final Position pos2) {
+        context.checking(new Expectations() {{
+            oneOf(tabstops).getNextHorizontalTabPosition(pos); will(returnValue(pos2));
+        }});
+
+        buffer.setCursorPosition(pos);
+        buffer.tabulator(TabulatorOrientation.HORIZONTAL);
+        assertEquals(pos2, buffer.getCursorPosition());
     }
 }

@@ -15,7 +15,7 @@ public interface Buffer {
     void addNewLine();
     GfxChar getCharacter(final int row, final int column);
     void processBackspace();
-    void tabstop(Tabstop vertical);
+    void tabulator(TabulatorOrientation vertical);
     void setAutoWrap(boolean autoWrap);
 
     void setClearChar(GfxChar clearChar);

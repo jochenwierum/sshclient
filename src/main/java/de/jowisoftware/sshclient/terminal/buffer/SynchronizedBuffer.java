@@ -15,6 +15,8 @@ public class SynchronizedBuffer implements Buffer {
     private volatile BufferStorage alternativeStorage;
     private volatile Position position = new Position(1, 1);
 
+    private final TabStopManager tabstops;
+
     private int topMargin = NO_MARGIN_DEFINED;
     private int bottomMargin = NO_MARGIN_DEFINED;
     private boolean cursorIsRelativeToMargin = false;
@@ -25,16 +27,18 @@ public class SynchronizedBuffer implements Buffer {
 
     public SynchronizedBuffer(final GfxChar clearChar,
             final int width, final int height) {
-        defaultStorage = new SynchronizedArrayBackedBufferStorage(clearChar, width, height);
-        alternativeStorage = new SynchronizedArrayBackedBufferStorage(clearChar, width, height);
-        storage = defaultStorage;
+        this(new SynchronizedArrayBackedBufferStorage(clearChar, width, height),
+                new SynchronizedArrayBackedBufferStorage(clearChar, width, height),
+                new ArrayListBackedTabStopManager(width));
     }
 
     public SynchronizedBuffer(final BufferStorage storage,
-            final BufferStorage alternativeStorage) {
+            final BufferStorage alternativeStorage,
+            final TabStopManager tabstopManager) {
         this.storage = storage;
         this.defaultStorage = storage;
         this.alternativeStorage = alternativeStorage;
+        this.tabstops = tabstopManager;
     }
 
     @Override
@@ -43,6 +47,7 @@ public class SynchronizedBuffer implements Buffer {
             defaultStorage.newSize(width, height);
             alternativeStorage.newSize(width, height);
             setAndFixCursorPosition(position);
+            tabstops.newWidth(width);
         }
     }
 
@@ -229,18 +234,16 @@ public class SynchronizedBuffer implements Buffer {
     }
 
     @Override
-    public void tabstop(final Tabstop orientation) {
-        // TODO do a real implementation here
+    public void tabulator(final TabulatorOrientation orientation) {
         final Position oldPosition = getCursorPosition();
-        final Position size = getSize();
-        int posX = oldPosition.x;
-        int posY = oldPosition.y;
-        if (orientation == Tabstop.HORIZONTAL) {
-            posX = Math.min((posX / 8 + 1) * 8, size.x);
+        final Position newPosition;
+
+        if (orientation == TabulatorOrientation.HORIZONTAL) {
+            newPosition = tabstops.getNextHorizontalTabPosition(oldPosition);
         } else {
-            posY = posY + 1;
+            // TODO: implement this
+            newPosition = new Position(oldPosition.x, oldPosition.y + 1);
         }
-        final Position newPosition = new Position(posX, posY).moveInRange(size.toRange());
         setCursorPosition(newPosition);
     }
 
