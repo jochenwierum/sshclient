@@ -236,7 +236,7 @@ public class SynchronizedBuffer implements Buffer {
         int posX = oldPosition.x;
         int posY = oldPosition.y;
         if (orientation == Tabstop.HORIZONTAL) {
-            posX = size.x;
+            posX = Math.min((posX / 8 + 1) * 8, size.x);
         } else {
             posY = posY + 1;
         }
