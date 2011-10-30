@@ -1,7 +1,9 @@
 package de.jowisoftware.sshclient.terminal.gfx;
 
+import java.awt.Color;
+
 public interface TerminalColor {
-    Object getColor(boolean bright);
     boolean isForeground();
     boolean isColor(ColorName color);
+    Color getColor();
 }

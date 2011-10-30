@@ -13,7 +13,7 @@ import de.jowisoftware.sshclient.terminal.charsets.GfxCharset;
 import de.jowisoftware.sshclient.terminal.gfx.Attribute;
 import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
 
-public class GfxAwtChar implements GfxChar {
+public class AWTGfxChar implements GfxChar {
     private final AWTGfxInfo gfxInfo;
     private final HashSet<Attribute> attributes;
     private final TerminalColor fgColor;
@@ -21,7 +21,7 @@ public class GfxAwtChar implements GfxChar {
     private final char character;
     private final GfxCharset charset;
 
-    public GfxAwtChar(final char character,
+    public AWTGfxChar(final char character,
             final GfxCharset charset, final AWTGfxInfo gfxInfo,
             final TerminalColor fgColor, final TerminalColor bgColor,
             final Set<Attribute> attributes) {
@@ -120,7 +120,7 @@ public class GfxAwtChar implements GfxChar {
         } else {
             color = bgColor;
         }
-        return (Color) color.getColor(attributes.contains(Attribute.BRIGHT));
+        return color.getColor();
     }
 
     private boolean invertBackground(final Set<RenderFlag> flags) {
@@ -137,7 +137,7 @@ public class GfxAwtChar implements GfxChar {
         } else {
             color = fgColor;
         }
-        return (Color) color.getColor(attributes.contains(Attribute.BRIGHT));
+        return color.getColor();
     }
 
     @Override

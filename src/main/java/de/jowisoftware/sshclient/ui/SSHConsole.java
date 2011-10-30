@@ -27,7 +27,7 @@ import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 import de.jowisoftware.sshclient.terminal.input.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequenceRepository;
 import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
-import de.jowisoftware.sshclient.ui.terminal.GfxAwtCharSetup;
+import de.jowisoftware.sshclient.ui.terminal.AWTGfxCharSetup;
 
 public class SSHConsole extends JPanel implements InputStreamEvent, ComponentListener,
         MouseListener {
@@ -41,7 +41,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     private DisplayType displayType = DisplayType.DYNAMIC;
 
     public SSHConsole(final AWTProfile profile) {
-        final GfxAwtCharSetup charSetup = new GfxAwtCharSetup(profile.getGfxSettings());
+        final AWTGfxCharSetup charSetup = new AWTGfxCharSetup(profile.getGfxSettings());
         final VisualEvent gfxFeedback = new GfxFeedback(this);
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
         final Buffer buffer = new SynchronizedBuffer(

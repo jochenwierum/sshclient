@@ -18,29 +18,33 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
     private Font font = new Font(Font.MONOSPACED, 0, 10);
 
     public AWTGfxInfo() {
-       colors.put(ColorName.BLACK, Color.BLACK);
-       colors.put(ColorName.BLUE, Color.BLUE.darker());
-       colors.put(ColorName.CYAN, Color.CYAN.darker());
-       colors.put(ColorName.DEFAULT, Color.WHITE.darker());
-       colors.put(ColorName.DEFAULT_BACKGROUND, Color.BLACK);
-       colors.put(ColorName.GREEN, Color.GREEN.darker());
-       colors.put(ColorName.MAGENTA, Color.MAGENTA.darker());
-       colors.put(ColorName.RED, Color.RED.darker());
-       colors.put(ColorName.WHITE, Color.WHITE.darker());
-       colors.put(ColorName.YELLOW, Color.YELLOW.darker());
+       colors.put(ColorName.BLACK, color(0, 0, 0));
+       colors.put(ColorName.BLUE, color(0, 0, 238));
+       colors.put(ColorName.CYAN, color(0, 205, 205));
+       colors.put(ColorName.DEFAULT, color(229, 229, 229));
+       colors.put(ColorName.DEFAULT_BACKGROUND, color(0, 0, 0));
+       colors.put(ColorName.GREEN, color(0, 205, 0));
+       colors.put(ColorName.MAGENTA, color(205, 0, 205));
+       colors.put(ColorName.RED, color(205, 0, 0));
+       colors.put(ColorName.WHITE, color(229, 229, 229));
+       colors.put(ColorName.YELLOW, color(205, 205, 0));
 
-       lightColors.put(ColorName.BLACK, Color.BLACK.brighter().brighter());
-       lightColors.put(ColorName.BLUE, Color.BLUE);
-       lightColors.put(ColorName.CYAN, Color.CYAN);
-       lightColors.put(ColorName.DEFAULT, Color.WHITE);
-       lightColors.put(ColorName.DEFAULT_BACKGROUND, Color.BLACK.brighter().brighter());
-       lightColors.put(ColorName.GREEN, Color.GREEN);
-       lightColors.put(ColorName.MAGENTA, Color.MAGENTA);
-       lightColors.put(ColorName.RED, Color.RED);
-       lightColors.put(ColorName.WHITE, Color.WHITE);
-       lightColors.put(ColorName.YELLOW, Color.YELLOW);
+       lightColors.put(ColorName.BLACK, color(127, 127, 127));
+       lightColors.put(ColorName.BLUE, color(92, 92, 255));
+       lightColors.put(ColorName.CYAN, color(0, 255, 255));
+       lightColors.put(ColorName.DEFAULT, color(255, 255, 255));
+       lightColors.put(ColorName.DEFAULT_BACKGROUND, color(0, 0, 0));
+       lightColors.put(ColorName.GREEN, color(0, 255, 0));
+       lightColors.put(ColorName.MAGENTA, color(255, 0, 255));
+       lightColors.put(ColorName.RED, color(255, 0, 0));
+       lightColors.put(ColorName.WHITE, color(255, 255, 255));
+       lightColors.put(ColorName.YELLOW, color(255, 255, 0));
 
        cursorColor = Color.GREEN;
+    }
+
+    private static Color color(final int r, final int g, final int b) {
+        return new Color(r, g, b);
     }
 
     @Override

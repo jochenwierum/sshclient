@@ -17,9 +17,9 @@ import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
 
-public class GfxAwtCharSetup implements GfxCharSetup {
+public class AWTGfxCharSetup implements GfxCharSetup {
     private static final Logger LOGGER = Logger
-            .getLogger(GfxAwtCharSetup.class);
+            .getLogger(AWTGfxCharSetup.class);
 
     private final AWTColorFactory colorFactory;
     private final AWTGfxInfo gfxInfo;
@@ -32,7 +32,7 @@ public class GfxAwtCharSetup implements GfxCharSetup {
 
     private boolean inverseMode;
 
-    public GfxAwtCharSetup(final AWTGfxInfo gfxInfo) {
+    public AWTGfxCharSetup(final AWTGfxInfo gfxInfo) {
         this.gfxInfo = gfxInfo;
         colorFactory = new AWTColorFactory(gfxInfo);
         reset();
@@ -49,8 +49,10 @@ public class GfxAwtCharSetup implements GfxCharSetup {
     public void setAttribute(final Attribute attribute) {
         if (attribute.equals(Attribute.BRIGHT)) {
             attributes.remove(Attribute.DIM);
+            colorFactory.createBrightColors(true);
         } else if (attribute.equals(Attribute.DIM)) {
             attributes.remove(Attribute.BRIGHT);
+            colorFactory.createBrightColors(false);
         } else if (attribute.equals(Attribute.HIDDEN)) {
             fgColor = bgColor;
         }
@@ -116,8 +118,8 @@ public class GfxAwtCharSetup implements GfxCharSetup {
     }
 
     @Override
-    public GfxAwtChar createChar(final char character) {
-        return new GfxAwtChar(character, getCharset(selectedCharset),
+    public AWTGfxChar createChar(final char character) {
+        return new AWTGfxChar(character, getCharset(selectedCharset),
                 gfxInfo, inverseColorIfWanted(fgColor), inverseColorIfWanted(bgColor), attributes);
     }
 
@@ -130,13 +132,13 @@ public class GfxAwtCharSetup implements GfxCharSetup {
     }
 
     @Override
-    public GfxAwtChar createClearChar() {
+    public AWTGfxChar createClearChar() {
         final HashSet<Attribute> newAttributes = new HashSet<Attribute>();
         if (attributes.contains(Attribute.BRIGHT)) {
             newAttributes.add(Attribute.BRIGHT);
         }
 
-        return new GfxAwtChar(' ', new USASCIICharset(),
+        return new AWTGfxChar(' ', new USASCIICharset(),
                 gfxInfo, inverseColorIfWanted(fgColor),
                 inverseColorIfWanted(bgColor), newAttributes);
     }

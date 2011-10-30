@@ -89,7 +89,7 @@ public class DoubleBufferedImage implements Renderer {
 
             final Rectangle rect = new Rectangle(posx, posy,
                     charWidth, charHeight);
-            ((GfxAwtChar)character).drawAt(rect, baseLinePos, graphics[1 - currentImage],
+            ((AWTGfxChar)character).drawAt(rect, baseLinePos, graphics[1 - currentImage],
                     flags);
         }
     }

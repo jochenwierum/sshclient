@@ -8,22 +8,75 @@ import de.jowisoftware.sshclient.terminal.gfx.Attribute;
 import de.jowisoftware.sshclient.terminal.gfx.ColorFactory;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
+import de.jowisoftware.sshclient.util.StringUtils;
 
 public class ANSISequencem implements ANSISequence {
     private static final Logger LOGGER = Logger.getLogger(ANSISequencem.class);
 
+    private static final int CUSTOM_FOREGROUND_COLOR = 38;
+    private static final int CUSTOM_BACKGROUND_COLOR = 48;
+
     @Override
     public void process(final SSHSession sessionInfo, final String... args) {
         if (args.length == 0) {
-            processSequence(sessionInfo, 0);
+            processPartialSequence(sessionInfo, 0);
         } else {
-            for (final String seq : args) {
-                processSequence(sessionInfo, Integer.parseInt(seq));
+            processSequence(sessionInfo, args);
+        }
+    }
+
+    private void processSequence(final SSHSession sessionInfo,
+            final String... args) {
+        for (int i = 0; i < args.length; ++i) {
+            if (processableCustomColor(sessionInfo, args, i)) {
+                i += 2;
+            } else {
+                processPartialSequence(sessionInfo, Integer.parseInt(args[i]));
             }
         }
     }
 
-    private void processSequence(final SSHSession sessionInfo, final int seq) {
+    private boolean processableCustomColor(final SSHSession sessionInfo,
+            final String[] args, final int i) {
+        if (isCustomColor(args[i])) {
+            if (canProcessCustomColor(args, i)) {
+                parseCustomColor(sessionInfo,
+                        Integer.parseInt(args[i]),
+                        Integer.parseInt(args[i + 2]));
+            } else {
+                LOGGER.warn("Missing costom color code: ESC["
+                        + StringUtils.join(";", args) + "m");
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isCustomColor(final String colorCode) {
+        return colorCode.equals(Integer.toString(CUSTOM_FOREGROUND_COLOR))
+                || colorCode.equals(Integer.toString(CUSTOM_BACKGROUND_COLOR));
+    }
+
+    private boolean canProcessCustomColor(final String[] args, final int i) {
+        return i + 2 < args.length;
+    }
+
+    private void parseCustomColor(final SSHSession sessionInfo,
+            final int colorCode, final int customColorCode) {
+        final GfxCharSetup charSetup = sessionInfo.getCharSetup();
+        final boolean isForeground = colorCode == CUSTOM_FOREGROUND_COLOR;
+        final TerminalColor color = charSetup.getColorFactory()
+                .createCustomColor(customColorCode, isForeground);
+
+        if (isForeground) {
+            charSetup.setForeground(color);
+        } else {
+            charSetup.setBackground(color);
+        }
+    }
+
+    private void processPartialSequence(final SSHSession sessionInfo, final int seq) {
         if (seq == 0) {
             resetAttributes(sessionInfo);
         } else if (!processAttributes(sessionInfo, seq) &&

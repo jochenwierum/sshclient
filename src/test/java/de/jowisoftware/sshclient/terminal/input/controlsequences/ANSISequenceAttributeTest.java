@@ -11,7 +11,6 @@ import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.gfx.Attribute;
 import de.jowisoftware.sshclient.terminal.gfx.ColorFactory;
 import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
-import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequenceRepository;
 
 @RunWith(JMock.class)
 public class ANSISequenceAttributeTest extends AbstractSequenceTest {
@@ -71,7 +70,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testAttributes1to8() {
+    public void canSetAttributes1to8() {
         callWithAttrAndExpect(1, Attribute.BRIGHT);
         callWithAttrAndExpect(2, Attribute.DIM);
         callWithAttrAndExpect(4, Attribute.UNDERSCORE);
@@ -81,7 +80,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testAttributes22to28() {
+    public void canSetAttributes22to28() {
         callWithRemoveAttrAndExpect(22, Attribute.BRIGHT);
         callWithRemoveAttrAndExpect(23, Attribute.DIM); // is this correct?
         callWithRemoveAttrAndExpect(24, Attribute.UNDERSCORE);
@@ -91,19 +90,19 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testForegroundColors() {
+    public void canSetForegroundColors() {
         callWithAttrAndExpectFGColor(30);
         callWithAttrAndExpectFGColor(31);
     }
 
     @Test
-    public void testBackgroundColors() {
+    public void canSetBackgroundColors() {
         callWithAttrAndExpectBGColor(40);
         callWithAttrAndExpectBGColor(41);
     }
 
     @Test
-    public void resetAttributes() {
+    public void canResetAttributesByProviding0() {
         final GfxChar gfxChar = context.mock(GfxChar.class, "color");
 
         context.checking(new Expectations() {{
@@ -116,7 +115,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void defaultAttributes() {
+    public void canResetAttributesByProvidingNothing() {
         final GfxChar gfxChar = context.mock(GfxChar.class, "color");
 
         context.checking(new Expectations() {{
@@ -129,7 +128,7 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void testMultipleAttributes() {
+    public void canHandleMultipleAttributes() {
         final GfxChar gfxChar = context.mock(GfxChar.class, "color");
         final Sequence sequence = context.sequence("seq");
 
@@ -156,5 +155,51 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "0", "5", "34", "41");
     }
 
+    @Test
+    public void specialHandlingOfCustomForegroundColor22() {
+        testCustomForegroundColor(22);
+    }
 
+    @Test
+    public void specialHandlingOfCustomForegroundColor67() {
+        testCustomForegroundColor(67);
+    }
+
+    private void testCustomForegroundColor(final int colorCode) {
+        final TerminalColor terminalColor = context.mock(TerminalColor.class);
+
+        context.checking(new Expectations() {{
+            oneOf(colorFactory).createCustomColor(colorCode, true); will(returnValue(terminalColor));
+            oneOf(charSetup).setForeground(terminalColor);
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "38", "5", Integer.toString(colorCode));
+    }
+
+    @Test
+    public void specialHandlingOfCustomBackgroundColor37() {
+        testCustomBackgroundColor(37);
+    }
+
+    @Test
+    public void specialHandlingOfCustomBackgroundColor255() {
+        testCustomBackgroundColor(255);
+    }
+
+    private void testCustomBackgroundColor(final int colorCode) {
+        final TerminalColor terminalColor = context.mock(TerminalColor.class);
+
+        context.checking(new Expectations() {{
+            oneOf(colorFactory).createCustomColor(colorCode, false); will(returnValue(terminalColor));
+            oneOf(charSetup).setBackground(terminalColor);
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "48", "5", Integer.toString(colorCode));
+    }
+
+
+    @Test
+    public void testInvalidCustomColor() throws Exception {
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "48", "5");
+    }
 }
