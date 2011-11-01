@@ -241,7 +241,6 @@ public class SynchronizedBuffer implements Buffer {
         if (orientation == TabulatorOrientation.HORIZONTAL) {
             newPosition = tabstops.getNextHorizontalTabPosition(oldPosition);
         } else {
-            // TODO: implement this
             newPosition = new Position(oldPosition.x, oldPosition.y + 1);
         }
         setCursorPosition(newPosition);
