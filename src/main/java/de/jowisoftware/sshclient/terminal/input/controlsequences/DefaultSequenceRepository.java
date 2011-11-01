@@ -43,6 +43,7 @@ public class DefaultSequenceRepository implements SequenceRepository {
         knownSequences.add(new DebugControlSequence());
         knownSequences.add(new CharsetControlSequence());
         knownSequences.add(new ColorCommandSequence());
+        knownSequences.add(new TabstopSequence());
     }
 
     @Override
@@ -68,6 +69,7 @@ public class DefaultSequenceRepository implements SequenceRepository {
         case 'c': return new ANSISequencec();
         case 'd': return new ANSISequenced();
         case 'f': return new ANSISequenceCapitalHf();
+        case 'g': return new ANSISequenceg();
         case 'h': return new ANSISequenceHighLow(true);
         case 'l': return new ANSISequenceHighLow(false);
         case 'm': return new ANSISequencem();

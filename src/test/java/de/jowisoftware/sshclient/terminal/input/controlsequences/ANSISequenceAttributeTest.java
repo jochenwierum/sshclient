@@ -199,7 +199,20 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
 
 
     @Test
-    public void testInvalidCustomColor() throws Exception {
+    public void invalidCustomColorDoesNotThrowException() throws Exception {
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "48", "5");
+    }
+
+    @Test
+    public void missingArgumentDoesNotThrowException() {
+        final GfxChar gfxChar = context.mock(GfxChar.class);
+
+        context.checking(new Expectations() {{
+            oneOf(charSetup).reset();
+            oneOf(charSetup).createClearChar(); will(returnValue(gfxChar));
+            oneOf(buffer).setClearChar(gfxChar);
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "", "0");
     }
 }

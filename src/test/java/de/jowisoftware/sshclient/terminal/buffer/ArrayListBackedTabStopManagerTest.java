@@ -89,4 +89,25 @@ public class ArrayListBackedTabStopManagerTest {
         assertNextPosition(89, 9, 97);
         assertNextPosition(120, 3, 120);
     }
+
+    @Test
+    public void multipleTabsAtSamePositionAreNotHarmfull() {
+        manager.removeAll();
+        manager.addTab(40);
+        manager.addTab(40);
+
+        assertNextPosition(3, 3, 40);
+        assertNextPosition(40, 3, 80);
+    }
+
+    @Test
+    public void afterAddingTheListIsStillSorted() {
+        manager.removeAll();
+        manager.addTab(80);
+        manager.addTab(20);
+        manager.addTab(40);
+
+        assertNextPosition(1, 1, 20);
+        assertNextPosition(20, 1, 40);
+    }
 }

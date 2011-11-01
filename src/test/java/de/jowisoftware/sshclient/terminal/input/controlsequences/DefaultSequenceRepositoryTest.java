@@ -27,5 +27,7 @@ public class DefaultSequenceRepositoryTest {
                 containsElementThat(is(CharsetControlSequence.class)));
         assertThat(new DefaultSequenceRepository().getNonASCIISequences(),
                 containsElementThat(is(ColorCommandSequence.class)));
+        assertThat(new DefaultSequenceRepository().getNonASCIISequences(),
+                containsElementThat(is(TabstopSequence.class)));
     }
 }

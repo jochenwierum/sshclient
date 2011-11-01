@@ -31,9 +31,19 @@ public class ANSISequencem implements ANSISequence {
             if (processableCustomColor(sessionInfo, args, i)) {
                 i += 2;
             } else {
-                processPartialSequence(sessionInfo, Integer.parseInt(args[i]));
+                final Integer arg = parseArg(args[i]);
+                if (arg != null) {
+                    processPartialSequence(sessionInfo, arg);
+                }
             }
         }
+    }
+
+    private Integer parseArg(final String argument) {
+        if (argument.length() == 0) {
+            return null;
+        }
+        return Integer.parseInt(argument);
     }
 
     private boolean processableCustomColor(final SSHSession sessionInfo,

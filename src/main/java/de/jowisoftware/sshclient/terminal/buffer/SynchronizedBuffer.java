@@ -303,4 +303,19 @@ public class SynchronizedBuffer implements Buffer {
     public void shift(final int charCount) {
         storage.shiftColumns(charCount, position.x - 1, position.y - 1);
     }
+
+    @Override
+    public void removeTabstops() {
+        tabstops.removeAll();
+    }
+
+    @Override
+    public void removeTabstopAtCurrentPosition() {
+        tabstops.removeTab(position.x);
+    }
+
+    @Override
+    public void addTabstopToCurrentPosition() {
+        tabstops.addTab(position.x);
+    }
 }

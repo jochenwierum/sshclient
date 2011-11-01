@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class ArrayListBackedTabStopManager implements TabStopManager {
+    private static final Logger LOGGER = Logger
+            .getLogger(ArrayListBackedTabStopManager.class);
+
     private final List<Integer> tabstopList = new ArrayList<Integer>();
     private int width = 0;
 
@@ -17,11 +22,15 @@ public class ArrayListBackedTabStopManager implements TabStopManager {
         final int newY = position.y;
 
         final int pos = nextXPosition(position);
+        final Position newPos;
         if (pos >= tabstopList.size()) {
-            return new Position(width, newY);
+            newPos = new Position(width, newY);
         } else {
-            return new Position(tabstopList.get(pos), newY);
+            newPos = new Position(tabstopList.get(pos), newY);
         }
+
+        LOGGER.debug("Next tab position for " + position + " is " + newPos);
+        return newPos;
     }
 
     private int nextXPosition(final Position position) {
@@ -43,29 +52,35 @@ public class ArrayListBackedTabStopManager implements TabStopManager {
     private void fillNewTabs(final int from, final int to) {
         final int newStart = (from / 8) * 8 + 1;
         for (int i = newStart; i < to; i += 8) {
-            tabstopList.add(i);
+            addTab(i);
         }
     }
 
     private void removeItemsBiggerThan(final int newWidth) {
         int size = tabstopList.size();
         while (size > 0 && tabstopList.get(size - 1) >= newWidth) {
-            tabstopList.remove(--size);
+            removeTab(tabstopList.get(--size));
         }
     }
 
     @Override
     public void removeAll() {
+        LOGGER.debug("Removing all tabs");
         tabstopList.clear();
     }
 
     @Override
     public void addTab(final int column) {
-        tabstopList.add(column);
+        if (!tabstopList.contains(column)) {
+            LOGGER.debug("Adding new tab position at column " + column);
+            tabstopList.add(column);
+            Collections.sort(tabstopList);
+        }
     }
 
     @Override
     public void removeTab(final int i) {
+        LOGGER.debug("Removing tab position at column " + i);
         tabstopList.remove((Object) i);
     }
 }

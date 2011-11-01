@@ -13,7 +13,7 @@ import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.CharsetControlSequence;
 
 @RunWith(JMock.class)
-public class CharsetTest extends AbstractSequenceTest {
+public class CharsetSequenceTest extends AbstractSequenceTest {
     @Test
     public void testSetASCIIEncoding() {
         checkCharsetSelection("(B", TerminalCharsetSelection.G0, TerminalCharset.USASCII);

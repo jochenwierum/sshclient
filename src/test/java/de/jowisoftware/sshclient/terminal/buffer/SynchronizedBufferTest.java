@@ -488,4 +488,52 @@ public class SynchronizedBufferTest {
         buffer.tabulator(TabulatorOrientation.HORIZONTAL);
         assertEquals(pos2, buffer.getCursorPosition());
     }
+
+    @Test
+    public void newTabIsForwardedAtColumn7() {
+        prepareSize(20, 20);
+        assertNewTab(7, 2);
+    }
+
+    @Test
+    public void newTabIsForwardedAtColumn3() {
+        prepareSize(20, 20);
+        assertNewTab(3, 5);
+    }
+
+    private void assertNewTab(final int x, final int y) {
+        context.checking(new Expectations() {{
+            oneOf(tabstops).addTab(x);
+        }});
+        buffer.setCursorPosition(new Position(x, y));
+        buffer.addTabstopToCurrentPosition();
+    }
+
+    @Test
+    public void removeTabAtColumn5() {
+        prepareSize(20, 20);
+        assertRemoveTab(5, 5);
+    }
+
+    @Test
+    public void removeTabAtColumn9() {
+        prepareSize(20, 20);
+        assertRemoveTab(9, 4);
+    }
+
+    private void assertRemoveTab(final int x, final int y) {
+        context.checking(new Expectations() {{
+            oneOf(tabstops).removeTab(x);
+        }});
+        buffer.setCursorPosition(new Position(x, y));
+        buffer.removeTabstopAtCurrentPosition();
+    }
+
+    @Test
+    public void removeAllTabsIsForwarded() {
+        context.checking(new Expectations() {{
+            oneOf(tabstops).removeAll();
+        }});
+        buffer.removeTabstops();
+    }
 }
