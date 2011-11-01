@@ -4,7 +4,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.jowisoftware.sshclient.terminal.SSHSession;
-import de.jowisoftware.sshclient.terminal.gfx.ColorFactory;
 
 public class ColorCommandSequence implements NonASCIIControlSequence {
     private final static Pattern partialStart = Pattern.compile(
@@ -32,7 +31,6 @@ public class ColorCommandSequence implements NonASCIIControlSequence {
         final int g = Integer.valueOf(matcher.group(3).toUpperCase(), 16);
         final int b = Integer.valueOf(matcher.group(4).toUpperCase(), 16);
 
-        final ColorFactory colorFactory = sessionInfo.getCharSetup().getColorFactory();
-        colorFactory.updateCustomColor(colorNumber, r, g, b);
+        sessionInfo.getCharSetup().updateCustomColor(colorNumber, r, g, b);
     }
 }

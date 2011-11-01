@@ -3,27 +3,15 @@ package de.jowisoftware.sshclient.terminal.input.controlsequences;
 import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.jmock.integration.junit4.JMock;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.gfx.Attribute;
-import de.jowisoftware.sshclient.terminal.gfx.ColorFactory;
-import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
+import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 
 @RunWith(JMock.class)
 public class ANSISequenceAttributeTest extends AbstractSequenceTest {
-    private ColorFactory colorFactory;
-
-    @Before
-    public void setUpColorFactory() {
-        colorFactory = context.mock(ColorFactory.class);
-        context.checking(new Expectations(){{
-            allowing(charSetup).getColorFactory(); will(returnValue(colorFactory));
-        }});
-    }
-
     private void callWithAttrAndExpect(final int attr, final Attribute expect) {
         context.checking(new Expectations() {{
             oneOf(charSetup).setAttribute(expect);
@@ -33,26 +21,18 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     }
 
     private void callWithAttrAndExpectFGColor(final int attr) {
-        final TerminalColor color = context.mock(TerminalColor.class, "TerminalColor" + attr);
-
         context.checking(new Expectations() {{
-            oneOf(colorFactory).createStandardColor(attr); will(returnValue(color));
-            oneOf(color).isForeground(); will(returnValue(true));
-            oneOf(charSetup).setForeground(color);
+            oneOf(charSetup).setForeground(ColorName.find(attr));
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, Integer.toString(attr));
     }
 
     private void callWithAttrAndExpectBGColor(final int attr) {
-        final TerminalColor color = context.mock(TerminalColor.class, "TerminalColor" + attr);
-        final GfxChar gfxChar = context.mock(GfxChar.class, "gfxChar" + attr);
+        final GfxChar gfxChar = context.mock(GfxChar.class, "clearChar-" + attr);
 
         context.checking(new Expectations() {{
-            oneOf(colorFactory).createStandardColor(attr);
-                will(returnValue(color));
-            oneOf(color).isForeground(); will(returnValue(false));
-            oneOf(charSetup).setBackground(color);
+            oneOf(charSetup).setBackground(ColorName.find(attr));
             oneOf(charSetup).createClearChar();
                 will(returnValue(gfxChar));
             oneOf(buffer).setClearChar(gfxChar);
@@ -132,22 +112,14 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
         final GfxChar gfxChar = context.mock(GfxChar.class, "color");
         final Sequence sequence = context.sequence("seq");
 
-        final TerminalColor color1 = context.mock(TerminalColor.class, "color1");
-        final TerminalColor color2 = context.mock(TerminalColor.class, "color2");
-
         context.checking(new Expectations() {{
             oneOf(charSetup).reset(); inSequence(sequence);
             oneOf(charSetup).createClearChar(); will(returnValue(gfxChar)); inSequence(sequence);
             oneOf(buffer).setClearChar(gfxChar); inSequence(sequence);
 
-            oneOf(colorFactory).createStandardColor(34); will(returnValue(color1));
-            oneOf(colorFactory).createStandardColor(41); will(returnValue(color2));
-
             oneOf(charSetup).setAttribute(Attribute.BLINK); inSequence(sequence);
-            oneOf(color1).isForeground(); will(returnValue(true));
-            oneOf(charSetup).setForeground(color1); inSequence(sequence);
-            oneOf(color2).isForeground(); will(returnValue(false));
-            oneOf(charSetup).setBackground(color2); inSequence(sequence);
+            oneOf(charSetup).setForeground(ColorName.find(34)); inSequence(sequence);
+            oneOf(charSetup).setBackground(ColorName.find(41)); inSequence(sequence);
             oneOf(charSetup).createClearChar(); will(returnValue(gfxChar)); inSequence(sequence);
             oneOf(buffer).setClearChar(gfxChar); inSequence(sequence);
         }});
@@ -166,14 +138,12 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     }
 
     private void testCustomForegroundColor(final int colorCode) {
-        final TerminalColor terminalColor = context.mock(TerminalColor.class);
-
         context.checking(new Expectations() {{
-            oneOf(colorFactory).createCustomColor(colorCode, true); will(returnValue(terminalColor));
-            oneOf(charSetup).setForeground(terminalColor);
+            oneOf(charSetup).setForeground(colorCode);
         }});
 
-        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "38", "5", Integer.toString(colorCode));
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "38",
+                "5", Integer.toString(colorCode));
     }
 
     @Test
@@ -187,14 +157,12 @@ public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     }
 
     private void testCustomBackgroundColor(final int colorCode) {
-        final TerminalColor terminalColor = context.mock(TerminalColor.class);
-
         context.checking(new Expectations() {{
-            oneOf(colorFactory).createCustomColor(colorCode, false); will(returnValue(terminalColor));
-            oneOf(charSetup).setBackground(terminalColor);
+            oneOf(charSetup).setBackground(colorCode);
         }});
 
-        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "48", "5", Integer.toString(colorCode));
+        DefaultSequenceRepository.executeAnsiSequence('m', sessionInfo, "48",
+                "5", Integer.toString(colorCode));
     }
 
 

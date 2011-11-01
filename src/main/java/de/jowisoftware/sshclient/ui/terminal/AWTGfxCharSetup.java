@@ -12,7 +12,6 @@ import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
 import de.jowisoftware.sshclient.terminal.charsets.UKCharset;
 import de.jowisoftware.sshclient.terminal.charsets.USASCIICharset;
 import de.jowisoftware.sshclient.terminal.gfx.Attribute;
-import de.jowisoftware.sshclient.terminal.gfx.ColorFactory;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
@@ -40,6 +39,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     @Override
     public void reset() {
+        colorFactory.createBrightColors(false);
         fgColor = colorFactory.createStandardColor(ColorName.DEFAULT, true);
         bgColor = colorFactory.createStandardColor(ColorName.DEFAULT_BACKGROUND, false);
         attributes.clear();
@@ -50,24 +50,16 @@ public class AWTGfxCharSetup implements GfxCharSetup {
         if (attribute.equals(Attribute.BRIGHT)) {
             attributes.remove(Attribute.DIM);
             colorFactory.createBrightColors(true);
+            fgColor = colorFactory.updateColor(fgColor);
         } else if (attribute.equals(Attribute.DIM)) {
             attributes.remove(Attribute.BRIGHT);
             colorFactory.createBrightColors(false);
+            fgColor = colorFactory.updateColor(fgColor);
         } else if (attribute.equals(Attribute.HIDDEN)) {
             fgColor = bgColor;
         }
 
         attributes.add(attribute);
-    }
-
-    @Override
-    public void setForeground(final TerminalColor color) {
-        fgColor = color;
-    }
-
-    @Override
-    public void setBackground(final TerminalColor color) {
-        bgColor = color;
     }
 
     @Override
@@ -134,10 +126,6 @@ public class AWTGfxCharSetup implements GfxCharSetup {
     @Override
     public AWTGfxChar createClearChar() {
         final HashSet<Attribute> newAttributes = new HashSet<Attribute>();
-        if (attributes.contains(Attribute.BRIGHT)) {
-            newAttributes.add(Attribute.BRIGHT);
-        }
-
         return new AWTGfxChar(' ', new USASCIICharset(),
                 gfxInfo, inverseColorIfWanted(fgColor),
                 inverseColorIfWanted(bgColor), newAttributes);
@@ -158,7 +146,29 @@ public class AWTGfxCharSetup implements GfxCharSetup {
     }
 
     @Override
-    public ColorFactory getColorFactory() {
-        return colorFactory;
+    public void setForeground(final ColorName color) {
+        fgColor = colorFactory.createStandardColor(color, true);
+    }
+
+    @Override
+    public void setBackground(final ColorName color) {
+         bgColor = colorFactory.createStandardColor(color, false);
+    }
+
+    @Override
+    public void setForeground(final int colorCode) {
+        fgColor = colorFactory.createCustomColor(colorCode, true);
+    }
+
+    @Override
+    public void setBackground(final int colorCode) {
+        fgColor = colorFactory.createCustomColor(colorCode, false);
+    }
+
+    @Override
+    public void updateCustomColor(final int colorNumber, final int r,
+            final int g, final int b) {
+        colorFactory.updateCustomColor(colorNumber, r, g, b);
+        fgColor = colorFactory.updateColor(fgColor);
     }
 }

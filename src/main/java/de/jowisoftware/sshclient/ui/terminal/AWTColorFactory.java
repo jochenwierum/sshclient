@@ -42,18 +42,20 @@ public class AWTColorFactory implements ColorFactory {
         }
     }
 
-    private class CustomColor implements TerminalColor {
+    private static class CustomColor implements TerminalColor {
         private final int colorCode;
         private final boolean isForeground;
+        private final Color color;
 
-        public CustomColor(final int colorCode, final boolean isForeground) {
+        public CustomColor(final int colorCode, final Color color, final boolean isForeground) {
             this.colorCode = colorCode;
             this.isForeground = isForeground;
+            this.color = color;
         }
 
         @Override
         public Color getColor() {
-            return customColors.get(colorCode);
+            return color;
         }
 
         @Override
@@ -102,15 +104,16 @@ public class AWTColorFactory implements ColorFactory {
     public TerminalColor createStandardColor(final int colorCode) {
         final ColorName color = ColorName.find(colorCode);
         if (color != null) {
-            return new SystemColor(color, ColorName.isForeground(colorCode),
-                    createBrightColors);
+            final boolean isForeground = ColorName.isForeground(colorCode);
+            return new SystemColor(color, isForeground,
+                    createBrightColors && isForeground);
         }
         return null;
     }
 
     @Override
     public TerminalColor createStandardColor(final ColorName color, final boolean isForeground) {
-        return new SystemColor(color, isForeground, createBrightColors);
+        return new SystemColor(color, isForeground, createBrightColors && isForeground);
     }
 
     @Override
@@ -121,7 +124,7 @@ public class AWTColorFactory implements ColorFactory {
             return new SystemColor(ColorName.values()[systemColorCode],
                     isForeground, isBright);
         }
-        return new CustomColor(colorCode, isForeground);
+        return new CustomColor(colorCode, customColors.get(colorCode), isForeground);
     }
 
     @Override
@@ -134,5 +137,18 @@ public class AWTColorFactory implements ColorFactory {
 
     public void createBrightColors(final boolean brightColors) {
         this.createBrightColors = brightColors;
+    }
+
+    public TerminalColor updateColor(final TerminalColor color) {
+        if(color instanceof SystemColor) {
+            final SystemColor systemColor = (SystemColor) color;
+            return new SystemColor(systemColor.colorName,
+                    systemColor.isForeground, createBrightColors);
+        } else {
+            final CustomColor customColor = (CustomColor) color;
+            return new CustomColor(customColor.colorCode,
+                    customColors.get(customColor.colorCode),
+                    customColor.isForeground);
+        }
     }
 }

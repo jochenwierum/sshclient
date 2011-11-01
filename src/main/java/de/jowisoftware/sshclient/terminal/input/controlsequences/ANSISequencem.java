@@ -5,9 +5,8 @@ import org.apache.log4j.Logger;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.gfx.Attribute;
-import de.jowisoftware.sshclient.terminal.gfx.ColorFactory;
+import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
-import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
 import de.jowisoftware.sshclient.util.StringUtils;
 
 public class ANSISequencem implements ANSISequence {
@@ -76,13 +75,11 @@ public class ANSISequencem implements ANSISequence {
             final int colorCode, final int customColorCode) {
         final GfxCharSetup charSetup = sessionInfo.getCharSetup();
         final boolean isForeground = colorCode == CUSTOM_FOREGROUND_COLOR;
-        final TerminalColor color = charSetup.getColorFactory()
-                .createCustomColor(customColorCode, isForeground);
 
         if (isForeground) {
-            charSetup.setForeground(color);
+            charSetup.setForeground(customColorCode);
         } else {
-            charSetup.setBackground(color);
+            charSetup.setBackground(customColorCode);
         }
     }
 
@@ -103,14 +100,13 @@ public class ANSISequencem implements ANSISequence {
 
     private boolean processDefaultColors(final SSHSession sessionInfo, final int seq) {
         final GfxCharSetup charSetup = sessionInfo.getCharSetup();
-        final ColorFactory factory = charSetup.getColorFactory();
-        final TerminalColor color = factory.createStandardColor(seq);
+        final ColorName color = ColorName.find(seq);
 
         if (color == null) {
             return false;
         }
 
-        if (color.isForeground()) {
+        if (ColorName.isForeground(seq)) {
             charSetup.setForeground(color);
         } else {
             charSetup.setBackground(color);

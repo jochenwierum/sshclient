@@ -9,8 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.terminal.gfx.ColorFactory;
-
 @RunWith(JMock.class)
 public class ColorCommandSequenceTest extends AbstractSequenceTest {
     private NonASCIIControlSequence sequence;
@@ -59,11 +57,8 @@ public class ColorCommandSequenceTest extends AbstractSequenceTest {
 
     @Test
     public void sequenceChangesSessionColor106to7025515() {
-        final ColorFactory colorFactory = context.mock(ColorFactory.class);
-
         context.checking(new Expectations() {{
-            allowing(charSetup).getColorFactory(); will(returnValue(colorFactory));
-            oneOf(colorFactory).updateCustomColor(160, 112, 255, 21);
+            oneOf(charSetup).updateCustomColor(160, 112, 255, 21);
         }});
 
         sequence.handleSequence("]4;160;rgb:70/ff/15\u001b\\", sessionInfo);
@@ -71,11 +66,8 @@ public class ColorCommandSequenceTest extends AbstractSequenceTest {
 
     @Test
     public void sequenceChangesSessionColor17to25500255() {
-        final ColorFactory colorFactory = context.mock(ColorFactory.class);
-
         context.checking(new Expectations() {{
-            allowing(charSetup).getColorFactory(); will(returnValue(colorFactory));
-            oneOf(colorFactory).updateCustomColor(17, 255, 0, 255);
+            oneOf(charSetup).updateCustomColor(17, 255, 0, 255);
         }});
 
         sequence.handleSequence("]4;17;rgb:ff/00/ff\u001b\\", sessionInfo);
