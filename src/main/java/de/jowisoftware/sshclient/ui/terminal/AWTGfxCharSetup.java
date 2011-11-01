@@ -162,7 +162,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     @Override
     public void setBackground(final int colorCode) {
-        fgColor = colorFactory.createCustomColor(colorCode, false);
+        bgColor = colorFactory.createCustomColor(colorCode, false);
     }
 
     @Override
