@@ -31,6 +31,8 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     private boolean inverseMode;
 
+    private boolean createBrightColors;
+
     public AWTGfxCharSetup(final AWTGfxInfo gfxInfo) {
         this.gfxInfo = gfxInfo;
         colorFactory = new AWTColorFactory(gfxInfo);
@@ -39,7 +41,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     @Override
     public void reset() {
-        colorFactory.createBrightColors(false);
+        createBrightColors = false;
         fgColor = colorFactory.createStandardColor(ColorName.DEFAULT, true);
         bgColor = colorFactory.createStandardColor(ColorName.DEFAULT_BACKGROUND, false);
         attributes.clear();
@@ -49,12 +51,10 @@ public class AWTGfxCharSetup implements GfxCharSetup {
     public void setAttribute(final Attribute attribute) {
         if (attribute.equals(Attribute.BRIGHT)) {
             attributes.remove(Attribute.DIM);
-            colorFactory.createBrightColors(true);
-            fgColor = colorFactory.updateColor(fgColor);
+            createBrightColors = true;
         } else if (attribute.equals(Attribute.DIM)) {
             attributes.remove(Attribute.BRIGHT);
-            colorFactory.createBrightColors(false);
-            fgColor = colorFactory.updateColor(fgColor);
+            createBrightColors = false;
         } else if (attribute.equals(Attribute.HIDDEN)) {
             fgColor = bgColor;
         }
@@ -133,9 +133,9 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     private TerminalColor inverseColorIfWanted(final TerminalColor color) {
         if (inverseMode && color.isColor(ColorName.DEFAULT)) {
-            return colorFactory.createStandardColor(ColorName.DEFAULT_BACKGROUND, color.isForeground());
+            return colorFactory.createStandardColor(ColorName.DEFAULT_BACKGROUND, false);
         } else if (inverseMode && color.isColor(ColorName.DEFAULT_BACKGROUND)) {
-            return colorFactory.createStandardColor(ColorName.DEFAULT, color.isForeground());
+            return colorFactory.createStandardColor(ColorName.DEFAULT, false);
         }
         return color;
     }
@@ -147,7 +147,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     @Override
     public void setForeground(final ColorName color) {
-        fgColor = colorFactory.createStandardColor(color, true);
+        fgColor = colorFactory.createStandardColor(color, createBrightColors);
     }
 
     @Override
@@ -157,18 +157,17 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     @Override
     public void setForeground(final int colorCode) {
-        fgColor = colorFactory.createCustomColor(colorCode, true);
+        fgColor = colorFactory.createCustomColor(colorCode);
     }
 
     @Override
     public void setBackground(final int colorCode) {
-        bgColor = colorFactory.createCustomColor(colorCode, false);
+        bgColor = colorFactory.createCustomColor(colorCode);
     }
 
     @Override
     public void updateCustomColor(final int colorNumber, final int r,
             final int g, final int b) {
         colorFactory.updateCustomColor(colorNumber, r, g, b);
-        fgColor = colorFactory.updateColor(fgColor);
     }
 }
