@@ -73,12 +73,13 @@ public class AWTGfxChar implements GfxChar {
 
     private void drawChar(final Rectangle rect, final int baseLinePos,
             final Graphics g, final Set<RenderFlag> flags) {
+        final int bottomY = rect.y + baseLinePos;
         g.drawString(Character.toString(
                 charset.getUnicodeChar(character)), rect.x,
-                rect.y + baseLinePos);
+                bottomY);
 
         if (attributes.contains(Attribute.UNDERSCORE)) {
-            g.drawLine(rect.x, rect.y, rect.x + rect.width, rect.y);
+            g.drawLine(rect.x, bottomY, rect.x + rect.width, bottomY);
         }
     }
 

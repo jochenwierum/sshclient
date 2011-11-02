@@ -14,6 +14,7 @@ public class ANSISequencem implements ANSISequence {
 
     private static final int CUSTOM_FOREGROUND_COLOR = 38;
     private static final int CUSTOM_BACKGROUND_COLOR = 48;
+    private static final String CUSTOM_COLOR_INFIX = "5";
 
     @Override
     public void process(final SSHSession sessionInfo, final String... args) {
@@ -53,7 +54,7 @@ public class ANSISequencem implements ANSISequence {
                         Integer.parseInt(args[i]),
                         Integer.parseInt(args[i + 2]));
             } else {
-                LOGGER.warn("Missing costom color code: ESC["
+                LOGGER.debug("Missing custom color code: ESC["
                         + StringUtils.join(";", args) + "m");
             }
             return true;
@@ -68,7 +69,7 @@ public class ANSISequencem implements ANSISequence {
     }
 
     private boolean canProcessCustomColor(final String[] args, final int i) {
-        return i + 2 < args.length;
+        return i + 2 < args.length && CUSTOM_COLOR_INFIX.equals(args[i + 1]);
     }
 
     private void parseCustomColor(final SSHSession sessionInfo,
