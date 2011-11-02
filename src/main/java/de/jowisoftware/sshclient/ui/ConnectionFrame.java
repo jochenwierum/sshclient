@@ -59,6 +59,7 @@ public class ConnectionFrame extends JPanel {
             }
 
             @Override public void bell() { /* ignored */ }
+            @Override public void newInverseMode(final boolean active) { /* ignored */ }
         });
     }
 

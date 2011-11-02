@@ -9,7 +9,6 @@ public interface GfxCharSetup {
 
     void setAttribute(Attribute attribute);
     void removeAttribute(Attribute attribute);
-    void setInverseMode(boolean b);
 
     void setForeground(ColorName color);
     void setForeground(int colorCode);

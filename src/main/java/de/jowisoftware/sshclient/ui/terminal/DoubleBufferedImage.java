@@ -37,6 +37,8 @@ public class DoubleBufferedImage implements Renderer {
 
     private boolean queued = false;
 
+    private boolean renderInverted = false;
+
     public DoubleBufferedImage(final AWTGfxInfo gfxInfo, final JPanel parent) {
         this.gfxInfo = gfxInfo;
         this.parent = parent;
@@ -90,7 +92,7 @@ public class DoubleBufferedImage implements Renderer {
             final Rectangle rect = new Rectangle(posx, posy,
                     charWidth, charHeight);
             ((AWTGfxChar)character).drawAt(rect, baseLinePos, graphics[1 - currentImage],
-                    flags);
+                    flags, renderInverted);
         }
     }
 
@@ -147,5 +149,10 @@ public class DoubleBufferedImage implements Renderer {
 
         return new Position(charx, chary).moveInRange(
                         new Position(getCharsPerLine(), getLines()).toRange());
+    }
+
+    @Override
+    public void renderInverted(final boolean inverted) {
+        renderInverted = inverted;
     }
 }

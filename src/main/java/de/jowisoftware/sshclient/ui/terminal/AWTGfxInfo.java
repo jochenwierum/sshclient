@@ -32,7 +32,7 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
        lightColors.put(ColorName.BLACK, color(127, 127, 127));
        lightColors.put(ColorName.BLUE, color(92, 92, 255));
        lightColors.put(ColorName.CYAN, color(0, 255, 255));
-       lightColors.put(ColorName.DEFAULT, color(255, 255, 255));
+       lightColors.put(ColorName.DEFAULT, color(229, 229, 229));
        lightColors.put(ColorName.DEFAULT_BACKGROUND, color(0, 0, 0));
        lightColors.put(ColorName.GREEN, color(0, 255, 0));
        lightColors.put(ColorName.MAGENTA, color(255, 0, 255));

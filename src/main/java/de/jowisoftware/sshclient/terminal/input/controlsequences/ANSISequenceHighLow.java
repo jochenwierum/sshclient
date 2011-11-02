@@ -7,7 +7,6 @@ import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.BufferSelection;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
-import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 
 public class ANSISequenceHighLow implements ANSISequence {
     private static final Logger LOGGER = Logger.getLogger(ANSISequenceHighLow.class);
@@ -70,9 +69,7 @@ public class ANSISequenceHighLow implements ANSISequence {
     }
 
     private void processReverseVideo(final SSHSession sessionInfo) {
-        final GfxCharSetup charSetup = sessionInfo.getCharSetup();
-        charSetup.setInverseMode(isHigh);
-        sessionInfo.getBuffer().setClearChar(charSetup.createClearChar());
+        sessionInfo.getVisualFeedback().fire().newInverseMode(isHigh);
     }
 
     private void processAppMode(final SSHSession sessionInfo) {

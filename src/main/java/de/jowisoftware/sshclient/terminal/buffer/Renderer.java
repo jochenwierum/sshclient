@@ -11,5 +11,7 @@ public interface Renderer {
     int getLines();
     int getCharsPerLine();
 
+    void renderInverted(boolean inverted);
+
     Position translateMousePosition(int x, int y);
 }

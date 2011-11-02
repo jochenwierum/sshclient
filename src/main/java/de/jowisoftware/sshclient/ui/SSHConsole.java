@@ -23,11 +23,10 @@ import de.jowisoftware.sshclient.terminal.SimpleSSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.SynchronizedBuffer;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
-import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 import de.jowisoftware.sshclient.terminal.input.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequenceRepository;
-import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxCharSetup;
+import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 
 public class SSHConsole extends JPanel implements InputStreamEvent, ComponentListener,
         MouseListener {
@@ -42,18 +41,23 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
 
     public SSHConsole(final AWTProfile profile) {
         final AWTGfxCharSetup charSetup = new AWTGfxCharSetup(profile.getGfxSettings());
-        final VisualEvent gfxFeedback = new GfxFeedback(this);
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
         final Buffer buffer = new SynchronizedBuffer(
                 charSetup.createClearChar(), 80, 24);
-        session = new SimpleSSHSession(buffer, charSetup);
-        session.getKeyboardFeedback().register(keyboardProcessor);
-        session.getVisualFeedback().register(gfxFeedback);
-        keyboardProcessor.setSession(session);
 
         renderer = new DoubleBufferedImage(profile.getGfxSettings(), this);
+
+        session = new SimpleSSHSession(buffer, charSetup);
+        session.getKeyboardFeedback().register(keyboardProcessor);
+        session.getVisualFeedback().register(new GfxFeedback(this, renderer));
+
         outputProcessor = initializeProcessor(profile);
 
+        keyboardProcessor.setSession(session);
+        doAwtSetup(keyboardProcessor);
+    }
+
+    private void doAwtSetup(final KeyboardProcessor keyboardProcessor) {
         this.addComponentListener(this);
         this.addMouseListener(this);
         this.addKeyListener(keyboardProcessor);

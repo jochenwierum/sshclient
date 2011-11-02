@@ -29,8 +29,6 @@ public class AWTGfxCharSetup implements GfxCharSetup {
     private GfxCharset charsetG0 = new USASCIICharset();
     private GfxCharset charsetG1 = new USASCIICharset();
 
-    private boolean inverseMode;
-
     private boolean createBrightColors;
 
     public AWTGfxCharSetup(final AWTGfxInfo gfxInfo) {
@@ -112,7 +110,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
     @Override
     public AWTGfxChar createChar(final char character) {
         return new AWTGfxChar(character, getCharset(selectedCharset),
-                gfxInfo, inverseColorIfWanted(fgColor), inverseColorIfWanted(bgColor), attributes);
+                gfxInfo, fgColor, bgColor, attributes);
     }
 
     private GfxCharset getCharset(final TerminalCharsetSelection selectedCharset2) {
@@ -127,22 +125,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
     public AWTGfxChar createClearChar() {
         final HashSet<Attribute> newAttributes = new HashSet<Attribute>();
         return new AWTGfxChar(' ', new USASCIICharset(),
-                gfxInfo, inverseColorIfWanted(fgColor),
-                inverseColorIfWanted(bgColor), newAttributes);
-    }
-
-    private TerminalColor inverseColorIfWanted(final TerminalColor color) {
-        if (inverseMode && color.isColor(ColorName.DEFAULT)) {
-            return colorFactory.createStandardColor(ColorName.DEFAULT_BACKGROUND, false);
-        } else if (inverseMode && color.isColor(ColorName.DEFAULT_BACKGROUND)) {
-            return colorFactory.createStandardColor(ColorName.DEFAULT, false);
-        }
-        return color;
-    }
-
-    @Override
-    public void setInverseMode(final boolean inverseMode) {
-        this.inverseMode = inverseMode;
+                gfxInfo, fgColor, bgColor, newAttributes);
     }
 
     @Override

@@ -6,10 +6,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.buffer.BufferSelection;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
-import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequenceRepository;
 
 @RunWith(JMock.class)
 public class ANSISequenceHighLowTest extends AbstractSequenceTest {
@@ -203,11 +201,8 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
 
     @Test
     public void handleInverseModeOff() {
-        final GfxChar clearChar = context.mock(GfxChar.class);
         context.checking(new Expectations() {{
-            oneOf(charSetup).setInverseMode(false);
-            oneOf(charSetup).createClearChar(); will(returnValue(clearChar));
-            oneOf(buffer).setClearChar(clearChar);
+            oneOf(visualFeedback).newInverseMode(false);
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo, "?5");
@@ -215,11 +210,8 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
 
     @Test
     public void handleInverseModeOn() {
-        final GfxChar clearChar = context.mock(GfxChar.class);
         context.checking(new Expectations() {{
-            oneOf(charSetup).setInverseMode(true);
-            oneOf(charSetup).createClearChar(); will(returnValue(clearChar));
-            oneOf(buffer).setClearChar(clearChar);
+            oneOf(visualFeedback).newInverseMode(true);
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('h', sessionInfo, "?5");

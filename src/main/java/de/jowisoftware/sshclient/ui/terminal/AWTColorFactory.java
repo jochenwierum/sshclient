@@ -17,6 +17,7 @@ public class AWTColorFactory implements ColorFactory {
     private class SystemColor implements TerminalColor {
         private final ColorName colorName;
         private final boolean isBright;
+        private SystemColor inverseColor = this;
 
         public SystemColor(final ColorName colorName,
                 final boolean isBright) {
@@ -37,6 +38,11 @@ public class AWTColorFactory implements ColorFactory {
         @Override
         public boolean isBright() {
             return isBright;
+        }
+
+        @Override
+        public TerminalColor invert() {
+            return inverseColor;
         }
     }
 
@@ -60,6 +66,11 @@ public class AWTColorFactory implements ColorFactory {
         @Override
         public boolean isBright() {
             return false;
+        }
+
+        @Override
+        public TerminalColor invert() {
+            return this;
         }
     }
 
@@ -85,6 +96,11 @@ public class AWTColorFactory implements ColorFactory {
             systemColors.put(colorCount + i,
                     new SystemColor(ColorName.values()[i], true));
         }
+
+        systemColors.get(0).inverseColor = systemColors.get(1);
+        systemColors.get(1).inverseColor = systemColors.get(0);
+        systemColors.get(colorCount).inverseColor = systemColors.get(colorCount + 1);
+        systemColors.get(colorCount + 1).inverseColor = systemColors.get(colorCount);
     }
 
     private void initCustomColors() {
