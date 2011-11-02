@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.LinkedListEventHub;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import de.jowisoftware.sshclient.terminal.buffer.TabStopManager;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
 import de.jowisoftware.sshclient.terminal.events.VisualEvent;
@@ -24,14 +25,17 @@ public class SimpleSSHSession implements SSHSession {
     private final EventHub<VisualEvent> visualEvents =
             LinkedListEventHub.forEventClass(VisualEvent.class);
     private final GfxCharSetup charSetup;
+    private final TabStopManager tabstopManager;
 
     private DisplayType displayType;
     private OutputStream responseStream;
 
     public SimpleSSHSession(final Buffer buffer,
-            final GfxCharSetup charSetup) {
+            final GfxCharSetup charSetup,
+            final TabStopManager tabstopManager) {
         this.buffer = buffer;
         this.charSetup = charSetup;
+        this.tabstopManager = tabstopManager;
     }
 
     @Override
@@ -94,5 +98,10 @@ public class SimpleSSHSession implements SSHSession {
                         StringUtils.escapeForLogs(bytes, 0, bytes.length), e);
             }
         }
+    }
+
+    @Override
+    public TabStopManager getTabStopManager() {
+        return tabstopManager;
     }
 }

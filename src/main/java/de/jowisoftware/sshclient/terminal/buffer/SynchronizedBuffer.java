@@ -26,10 +26,10 @@ public class SynchronizedBuffer implements Buffer {
     private boolean showCursor = true;
 
     public SynchronizedBuffer(final GfxChar clearChar,
-            final int width, final int height) {
+            final int width, final int height, final TabStopManager tabstops) {
         this(new SynchronizedArrayBackedBufferStorage(clearChar, width, height),
                 new SynchronizedArrayBackedBufferStorage(clearChar, width, height),
-                new ArrayListBackedTabStopManager(width));
+                tabstops);
     }
 
     public SynchronizedBuffer(final BufferStorage storage,
@@ -47,7 +47,6 @@ public class SynchronizedBuffer implements Buffer {
             defaultStorage.newSize(width, height);
             alternativeStorage.newSize(width, height);
             setAndFixCursorPosition(position);
-            tabstops.newWidth(width);
         }
     }
 
@@ -301,20 +300,5 @@ public class SynchronizedBuffer implements Buffer {
     @Override
     public void shift(final int charCount) {
         storage.shiftColumns(charCount, position.x - 1, position.y - 1);
-    }
-
-    @Override
-    public void removeTabstops() {
-        tabstops.removeAll();
-    }
-
-    @Override
-    public void removeTabstopAtCurrentPosition() {
-        tabstops.removeTab(position.x);
-    }
-
-    @Override
-    public void addTabstopToCurrentPosition() {
-        tabstops.addTab(position.x);
     }
 }

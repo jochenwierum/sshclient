@@ -34,7 +34,4 @@ public interface Buffer {
     BufferSelection getSelectedBuffer();
 
     void tabulator(TabulatorOrientation vertical);
-    void removeTabstops();
-    void removeTabstopAtCurrentPosition();
-    void addTabstopToCurrentPosition();
 }

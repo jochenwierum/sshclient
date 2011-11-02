@@ -20,6 +20,7 @@ import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.SimpleSSHSession;
+import de.jowisoftware.sshclient.terminal.buffer.ArrayListBackedTabStopManager;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.SynchronizedBuffer;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
@@ -42,12 +43,13 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     public SSHConsole(final AWTProfile profile) {
         final AWTGfxCharSetup charSetup = new AWTGfxCharSetup(profile.getGfxSettings());
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
+        final ArrayListBackedTabStopManager tabstopManager = new ArrayListBackedTabStopManager(80);
         final Buffer buffer = new SynchronizedBuffer(
-                charSetup.createClearChar(), 80, 24);
+                charSetup.createClearChar(), 80, 24, tabstopManager);
 
         renderer = new DoubleBufferedImage(profile.getGfxSettings(), this);
 
-        session = new SimpleSSHSession(buffer, charSetup);
+        session = new SimpleSSHSession(buffer, charSetup, tabstopManager);
         session.getKeyboardFeedback().register(keyboardProcessor);
         session.getVisualFeedback().register(new GfxFeedback(this, renderer));
 
@@ -131,6 +133,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
             cw = renderer.getCharsPerLine();
             ch = renderer.getLines();
             session.getBuffer().newSize(cw, ch);
+            session.getTabStopManager().newWidth(cw);
         } else {
             ch = 24;
             if(displayType.equals(DisplayType.FIXED132X24)) {
@@ -170,9 +173,13 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         case DYNAMIC:
              break;
         case FIXED132X24:
-            session.getBuffer().newSize(132, 24); break;
+            session.getBuffer().newSize(132, 24);
+            session.getTabStopManager().newWidth(132);
+            break;
         case FIXED80X24:
-            session.getBuffer().newSize(80, 24); break;
+            session.getBuffer().newSize(80, 24);
+            session.getTabStopManager().newWidth(80);
+            break;
         }
         componentResized(null);
         session.getBuffer().render(renderer);

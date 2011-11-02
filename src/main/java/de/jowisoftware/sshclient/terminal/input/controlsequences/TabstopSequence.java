@@ -1,6 +1,7 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 import de.jowisoftware.sshclient.terminal.SSHSession;
+import de.jowisoftware.sshclient.terminal.buffer.Position;
 
 public class TabstopSequence implements NonASCIIControlSequence {
 
@@ -16,7 +17,8 @@ public class TabstopSequence implements NonASCIIControlSequence {
 
     @Override
     public void handleSequence(final String sequence, final SSHSession sessionInfo) {
-        sessionInfo.getBuffer().addTabstopToCurrentPosition();
+        final Position position = sessionInfo.getBuffer().getCursorPosition();
+        sessionInfo.getTabStopManager().addTab(position.x);
     }
 
 }

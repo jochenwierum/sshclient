@@ -2,6 +2,7 @@ package de.jowisoftware.sshclient.terminal;
 
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import de.jowisoftware.sshclient.terminal.buffer.TabStopManager;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
 import de.jowisoftware.sshclient.terminal.events.VisualEvent;
@@ -15,6 +16,7 @@ public interface SSHSession {
     EventHub<KeyboardEvent> getKeyboardFeedback();
     EventHub<VisualEvent> getVisualFeedback();
     GfxCharSetup getCharSetup();
+    TabStopManager getTabStopManager();
 
     DisplayType getDisplayType();
     void setDisplayType(DisplayType newDisplayType);

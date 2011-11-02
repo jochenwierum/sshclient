@@ -7,6 +7,8 @@ import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.jowisoftware.sshclient.terminal.buffer.Position;
+
 public class TabstopSequenceTest extends AbstractSequenceTest {
     public NonASCIIControlSequence sequence;
 
@@ -23,9 +25,20 @@ public class TabstopSequenceTest extends AbstractSequenceTest {
     }
 
     @Test
-    public void handleSequenceSetsNewTab() {
+    public void handleSequenceSetsNewTabAtColumn3() {
+        assertNewTab(3);
+    }
+
+    @Test
+    public void handleSequenceSetsNewTabAtColumn9() {
+        assertNewTab(9);
+    }
+
+    private void assertNewTab(final int x) {
         context.checking(new Expectations() {{
-            oneOf(buffer).addTabstopToCurrentPosition();
+            oneOf(buffer).getCursorPosition();
+                will(returnValue(new Position(x, 7)));
+            oneOf(tabstopManager).addTab(x);
         }});
 
         sequence.handleSequence("H", sessionInfo);

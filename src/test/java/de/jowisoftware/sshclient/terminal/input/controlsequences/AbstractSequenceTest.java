@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import de.jowisoftware.sshclient.terminal.buffer.TabStopManager;
 import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
 import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
@@ -22,6 +23,7 @@ public abstract class AbstractSequenceTest {
     protected GfxCharSetup charSetup;
     protected KeyboardEvent keyboardFeedback;
     protected VisualEvent visualFeedback;
+    protected TabStopManager tabstopManager;
 
     @Before
     public void setUpMocks() throws Exception {
@@ -30,6 +32,7 @@ public abstract class AbstractSequenceTest {
         charSetup = context.mock(GfxCharSetup.class);
         keyboardFeedback = context.mock(KeyboardEvent.class);
         visualFeedback = context.mock(VisualEvent.class);
+        tabstopManager = context.mock(TabStopManager.class);
         final EventHub<?> eventHubVF = context.mock(EventHub.class, "eventHubVF");
         final EventHub<?> eventHubKF = context.mock(EventHub.class, "eventHubKF");
 
@@ -38,6 +41,7 @@ public abstract class AbstractSequenceTest {
             allowing(sessionInfo).getCharSetup(); will(returnValue(charSetup));
             allowing(sessionInfo).getKeyboardFeedback(); will(returnValue(eventHubKF));
             allowing(sessionInfo).getVisualFeedback(); will(returnValue(eventHubVF));
+            allowing(sessionInfo).getTabStopManager(); will(returnValue(tabstopManager));
             allowing(eventHubKF).fire(); will(returnValue(keyboardFeedback));
             allowing(eventHubVF).fire(); will(returnValue(visualFeedback));
         }});

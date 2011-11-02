@@ -26,23 +26,15 @@ public class SynchronizedBufferTest {
     }
 
     private void prepareSize(final BufferStorage selectedStorage,
-            final int count, final int width, final int height) {
+            final int width, final int height) {
         context.checking(new Expectations() {{
-            if (count <= 0) {
-                allowing(selectedStorage).size();
-            } else {
-                exactly(count).of(selectedStorage).size();
-            }
+            allowing(selectedStorage).size();
             will(returnValue(new Position(width, height)));
         }});
     }
 
-    private void prepareSize(final int count, final int width, final int height) {
-        prepareSize(storage, count, width, height);
-    }
-
     private void prepareSize(final int width, final int height) {
-        prepareSize(storage, 0, width, height);
+        prepareSize(storage, width, height);
     }
 
     private void prepareShift(final int offset, final int from, final int to) {
@@ -72,7 +64,7 @@ public class SynchronizedBufferTest {
 
     @Test
     public void testCursorPosition() {
-        prepareSize(2, 80, 24);
+        prepareSize(80, 24);
         buffer.setCursorPosition(new Position(2, 4));
         assertPosition(4, 2);
 
@@ -121,22 +113,23 @@ public class SynchronizedBufferTest {
     }
 
     @Test
-    public void testResize() {
-        prepareSize(2, 30, 24);
+    public void testResizeTo30x24() {
+        prepareSize(30, 24);
         context.checking(new Expectations() {{
             oneOf(storage).newSize(30, 24);
             oneOf(altStorage).newSize(30, 24);
-            oneOf(tabstops).newWidth(30);
         }});
         buffer.setCursorPosition(new Position(10, 11));
         buffer.newSize(30, 24);
         assertPosition(11, 10);
+    }
 
-        prepareSize(2, 50, 44);
+    @Test
+    public void testResizeTo50x44() {
+        prepareSize(50, 44);
         context.checking(new Expectations() {{
             oneOf(storage).newSize(50, 44);
             oneOf(altStorage).newSize(50, 44);
-            oneOf(tabstops).newWidth(50);
         }});
         buffer.setCursorPosition(new Position(80, 10));
         buffer.newSize(50, 44);
@@ -208,7 +201,7 @@ public class SynchronizedBufferTest {
 
     @Test
     public void testMoveCursorUpAndRollWithoutRoll() {
-        prepareSize(1, 80, 24);
+        prepareSize(80, 24);
         buffer.setCursorPosition(new Position(2, 3));
         buffer.moveCursorUpAndRoll();
         buffer.moveCursorUpAndRoll();
@@ -233,7 +226,7 @@ public class SynchronizedBufferTest {
 
     @Test
     public void testMoveCursorDownAndRollWithoutRoll() {
-        prepareSize(2, 80, 24);
+        prepareSize(80, 24);
         buffer.setCursorPosition(new Position(2, 23));
         buffer.moveCursorDownAndRoll(false);
         assertPosition(24, 2);
@@ -255,7 +248,7 @@ public class SynchronizedBufferTest {
 
     @Test
     public void testMoveCursorDownAndRollWithoutRollAndColReset() {
-        prepareSize(2, 80, 24);
+        prepareSize(80, 24);
         buffer.setCursorPosition(new Position(2, 24));
         prepareShift(-1, 0, 24);
         buffer.moveCursorDownAndRoll(true);
@@ -278,7 +271,7 @@ public class SynchronizedBufferTest {
 
     @Test
     public void testInsertOneLine() {
-        prepareSize(2, 80, 24);
+        prepareSize(80, 24);
         prepareShift(1, 1, 24);
         buffer.setCursorPosition(new Position(5, 2));
         buffer.insertLines(1);
@@ -286,7 +279,7 @@ public class SynchronizedBufferTest {
 
     @Test
     public void testInsertTwoLines() {
-        prepareSize(2, 80, 24);
+        prepareSize(80, 24);
         prepareShift(2, 4, 24);
         buffer.setCursorPosition(new Position(1, 5));
         buffer.insertLines(2);
@@ -414,7 +407,7 @@ public class SynchronizedBufferTest {
     public void testSwitchBuffer() {
         final GfxChar gfxChar = context.mock(GfxChar.class);
         prepareSize(80, 24);
-        prepareSize(altStorage, 0, 80, 24);
+        prepareSize(altStorage, 80, 24);
 
         assertEquals(BufferSelection.PRIMARY, buffer.getSelectedBuffer());
         buffer.switchBuffer(BufferSelection.ALTERNATIVE);
@@ -487,53 +480,5 @@ public class SynchronizedBufferTest {
         buffer.setCursorPosition(pos);
         buffer.tabulator(TabulatorOrientation.HORIZONTAL);
         assertEquals(pos2, buffer.getCursorPosition());
-    }
-
-    @Test
-    public void newTabIsForwardedAtColumn7() {
-        prepareSize(20, 20);
-        assertNewTab(7, 2);
-    }
-
-    @Test
-    public void newTabIsForwardedAtColumn3() {
-        prepareSize(20, 20);
-        assertNewTab(3, 5);
-    }
-
-    private void assertNewTab(final int x, final int y) {
-        context.checking(new Expectations() {{
-            oneOf(tabstops).addTab(x);
-        }});
-        buffer.setCursorPosition(new Position(x, y));
-        buffer.addTabstopToCurrentPosition();
-    }
-
-    @Test
-    public void removeTabAtColumn5() {
-        prepareSize(20, 20);
-        assertRemoveTab(5, 5);
-    }
-
-    @Test
-    public void removeTabAtColumn9() {
-        prepareSize(20, 20);
-        assertRemoveTab(9, 4);
-    }
-
-    private void assertRemoveTab(final int x, final int y) {
-        context.checking(new Expectations() {{
-            oneOf(tabstops).removeTab(x);
-        }});
-        buffer.setCursorPosition(new Position(x, y));
-        buffer.removeTabstopAtCurrentPosition();
-    }
-
-    @Test
-    public void removeAllTabsIsForwarded() {
-        context.checking(new Expectations() {{
-            oneOf(tabstops).removeAll();
-        }});
-        buffer.removeTabstops();
     }
 }
