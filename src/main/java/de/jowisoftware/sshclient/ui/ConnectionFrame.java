@@ -13,6 +13,7 @@ import javax.swing.JTabbedPane;
 import org.apache.log4j.Logger;
 
 import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.JSchException;
 
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
 import de.jowisoftware.sshclient.settings.AWTProfile;
@@ -75,11 +76,24 @@ public class ConnectionFrame extends JPanel {
         } catch(final Exception e) {
             close();
             console = null;
-            setContent(new ErrorPane(t("errors.could_not_establish_connection",
-                    "Could not establish connection"), e));
-            LOGGER.error("Could not connect", e);
+            if (authWasCanceled(e)) {
+                // TODO: close yourself
+                setContent(new ErrorPane("Image i'm closed"));
+            } else {
+                setContent(new ErrorPane(t("errors.could_not_establish_connection",
+                        "Could not establish connection"), e));
+                LOGGER.error("Could not connect", e);
+            }
             return;
         }
+    }
+
+    private boolean authWasCanceled(final Exception e) {
+        final String cancel_message = "Auth cancel";
+        if (!(e instanceof JSchException)) {
+            return false;
+        }
+        return cancel_message.equals(e.getMessage());
     }
 
     private void setContent(final JComponent comp) {
@@ -118,7 +132,9 @@ public class ConnectionFrame extends JPanel {
     }
 
     public void takeFocus() {
-        console.takeFocus();
+        if (console != null) {
+            console.takeFocus();
+        }
     }
 
     public SessionMenu getSessionMenu() {
