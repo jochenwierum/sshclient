@@ -69,7 +69,7 @@ public class CharacterProcessor {
         } else if (character == BACKSPACE_CHAR) {
             sessionInfo.getBuffer().processBackspace();
         } else if (character == NEWLINE_CHAR) {
-            sessionInfo.getBuffer().addNewLine();
+            sessionInfo.getBuffer().moveCursorDown(true);
         } else if (character == CARRIDGE_RETURN_CHAR) {
             sessionInfo.getBuffer().setCursorPosition(
                     new Position(1, sessionInfo.getBuffer().getCursorPosition().y));

@@ -32,11 +32,11 @@ public class CursorControlSequence implements NonASCIIControlSequence {
 
     private void processRollCursor(final Buffer buffer, final String sequence) {
         if (sequence.equals("D")) {
-            buffer.moveCursorDownAndRoll(false);
+            buffer.moveCursorDown(false);
         } else if (sequence.endsWith("E")) {
-            buffer.moveCursorDownAndRoll(true);
+            buffer.moveCursorDown(true);
         } else if (sequence.endsWith("M")) {
-            buffer.moveCursorUpAndRoll();
+            buffer.moveCursor();
         }
     }
 }

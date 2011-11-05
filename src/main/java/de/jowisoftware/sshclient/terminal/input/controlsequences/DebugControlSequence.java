@@ -31,7 +31,7 @@ public class DebugControlSequence implements NonASCIIControlSequence {
                 buffer.addCharacter(gfxChar);
             }
             if (i < size.x) {
-                buffer.addNewLine();
+                buffer.moveCursorDown(true);
             }
         }
     }

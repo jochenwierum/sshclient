@@ -44,7 +44,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         final AWTGfxCharSetup charSetup = new AWTGfxCharSetup(profile.getGfxSettings());
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
         final ArrayListBackedTabStopManager tabstopManager = new ArrayListBackedTabStopManager(80);
-        final Buffer buffer = new SynchronizedBuffer(
+        final Buffer buffer = SynchronizedBuffer.createBuffer(
                 charSetup.createClearChar(), 80, 24, tabstopManager);
 
         renderer = new DoubleBufferedImage(profile.getGfxSettings(), this);

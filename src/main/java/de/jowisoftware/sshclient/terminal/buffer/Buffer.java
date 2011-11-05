@@ -5,14 +5,7 @@ public interface Buffer {
     void newSize(int width, int height);
     Position getSize();
 
-    void setCursorRelativeToMargin(boolean b);
-    void setCursorPosition(final Position position);
-    Position getCursorPosition();
-    void saveCursorPosition();
-    void restoreCursorPosition();
-
     void addCharacter(final GfxChar character);
-    void addNewLine();
     GfxChar getCharacter(final int row, final int column);
     void processBackspace();
     void setAutoWrap(boolean autoWrap);
@@ -22,10 +15,15 @@ public interface Buffer {
     void insertLines(int lines);
     void shift(int charCount);
 
-    void setMargin(int start, int end);
+    void setCursorRelativeToMargin(boolean b);
+    void setCursorPosition(final Position position);
+    Position getCursorPosition();
+    void saveCursorPosition();
+    void restoreCursorPosition();
     void resetMargin();
-    void moveCursorUpAndRoll();
-    void moveCursorDownAndRoll(boolean resetToFirstColumn);
+    void moveCursor();
+    void moveCursorDown(boolean resetToFirstColumn);
+    void setMargin(int start, int end);
 
     void render(Renderer renderer);
     void setShowCursor(boolean doIt);

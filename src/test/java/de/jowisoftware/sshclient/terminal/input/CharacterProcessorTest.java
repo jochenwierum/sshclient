@@ -104,7 +104,7 @@ public class CharacterProcessorTest {
 
         context.checking(new Expectations() {{
             expectChar('x');
-            oneOf(buffer).addNewLine(); inSequence(seq);
+            oneOf(buffer).moveCursorDown(true); inSequence(seq);
             expectChar('z');
         }
 
@@ -210,7 +210,7 @@ public class CharacterProcessorTest {
     public void testStackStates() {
         final Sequence seq = context.sequence("seq");
         context.checking(new Expectations() {{
-                oneOf(buffer).addNewLine();
+                oneOf(buffer).moveCursorDown(true);
                     inSequence(seq);
 
                 handleSeq(sequence1, "1", false, this);

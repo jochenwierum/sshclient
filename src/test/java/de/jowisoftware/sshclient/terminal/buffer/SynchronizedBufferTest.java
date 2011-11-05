@@ -4,37 +4,34 @@ import static org.junit.Assert.assertEquals;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.States;
 import org.jmock.integration.junit4.JMock;
+import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(JMock.class)
 public class SynchronizedBufferTest {
-    private final Mockery context = new Mockery();
+    private final Mockery context = new JUnit4Mockery();
     private SynchronizedBuffer buffer;
-    private BufferStorage storage;
-    private BufferStorage altStorage;
+    private FlippableBufferStorage storage;
     private TabStopManager tabstops;
+    private CursorPositionManager positionManager;
 
     @Before
     public void setUp() {
-        storage = context.mock(BufferStorage.class);
-        altStorage = context.mock(BufferStorage.class, "altStorage");
-        tabstops = context.mock(TabStopManager.class);
-        buffer = new SynchronizedBuffer(storage, altStorage, tabstops);
+        storage = context.mock(FlippableBufferStorage.class, "storage");
+        tabstops = context.mock(TabStopManager.class, "tabstops");
+        positionManager = context.mock(CursorPositionManager.class);
+        buffer = new SynchronizedBuffer(storage, tabstops, positionManager);
     }
 
-    private void prepareSize(final BufferStorage selectedStorage,
-            final int width, final int height) {
+    private void allowSize(final int width, final int height) {
         context.checking(new Expectations() {{
-            allowing(selectedStorage).size();
+            allowing(storage).size();
             will(returnValue(new Position(width, height)));
         }});
-    }
-
-    private void prepareSize(final int width, final int height) {
-        prepareSize(storage, width, height);
     }
 
     private void prepareShift(final int offset, final int from, final int to) {
@@ -43,388 +40,422 @@ public class SynchronizedBufferTest {
         }});
     }
 
-    private void prepareChar(final BufferStorage selectedStorage,
+    private void assertCharWillBeSet(
             final int y, final int x, final GfxChar character) {
         context.checking(new Expectations() {{
-            oneOf(selectedStorage).setCharacter(y, x, character);
+            oneOf(storage).setCharacter(y - 1, x - 1, character);
         }});
     }
 
-    private void prepareChar(final int y, final int x, final GfxChar character) {
-        prepareChar(storage, y, x, character);
+    private void allowPosition(final int column, final int row) {
+        context.checking(new Expectations() {{
+            allowing(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(row, column)));
+        }});
     }
 
-    private void assertPosition(final int y, final int x) {
-        assertEquals(new Position(x, y), buffer.getAbsoluteCursorPosition());
+    private void allowWordWrap(final boolean allowIt) {
+        context.checking(new Expectations() {{
+            allowing(positionManager).wouldWrap();
+                will(returnValue(allowIt));
+            allowing(positionManager).resetWouldWrap();
+        }});
     }
 
-    private void assertPositionInRoll(final int y, final int x) {
-        assertEquals(new Position(x, y), buffer.getCursorPosition());
+    private void assertCursorWillBeMovedToNextPosition() {
+        context.checking(new Expectations() {{
+            oneOf(positionManager).moveToNextPosition();
+        }});
+    }
+
+    private void allowMargineDefined(final boolean isDefined) {
+        context.checking(new Expectations() {{
+            allowing(positionManager).isMarginDefined(); will(returnValue(isDefined));
+        }});
+    }
+
+    private void expectPosition(final int howOften, final int y, final int x) {
+        context.checking(new Expectations() {{
+            exactly(howOften).of(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(x, y)));
+        }});
     }
 
     @Test
-    public void testCursorPosition() {
-        prepareSize(80, 24);
-        buffer.setCursorPosition(new Position(2, 4));
-        assertPosition(4, 2);
-
-        buffer.setCursorPosition(new Position(1, 1));
-        assertPosition(1, 1);
-    }
-
-    @Test
-    public void testAddChar() {
+    public void addCharAt00ChangesPositionAndAddsChar() {
         final GfxChar character = context.mock(GfxChar.class);
-        prepareSize(80, 24);
-        prepareChar(0, 0, character);
+        allowSize(80, 24);
+        allowPosition(1, 1);
+        allowWordWrap(true);
+
+        assertCharWillBeSet(1, 1, character);
+        assertCursorWillBeMovedToNextPosition();
         buffer.addCharacter(character);
-        assertPosition(1, 2);
     }
 
     @Test
-    public void testAddTwoChars() {
-        prepareSize(80, 24);
-        final GfxChar char1 = context.mock(GfxChar.class, "char1");
-        final GfxChar char2 = context.mock(GfxChar.class, "char2");
-        prepareChar(0, 0, char1);
-        prepareChar(0, 1, char2);
+    public void addCharAt42ChangesPositionAndAddsChar() {
+        final GfxChar character = context.mock(GfxChar.class);
+        allowSize(80, 24);
+        allowPosition(4, 2);
+        allowWordWrap(true);
 
-        buffer.addCharacter(char1);
-        buffer.addCharacter(char2);
-        assertPosition(1, 3);
+        assertCharWillBeSet(4, 2, character);
+        assertCursorWillBeMovedToNextPosition();
+        buffer.addCharacter(character);
     }
 
     @Test
-    public void testAddNewLineChars() {
-        prepareSize(80, 24);
-        final GfxChar char1 = context.mock(GfxChar.class, "char1");
-        final GfxChar char2 = context.mock(GfxChar.class, "char2");
-        prepareChar(0, 0, char1);
-        prepareChar(1, 0, char2);
+    public void addNewLineChangesPosition() {
+        allowSize(80, 24);
 
-        buffer.addCharacter(char1);
-        assertPosition(1, 2);
+        context.checking(new Expectations(){{
+            oneOf(positionManager).moveDownAndRoll();
+            allowing(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(3, 7)));
+            oneOf(positionManager).setPositionSafelyInScreen(new Position(1, 7));
+        }});
 
-        buffer.addNewLine();
-        assertPosition(2, 1);
-
-        buffer.addCharacter(char2);
-        assertPosition(2, 2);
+        buffer.moveCursorDown(true);
     }
 
     @Test
-    public void testResizeTo30x24() {
-        prepareSize(30, 24);
+    public void resizeTo30x24ResizesChildren() {
         context.checking(new Expectations() {{
             oneOf(storage).newSize(30, 24);
-            oneOf(altStorage).newSize(30, 24);
+            oneOf(positionManager).newSize(30, 24);
         }});
-        buffer.setCursorPosition(new Position(10, 11));
         buffer.newSize(30, 24);
-        assertPosition(11, 10);
     }
 
     @Test
-    public void testResizeTo50x44() {
-        prepareSize(50, 44);
+    public void resizeTo50x44ResizesChildren() {
         context.checking(new Expectations() {{
             oneOf(storage).newSize(50, 44);
-            oneOf(altStorage).newSize(50, 44);
+            oneOf(positionManager).newSize(50, 44);
         }});
-        buffer.setCursorPosition(new Position(80, 10));
         buffer.newSize(50, 44);
-        assertPosition(10, 50);
     }
 
     @Test
-    public void testTooLongLineWithoutWrap() {
+    public void tooLongLinesAreNotWrapped() {
         buffer.setAutoWrap(false);
         final GfxChar char1 = context.mock(GfxChar.class, "char1");
         final GfxChar char2 = context.mock(GfxChar.class, "char2");
-        prepareSize(80, 24);
-        prepareChar(0, 79, char1);
-        prepareChar(0, 79, char2);
+        allowSize(80, 24);
 
-        buffer.setCursorPosition(new Position(80, 1));
+        expectPosition(2, 1, 80);
+        assertCharWillBeSet(1, 80, char1);
+        context.checking(new Expectations() {{
+            allowing(positionManager).resetWouldWrap();
+            allowing(positionManager).moveToNextPosition();
+        }});
         buffer.addCharacter(char1);
-        assertPosition(1, 80);
+
+        expectPosition(2, 4, 80);
+        assertCharWillBeSet(4, 80, char2);
+        context.checking(new Expectations() {{
+            allowing(positionManager).resetWouldWrap();
+            allowing(positionManager).moveToNextPosition();
+        }});
         buffer.addCharacter(char2);
-        assertPosition(1, 80);
     }
 
     @Test
     public void setRollRangedCursorSet() {
-        prepareSize(80, 24);
-
-        final GfxChar char1 = context.mock(GfxChar.class, "char1");
-        prepareChar(3, 0, char1);
-
+        allowSize(80, 24);
         buffer.setCursorRelativeToMargin(true);
+
+        final States marginSet = context.states("state");
+
+        context.checking(new Expectations() {{
+            oneOf(positionManager).setMargins(3, 10);
+                then(marginSet.is("with-margin"));
+            oneOf(positionManager).setPositionSafelyInMargin(new Position(1, 1));
+                when(marginSet.is("with-margin"));
+
+            allowing(positionManager).isMarginDefined();
+                will(returnValue(true));
+                when(marginSet.is("with-margin"));
+        }});
         buffer.setMargin(3, 10);
-        assertPosition(3, 1);
+
+        context.checking(new Expectations() {{
+            oneOf(positionManager).setPositionSafelyInMargin(new Position(1, 2));
+        }});
         buffer.setCursorPosition(new Position(1, 2));
-        buffer.addCharacter(char1);
-
-        assertPositionInRoll(2, 2);
-        assertPosition(4, 2);
     }
 
     @Test
-    public void testFullBuffer() {
-        prepareSize(80, 24);
-        final GfxChar char1 = context.mock(GfxChar.class, "char1");
-        final GfxChar char2 = context.mock(GfxChar.class, "char2");
-        prepareChar(23, 0, char2);
-        prepareShift(-1, 0, 24);
-        prepareChar(23, 0, char1);
-
-        buffer.setCursorPosition(new Position(1, 24));
-        buffer.addCharacter(char2); buffer.addNewLine();
-        buffer.addCharacter(char1);
+    public void moveCursorUpAndRollIsForwarded() {
+        context.checking(new Expectations() {{
+            oneOf(positionManager).moveUpAndRoll();
+        }});
+        buffer.moveCursor();
     }
 
     @Test
-    public void testMoveCursorUpAndRoll() {
-        prepareSize(80, 24);
-        buffer.setMargin(2, 3);
-        assertPosition(1, 1);
-        buffer.setCursorPosition(new Position(2, 3));
-
-        buffer.moveCursorUpAndRoll();
-        assertPosition(2, 2);
-
-        buffer.setCursorPosition(buffer.getCursorPosition().withX(1));
-        prepareShift(1, 1, 3);
-        buffer.moveCursorUpAndRoll();
-        assertPosition(2, 1);
+    public void setMargin2to3IsForwarded() {
+        checkMarginForward(2, 3);
     }
 
     @Test
-    public void testMoveCursorUpAndRollWithoutRoll() {
-        prepareSize(80, 24);
-        buffer.setCursorPosition(new Position(2, 3));
-        buffer.moveCursorUpAndRoll();
-        buffer.moveCursorUpAndRoll();
-        buffer.moveCursorUpAndRoll();
-        assertPosition(1, 2);
+    public void setMargin5to9IsForwarded() {
+        checkMarginForward(5, 9);
+    }
+
+    public void checkMarginForward(final int x, final int y) {
+        final States marginSet = context.states("marginSet");
+        context.checking(new Expectations() {{
+            oneOf(positionManager).setMargins(x, y);
+                then(marginSet.is("margin-set"));
+            oneOf(positionManager).setPositionSafelyInMargin(new Position(1, 1));
+                when(marginSet.is("margin-set"));
+        }});
+        buffer.setMargin(x, y);
     }
 
     @Test
-    public void testMoveCursorDownAndRoll() {
-        prepareSize(80, 24);
-        buffer.setMargin(2, 3);
-        assertPosition(1, 1);
-        buffer.setCursorPosition(new Position(2, 2));
+    public void moveCursorDownAndRollIsForwarded() {
+        allowSize(80, 24);
 
-        buffer.moveCursorDownAndRoll(false);
-        assertPosition(3, 2);
-
-        prepareShift(-1, 1, 3);
-        buffer.moveCursorDownAndRoll(false);
-        assertPosition(3, 2);
-    }
-
-    @Test
-    public void testMoveCursorDownAndRollWithoutRoll() {
-        prepareSize(80, 24);
-        buffer.setCursorPosition(new Position(2, 23));
-        buffer.moveCursorDownAndRoll(false);
-        assertPosition(24, 2);
-    }
-
-    @Test
-    public void testMoveCursorDownAndRollColReset() {
-        prepareSize(80, 24);
-        buffer.setMargin(2, 3);
-
-        buffer.setCursorPosition(new Position(1, 2));
-        buffer.moveCursorDownAndRoll(true);
-        assertPosition(3, 1);
-
-        prepareShift(-1, 1, 3);
-        buffer.moveCursorDownAndRoll(true);
-        assertPosition(3, 1);
-    }
-
-    @Test
-    public void testMoveCursorDownAndRollWithoutRollAndColReset() {
-        prepareSize(80, 24);
-        buffer.setCursorPosition(new Position(2, 24));
-        prepareShift(-1, 0, 24);
-        buffer.moveCursorDownAndRoll(true);
-        assertPosition(24, 1);
-    }
-
-    @Test
-    public void testErase() {
-        final Range range1 = new Range(new Position(2, 25));
-        final Range range2 = new Range(new Position(7, 5));
-
-        context.checking(new Expectations(){{
-            oneOf(storage).erase(range1.offset(-1, -1));
-            oneOf(storage).erase(range2.offset(-1, -1));
+        context.checking(new Expectations() {{
+            oneOf(positionManager).moveDownAndRoll();
         }});
 
-        buffer.erase(range1);
-        buffer.erase(range2);
+        buffer.moveCursorDown(false);
     }
 
     @Test
-    public void testInsertOneLine() {
-        prepareSize(80, 24);
+    public void moveCursorDownResetsColumnAtLine7() {
+        checkMoveCursorDown(new Position(3, 7));
+    }
+
+    @Test
+    public void moveCursorDownResetsColumnAtLine3() {
+        checkMoveCursorDown(new Position(6, 3));
+    }
+
+    public void checkMoveCursorDown(final Position pos) {
+        context.checking(new Expectations() {{
+            oneOf(positionManager).moveDownAndRoll();
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(pos));
+            oneOf(positionManager).setPositionSafelyInScreen(pos.withX(1));
+        }});
+
+        buffer.moveCursorDown(true);
+    }
+
+    @Test
+    public void moveCursorDownAndRollDoesNotResetColumn() {
+        context.checking(new Expectations() {{
+            oneOf(positionManager).moveDownAndRoll();
+        }});
+
+        buffer.moveCursorDown(false);
+    }
+
+    @Test
+    public void erase2to25() {
+        final Range range = new Range(new Position(2, 25));
+
+        context.checking(new Expectations(){{
+            oneOf(storage).erase(range.offset(-1, -1));
+        }});
+
+        buffer.erase(range);
+    }
+
+    @Test
+    public void erase7to5() {
+        final Range range = new Range(new Position(7, 5));
+
+        context.checking(new Expectations(){{
+            oneOf(storage).erase(range.offset(-1, -1));
+        }});
+
+        buffer.erase(range);
+    }
+
+    @Test
+    public void insertOneLineWithoutMargin() {
+        allowSize(80, 24);
         prepareShift(1, 1, 24);
-        buffer.setCursorPosition(new Position(5, 2));
+        allowMargineDefined(false);
+
+        context.checking(new Expectations() {{
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(7, 2)));
+        }});
+
         buffer.insertLines(1);
     }
 
     @Test
-    public void testInsertTwoLines() {
-        prepareSize(80, 24);
+    public void insertTwoLinesWithoutMargin() {
+        allowSize(80, 24);
         prepareShift(2, 4, 24);
-        buffer.setCursorPosition(new Position(1, 5));
+        allowMargineDefined(false);
+
+        context.checking(new Expectations() {{
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(1, 5)));
+        }});
+
         buffer.insertLines(2);
     }
 
     @Test
-    public void testSetCursorInMargin() {
-        prepareSize(80, 24);
-        buffer.setMargin(4, 23);
-        buffer.setCursorPosition(new Position(3, 3));
-        assertEquals(new Position(3, 3),
-                buffer.getAbsoluteCursorPosition());
-
+    public void setCursorInMargin() {
         buffer.setCursorRelativeToMargin(true);
-        buffer.setMargin(4, 23);
-        assertPosition(4, 1);
+        context.checking(new Expectations() {{
+            oneOf(positionManager).isMarginDefined();
+                will(returnValue(true));
+            oneOf(positionManager).setPositionSafelyInMargin(new Position(3, 3));
+        }});
+        buffer.setCursorPosition(new Position(3, 3));
 
+        context.checking(new Expectations() {{
+            oneOf(positionManager).isMarginDefined();
+                will(returnValue(true));
+            oneOf(positionManager).setPositionSafelyInMargin(new Position(5, 3));
+        }});
         buffer.setCursorPosition(new Position(5, 3));
-        assertEquals(new Position(5, 6),
-                buffer.getAbsoluteCursorPosition());
 
         buffer.setCursorRelativeToMargin(false);
-        buffer.setCursorPosition(new Position(1, 1));
-        assertEquals(new Position(1, 1),
-                buffer.getAbsoluteCursorPosition());
+        context.checking(new Expectations() {{
+            oneOf(positionManager).isMarginDefined();
+                will(returnValue(true));
+            oneOf(positionManager).setPositionSafelyInScreen(new Position(3, 3));
+        }});
+        buffer.setCursorPosition(new Position(3, 3));
     }
 
     @Test
-    public void testLongLineWithWrap() {
-        final GfxChar character = context.mock(GfxChar.class);
+    public void setCursorInScreen() {
+        context.checking(new Expectations() {{
+            oneOf(positionManager).isMarginDefined();
+                will(returnValue(false));
+            oneOf(positionManager).setPositionSafelyInScreen(new Position(3, 3));
+        }});
+        buffer.setCursorPosition(new Position(3, 3));
 
-        buffer.setAutoWrap(true);
-        prepareSize(80, 24);
+        context.checking(new Expectations() {{
+            oneOf(positionManager).isMarginDefined();
+                will(returnValue(false));
+            oneOf(positionManager).setPositionSafelyInScreen(new Position(5, 3));
+        }});
 
-        buffer.setCursorPosition(new Position(80, 1));
-
-        prepareChar(0, 79, character);
-        buffer.addCharacter(character);
-        assertPosition(1, 80);
-
-        prepareChar(1, 0, character);
-        buffer.addCharacter(character);
-        assertPosition(2, 2);
+        buffer.setCursorPosition(new Position(5, 3));
     }
 
     @Test
-    public void testLongLineWithWrapAndRoll() {
-        final GfxChar character = context.mock(GfxChar.class);
+    public void longLinesWillWrap() {
+        final GfxChar character = context.mock(GfxChar.class, "character");
 
         buffer.setAutoWrap(true);
-        prepareSize(80, 24);
+        allowSize(80, 24);
 
-        buffer.setCursorPosition(new Position(80, 24));
+        context.checking(new Expectations() {{
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(80, 1)));
+            allowing(positionManager).wouldWrap(); will(returnValue(true));
+            oneOf(positionManager).resetWouldWrap();
 
-        prepareShift(-1, 0, 24);
-        prepareChar(23, 79, character);
+            oneOf(positionManager).setPositionSafelyInScreen(new Position(1, 2));
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(1, 2)));
+            oneOf(positionManager).moveToNextPosition();
+        }});
+
+        assertCharWillBeSet(2, 1, character);
         buffer.addCharacter(character);
-        prepareChar(23, 0, character);
-        buffer.addCharacter(character);
-        assertPosition(24, 2);
     }
 
     @Test
     public void testLongLineWithBackspace() {
-        prepareSize(80, 24);
+        allowSize(80, 24);
+
         buffer.setAutoWrap(true);
-        buffer.setCursorPosition(new Position(1, 2));
+        context.checking(new Expectations() {{
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(1, 2)));
+            oneOf(positionManager).setPositionSafelyInScreen(new Position(80, 1));
+        }});
         buffer.processBackspace();
-        assertPosition(1, 80);
 
         buffer.setAutoWrap(false);
-        buffer.setCursorPosition(new Position(1, 2));
+        context.checking(new Expectations() {{
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(1, 1)));
+            oneOf(positionManager).setPositionSafelyInScreen(new Position(0, 1));
+        }});
         buffer.processBackspace();
-        assertPosition(2, 1);
     }
 
     @Test
-    public void testNoWrongWrap() {
+    public void noWrongWrap() {
         final GfxChar character = context.mock(GfxChar.class);
-        prepareSize(80, 24);
-        buffer.setCursorPosition(new Position(80, 1));
+        allowSize(80, 24);
 
-        prepareChar(0, 79, character);
-        assertPosition(1, 80);
-        buffer.addCharacter(character);
-        assertPosition(1, 80);
+        context.checking(new Expectations() {{
+            allowing(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(80, 1)));
+            oneOf(positionManager).wouldWrap(); will(returnValue(false));
+            oneOf(positionManager).resetWouldWrap();
+            oneOf(positionManager).moveToNextPosition();
+        }});
 
-        buffer.setCursorPosition(new Position(80, 1));
-        prepareChar(0, 79, character);
-        assertPosition(1, 80);
+        assertCharWillBeSet(1, 80, character);
         buffer.addCharacter(character);
-        assertPosition(1, 80);
-
-        prepareChar(1, 0, character);
-        buffer.addCharacter(character);
-
-        prepareChar(0, 79, character);
-        buffer.setCursorPosition(new Position(80,1));
-        buffer.addCharacter(character);
-        assertPosition(1, 80);
-        buffer.processBackspace();
-        assertPosition(1, 79);
     }
 
     @Test
-    public void testSaveRestore() {
-        prepareSize(80, 24);
-
-        buffer.setCursorPosition(new Position(22, 5));
+    public void saveAndRestoreAreForwarded() {
+        context.checking(new Expectations() {{
+            oneOf(positionManager).save();
+        }});
         buffer.saveCursorPosition();
-        assertPosition(5, 22);
-        buffer.setCursorPosition(new Position(1, 1));
 
+        context.checking(new Expectations() {{
+            oneOf(positionManager).restore();
+        }});
         buffer.restoreCursorPosition();
-        assertPosition(5, 22);
-
-        buffer.setCursorPosition(new Position(7, 7));
-        buffer.saveCursorPosition();
-        buffer.setCursorPosition(new Position(9, 9));
-        buffer.restoreCursorPosition();
-        assertPosition(7, 7);
     }
 
     @Test
-    public void testSwitchBuffer() {
-        final GfxChar gfxChar = context.mock(GfxChar.class);
-        prepareSize(80, 24);
-        prepareSize(altStorage, 80, 24);
+    public void switchBufferToPrimaryBufferSwitchesBuffer() {
+        context.checking(new Expectations() {{
+            oneOf(storage).getSelectedStorage();
+                will(returnValue(BufferSelection.PRIMARY));
+        }});
 
         assertEquals(BufferSelection.PRIMARY, buffer.getSelectedBuffer());
-        buffer.switchBuffer(BufferSelection.ALTERNATIVE);
-        assertEquals(BufferSelection.ALTERNATIVE, buffer.getSelectedBuffer());
-        buffer.setCursorPosition(new Position(2, 2));
 
-        prepareChar(altStorage, 1, 1, gfxChar);
-        buffer.addCharacter(gfxChar);
-
+        context.checking(new Expectations() {{
+            oneOf(storage).flipTo(BufferSelection.PRIMARY);
+        }});
         buffer.switchBuffer(BufferSelection.PRIMARY);
-        assertEquals(BufferSelection.PRIMARY, buffer.getSelectedBuffer());
-        prepareChar(1, 2, gfxChar);
-        buffer.addCharacter(gfxChar);
     }
 
     @Test
-    public void testClearChar() {
+    public void switchBufferToAlternativeBufferSwitchesBuffer() {
+        context.checking(new Expectations() {{
+            oneOf(storage).getSelectedStorage();
+                will(returnValue(BufferSelection.ALTERNATIVE));
+        }});
+
+        assertEquals(BufferSelection.ALTERNATIVE, buffer.getSelectedBuffer());
+
+        context.checking(new Expectations() {{
+            oneOf(storage).flipTo(BufferSelection.ALTERNATIVE);
+        }});
+        buffer.switchBuffer(BufferSelection.ALTERNATIVE);
+    }
+
+    @Test
+    public void clearCharIsForwarded() {
         final GfxChar gfxChar = context.mock(GfxChar.class);
         context.checking(new Expectations() {{
             oneOf(storage).setClearChar(gfxChar);
@@ -433,10 +464,9 @@ public class SynchronizedBufferTest {
     }
 
     private void testShift(final int x, final int y, final int count) {
-        prepareSize(80, 60);
-        buffer.setCursorPosition(new Position(x, y));
-
         context.checking(new Expectations() {{
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(x, y)));
             oneOf(storage).shiftColumns(count, x - 1, y - 1);
         }});
 
@@ -455,7 +485,7 @@ public class SynchronizedBufferTest {
 
     @Test
     public void horizontalTabulatorMovesCuros1() {
-        prepareSize(80, 24);
+        allowSize(80, 24);
         final Position pos = new Position(2, 3);
         final Position pos2 = new Position(5, 7);
 
@@ -464,7 +494,7 @@ public class SynchronizedBufferTest {
 
     @Test
     public void horizontalTabulatorMovesCuros2() {
-        prepareSize(80, 24);
+        allowSize(80, 24);
         final Position pos = new Position(9, 5);
         final Position pos2 = new Position(8, 4);
 
@@ -474,11 +504,15 @@ public class SynchronizedBufferTest {
     private void assertTabulatorTransition(final Position pos,
             final Position pos2) {
         context.checking(new Expectations() {{
-            oneOf(tabstops).getNextHorizontalTabPosition(pos); will(returnValue(pos2));
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(pos));
+            oneOf(tabstops).getNextHorizontalTabPosition(pos);
+                will(returnValue(pos2));
+            allowing(positionManager).isMarginDefined();
+                will(returnValue(true));
+            oneOf(positionManager).setPositionSafelyInScreen(pos2);
         }});
 
-        buffer.setCursorPosition(pos);
         buffer.tabulator(TabulatorOrientation.HORIZONTAL);
-        assertEquals(pos2, buffer.getCursorPosition());
     }
 }

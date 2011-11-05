@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 @RunWith(JMock.class)
 public class SynchronizedArrayBackedBufferStorageTest {
     private final Mockery context = new Mockery();
-    private SynchronizedArrayBackedBufferStorage storage;
+    private ArrayBackedBufferStorage storage;
     private GfxChar nullChar;
     private GfxChar char1;
     private GfxChar char2;
@@ -21,7 +21,7 @@ public class SynchronizedArrayBackedBufferStorageTest {
         nullChar = context.mock(GfxChar.class, "nullChar");
         char1 = context.mock(GfxChar.class, "char1");
         char2 = context.mock(GfxChar.class, "char2");
-        storage = new SynchronizedArrayBackedBufferStorage(nullChar, 80, 24);
+        storage = new ArrayBackedBufferStorage(nullChar, 80, 24);
     }
 
     private void assertChar(final int y, final int x, final GfxChar character) {

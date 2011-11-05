@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.terminal.input.controlsequences.DebugControlSequence;
 
 public class DebugTest extends AbstractSequenceTest {
     @Test
@@ -20,9 +19,9 @@ public class DebugTest extends AbstractSequenceTest {
             oneOf(buffer).getSize(); will(returnValue(new Position(2, 3)));
             oneOf(buffer).setCursorPosition(new Position(1, 1));
             oneOf(buffer).addCharacter(gfxChar); oneOf(buffer).addCharacter(gfxChar);
-            oneOf(buffer).addNewLine();
+            oneOf(buffer).moveCursorDown(true);
             oneOf(buffer).addCharacter(gfxChar); oneOf(buffer).addCharacter(gfxChar);
-            oneOf(buffer).addNewLine();
+            oneOf(buffer).moveCursorDown(true);
             oneOf(buffer).addCharacter(gfxChar); oneOf(buffer).addCharacter(gfxChar);
         }});
 
@@ -34,7 +33,7 @@ public class DebugTest extends AbstractSequenceTest {
             oneOf(buffer).getSize(); will(returnValue(new Position(3, 2)));
             oneOf(buffer).setCursorPosition(new Position(1, 1));
             oneOf(buffer).addCharacter(gfxChar); oneOf(buffer).addCharacter(gfxChar);
-            oneOf(buffer).addCharacter(gfxChar); oneOf(buffer).addNewLine();
+            oneOf(buffer).addCharacter(gfxChar); oneOf(buffer).moveCursorDown(true);
             oneOf(buffer).addCharacter(gfxChar); oneOf(buffer).addCharacter(gfxChar);
             oneOf(buffer).addCharacter(gfxChar);
         }});

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class SynchronizedArrayBackedBufferStorage implements BufferStorage {
+public class ArrayBackedBufferStorage implements BufferStorage {
     /**
      * displayed characters
      * 1. dimension = row, 2. dimension = row
@@ -14,7 +14,7 @@ public class SynchronizedArrayBackedBufferStorage implements BufferStorage {
     private final GfxChar backgroundChar;
     private GfxChar clearChar;
 
-    public SynchronizedArrayBackedBufferStorage(final GfxChar backgroundChar, final int width, final int height) {
+    public ArrayBackedBufferStorage(final GfxChar backgroundChar, final int width, final int height) {
         this.backgroundChar = backgroundChar;
         this.clearChar = backgroundChar;
         newSize(width, height);

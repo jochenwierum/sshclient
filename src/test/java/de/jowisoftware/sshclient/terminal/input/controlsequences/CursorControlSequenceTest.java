@@ -35,8 +35,8 @@ public class CursorControlSequenceTest {
     @Test
     public void testMoveUpAndRoll() {
         context.checking(new Expectations() {{
-            oneOf(buffer).moveCursorDownAndRoll(false);
-            oneOf(buffer).moveCursorDownAndRoll(true);
+            oneOf(buffer).moveCursorDown(false);
+            oneOf(buffer).moveCursorDown(true);
         }});
 
         seq.handleSequence("D", sessionInfo);
@@ -46,7 +46,7 @@ public class CursorControlSequenceTest {
     @Test
     public void testMoveDownAndRoll() {
         context.checking(new Expectations() {{
-            oneOf(buffer).moveCursorUpAndRoll();
+            oneOf(buffer).moveCursor();
         }});
 
         seq.handleSequence("M", sessionInfo);
