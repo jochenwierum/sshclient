@@ -37,8 +37,12 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
     @Override
     public void updateSelectionEnd(final Position position) {
         LOGGER.trace("End selection: " + position);
-        updateSelectionFields(position);
-        renderer.setSelection(startPosition, endPosition);
+        if (position.equals(firstClickPosition)) {
+            renderer.clearSelection();
+        } else {
+            updateSelectionFields(position);
+            renderer.setSelection(startPosition, endPosition.offset(-1, 0));
+        }
     }
 
     private void updateSelectionFields(final Position newPosition) {
@@ -67,7 +71,7 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
         final String selectedText;
         if (startPosition.y == endPosition.y) {
             selectedText = getLineFromBuffer(startPosition.y,
-                    startPosition.x, endPosition.x);
+                    startPosition.x, endPosition.x - 1);
         } else {
             selectedText = appendSelectionToBuilder(startPosition, endPosition,
                     buffer.getSize());
@@ -87,7 +91,7 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
             builder.append(getLineFromBuffer(line, 1, size.x));
             builder.append("\n");
         }
-        builder.append(getLineFromBuffer(pos2.y, 1, pos2.x));
+        builder.append(getLineFromBuffer(pos2.y, 1, pos2.x - 1));
         return builder.toString();
     }
 

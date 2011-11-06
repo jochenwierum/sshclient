@@ -185,8 +185,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override
     public void mouseReleased(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
-            mouseCursorManager.updateSelectionEnd(charPosition);
+            updateSelection(e);
             mouseCursorManager.copySelection();
         } else if (e.getButton() == MouseEvent.BUTTON3) {
             clipboard.pasteToServer();
@@ -196,9 +195,13 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override
     public void mouseDragged(final MouseEvent e) {
         if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
-            final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
-            mouseCursorManager.updateSelectionEnd(charPosition);
+            updateSelection(e);
         }
+    }
+
+    public void updateSelection(final MouseEvent e) {
+        final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
+        mouseCursorManager.updateSelectionEnd(charPosition);
     }
 
     public void setDisplayType(final DisplayType displayType) {

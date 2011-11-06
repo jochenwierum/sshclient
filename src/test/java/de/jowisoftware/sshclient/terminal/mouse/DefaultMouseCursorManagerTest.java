@@ -69,15 +69,15 @@ public class DefaultMouseCursorManagerTest {
     public void selectionIsCopiedToClipboard() {
         allowRenderer();
         manager.startSelection(new Position(4, 10));
-        manager.updateSelectionEnd(new Position(8, 12));
+        manager.updateSelectionEnd(new Position(10, 12));
 
         allowSize(80, 24);
         allowCharRequests(10, 4, 80,
                 " a test" + StringUtils.repeat(" ", 70));
         allowCharRequests(11, 1, 80,
                 "line two: some Text!" + StringUtils.repeat(" ", 60));
-        allowCharRequests(12, 1, 8,
-                "last one");
+        allowCharRequests(12, 1, 9,
+                "last one ");
         expectCopy(" a test\nline two: some Text!\nlast one");
 
         manager.copySelection();
@@ -86,23 +86,23 @@ public class DefaultMouseCursorManagerTest {
     @Test
     public void invertedSelectionIsCopiedToClipboard() {
         allowRenderer();
-        manager.startSelection(new Position(9, 5));
+        manager.startSelection(new Position(10, 5));
         manager.updateSelectionEnd(new Position(2, 4));
 
         allowSize(40, 24);
         allowCharRequests(4, 2, 40,
                 "output" + StringUtils.repeat(" ", 33));
         allowCharRequests(5, 1, 9,
-                "1234     ");
-        expectCopy("output\n1234");
+                "123456789");
+        expectCopy("output\n123456789");
 
         manager.copySelection();
     }
 
     @Test
-    public void selectionInSinleLineIsCopiedToClipboard() {
+    public void selectionInSingleLineIsCopiedToClipboard() {
         allowRenderer();
-        manager.startSelection(new Position(12, 2));
+        manager.startSelection(new Position(13, 2));
         manager.updateSelectionEnd(new Position(7, 2));
 
         allowCharRequests(2, 7, 12, "works!");
@@ -115,13 +115,13 @@ public class DefaultMouseCursorManagerTest {
     public void settingSelectionIsForwardedToRenderer() {
         context.checking(new Expectations() {{
             oneOf(renderer).setSelection(new Position(2, 5),
-                    new Position(5, 5));
+                    new Position(4, 5));
 
             oneOf(renderer).setSelection(new Position(7, 1),
-                    new Position(2, 5));
+                    new Position(1, 5));
 
             oneOf(renderer).setSelection(new Position(5, 2),
-                    new Position(7, 2));
+                    new Position(6, 2));
         }});
 
         manager.startSelection(new Position(2, 5));
@@ -130,6 +130,16 @@ public class DefaultMouseCursorManagerTest {
 
         manager.startSelection(new Position(7, 2));
         manager.updateSelectionEnd(new Position(5, 2));
+    }
+
+    @Test
+    public void selectingNothingIsNotForwarded() {
+        context.checking(new Expectations() {{
+            oneOf(renderer).clearSelection();
+        }});
+
+        manager.startSelection(new Position(1, 2));
+        manager.updateSelectionEnd(new Position(1, 2));
     }
 }
 
