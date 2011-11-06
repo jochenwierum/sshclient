@@ -1,7 +1,8 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import java.io.Serializable;
 
-public interface Buffer {
+public interface Buffer extends Serializable {
     void newSize(int width, int height);
     Position getSize();
 

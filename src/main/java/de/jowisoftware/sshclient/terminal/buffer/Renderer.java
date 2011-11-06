@@ -1,11 +1,11 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import java.util.Set;
+import java.io.Serializable;
 
 
-public interface Renderer {
+public interface Renderer extends Serializable {
     void clear();
-    void renderChar(GfxChar character, int x, int y, Set<RenderFlag> flags);
+    void renderChars(GfxChar[][] characters, Position cursorPosition);
     void swap();
 
     int getLines();
@@ -14,4 +14,7 @@ public interface Renderer {
     void renderInverted(boolean inverted);
 
     Position translateMousePosition(int x, int y);
+
+    void clearSelection();
+    void setSelection(Position pos1, Position pos2);
 }

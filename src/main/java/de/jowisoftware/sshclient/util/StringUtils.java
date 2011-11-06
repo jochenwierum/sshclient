@@ -59,4 +59,12 @@ public final class StringUtils {
         }
         return builder.toString();
     }
+
+    public static String repeat(final String string, final int count) {
+        final StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < count; ++i) {
+            builder.append(string);
+        }
+        return builder.toString();
+    }
 }

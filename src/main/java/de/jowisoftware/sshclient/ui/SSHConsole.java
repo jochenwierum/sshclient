@@ -1,13 +1,16 @@
 package de.jowisoftware.sshclient.ui;
 
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.io.OutputStream;
 
 import javax.swing.JPanel;
@@ -22,34 +25,41 @@ import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.SimpleSSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.ArrayListBackedTabStopManager;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.SynchronizedBuffer;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.input.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequenceRepository;
+import de.jowisoftware.sshclient.terminal.mouse.DefaultMouseCursorManager;
+import de.jowisoftware.sshclient.terminal.mouse.MouseCursorManager;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxCharSetup;
 import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 
 public class SSHConsole extends JPanel implements InputStreamEvent, ComponentListener,
-        MouseListener {
+        MouseListener, MouseMotionListener {
     private static final long serialVersionUID = 5102110929763645596L;
     private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
 
     private final SimpleSSHSession session;
     private final DoubleBufferedImage renderer;
     private final CharacterProcessor outputProcessor;
+    private final MouseCursorManager mouseCursorManager;
     private ChannelShell channel;
     private DisplayType displayType = DisplayType.DYNAMIC;
 
     public SSHConsole(final AWTProfile profile) {
+        renderer = new DoubleBufferedImage(profile.getGfxSettings(), this);
+
         final AWTGfxCharSetup charSetup = new AWTGfxCharSetup(profile.getGfxSettings());
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
         final ArrayListBackedTabStopManager tabstopManager = new ArrayListBackedTabStopManager(80);
         final Buffer buffer = SynchronizedBuffer.createBuffer(
                 charSetup.createClearChar(), 80, 24, tabstopManager);
 
-        renderer = new DoubleBufferedImage(profile.getGfxSettings(), this);
+        mouseCursorManager = new DefaultMouseCursorManager(buffer, renderer,
+                new AWTClipboard(renderer));
 
-        session = new SimpleSSHSession(buffer, charSetup, tabstopManager);
+        session = new SimpleSSHSession(buffer, renderer, charSetup, tabstopManager);
         session.getKeyboardFeedback().register(keyboardProcessor);
         session.getVisualFeedback().register(new GfxFeedback(this, renderer));
 
@@ -62,11 +72,13 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     private void doAwtSetup(final KeyboardProcessor keyboardProcessor) {
         this.addComponentListener(this);
         this.addMouseListener(this);
+        this.addMouseMotionListener(this);
         this.addKeyListener(keyboardProcessor);
 
         setFocusable(true);
         setRequestFocusEnabled(true);
         setFocusTraversalKeysEnabled(false);
+        setCursor(new Cursor(Cursor.TEXT_CURSOR));
     }
 
     public SSHSession getSession() {
@@ -161,8 +173,26 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         if (e.getButton() == MouseEvent.BUTTON1) {
             requestFocusInWindow();
 
-            System.out.println(e.getX() + "/" + e.getY());
-            System.out.println(renderer.translateMousePosition(e.getX(), e.getY()));
+            final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
+            mouseCursorManager.startSelection(charPosition);
+            mouseCursorManager.updateSelectionEnd(charPosition);
+        }
+    }
+
+    @Override
+    public void mouseReleased(final MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
+            mouseCursorManager.updateSelectionEnd(charPosition);
+            mouseCursorManager.copySelection();
+        }
+    }
+
+    @Override
+    public void mouseDragged(final MouseEvent e) {
+        if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
+            final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
+            mouseCursorManager.updateSelectionEnd(charPosition);
         }
     }
 
@@ -200,8 +230,8 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override public void componentMoved(final ComponentEvent e) { /* ignored */ }
     @Override public void componentShown(final ComponentEvent e) { /* ignored */ }
     @Override public void componentHidden(final ComponentEvent e) { /* ignored */ }
-    @Override public void mouseReleased(final MouseEvent e) { /* ignored */ }
     @Override public void mouseClicked(final MouseEvent e) { /* ignored */ }
     @Override public void mouseEntered(final MouseEvent e) { /* ignored */ }
     @Override public void mouseExited(final MouseEvent e) { /* ignored */ }
+    @Override public void mouseMoved(final MouseEvent e) { /* ignored */ }
 }

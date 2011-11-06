@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.SSHSession;
+import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 
 // TODO: the whole test class and keyboard processor is a mess
 // try to reduce complexity here, get rid of AWT and make the tests more expressive
@@ -23,18 +24,31 @@ public class KeyboardProcessorTest {
     private final static char ESC = (char) 27;
 
     private KeyboardProcessor processor;
+    private Renderer renderer;
     private SSHSession session;
 
     @Before
     public void setUp() {
         session = context.mock(SSHSession.class);
+        renderer = context.mock(Renderer.class);
         processor = new KeyboardProcessor();
         processor.setSession(session);
+
+        context.checking(new Expectations() {{
+            allowing(session).getRenderer(); will(returnValue(renderer));
+        }});
     }
 
     private void assertText(final String t, final KeyEvent... events) {
+        expectRendererSelectionReset(t.length());
         expectStringInChars(t);
         pressKeys(events);
+    }
+
+    private void expectRendererSelectionReset(final int count) {
+        context.checking(new Expectations() {{
+            exactly(count).of(renderer).clearSelection();
+        }});
     }
 
     private void expectStringInChars(final String t) {
@@ -58,6 +72,7 @@ public class KeyboardProcessorTest {
     private void assertSequence(final KeyEvent e, final char... chars) {
         final byte[] bytes = Charset.defaultCharset()
             .encode(new String(chars)).array();
+        expectRendererSelectionReset(3);
         expectString("x");
         expectBytes(bytes);
         expectString("x");
@@ -68,6 +83,7 @@ public class KeyboardProcessorTest {
     }
 
     private void assertSequence(final KeyEvent e, final String text) {
+        expectRendererSelectionReset(3);
         expectString("x");
         expectString(text);
         expectString("x");

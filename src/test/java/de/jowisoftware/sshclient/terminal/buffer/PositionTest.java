@@ -7,9 +7,6 @@ import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.terminal.buffer.Range;
-
 public class PositionTest {
     @Test
     public void testConstructor1() {

@@ -1,9 +1,9 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import java.util.HashSet;
-import java.util.Set;
 
 public class SynchronizedBuffer implements Buffer {
+    private static final long serialVersionUID = -3766914211621309695L;
+
     private volatile FlippableBufferStorage storage;
 
     private final CursorPositionManager cursorPosition;
@@ -117,26 +117,16 @@ public class SynchronizedBuffer implements Buffer {
 
         synchronized(renderer) {
             renderer.clear();
-            for (int row = 0; row < content.length; ++row) {
-                for (int col = 0; col < content[0].length; ++col) {
-                    renderer.renderChar(content[row][col], col, row,
-                            makeRenderFlags(row, col));
-                }
-            }
+            renderer.renderChars(content, makeRenderCursor());
             renderer.swap();
         }
     }
 
-    private Set<RenderFlag> makeRenderFlags(final int row, final int col) {
-        final Set<RenderFlag> flags = new HashSet<RenderFlag>();
-        if (showCursor && isNullBasedCursorAt(col, row)) {
-            flags.add(RenderFlag.CURSOR);
+    private Position makeRenderCursor() {
+        if (showCursor) {
+            return cursorPosition.currentPositionInScreen();
         }
-        return flags;
-    }
-
-    private boolean isNullBasedCursorAt(final int col, final int row) {
-        return cursorPosition.isAt(col - 1, row - 1);
+        return null;
     }
 
     @Override

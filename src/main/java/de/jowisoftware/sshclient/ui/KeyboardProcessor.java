@@ -35,6 +35,7 @@ public class KeyboardProcessor implements KeyListener, KeyboardEvent {
         if (session == null) {
             return;
         }
+        session.getRenderer().clearSelection();
 
         if (handleSpecialChar(e)) {
             return;

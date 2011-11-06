@@ -1,6 +1,10 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-public class Range {
+import java.io.Serializable;
+
+public class Range implements Serializable {
+    private static final long serialVersionUID = -1600405466057831973L;
+
     public final Position topLeft;
     public final Position bottomRight;
 
