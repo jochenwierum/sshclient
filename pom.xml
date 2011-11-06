@@ -111,10 +111,15 @@
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-					<archive>
+                    <archive>
 						<manifest>
 							<mainClass>de.jowisoftware.sshclient.SSHApp</mainClass>
 						</manifest>
+						<manifestEntries>
+                            <Build-Date>${timestamp}</Build-Date>
+                            <SCM-Revision>${buildNumber}</SCM-Revision>
+                            <SCM-Branch>${scmBranch}</SCM-Branch> 
+						</manifestEntries>
 					</archive>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -129,6 +134,42 @@
 					</execution>
 				</executions>
 			</plugin>
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<SCM-Revision>${buildNumber}</SCM-Revision>
+							<SCM-Branch>${scmBranch}</SCM-Branch>
+                            <Build-Date>${timestamp}</Build-Date> 
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+		
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+                    <timestampFormat>
+                            {0,date,yyyy-MM-dd}
+                    </timestampFormat>
+					<doCheck>false</doCheck>
+					<doUpdate>true</doUpdate>
+				</configuration>
+            </plugin>
 		</plugins>
 	</build>
 

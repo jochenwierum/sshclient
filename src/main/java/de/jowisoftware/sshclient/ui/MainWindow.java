@@ -9,6 +9,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
+import java.util.jar.Manifest;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -28,9 +32,9 @@ import de.jowisoftware.sshclient.log.LogPanel;
 import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
+import de.jowisoftware.sshclient.settings.KeyAgentManager;
 import de.jowisoftware.sshclient.settings.persisting.XMLLoader;
 import de.jowisoftware.sshclient.settings.persisting.XMLPersister;
-import de.jowisoftware.sshclient.settings.KeyAgentManager;
 import de.jowisoftware.sshclient.ui.settings.ConnectDialog;
 import de.jowisoftware.sshclient.util.FontUtils;
 
@@ -60,7 +64,7 @@ public class MainWindow extends JFrame {
             new XMLLoader(settings).load(settingsFile);
         }
         initTranslation();
-        setTitle("SSH");
+        setTitle("SSH " + makeVersion());
 
         try {
             initJSch();
@@ -283,5 +287,27 @@ public class MainWindow extends JFrame {
 
     public void updateProfiles() {
         toolBar.updateProfiles();
+    }
+
+    private String makeVersion() {
+        String version = "";
+        try {
+            final Enumeration<URL> resources = getClass().getClassLoader()
+                    .getResources("META-INF/MANIFEST.MF");
+            while (resources.hasMoreElements() && version.isEmpty()) {
+                final Manifest manifest =
+                        new Manifest(resources.nextElement().openStream());
+                final String revision = manifest.getMainAttributes().getValue("SCM-Revision");
+                final String branch = manifest.getMainAttributes().getValue("SCM-Branch");
+                final String date = manifest.getMainAttributes().getValue("Build-Date");
+
+                if (revision != null && branch != null && date != null) {
+                    version = branch + "-" + revision + " " + date;
+                }
+            }
+        } catch (final IOException e) {
+        }
+
+        return version;
     }
 }
