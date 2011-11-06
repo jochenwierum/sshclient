@@ -55,18 +55,9 @@ public class AWTGfxChar implements GfxChar {
             final Set<RenderFlag> flags) {
         eraseArea(g, rect, flags);
 
-        if (flags.contains(RenderFlag.SELECTED)) {
-            drawSelection(g, rect);
-        }
-
         if (flags.contains(RenderFlag.CURSOR)) {
             drawCursor(g, rect);
         }
-    }
-
-    private void drawSelection(final Graphics g, final Rectangle rect) {
-        g.setColor(Color.RED);
-        g.drawRect(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
     }
 
     private void drawCursor(final Graphics g, final Rectangle rect) {
@@ -124,40 +115,33 @@ public class AWTGfxChar implements GfxChar {
     }
 
     private Color getBackColor(final Set<RenderFlag> flags) {
-        final TerminalColor color;
-        if (invertBackground(flags)) {
-            color = fgColor;
-        } else {
-            color = bgColor;
-        }
-
-        if (flags.contains(RenderFlag.INVERTED)) {
-            return (Color) color.invert().getColor();
-        } else {
-            return (Color) color.getColor();
-        }
-    }
-
-    private boolean invertBackground(final Set<RenderFlag> flags) {
-        final boolean inversed = attributes.contains(Attribute.INVERSE);
-        final boolean selected = flags.contains(RenderFlag.SELECTED);
-
-        return inversed != selected;
+        return invertColorsIfNeeded(flags, bgColor, fgColor);
     }
 
     private Color getForeColor(final Set<RenderFlag> flags) {
-        final TerminalColor color;
-        if (invertBackground(flags)) {
-            color = bgColor;
-        } else {
-            color = fgColor;
-        }
+        return invertColorsIfNeeded(flags, fgColor, bgColor);
+    }
 
+    private Color invertColorsIfNeeded(final Set<RenderFlag> flags,
+            final TerminalColor defaultColor, final TerminalColor invertedColor) {
+        final TerminalColor color = invertColors(flags) ? invertedColor : defaultColor;
+        return invertScreenIfNeeded(flags, color);
+    }
+
+    public Color invertScreenIfNeeded(final Set<RenderFlag> flags,
+            final TerminalColor color) {
         if (flags.contains(RenderFlag.INVERTED)) {
             return (Color) color.invert().getColor();
         } else {
             return (Color) color.getColor();
         }
+    }
+
+    private boolean invertColors(final Set<RenderFlag> flags) {
+        final boolean inversed = attributes.contains(Attribute.INVERSE);
+        final boolean selected = flags.contains(RenderFlag.SELECTED);
+
+        return inversed ^ selected;
     }
 
     @Override
