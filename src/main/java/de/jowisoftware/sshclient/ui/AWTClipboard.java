@@ -3,18 +3,25 @@ package de.jowisoftware.sshclient.ui;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 
-import de.jowisoftware.sshclient.terminal.buffer.Renderer;
+import org.apache.log4j.Logger;
+
+import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.mouse.ClipboardManager;
 
 public class AWTClipboard implements ClipboardManager, ClipboardOwner  {
-    private static final long serialVersionUID = -7702866947155393382L;
-    private final Renderer renderer;
+    private static final Logger LOGGER = Logger.getLogger(AWTClipboard.class);
 
-    public AWTClipboard(final Renderer renderer) {
-        this.renderer = renderer;
+    private static final long serialVersionUID = -7702866947155393382L;
+    private final SSHSession session;
+
+    public AWTClipboard(final SSHSession session) {
+        this.session = session;
     }
 
     @Override
@@ -26,6 +33,22 @@ public class AWTClipboard implements ClipboardManager, ClipboardOwner  {
 
     @Override
     public void lostOwnership(final Clipboard clipboard, final Transferable contents) {
-        renderer.clearSelection();
+        session.getRenderer().clearSelection();
+    }
+
+    public void pasteToServer() {
+        final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        final Transferable contents = clipboard.getContents(this);
+
+        if (contents.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+            try {
+                final String text = (String) contents.getTransferData(DataFlavor.stringFlavor);
+                session.sendToServer(text);
+            } catch (final UnsupportedFlavorException e) {
+                LOGGER.warn("Could not paste clipboard", e);
+            } catch (final IOException e) {
+                LOGGER.warn("Could not paste clipboard", e);
+            }
+        }
     }
 }

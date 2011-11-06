@@ -44,6 +44,8 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     private final DoubleBufferedImage renderer;
     private final CharacterProcessor outputProcessor;
     private final MouseCursorManager mouseCursorManager;
+    private final AWTClipboard clipboard;
+
     private ChannelShell channel;
     private DisplayType displayType = DisplayType.DYNAMIC;
 
@@ -56,12 +58,13 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         final Buffer buffer = SynchronizedBuffer.createBuffer(
                 charSetup.createClearChar(), 80, 24, tabstopManager);
 
-        mouseCursorManager = new DefaultMouseCursorManager(buffer, renderer,
-                new AWTClipboard(renderer));
-
         session = new SimpleSSHSession(buffer, renderer, charSetup, tabstopManager);
         session.getKeyboardFeedback().register(keyboardProcessor);
         session.getVisualFeedback().register(new GfxFeedback(this, renderer));
+
+        clipboard = new AWTClipboard(session);
+        mouseCursorManager = new DefaultMouseCursorManager(buffer, renderer,
+                clipboard);
 
         outputProcessor = initializeProcessor(profile);
 
@@ -185,6 +188,8 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
             final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
             mouseCursorManager.updateSelectionEnd(charPosition);
             mouseCursorManager.copySelection();
+        } else if (e.getButton() == MouseEvent.BUTTON3) {
+            clipboard.pasteToServer();
         }
     }
 
