@@ -1,8 +1,5 @@
 package de.jowisoftware.sshclient.ui.terminal;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.charsets.DECCharset;
@@ -22,7 +19,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     private final AWTColorFactory colorFactory;
     private final AWTGfxInfo gfxInfo;
-    private final Set<Attribute> attributes = new HashSet<Attribute>();
+    private int attributes;
     private TerminalColor fgColor;
     private TerminalColor bgColor;
     private TerminalCharsetSelection selectedCharset = TerminalCharsetSelection.G0;
@@ -42,22 +39,22 @@ public class AWTGfxCharSetup implements GfxCharSetup {
         createBrightColors = false;
         fgColor = colorFactory.createStandardColor(ColorName.DEFAULT, true);
         bgColor = colorFactory.createStandardColor(ColorName.DEFAULT_BACKGROUND, false);
-        attributes.clear();
+        attributes = 0;
     }
 
     @Override
     public void setAttribute(final Attribute attribute) {
         if (attribute.equals(Attribute.BRIGHT)) {
-            attributes.remove(Attribute.DIM);
+            attributes &= ~Attribute.DIM.flag;
             createBrightColors = true;
         } else if (attribute.equals(Attribute.DIM)) {
-            attributes.remove(Attribute.BRIGHT);
+            attributes &= ~Attribute.BRIGHT.flag;
             createBrightColors = false;
         } else if (attribute.equals(Attribute.HIDDEN)) {
             fgColor = bgColor;
         }
 
-        attributes.add(attribute);
+        attributes |= attribute.flag;
     }
 
     @Override
@@ -65,7 +62,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
         if (attribute.equals(Attribute.HIDDEN)) {
             fgColor = colorFactory.createStandardColor(ColorName.DEFAULT, true);
         } else {
-            attributes.remove(attribute);
+            attributes &= ~attribute.flag;
         }
     }
 
@@ -123,9 +120,8 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     @Override
     public AWTGfxChar createClearChar() {
-        final HashSet<Attribute> newAttributes = new HashSet<Attribute>();
         return new AWTGfxChar(' ', new USASCIICharset(),
-                gfxInfo, fgColor, bgColor, newAttributes);
+                gfxInfo, fgColor, bgColor, 0);
     }
 
     @Override

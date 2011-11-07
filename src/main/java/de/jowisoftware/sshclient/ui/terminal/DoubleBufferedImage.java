@@ -5,8 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -90,16 +88,16 @@ public class DoubleBufferedImage implements Renderer {
     @Override
     public synchronized void renderChars(final GfxChar characters[][],
             final Position cursorPosition) {
-        final Set<RenderFlag> renderFlags = createRenderFlas();
         final Position selectionStart = this.currentSelectionStart;
         final Position selectionEnd = this.currentSelectionEnd;
+        int renderFlags = createRenderFlas();
 
         if (images != null) {
             for (int y = 0; y < characters.length; ++y) {
                 for (int x = 0; x < characters[0].length; ++x) {
                     final int posx = x * charWidth;
                     final int posy = y * charHeight;
-                    updateRenderFlags(renderFlags, cursorPosition,
+                    renderFlags = updateRenderFlags(renderFlags, cursorPosition,
                             new Position(x + 1, y + 1),
                             selectionStart, selectionEnd);
 
@@ -112,31 +110,34 @@ public class DoubleBufferedImage implements Renderer {
         }
     }
 
-    public HashSet<RenderFlag> createRenderFlas() {
-        final HashSet<RenderFlag> renderFlags = new HashSet<RenderFlag>();
+    public int createRenderFlas() {
+        int renderFlags = 0;
         if (renderInverted) {
-            renderFlags.add(RenderFlag.INVERTED);
+            renderFlags |= RenderFlag.INVERTED.flag;
         }
         return renderFlags;
     }
 
-    private void updateRenderFlags(final Set<RenderFlag> renderFlags,
+    private int updateRenderFlags(final int renderFlags,
             final Position cursorPosition, final Position renderPosition,
             final Position selectionStart, final Position selectionEnd) {
 
+        int newFlags = renderFlags;
         if (cursorPosition != null && cursorPosition.equals(renderPosition)) {
-            renderFlags.add(RenderFlag.CURSOR);
+            newFlags |= RenderFlag.CURSOR.flag;
         } else {
-            renderFlags.remove(RenderFlag.CURSOR);
+            newFlags &= ~RenderFlag.CURSOR.flag;
         }
 
         if (selectionStart != null && selectionEnd != null &&
                 isInSelectionRange(renderPosition, selectionStart,
                         selectionEnd)) {
-            renderFlags.add(RenderFlag.SELECTED);
+            newFlags |= RenderFlag.SELECTED.flag;
         } else {
-            renderFlags.remove(RenderFlag.SELECTED);
+            newFlags &= ~RenderFlag.SELECTED.flag;
         }
+
+        return newFlags;
     }
 
     // TODO: introduce Position.smaller, Position.bigger

@@ -16,6 +16,7 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
     private final Map<ColorName, Color> lightColors = new HashMap<ColorName, Color>();
     private Color cursorColor;
     private Font font = new Font(Font.MONOSPACED, 0, 10);
+    private Font boldFont = new Font(Font.MONOSPACED, Font.BOLD, 10);
 
     public AWTGfxInfo() {
        colors.put(ColorName.BLACK, color(0, 0, 0));
@@ -60,6 +61,10 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
         return font;
     }
 
+    public Font getBoldFont() {
+        return boldFont;
+    }
+
     @Override
     public Color getCursorColor() {
         return cursorColor;
@@ -82,6 +87,11 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
 
     public void setFont(final Font font) {
         this.font = font;
+        if (font != null) {
+            this.boldFont = font.deriveFont(Font.BOLD);
+        } else {
+            this.boldFont = null;
+        }
     }
 
     @Override

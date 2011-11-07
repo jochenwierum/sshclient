@@ -1,11 +1,8 @@
 package de.jowisoftware.sshclient.ui.terminal;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.util.HashSet;
-import java.util.Set;
 
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.charsets.GfxCharset;
@@ -14,7 +11,7 @@ import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
 
 public class AWTGfxChar implements GfxChar {
     private final AWTGfxInfo gfxInfo;
-    private final HashSet<Attribute> attributes;
+    private final int attributes;
     private final TerminalColor fgColor;
     private final TerminalColor bgColor;
     private final char character;
@@ -23,39 +20,34 @@ public class AWTGfxChar implements GfxChar {
     public AWTGfxChar(final char character,
             final GfxCharset charset, final AWTGfxInfo gfxInfo,
             final TerminalColor fgColor, final TerminalColor bgColor,
-            final Set<Attribute> attributes) {
+            final int attributes) {
         this.character = character;
         this.charset = charset;
         this.gfxInfo = gfxInfo;
         this.fgColor = fgColor;
         this.bgColor = bgColor;
-        this.attributes = new HashSet<Attribute>(attributes);
+        this.attributes = attributes;
     }
 
     public void drawAt(final Rectangle rect, final int baseLinePos,
-            final Graphics g, final Set<RenderFlag> flags) {
+            final Graphics g, final int flags) {
 
         drawBackground(g, rect, flags);
         drawForeground(g, rect, flags, baseLinePos);
     }
 
     private void drawForeground(final Graphics g, final Rectangle rect,
-            final Set<RenderFlag> flags, final int baseLinePos) {
-        final Font oldFont = applyFont(g);
-
-        applyColors(g, flags);
+            final int flags, final int baseLinePos) {
+        applyFont(g);
+        applyForgroundColor(g, flags);
         drawChar(g, rect, baseLinePos);
-
-        if (oldFont != null) {
-            restoreFont(g, oldFont);
-        }
     }
 
     private void drawBackground(final Graphics g, final Rectangle rect,
-            final Set<RenderFlag> flags) {
+            final int flags) {
         eraseArea(g, rect, flags);
 
-        if (flags.contains(RenderFlag.CURSOR)) {
+        if ((flags & RenderFlag.CURSOR.flag) != 0) {
             drawCursor(g, rect);
         }
     }
@@ -66,7 +58,7 @@ public class AWTGfxChar implements GfxChar {
     }
 
     private void eraseArea(final Graphics g, final Rectangle rect,
-            final Set<RenderFlag> flags) {
+            final int flags) {
         g.setColor(getBackColor(flags));
         g.fillRect(rect.x, rect.y, rect.width, rect.height);
     }
@@ -78,28 +70,21 @@ public class AWTGfxChar implements GfxChar {
                 charset.getUnicodeChar(character)), rect.x,
                 bottomY);
 
-        if (attributes.contains(Attribute.UNDERSCORE)) {
+        if ((attributes & Attribute.UNDERSCORE.flag) != 0) {
             g.drawLine(rect.x, bottomY, rect.x + rect.width, bottomY);
         }
     }
 
-    private void restoreFont(final Graphics g, final Font oldFont) {
-        g.setFont(oldFont);
-    }
-
-    private Font applyFont(final Graphics g) {
-        final Font oldFont;
-        if (attributes.contains(Attribute.BRIGHT)) {
-            oldFont = g.getFont();
-            g.setFont(oldFont.deriveFont(Font.BOLD));
+    private void applyFont(final Graphics g) {
+        if ((attributes & Attribute.BRIGHT.flag) != 0) {
+            g.setFont(gfxInfo.getBoldFont());
         } else {
-            oldFont = null;
+            g.setFont(gfxInfo.getFont());
         }
-        return oldFont;
     }
 
-    private void applyColors(final Graphics g, final Set<RenderFlag> flags) {
-        if (!attributes.contains(Attribute.BLINK)) {
+    private void applyForgroundColor(final Graphics g, final int flags) {
+        if ((attributes & Attribute.BLINK.flag) == 0) {
             g.setColor(getForeColor(flags));
         } else {
             if (blinkIsForeground()) {
@@ -114,32 +99,32 @@ public class AWTGfxChar implements GfxChar {
         return (System.currentTimeMillis() / 400) % 2 == 0;
     }
 
-    private Color getBackColor(final Set<RenderFlag> flags) {
+    private Color getBackColor(final int flags) {
         return invertColorsIfNeeded(flags, bgColor, fgColor);
     }
 
-    private Color getForeColor(final Set<RenderFlag> flags) {
+    private Color getForeColor(final int flags) {
         return invertColorsIfNeeded(flags, fgColor, bgColor);
     }
 
-    private Color invertColorsIfNeeded(final Set<RenderFlag> flags,
+    private Color invertColorsIfNeeded(final int flags,
             final TerminalColor defaultColor, final TerminalColor invertedColor) {
         final TerminalColor color = invertColors(flags) ? invertedColor : defaultColor;
         return invertScreenIfNeeded(flags, color);
     }
 
-    public Color invertScreenIfNeeded(final Set<RenderFlag> flags,
+    public Color invertScreenIfNeeded(final int flags,
             final TerminalColor color) {
-        if (flags.contains(RenderFlag.INVERTED)) {
+        if ((flags & RenderFlag.INVERTED.flag) != 0) {
             return (Color) color.invert().getColor();
         } else {
             return (Color) color.getColor();
         }
     }
 
-    private boolean invertColors(final Set<RenderFlag> flags) {
-        final boolean inversed = attributes.contains(Attribute.INVERSE);
-        final boolean selected = flags.contains(RenderFlag.SELECTED);
+    private boolean invertColors(final int flags) {
+        final boolean inversed = (attributes & Attribute.INVERSE.flag) != 0;
+        final boolean selected = (flags & RenderFlag.SELECTED.flag) != 0;
 
         return inversed ^ selected;
     }
