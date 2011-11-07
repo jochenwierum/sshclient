@@ -199,6 +199,17 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         }
     }
 
+    @Override
+    public void mouseClicked(final MouseEvent e) {
+        if (e.getClickCount() == 2) {
+            final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
+            mouseCursorManager.copyWordUnderCursor(charPosition);
+        } else if (e.getClickCount() == 3) {
+            final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
+            mouseCursorManager.copyLineUnderCursor(charPosition);
+        }
+    }
+
     public void updateSelection(final MouseEvent e) {
         final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
         mouseCursorManager.updateSelectionEnd(charPosition);
@@ -238,7 +249,6 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override public void componentMoved(final ComponentEvent e) { /* ignored */ }
     @Override public void componentShown(final ComponentEvent e) { /* ignored */ }
     @Override public void componentHidden(final ComponentEvent e) { /* ignored */ }
-    @Override public void mouseClicked(final MouseEvent e) { /* ignored */ }
     @Override public void mouseEntered(final MouseEvent e) { /* ignored */ }
     @Override public void mouseExited(final MouseEvent e) { /* ignored */ }
     @Override public void mouseMoved(final MouseEvent e) { /* ignored */ }

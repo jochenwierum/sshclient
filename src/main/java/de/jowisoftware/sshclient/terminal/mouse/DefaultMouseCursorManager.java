@@ -21,6 +21,8 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
 
     private final Renderer renderer;
 
+    private Position lastSelectionEndPosition;
+
     public DefaultMouseCursorManager(final Buffer buffer,
             final Renderer renderer, final ClipboardManager clipboard) {
         this.buffer = buffer;
@@ -32,16 +34,20 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
     public void startSelection(final Position position) {
         LOGGER.trace("Start selection: " + position);
         firstClickPosition = position;
+        lastSelectionEndPosition = null;
     }
 
     @Override
     public void updateSelectionEnd(final Position position) {
-        LOGGER.trace("End selection: " + position);
-        if (position.equals(firstClickPosition)) {
-            renderer.clearSelection();
-        } else {
-            updateSelectionFields(position);
-            renderer.setSelection(startPosition, endPosition.offset(-1, 0));
+        if (!position.equals(lastSelectionEndPosition)) {
+            LOGGER.trace("End selection: " + position);
+            if (position.equals(firstClickPosition)) {
+                renderer.clearSelection();
+            } else {
+                updateSelectionFields(position);
+                renderer.setSelection(startPosition, endPosition.offset(-1, 0));
+            }
+            lastSelectionEndPosition = position;
         }
     }
 
@@ -109,4 +115,17 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
         return buffer.getCharacter(y, x).getChar();
     }
 
+    @Override
+    public void copyWordUnderCursor(final Position charPosition) {
+        // TODO Auto-generated method stub
+        // TODO: introduce BufferParser
+        // dblclick on word: select word
+        // dblclick on non-word: select all equal non-word
+        // non-word: (not: ., /) , [, ], %,
+    }
+
+    @Override
+    public void copyLineUnderCursor(final Position charPosition) {
+        // TODO Auto-generated method stub
+    }
 }

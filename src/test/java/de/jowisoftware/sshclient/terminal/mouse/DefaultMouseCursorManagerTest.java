@@ -141,5 +141,17 @@ public class DefaultMouseCursorManagerTest {
         manager.startSelection(new Position(1, 2));
         manager.updateSelectionEnd(new Position(1, 2));
     }
+
+    @Test
+    public void doubleSelectingTheSameEndDoesNothing() {
+        context.checking(new Expectations() {{
+            oneOf(renderer).setSelection(new Position(2, 5),
+                    new Position(4, 5));
+        }});
+
+        manager.startSelection(new Position(2, 5));
+        manager.updateSelectionEnd(new Position(5, 5));
+        manager.updateSelectionEnd(new Position(5, 5));
+    }
 }
 

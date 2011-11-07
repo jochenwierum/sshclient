@@ -219,11 +219,13 @@ public class DoubleBufferedImage implements Renderer {
     public void clearSelection() {
         this.currentSelectionStart = null;
         this.currentSelectionEnd = null;
+        swap();
     }
 
     @Override
     public void setSelection(final Position pos1, final Position pos2) {
         this.currentSelectionStart = pos1;
         this.currentSelectionEnd = pos2;
+        swap();
     }
 }

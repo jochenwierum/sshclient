@@ -8,4 +8,6 @@ public interface MouseCursorManager extends Serializable {
     void startSelection(Position charPosition);
     void updateSelectionEnd(Position charPosition);
     void copySelection();
+    void copyWordUnderCursor(Position charPosition);
+    void copyLineUnderCursor(Position charPosition);
 }
