@@ -14,66 +14,6 @@ public class AWTColorFactory implements ColorFactory {
     private static final Logger LOGGER = Logger
             .getLogger(AWTColorFactory.class);
 
-    private class SystemColor implements TerminalColor {
-        private final ColorName colorName;
-        private final boolean isBright;
-        private SystemColor inverseColor = this;
-
-        public SystemColor(final ColorName colorName,
-                final boolean isBright) {
-            this.colorName = colorName;
-            this.isBright = isBright;
-        }
-
-        @Override
-        public Color getColor() {
-            return gfxInfo.mapColor(colorName, isBright);
-        }
-
-        @Override
-        public boolean isColor(final ColorName color) {
-            return color == this.colorName;
-        }
-
-        @Override
-        public boolean isBright() {
-            return isBright;
-        }
-
-        @Override
-        public TerminalColor invert() {
-            return inverseColor;
-        }
-    }
-
-    private static class CustomColor implements TerminalColor {
-        private Color color;
-
-        public CustomColor(final Color color) {
-            this.color = color;
-        }
-
-        @Override
-        public Color getColor() {
-            return color;
-        }
-
-        @Override
-        public boolean isColor(final ColorName color) {
-            return false;
-        }
-
-        @Override
-        public boolean isBright() {
-            return false;
-        }
-
-        @Override
-        public TerminalColor invert() {
-            return this;
-        }
-    }
-
     private final AWTGfxInfo gfxInfo;
     private final Map<Integer, CustomColor> customColors =
             new HashMap<Integer, CustomColor>();
@@ -90,11 +30,11 @@ public class AWTColorFactory implements ColorFactory {
         final int colorCount = ColorName.values().length;
         for (int i = 0; i < colorCount; ++i) {
             systemColors.put(i,
-                    new SystemColor(ColorName.values()[i], false));
+                    new SystemColor(ColorName.values()[i], false, gfxInfo));
         }
         for (int i = 0; i < colorCount; ++i) {
             systemColors.put(colorCount + i,
-                    new SystemColor(ColorName.values()[i], true));
+                    new SystemColor(ColorName.values()[i], true, gfxInfo));
         }
 
         systemColors.get(0).inverseColor = systemColors.get(1);
@@ -145,7 +85,7 @@ public class AWTColorFactory implements ColorFactory {
             final int systemColorCode = colorCode % 8 + ColorName.BLACK.ordinal();
             final boolean isBright = colorCode < 8;
             return new SystemColor(ColorName.values()[systemColorCode],
-                    isBright);
+                    isBright, gfxInfo);
         }
         return customColors.get(colorCode);
     }

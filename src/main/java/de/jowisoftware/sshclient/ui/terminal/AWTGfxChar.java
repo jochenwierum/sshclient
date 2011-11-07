@@ -14,19 +14,27 @@ public class AWTGfxChar implements GfxChar {
     private final int attributes;
     private final TerminalColor fgColor;
     private final TerminalColor bgColor;
-    private final char character;
-    private final GfxCharset charset;
+    private final String charAsString;
 
     public AWTGfxChar(final char character,
             final GfxCharset charset, final AWTGfxInfo gfxInfo,
             final TerminalColor fgColor, final TerminalColor bgColor,
             final int attributes) {
-        this.character = character;
-        this.charset = charset;
+        if (gfxInfo == null) {
+            throw new NullPointerException("gfxInfo is null");
+        }
+        if (fgColor == null) {
+            throw new NullPointerException("fgColor is null");
+        }
+        if (bgColor == null) {
+            throw new NullPointerException("bgColor is null");
+        }
+
         this.gfxInfo = gfxInfo;
         this.fgColor = fgColor;
         this.bgColor = bgColor;
         this.attributes = attributes;
+        charAsString = Character.toString(charset.getUnicodeChar(character));
     }
 
     public void drawAt(final Rectangle rect, final int baseLinePos,
@@ -66,9 +74,7 @@ public class AWTGfxChar implements GfxChar {
     private void drawChar(final Graphics g,
             final Rectangle rect, final int baseLinePos) {
         final int bottomY = rect.y + baseLinePos;
-        g.drawString(Character.toString(
-                charset.getUnicodeChar(character)), rect.x,
-                bottomY);
+        g.drawString(charAsString, rect.x, bottomY);
 
         if ((attributes & Attribute.UNDERSCORE.flag) != 0) {
             g.drawLine(rect.x, bottomY, rect.x + rect.width, bottomY);
@@ -109,12 +115,12 @@ public class AWTGfxChar implements GfxChar {
 
     private Color invertColorsIfNeeded(final int flags,
             final TerminalColor defaultColor, final TerminalColor invertedColor) {
-        final TerminalColor color = invertColors(flags) ? invertedColor : defaultColor;
-        return invertScreenIfNeeded(flags, color);
-    }
+        final boolean inversed = (attributes & Attribute.INVERSE.flag) != 0;
+        final boolean selected = (flags & RenderFlag.SELECTED.flag) != 0;
+        final boolean invertColors = inversed ^ selected;
 
-    public Color invertScreenIfNeeded(final int flags,
-            final TerminalColor color) {
+        final TerminalColor color = invertColors ? invertedColor : defaultColor;
+
         if ((flags & RenderFlag.INVERTED.flag) != 0) {
             return (Color) color.invert().getColor();
         } else {
@@ -122,20 +128,47 @@ public class AWTGfxChar implements GfxChar {
         }
     }
 
-    private boolean invertColors(final int flags) {
-        final boolean inversed = (attributes & Attribute.INVERSE.flag) != 0;
-        final boolean selected = (flags & RenderFlag.SELECTED.flag) != 0;
-
-        return inversed ^ selected;
-    }
-
     @Override
     public String toString() {
-        return Character.toString(character);
+        return charAsString;
     }
 
     @Override
     public char getChar() {
-        return character;
+        return charAsString.charAt(0);
+    }
+
+    @Override
+    public int hashCode() {
+        return getHash(fgColor, bgColor, attributes, charAsString);
+    }
+
+    public static int getHash(final TerminalColor fgColor,
+            final TerminalColor bgColor, final int attributes,
+            final String charAsString) {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + attributes;
+        result = prime * result + ((bgColor == null) ? 0 : bgColor.hashCode());
+        result = prime * result
+                + ((charAsString == null) ? 0 : charAsString.hashCode());
+        result = prime * result + ((fgColor == null) ? 0 : fgColor.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final AWTGfxChar other = (AWTGfxChar) obj;
+        return attributes != other.attributes &&
+                bgColor.equals(other.bgColor) &&
+                charAsString.equals(other.charAsString) &&
+                fgColor.equals(other.fgColor);
     }
 }

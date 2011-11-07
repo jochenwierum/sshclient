@@ -179,14 +179,31 @@
 			<build>
 				<resources>
 					<resource>
-						<directory>src/main/resources.release</directory>
+						<directory>src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>src/main/resources</directory>
+						<directory>src/main/resources.release</directory>
 					</resource>
 				</resources>
 			</build>
 		</profile>
+		
+        <profile>
+            <id>debug</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <resources>
+                    <resource>
+                        <directory>src/main/resources</directory>
+                    </resource>
+                    <resource>
+                        <directory>src/main/resources.debug</directory>
+                    </resource>
+                </resources>
+            </build>
+        </profile>
 
 		<profile>
 			<id>applet</id>
