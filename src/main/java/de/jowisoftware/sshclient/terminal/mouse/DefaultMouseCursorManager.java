@@ -43,6 +43,8 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
             LOGGER.trace("End selection: " + position);
             if (position.equals(firstClickPosition)) {
                 renderer.clearSelection();
+                startPosition = null;
+                endPosition = null;
             } else {
                 updateSelectionFields(position);
                 renderer.setSelection(startPosition, endPosition.offset(-1, 0));
@@ -71,6 +73,10 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
 
     @Override
     public void copySelection() {
+        if (startPosition == null || endPosition == null) {
+            return;
+        }
+
         LOGGER.debug("Copying range to clipboard: " + startPosition + " to "
                 + endPosition);
 

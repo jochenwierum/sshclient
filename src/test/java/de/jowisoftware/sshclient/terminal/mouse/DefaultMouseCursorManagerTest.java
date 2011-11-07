@@ -153,5 +153,17 @@ public class DefaultMouseCursorManagerTest {
         manager.updateSelectionEnd(new Position(5, 5));
         manager.updateSelectionEnd(new Position(5, 5));
     }
+
+    @Test
+    public void bug25CopyWithoutSelectionDoesNothing() {
+        manager.copySelection();
+
+        context.checking(new Expectations() {{
+            allowing(renderer).clearSelection();
+        }});
+        manager.startSelection(new Position(7, 5));
+        manager.updateSelectionEnd(new Position(7, 5));
+        manager.copySelection();
+    }
 }
 
