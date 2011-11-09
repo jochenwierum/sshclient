@@ -116,9 +116,7 @@ public class SynchronizedBuffer implements Buffer {
         }
 
         synchronized(renderer) {
-            renderer.clear();
             renderer.renderChars(content, makeRenderCursor());
-            renderer.swap();
         }
     }
 

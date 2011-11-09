@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 
 import com.jcraft.jsch.Channel;
 
+import de.jowisoftware.sshclient.debug.PerformanceLogger;
+import de.jowisoftware.sshclient.debug.PerformanceType;
 import de.jowisoftware.sshclient.util.StringUtils;
 
 public class AsyncInputStreamReaderThread extends Thread {
@@ -37,12 +39,8 @@ public class AsyncInputStreamReaderThread extends Thread {
                                 StringUtils.escapeForLogs(buffer, 0, read));
                     }
                     try {
-                        final long startTime = System.currentTimeMillis();
+                        PerformanceLogger.start(PerformanceType.REVEICE_CHAR_TO_RENDER);
                         callback.gotChars(buffer, read);
-                        if (LOGGER.isTraceEnabled()) {
-                            LOGGER.trace("Took " + (System.currentTimeMillis()
-                                    - startTime) + " ms to process");
-                        }
                     } catch(final RuntimeException e) {
                         LOGGER.error("Reader thread catched exception", e);
                     }

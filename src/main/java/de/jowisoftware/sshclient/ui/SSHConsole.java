@@ -19,6 +19,8 @@ import org.apache.log4j.Logger;
 
 import com.jcraft.jsch.ChannelShell;
 
+import de.jowisoftware.sshclient.debug.PerformanceLogger;
+import de.jowisoftware.sshclient.debug.PerformanceType;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.terminal.SSHSession;
@@ -98,6 +100,8 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         final Image image = renderer.getImage();
         if (image != null) {
             g.drawImage(image, 0, 0, this);
+            PerformanceLogger.end(PerformanceType.REQUEST_TO_RENDER);
+            PerformanceLogger.end(PerformanceType.REVEICE_CHAR_TO_RENDER);
         }
     }
 
@@ -111,7 +115,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override
     public void gotChars(final byte[] chars, final int count) {
         processCharacters(chars, count);
-        session.getBuffer().render(renderer);
+        session.render();
     }
 
     private void processCharacters(final byte[] chars, final int count) {
@@ -125,7 +129,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     }
 
     public void redrawConsole() {
-        session.getBuffer().render(renderer);
+        session.render();
     }
 
     public void setOutputStream(final OutputStream outputStream) {
@@ -179,6 +183,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
             final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
             mouseCursorManager.startSelection(charPosition);
             mouseCursorManager.updateSelectionEnd(charPosition);
+            session.render();
         }
     }
 
@@ -196,6 +201,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     public void mouseDragged(final MouseEvent e) {
         if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
             updateSelection(e);
+            PerformanceLogger.start(PerformanceType.SELECT_TO_RENDER);
         }
     }
 
@@ -213,6 +219,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     public void updateSelection(final MouseEvent e) {
         final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
         mouseCursorManager.updateSelectionEnd(charPosition);
+        session.render();
     }
 
     public void setDisplayType(final DisplayType displayType) {

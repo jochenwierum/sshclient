@@ -1,5 +1,7 @@
 package de.jowisoftware.sshclient.terminal;
 
+import java.io.Serializable;
+
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
@@ -9,7 +11,7 @@ import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
 import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 
-public interface SSHSession {
+public interface SSHSession extends Serializable {
     void sendToServer(String string);
     void sendToServer(byte[] bs);
 

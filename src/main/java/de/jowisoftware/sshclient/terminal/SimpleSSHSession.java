@@ -18,6 +18,8 @@ import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.util.StringUtils;
 
 public class SimpleSSHSession implements SSHSession {
+    private static final long serialVersionUID = -7797496064287612390L;
+
     private static final Logger LOGGER = Logger.getLogger(SimpleSSHSession.class);
 
     private final Buffer buffer;
@@ -112,5 +114,9 @@ public class SimpleSSHSession implements SSHSession {
     @Override
     public Renderer getRenderer() {
         return renderer;
+    }
+
+    public void render() {
+        buffer.render(renderer);
     }
 }

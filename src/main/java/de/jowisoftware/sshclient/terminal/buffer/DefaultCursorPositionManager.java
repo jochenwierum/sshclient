@@ -3,6 +3,8 @@ package de.jowisoftware.sshclient.terminal.buffer;
 import org.apache.log4j.Logger;
 
 public class DefaultCursorPositionManager implements CursorPositionManager {
+    private static final long serialVersionUID = 8520751863577601665L;
+
     private static final Logger LOGGER = Logger
             .getLogger(DefaultCursorPositionManager.class);
 
@@ -98,11 +100,6 @@ public class DefaultCursorPositionManager implements CursorPositionManager {
     @Override
     public int getBottomMargin() {
         return bottomMargin;
-    }
-
-    @Override
-    public boolean isAt(final int col, final int row) {
-        return col == position.x && row == position.y;
     }
 
     @Override

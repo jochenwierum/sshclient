@@ -138,19 +138,6 @@ public class DefaultCursorPositionManagerTest {
     }
 
     @Test
-    public void isAtShowsCurrentPosition() {
-        manager.setPositionSafelyInScreen(new Position(2, 3));
-        assertThat(manager.isAt(2, 3), is(true));
-        assertThat(manager.isAt(3, 3), is(false));
-        assertThat(manager.isAt(4, 2), is(false));
-        assertThat(manager.isAt(4, 9), is(false));
-
-        manager.setPositionSafelyInScreen(new Position(4, 9));
-        assertThat(manager.isAt(4, 9), is(true));
-        assertThat(manager.isAt(2, 3), is(false));
-    }
-
-    @Test
     public void marginIsExported() {
         manager.setPositionSafelyInScreen(new Position(3, 7));
 

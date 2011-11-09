@@ -1,13 +1,14 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-public interface CursorPositionManager {
+import java.io.Serializable;
+
+public interface CursorPositionManager extends Serializable {
     public static final int NO_MARGIN_DEFINED = -1;
 
     void newSize(int width, int height);
 
     Position currentPositionInScreen();
     Position currentPositionInMargin();
-    boolean isAt(int col, int row);
 
     void setPositionSafelyInScreen(Position newPosition);
     void setPositionSafelyInMargin(Position position);

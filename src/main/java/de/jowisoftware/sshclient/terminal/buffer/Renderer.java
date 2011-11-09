@@ -4,9 +4,7 @@ import java.io.Serializable;
 
 
 public interface Renderer extends Serializable {
-    void clear();
     void renderChars(GfxChar[][] characters, Position cursorPosition);
-    void swap();
 
     int getLines();
     int getCharsPerLine();

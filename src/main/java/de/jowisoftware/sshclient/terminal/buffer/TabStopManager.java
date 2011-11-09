@@ -1,6 +1,8 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-public interface TabStopManager {
+import java.io.Serializable;
+
+public interface TabStopManager extends Serializable {
     Position getNextHorizontalTabPosition(final Position position);
 
     void newWidth(final int newWidth);
