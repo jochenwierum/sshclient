@@ -11,12 +11,13 @@ public class SSHApplet extends java.applet.Applet {
     private static final Logger LOGGER = Logger.getLogger(SSHApplet.class);
 
     @Override
+    @SuppressWarnings("unused")
     public void init() {
         try {
             final String nativeLF = UIManager.getSystemLookAndFeelClassName();
             UIManager.setLookAndFeel(nativeLF);
         } catch (final Exception e) {
-            LOGGER.error("Could not set Look&Feed", e);
+            LOGGER.error("Could not set Look&Feel", e);
         }
 
         super.init();

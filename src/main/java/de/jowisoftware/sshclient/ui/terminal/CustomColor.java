@@ -18,7 +18,7 @@ public class CustomColor implements TerminalColor {
     }
 
     @Override
-    public boolean isColor(final ColorName color) {
+    public boolean isColor(final ColorName colorName) {
         return false;
     }
 

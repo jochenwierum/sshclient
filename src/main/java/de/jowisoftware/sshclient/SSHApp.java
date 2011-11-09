@@ -16,7 +16,7 @@ public class SSHApp {
             final String nativeLF = UIManager.getSystemLookAndFeelClassName();
             UIManager.setLookAndFeel(nativeLF);
         } catch (final Exception e) {
-            LOGGER.error("Could not set Look&Feed", e);
+            LOGGER.error("Could not set Look&Feel", e);
         }
 
         new MainWindow();
