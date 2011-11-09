@@ -10,22 +10,25 @@ import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.util.StringUtils;
 
-public class EncodingDecoder {
-    private static final Logger LOGGER = Logger.getLogger(EncodingDecoder.class);
+public class CharsetByteProcessor implements ByteProcessor {
+    private static final Logger LOGGER = Logger.getLogger(CharsetByteProcessor.class);
 
     private final ByteBuffer byteBuffer = ByteBuffer.allocate(32);
 
     private final CharsetDecoder decoder;
     private final float maxBytes;
+    private final CharacterProcessor callback;
 
-    public EncodingDecoder(final Charset charset) {
+    public CharsetByteProcessor(final CharacterProcessor callback, final Charset charset) {
+        this.callback = callback;
         this.decoder = charset.newDecoder();
         maxBytes = 2 / decoder.maxCharsPerByte();
         decoder.onMalformedInput(CodingErrorAction.REPORT);
         byteBuffer.clear();
     }
 
-    public Character nextByte(final byte value) {
+    @Override
+    public void processByte(final byte value) {
         byteBuffer.put(value);
         final CharBuffer out = CharBuffer.allocate(2);
 
@@ -33,10 +36,9 @@ public class EncodingDecoder {
 
         if (toDec.remaining() != 0) {
             checkErrorState();
-            return null;
         } else {
             byteBuffer.clear();
-            return out.get();
+            callback.processChar(out.get());
         }
     }
 
@@ -48,7 +50,9 @@ public class EncodingDecoder {
                 bytes.append(StringUtils.byteToHex(byteBuffer.get(i)));
                 chars.append((char) byteBuffer.get(i));
             }
-            LOGGER.error("Could not decode: " + bytes.toString() + ": " + chars.toString());
+            LOGGER.error("Could not decode as " +
+                    decoder.charset().displayName() + ": " +
+                    bytes.toString() + ": " + chars.toString());
             byteBuffer.clear();
         }
     }

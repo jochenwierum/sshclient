@@ -30,7 +30,10 @@ import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.SynchronizedBuffer;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
+import de.jowisoftware.sshclient.terminal.input.ByteProcessor;
 import de.jowisoftware.sshclient.terminal.input.CharacterProcessor;
+import de.jowisoftware.sshclient.terminal.input.SequenceSupportingCharacterProcessor;
+import de.jowisoftware.sshclient.terminal.input.CharsetByteProcessor;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequenceRepository;
 import de.jowisoftware.sshclient.terminal.mouse.DefaultMouseCursorManager;
 import de.jowisoftware.sshclient.terminal.mouse.MouseCursorManager;
@@ -44,7 +47,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
 
     private final SimpleSSHSession session;
     private final DoubleBufferedImage renderer;
-    private final CharacterProcessor outputProcessor;
+    private final ByteProcessor outputProcessor;
     private final MouseCursorManager mouseCursorManager;
     private final AWTClipboard clipboard;
 
@@ -68,7 +71,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         mouseCursorManager = new DefaultMouseCursorManager(buffer, renderer,
                 clipboard);
 
-        outputProcessor = initializeProcessor(profile);
+        outputProcessor = initializeInputProcessor(profile);
 
         keyboardProcessor.setSession(session);
         doAwtSetup(keyboardProcessor);
@@ -90,9 +93,10 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         return session;
     }
 
-    private CharacterProcessor initializeProcessor(final AWTProfile profile) {
+    private ByteProcessor initializeInputProcessor(final AWTProfile profile) {
         final DefaultSequenceRepository repository = new DefaultSequenceRepository();
-        return new CharacterProcessor(session, profile.getCharset(), repository);
+        final CharacterProcessor processor = new SequenceSupportingCharacterProcessor(session, repository);
+        return new CharsetByteProcessor(processor, profile.getCharset());
     }
 
     @Override

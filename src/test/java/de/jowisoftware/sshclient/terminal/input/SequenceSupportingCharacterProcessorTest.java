@@ -1,6 +1,5 @@
 package de.jowisoftware.sshclient.terminal.input;
 
-import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import org.jmock.Expectations;
@@ -23,14 +22,14 @@ import de.jowisoftware.sshclient.terminal.input.controlsequences.NonASCIIControl
 import de.jowisoftware.sshclient.terminal.input.controlsequences.SequenceRepository;
 
 @RunWith(JMock.class)
-public class CharacterProcessorTest {
+public class SequenceSupportingCharacterProcessorTest {
     private final Mockery context = new JUnit4Mockery();
     private Buffer buffer;
     private GfxCharSetup setup;
     private NonASCIIControlSequence sequence1;
     private NonASCIIControlSequence sequence2;
     private GfxChar gfxChar;
-    private CharacterProcessor processor;
+    private SequenceSupportingCharacterProcessor processor;
     private VisualEvent visualFeedback;
     private SSHSession sessionInfo;
     private SequenceRepository repository;
@@ -47,9 +46,8 @@ public class CharacterProcessorTest {
         repository = context.mock(SequenceRepository.class);
         final EventHub<?> eventHub = context.mock(EventHub.class);
 
-        processor = new CharacterProcessor(
+        processor = new SequenceSupportingCharacterProcessor(
                 sessionInfo,
-                Charset.defaultCharset(),
                 repository);
 
         context.checking(new Expectations() {{
@@ -93,9 +91,9 @@ public class CharacterProcessorTest {
                 inSequence(seq);
         }});
 
-        processor.processByte((byte) Character.codePointAt("x", 0));
-        processor.processByte((byte) Character.codePointAt("y", 0));
-        processor.processByte((byte) Character.codePointAt("z", 0));
+        processor.processChar('x');
+        processor.processChar('y');
+        processor.processChar('z');
     }
 
     @Test
@@ -116,9 +114,9 @@ public class CharacterProcessorTest {
                 inSequence(seq);
         }});
 
-        processor.processByte((byte) Character.codePointAt("x", 0));
-        processor.processByte((byte) Character.codePointAt("\n", 0));
-        processor.processByte((byte) Character.codePointAt("z", 0));
+        processor.processChar('x');
+        processor.processChar('\n');
+        processor.processChar('z');
     }
 
     @Test
@@ -139,10 +137,10 @@ public class CharacterProcessorTest {
             oneOf(buffer).addCharacter(gfxChar);
         }});
 
-        processor.processByte((byte) 27);
-        processor.processByte((byte) Character.codePointAt("t", 0));
-        processor.processByte((byte) Character.codePointAt("s", 0));
-        processor.processByte((byte) Character.codePointAt("3", 0));
+        processor.processChar((char) 27);
+        processor.processChar('t');
+        processor.processChar('s');
+        processor.processChar('3');
     }
 
     @Test
@@ -167,11 +165,11 @@ public class CharacterProcessorTest {
                 inSequence(seq);
         }});
 
-        processor.processByte((byte) Character.codePointAt("x", 0));
-        processor.processByte((byte) Character.codePointAt("\r", 0));
-        processor.processByte((byte) Character.codePointAt("z", 0));
-        processor.processByte((byte) Character.codePointAt("\r", 0));
-        processor.processByte((byte) Character.codePointAt("y", 0));
+        processor.processChar('x');
+        processor.processChar('\r');
+        processor.processChar('z');
+        processor.processChar('\r');
+        processor.processChar('y');
     }
 
     @Test
@@ -180,7 +178,7 @@ public class CharacterProcessorTest {
             oneOf(buffer).processBackspace();
         }});
 
-        processor.processByte((byte) 8);
+        processor.processChar((char) 8);
     }
 
     @Test
@@ -201,9 +199,9 @@ public class CharacterProcessorTest {
                 inSequence(seq);
         }});
 
-        processor.processByte((byte) Character.codePointAt("x", 0));
-        processor.processByte((byte) 7);
-        processor.processByte((byte) Character.codePointAt("z", 0));
+        processor.processChar('x');
+        processor.processChar((char) 7);
+        processor.processChar('z');
     }
 
     @Test
@@ -231,13 +229,13 @@ public class CharacterProcessorTest {
             }
         });
 
-        processor.processByte((byte) 27);
-        processor.processByte((byte) Character.codePointAt("a", 0));
-        processor.processByte((byte) 27);
-        processor.processByte((byte) '\n');
-        processor.processByte((byte) Character.codePointAt("1", 0));
-        processor.processByte((byte) Character.codePointAt("2", 0));
-        processor.processByte((byte) Character.codePointAt("b", 0));
+        processor.processChar((char) 27);
+        processor.processChar('a');
+        processor.processChar((char) 27);
+        processor.processChar('\n');
+        processor.processChar('1');
+        processor.processChar('2');
+        processor.processChar('b');
     }
 
 
@@ -257,9 +255,9 @@ public class CharacterProcessorTest {
             }
         });
 
-        processor.processByte((byte) 27);
-        processor.processByte((byte) Character.codePointAt("a", 0));
-        processor.processByte((byte) 27);
-        processor.processByte((byte) '\\');
+        processor.processChar((char) 27);
+        processor.processChar('a');
+        processor.processChar((char) 27);
+        processor.processChar('\\');
     }
 }
