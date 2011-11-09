@@ -1,7 +1,6 @@
 package de.jowisoftware.sshclient.terminal.mouse;
 
-import java.io.Serializable;
 
-public interface ClipboardManager extends Serializable {
+public interface ClipboardManager {
     void copyPlaintext(String string);
 }

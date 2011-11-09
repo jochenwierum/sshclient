@@ -1,10 +1,7 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import java.io.Serializable;
 
-public class Position implements Serializable {
-    private static final long serialVersionUID = 4636869328309179823L;
-
+public class Position {
     public final int x;
     public final int y;
 

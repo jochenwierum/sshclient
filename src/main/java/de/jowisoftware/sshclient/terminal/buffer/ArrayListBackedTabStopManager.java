@@ -7,8 +7,6 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 public class ArrayListBackedTabStopManager implements TabStopManager {
-    private static final long serialVersionUID = 4725899525508734710L;
-
     private static final Logger LOGGER = Logger
             .getLogger(ArrayListBackedTabStopManager.class);
 

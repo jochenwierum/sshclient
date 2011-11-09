@@ -17,7 +17,6 @@ import de.jowisoftware.sshclient.terminal.mouse.ClipboardManager;
 public class AWTClipboard implements ClipboardManager, ClipboardOwner  {
     private static final Logger LOGGER = Logger.getLogger(AWTClipboard.class);
 
-    private static final long serialVersionUID = -7702866947155393382L;
     private final SSHSession session;
 
     public AWTClipboard(final SSHSession session) {

@@ -17,8 +17,6 @@ import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 
 public class DoubleBufferedImage implements Renderer {
-    private static final long serialVersionUID = 422553425796222913L;
-
     private final AWTGfxInfo gfxInfo;
     private final JPanel parent;
 

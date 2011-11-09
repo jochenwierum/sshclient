@@ -1,10 +1,8 @@
 package de.jowisoftware.sshclient.terminal.gfx;
 
-import java.io.Serializable;
 import java.util.Map;
 
-
-public interface GfxInfo<C> extends Serializable {
+public interface GfxInfo<C> {
     C mapColor(final ColorName color, final boolean light);
     C getCursorColor();
     Map<ColorName, C> getColorMap();

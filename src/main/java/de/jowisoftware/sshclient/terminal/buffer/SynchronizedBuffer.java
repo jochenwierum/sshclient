@@ -1,9 +1,6 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-
 public class SynchronizedBuffer implements Buffer {
-    private static final long serialVersionUID = -3766914211621309695L;
-
     private volatile FlippableBufferStorage storage;
 
     private final CursorPositionManager cursorPosition;

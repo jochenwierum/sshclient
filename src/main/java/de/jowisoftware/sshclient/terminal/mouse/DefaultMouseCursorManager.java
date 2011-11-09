@@ -10,7 +10,6 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
     private static final Logger LOGGER = Logger
             .getLogger(DefaultMouseCursorManager.class);
 
-    private static final long serialVersionUID = 3665019180187513236L;
     private final Buffer buffer;
     private final ClipboardManager clipboard;
 

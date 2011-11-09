@@ -1,9 +1,8 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import java.io.Serializable;
 
 
-public interface Renderer extends Serializable {
+public interface Renderer {
     void renderChars(GfxChar[][] characters, Position cursorPosition);
 
     int getLines();

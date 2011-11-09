@@ -1,8 +1,7 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import java.io.Serializable;
 
-public interface CursorPositionManager extends Serializable {
+public interface CursorPositionManager {
     public static final int NO_MARGIN_DEFINED = -1;
 
     void newSize(int width, int height);

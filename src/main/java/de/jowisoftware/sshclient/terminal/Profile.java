@@ -1,12 +1,11 @@
 package de.jowisoftware.sshclient.terminal;
 
-import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Map;
 
 import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 
-public interface Profile<C extends GfxInfo<?>> extends Serializable {
+public interface Profile<C extends GfxInfo<?>> {
     String getDefaultTitle();
     String getUser();
     void setUser(final String user);

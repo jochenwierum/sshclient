@@ -10,8 +10,6 @@ import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 
 public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
-    private static final long serialVersionUID = -7450299438843092065L;
-
     private final Map<ColorName, Color> colors = new HashMap<ColorName, Color>();
     private final Map<ColorName, Color> lightColors = new HashMap<ColorName, Color>();
     private Color cursorColor;

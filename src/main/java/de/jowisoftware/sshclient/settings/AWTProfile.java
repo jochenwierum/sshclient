@@ -9,8 +9,6 @@ import de.jowisoftware.sshclient.terminal.Profile;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 
 public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
-    private static final long serialVersionUID = 2986196714920783085L;
-
     private String user = System.getProperty("user.name");
     private String host = "localhost";
     private int port = 22;
