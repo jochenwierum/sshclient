@@ -15,7 +15,7 @@ public class DebugTest extends AbstractSequenceTest {
         final GfxChar gfxChar = context.mock(GfxChar.class);
         context.checking(new Expectations() {{
             oneOf(charSetup).reset();
-            atLeast(1).of(charSetup).createChar('E'); will(returnValue(gfxChar));
+            atLeast(1).of(charSetup).createMultibyteChar("E"); will(returnValue(gfxChar));
             oneOf(buffer).getSize(); will(returnValue(new Position(2, 3)));
             oneOf(buffer).setCursorPosition(new Position(1, 1));
             oneOf(buffer).addCharacter(gfxChar); oneOf(buffer).addCharacter(gfxChar);

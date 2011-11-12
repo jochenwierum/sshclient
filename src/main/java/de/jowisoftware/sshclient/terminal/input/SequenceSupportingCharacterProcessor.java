@@ -35,7 +35,6 @@ public class SequenceSupportingCharacterProcessor implements CharacterProcessor 
         sequenceRepository = repository;
     }
 
-
     @Override
     public void processChar(final char character) {
         processChar(character, false);

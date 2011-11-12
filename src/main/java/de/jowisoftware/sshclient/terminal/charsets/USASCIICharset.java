@@ -1,10 +1,10 @@
 package de.jowisoftware.sshclient.terminal.charsets;
 
+import java.util.Map;
 
-
-public class USASCIICharset implements GfxCharset {
+public class USASCIICharset extends AbstractMappingCharset {
     @Override
-    public char getUnicodeChar(final char character) {
-        return character;
+    protected void init(final Map<Integer, Character> charmap) {
+        // no character is changed
     }
 }

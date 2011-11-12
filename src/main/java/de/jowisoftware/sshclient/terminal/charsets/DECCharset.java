@@ -1,20 +1,16 @@
 package de.jowisoftware.sshclient.terminal.charsets;
 
-import java.util.HashMap;
 import java.util.Map;
 
 
-
-public class DECCharset implements GfxCharset {
-    private static final Map<Integer, Character> charMap
-            = new HashMap<Integer, Character>();
-
-    static {
-        charMap.put(95, ' ');
-        charMap.put(96, '♦');
-        charMap.put(97, '░');
-        charMap.put(98, ' '); // HT
-        charMap.put(99, ' '); // form feed
+public class DECCharset extends AbstractMappingCharset {
+    @Override
+    protected void init(final Map<Integer, Character> charMap) {
+        charMap.put(95,  ' ');
+        charMap.put(96,  '♦');
+        charMap.put(97,  '░');
+        charMap.put(98,  ' '); // HT
+        charMap.put(99,  ' '); // form feed
         charMap.put(100, ' '); // caridge return
         charMap.put(101, ' '); // line feed
         charMap.put(102, '°');
@@ -42,12 +38,5 @@ public class DECCharset implements GfxCharset {
         charMap.put(124, '≠');
         charMap.put(125, '£');
         charMap.put(125, '∙');
-    }
-
-    @Override
-    public char getUnicodeChar(final char character) {
-        final int codePoint = Character.codePointAt(new char[] {character}, 0);
-        final Character newChar = charMap.get(codePoint);
-        return (newChar != null) ? newChar : character;
     }
 }

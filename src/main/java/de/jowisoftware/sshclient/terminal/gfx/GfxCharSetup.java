@@ -20,5 +20,6 @@ public interface GfxCharSetup {
     void selectCharset(TerminalCharsetSelection selection);
 
     GfxChar createChar(char character);
+    GfxChar createMultibyteChar(String composedCharacter);
     GfxChar createClearChar();
 }

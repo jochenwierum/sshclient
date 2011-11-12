@@ -1,10 +1,10 @@
 package de.jowisoftware.sshclient.terminal.charsets;
 
+import java.util.Map;
 
-
-public class UKCharset implements GfxCharset {
+public class UKCharset extends AbstractMappingCharset {
     @Override
-    public char getUnicodeChar(final char character) {
-        return (character == '#') ? '£' : character;
+    protected void init(final Map<Integer, Character> charmap) {
+        charmap.put(0x23, '£'); // #
     }
 }

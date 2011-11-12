@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
 
 import org.apache.log4j.Logger;
@@ -11,57 +12,100 @@ import org.apache.log4j.Logger;
 import de.jowisoftware.sshclient.util.StringUtils;
 
 public class CharsetByteProcessor implements ByteProcessor {
-    private static final Logger LOGGER = Logger.getLogger(CharsetByteProcessor.class);
+    enum DecodeResult {
+        OUTPUT_GENERATED, INPUT_NEEDED, ERROR
+    }
 
-    private final ByteBuffer byteBuffer = ByteBuffer.allocate(32);
+    private static final Logger LOGGER = Logger.getLogger(CharsetByteProcessor.class);
+    private static final char UNKNOWN_CHAR = (char) 0xFFFD;
+
+    private final ByteBuffer inputBuffer;
+    private final CharBuffer outputBuffer;
 
     private final CharsetDecoder decoder;
-    private final float maxBytes;
     private final CharacterProcessor callback;
 
     public CharsetByteProcessor(final CharacterProcessor callback, final Charset charset) {
         this.callback = callback;
         this.decoder = charset.newDecoder();
-        maxBytes = 2 / decoder.maxCharsPerByte();
+
+        final int maxBytes = (int) Math.ceil(charset.newEncoder().maxBytesPerChar());
+        final int maxChars = (int) Math.ceil(decoder.maxCharsPerByte() * maxBytes);
+
+        inputBuffer = ByteBuffer.allocate(maxBytes);
+        outputBuffer = CharBuffer.allocate(maxChars);
+
         decoder.onMalformedInput(CodingErrorAction.REPORT);
-        byteBuffer.clear();
     }
 
     @Override
     public void processByte(final byte value) {
-        byteBuffer.put(value);
-        final CharBuffer out = CharBuffer.allocate(2);
+        inputBuffer.put(value);
+        outputBuffer.clear();
 
-        final ByteBuffer toDec = convert(out);
+        switch(couldConvertToOutputBuffer()) {
+        case OUTPUT_GENERATED:
+            processCharacter();
+            break;
+        case INPUT_NEEDED:
+            break;
+        default:
+            processError();
+        }
+    }
 
-        if (toDec.remaining() != 0) {
-            checkErrorState();
+    private void processCharacter() {
+        inputBuffer.clear();
+
+        final char[] temp = new char[outputBuffer.limit()];
+        outputBuffer.get(temp, 0, temp.length);
+        for (final char c : temp) {
+            callback.processChar(c);
+        }
+    }
+
+    private void processError() {
+        reportError();
+        callback.processChar(UNKNOWN_CHAR);
+        discardFirstByteAndRetry();
+    }
+
+    private void discardFirstByteAndRetry() {
+        final byte[] oldContent = new byte[inputBuffer.position()];
+        inputBuffer.rewind();
+        inputBuffer.get(oldContent, 0, oldContent.length);
+        inputBuffer.clear();
+
+        for (int i = 1; i < oldContent.length; ++i) {
+            processByte(oldContent[i]);
+        }
+    }
+
+    private void reportError() {
+        final StringBuilder bytes = new StringBuilder();
+        final StringBuilder chars = new StringBuilder();
+        for (int i = 0; i < inputBuffer.position(); ++i) {
+            bytes.append(StringUtils.byteToHex(inputBuffer.get(i)));
+            chars.append((char) inputBuffer.get(i));
+        }
+        LOGGER.error("Could not decode as " +
+                decoder.charset().displayName() + ": " +
+                bytes.toString() + ": " + chars.toString() +
+                ", discarding first byte and retrying...");
+    }
+
+    private DecodeResult couldConvertToOutputBuffer() {
+        final ByteBuffer decodeBuffer = inputBuffer.duplicate();
+        decodeBuffer.flip();
+        final CoderResult result = decoder.decode(decodeBuffer, outputBuffer, false);
+        outputBuffer.flip();
+
+        if (result.isUnderflow() && outputBuffer.limit() != 0) {
+            return DecodeResult.OUTPUT_GENERATED;
+        } else if (result.isUnderflow()) {
+            return DecodeResult.INPUT_NEEDED;
         } else {
-            byteBuffer.clear();
-            callback.processChar(out.get());
+            return DecodeResult.ERROR;
         }
-    }
-
-    private void checkErrorState() {
-        if (byteBuffer.position() > maxBytes) {
-            final StringBuilder bytes = new StringBuilder();
-            final StringBuilder chars = new StringBuilder();
-            for (int i = 0; i < byteBuffer.position(); ++i) {
-                bytes.append(StringUtils.byteToHex(byteBuffer.get(i)));
-                chars.append((char) byteBuffer.get(i));
-            }
-            LOGGER.error("Could not decode as " +
-                    decoder.charset().displayName() + ": " +
-                    bytes.toString() + ": " + chars.toString());
-            byteBuffer.clear();
-        }
-    }
-
-    private ByteBuffer convert(final CharBuffer out) {
-        final ByteBuffer toDec = byteBuffer.duplicate();
-        toDec.flip();
-        decoder.decode(toDec, out, false);
-        out.flip();
-        return toDec;
     }
 }

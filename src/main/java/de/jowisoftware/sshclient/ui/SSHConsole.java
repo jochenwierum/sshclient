@@ -32,8 +32,8 @@ import de.jowisoftware.sshclient.terminal.buffer.SynchronizedBuffer;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.input.ByteProcessor;
 import de.jowisoftware.sshclient.terminal.input.CharacterProcessor;
-import de.jowisoftware.sshclient.terminal.input.SequenceSupportingCharacterProcessor;
 import de.jowisoftware.sshclient.terminal.input.CharsetByteProcessor;
+import de.jowisoftware.sshclient.terminal.input.SequenceSupportingCharacterProcessor;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequenceRepository;
 import de.jowisoftware.sshclient.terminal.mouse.DefaultMouseCursorManager;
 import de.jowisoftware.sshclient.terminal.mouse.MouseCursorManager;
@@ -194,8 +194,8 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override
     public void mouseReleased(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            updateSelection(e);
             mouseCursorManager.copySelection();
+            updateSelection(e);
         } else if (e.getButton() == MouseEvent.BUTTON3) {
             clipboard.pasteToServer();
         }
@@ -204,8 +204,8 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override
     public void mouseDragged(final MouseEvent e) {
         if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
-            updateSelection(e);
             PerformanceLogger.start(PerformanceType.SELECT_TO_RENDER);
+            updateSelection(e);
         }
     }
 

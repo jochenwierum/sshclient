@@ -110,6 +110,12 @@ public class AWTGfxCharSetup implements GfxCharSetup {
                 gfxInfo, fgColor, bgColor, attributes);
     }
 
+    @Override
+    public AWTGfxChar createMultibyteChar(final String characterAsString) {
+        return new AWTGfxChar(characterAsString,
+                gfxInfo, fgColor, bgColor, attributes);
+    }
+
     private GfxCharset getCharset(final TerminalCharsetSelection selectedCharset2) {
         if (selectedCharset.equals(TerminalCharsetSelection.G1)) {
             return charsetG1;

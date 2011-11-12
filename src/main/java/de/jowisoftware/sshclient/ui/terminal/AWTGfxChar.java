@@ -17,8 +17,16 @@ public class AWTGfxChar implements GfxChar {
     private final String charAsString;
 
     public AWTGfxChar(final char character,
-            final GfxCharset charset, final AWTGfxInfo gfxInfo,
+            final GfxCharset gfxCharset, final AWTGfxInfo gfxInfo,
             final TerminalColor fgColor, final TerminalColor bgColor,
+            final int attributes) {
+        this(Character.toString(gfxCharset.convertCharacter(character)),
+                gfxInfo, fgColor, bgColor, attributes);
+    }
+
+    public AWTGfxChar(final String characterAsString,
+            final AWTGfxInfo gfxInfo, final TerminalColor fgColor,
+            final TerminalColor bgColor,
             final int attributes) {
         if (gfxInfo == null) {
             throw new NullPointerException("gfxInfo is null");
@@ -34,7 +42,7 @@ public class AWTGfxChar implements GfxChar {
         this.fgColor = fgColor;
         this.bgColor = bgColor;
         this.attributes = attributes;
-        charAsString = Character.toString(charset.getUnicodeChar(character));
+        this.charAsString = characterAsString;
     }
 
     public void drawAt(final Rectangle rect, final int baseLinePos,

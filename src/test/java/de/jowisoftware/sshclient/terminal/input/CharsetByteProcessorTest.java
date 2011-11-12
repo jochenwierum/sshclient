@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(JMock.class)
-public class EncodingDecoderTest {
+public class CharsetByteProcessorTest {
     private final Mockery context = new JUnit4Mockery();
     private CharacterProcessor callback;
 
@@ -29,7 +29,7 @@ public class EncodingDecoderTest {
     }
 
     @Test
-    public void testSimpleChars() {
+    public void testSimpleCharsAreForwarded() {
         assertChar('A', 'B', 'C', ' ');
         final ByteProcessor dec = new CharsetByteProcessor(callback,
                 Charset.forName("UTF-8"));
@@ -40,19 +40,39 @@ public class EncodingDecoderTest {
     }
 
     @Test
-    public void testMultiByte() {
+    public void multiBytesAreCached() {
         final ByteProcessor dec = new CharsetByteProcessor(callback,
                 Charset.forName("UTF-8"));
         dec.processByte((byte) -61);
         assertChar('Ä');
         dec.processByte((byte) -124);
+
+        assertChar("𤭢".toCharArray());
+        dec.processByte((byte) 0xF0);
+        dec.processByte((byte) 0xA4);
+        dec.processByte((byte) 0xAD);
+        dec.processByte((byte) 0xA2);
     }
 
     @Test
-    public void testLatin1() {
+    public void latinIsProcessed1() {
         final ByteProcessor dec = new CharsetByteProcessor(callback,
                 Charset.forName("ISO-8859-1"));
         assertChar('Ä');
         dec.processByte((byte) 0xC4);
+    }
+
+    @Test
+    public void skipBrokenBytes() {
+        final ByteProcessor dec = new CharsetByteProcessor(callback,
+                Charset.forName("UTF-8"));
+
+        assertChar('�');
+        dec.processByte((byte) 0xFF);
+
+        dec.processByte((byte) 0xC4);
+        assertChar('�');
+        assertChar('A');
+        dec.processByte((byte) 65);
     }
 }
