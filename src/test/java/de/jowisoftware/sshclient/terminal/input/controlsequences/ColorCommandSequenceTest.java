@@ -1,6 +1,7 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import org.jmock.Expectations;
@@ -20,39 +21,39 @@ public class ColorCommandSequenceTest extends AbstractSequenceTest {
 
     @Test
     public void parsesPartialInputCorrectly() {
-        assertThat(sequence.isPartialStart("]"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4;"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4;1"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4;25"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4;30;"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4;10;rgb:2"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4;10;rgb:22"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4;10;rgb:21/"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4;99;rgb:3f/b"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4;254;rgb:11/c4"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4;255;rgb:15/f6/"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4;10;rgb:99/ff/0"), equalTo(true));
-        assertThat(sequence.isPartialStart("]4;10;rgb:00/00/ba"), equalTo(true));
-        assertThat(sequence.isPartialStart("]5"), equalTo(false));
-        assertThat(sequence.isPartialStart("]4;2;"), equalTo(false));
-        assertThat(sequence.isPartialStart("]4;300"), equalTo(false));
-        assertThat(sequence.isPartialStart("]4;10;h"), equalTo(false));
-        assertThat(sequence.isPartialStart("]4;10;rgb:g"), equalTo(false));
-        assertThat(sequence.isPartialStart("]4;10;rgb:1/"), equalTo(false));
-        assertThat(sequence.isPartialStart("]4;256;"), equalTo(false));
+        assertThat(sequence.isPartialStart("]"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4;"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4;1"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4;25"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4;30;"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4;10;rgb:2"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4;10;rgb:22"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4;10;rgb:21/"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4;99;rgb:3f/b"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4;254;rgb:11/c4"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4;255;rgb:15/f6/"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4;10;rgb:99/ff/0"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]4;10;rgb:00/00/ba"), is(equalTo(true)));
+        assertThat(sequence.isPartialStart("]5"), is(equalTo(false)));
+        assertThat(sequence.isPartialStart("]4;2;"), is(equalTo(false)));
+        assertThat(sequence.isPartialStart("]4;300"), is(equalTo(false)));
+        assertThat(sequence.isPartialStart("]4;10;h"), is(equalTo(false)));
+        assertThat(sequence.isPartialStart("]4;10;rgb:g"), is(equalTo(false)));
+        assertThat(sequence.isPartialStart("]4;10;rgb:1/"), is(equalTo(false)));
+        assertThat(sequence.isPartialStart("]4;256;"), is(equalTo(false)));
     }
 
     @Test
     public void parsesCompleteInputCorrectly() {
-        assertThat(sequence.canHandleSequence("]"), equalTo(false));
-        assertThat(sequence.canHandleSequence("]4;10;rgb:2"), equalTo(false));
-        assertThat(sequence.canHandleSequence("]4;10;rgb:21/"), equalTo(false));
+        assertThat(sequence.canHandleSequence("]"), is(equalTo(false)));
+        assertThat(sequence.canHandleSequence("]4;10;rgb:2"), is(equalTo(false)));
+        assertThat(sequence.canHandleSequence("]4;10;rgb:21/"), is(equalTo(false)));
 
-        assertThat(sequence.canHandleSequence("]4;254;rgb:11/c4/15\u001b\\"), equalTo(true));
-        assertThat(sequence.canHandleSequence("]4;255;rgb:15/f6/3a\u001b\\"), equalTo(true));
-        assertThat(sequence.canHandleSequence("]4;20;rgb:99/ff/00\u001b\\"), equalTo(true));
-        assertThat(sequence.canHandleSequence("]4;106;rgb:00/00/b0\u001b\\"), equalTo(true));
+        assertThat(sequence.canHandleSequence("]4;254;rgb:11/c4/15\u001b\\"), is(equalTo(true)));
+        assertThat(sequence.canHandleSequence("]4;255;rgb:15/f6/3a\u001b\\"), is(equalTo(true)));
+        assertThat(sequence.canHandleSequence("]4;20;rgb:99/ff/00\u001b\\"), is(equalTo(true)));
+        assertThat(sequence.canHandleSequence("]4;106;rgb:00/00/b0\u001b\\"), is(equalTo(true)));
     }
 
     @Test

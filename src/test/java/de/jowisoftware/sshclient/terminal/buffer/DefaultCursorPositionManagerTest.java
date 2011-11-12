@@ -142,12 +142,12 @@ public class DefaultCursorPositionManagerTest {
         manager.setPositionSafelyInScreen(new Position(3, 7));
 
         manager.setMargins(4, 8);
-        assertThat(manager.getBottomMargin(), is(8));
-        assertThat(manager.currentPositionInMargin(), is(new Position(3, 4)));
+        assertThat(manager.getBottomMargin(), is(equalTo(8)));
+        assertThat(manager.currentPositionInMargin(), is(equalTo(new Position(3, 4))));
 
         manager.setMargins(6, 9);
-        assertThat(manager.getBottomMargin(), is(9));
-        assertThat(manager.currentPositionInMargin(), is(new Position(3, 2)));
+        assertThat(manager.getBottomMargin(), is(equalTo(9)));
+        assertThat(manager.currentPositionInMargin(), is(equalTo(new Position(3, 2))));
 
     }
 
@@ -156,20 +156,20 @@ public class DefaultCursorPositionManagerTest {
         manager.setPositionSafelyInScreen(new Position(63, 4));
 
         manager.moveToNextPosition();
-        assertThat(manager.wouldWrap(), is(false));
-        assertThat(manager.currentPositionInScreen(), is(new Position(64, 4)));
+        assertThat(manager.wouldWrap(), is(equalTo(false)));
+        assertThat(manager.currentPositionInScreen(), is(equalTo(new Position(64, 4))));
 
         manager.setPositionSafelyInScreen(new Position(79, 1));
         manager.moveToNextPosition();
-        assertThat(manager.wouldWrap(), is(false));
-        assertThat(manager.currentPositionInScreen(), is(new Position(80, 1)));
+        assertThat(manager.wouldWrap(), is(equalTo(false)));
+        assertThat(manager.currentPositionInScreen(), is(equalTo(new Position(80, 1))));
 
         manager.moveToNextPosition();
-        assertThat(manager.wouldWrap(), is(true));
-        assertThat(manager.currentPositionInScreen(), is(new Position(80, 1)));
+        assertThat(manager.wouldWrap(), is(equalTo(true)));
+        assertThat(manager.currentPositionInScreen(), is(equalTo(new Position(80, 1))));
 
         manager.resetWouldWrap();
-        assertThat(manager.wouldWrap(), is(false));
+        assertThat(manager.wouldWrap(), is(equalTo(false)));
     }
 
     @Test
@@ -177,11 +177,11 @@ public class DefaultCursorPositionManagerTest {
         manager.setPositionSafelyInScreen(new Position(80, 1));
         manager.moveToNextPosition();
         manager.setPositionSafelyInScreen(new Position(80, 1));
-        assertThat(manager.wouldWrap(), is(false));
+        assertThat(manager.wouldWrap(), is(equalTo(false)));
 
         manager.setPositionSafelyInScreen(new Position(80, 1));
         manager.moveToNextPosition();
         manager.setPositionSafelyInMargin(new Position(80, 1));
-        assertThat(manager.wouldWrap(), is(false));
+        assertThat(manager.wouldWrap(), is(equalTo(false)));
     }
 }

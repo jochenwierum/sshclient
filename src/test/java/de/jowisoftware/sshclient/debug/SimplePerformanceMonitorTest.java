@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.debug;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -32,7 +33,7 @@ public class SimplePerformanceMonitorTest {
     private void assertEndOfEventAt(final PerformanceType performanceType,
             final int expected) {
         final long time = monitor.end(performanceType);
-        assertThat(Long.valueOf(time), is(Long.valueOf(expected)));
+        assertThat(Long.valueOf(time), is(equalTo(Long.valueOf(expected))));
     }
 
     @Test
