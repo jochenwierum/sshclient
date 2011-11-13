@@ -102,7 +102,7 @@ public class SequenceSupportingCharacterProcessorTest {
 
         context.checking(new Expectations() {{
             expectChar('x');
-            oneOf(buffer).moveCursorDown(true); inSequence(seq);
+            oneOf(buffer).moveCursorDown(false); inSequence(seq);
             expectChar('z');
         }
 
@@ -208,7 +208,7 @@ public class SequenceSupportingCharacterProcessorTest {
     public void testStackStates() {
         final Sequence seq = context.sequence("seq");
         context.checking(new Expectations() {{
-                oneOf(buffer).moveCursorDown(true);
+                oneOf(buffer).moveCursorDown(false);
                     inSequence(seq);
 
                 handleSeq(sequence1, "1", false, this);
