@@ -252,4 +252,19 @@ public class SynchronizedBuffer implements Buffer {
         final Position position = cursorPosition.currentPositionInScreen();
         storage.shiftColumns(charCount, position.x - 1, position.y - 1);
     }
+
+    @Override
+    public void removeLines(final int linesCount) {
+        synchronized(this) {
+            if (cursorPosition.isMarginDefined()) {
+                storage.shiftLines(-linesCount,
+                        cursorPosition.currentPositionInScreen().y - 1,
+                        cursorPosition.getBottomMargin());
+            } else {
+                storage.shiftLines(-linesCount,
+                        cursorPosition.currentPositionInScreen().y - 1,
+                        storage.size().y);
+            }
+        }
+    }
 }

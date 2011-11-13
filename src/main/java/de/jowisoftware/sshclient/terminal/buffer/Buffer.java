@@ -12,6 +12,7 @@ public interface Buffer {
     void setClearChar(GfxChar clearChar);
     void erase(Range range);
     void insertLines(int lines);
+    void removeLines(int lines);
     void shift(int charCount);
 
     void setCursorRelativeToMargin(boolean b);

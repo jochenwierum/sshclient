@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequenceRepository;
 
 @RunWith(JMock.class)
 public class ANSISequenceCursorTest extends AbstractSequenceTest {
@@ -240,6 +239,23 @@ public class ANSISequenceCursorTest extends AbstractSequenceTest {
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('L', sessionInfo, "2");
+    }
+
+    @Test
+    public void testRemoveLine() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).removeLines(1);
+        }});
+        DefaultSequenceRepository.executeAnsiSequence('M', sessionInfo);
+    }
+
+    @Test
+    public void testRemove2Lines() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).removeLines(2);
+        }});
+
+        DefaultSequenceRepository.executeAnsiSequence('M', sessionInfo, "2");
     }
 
     @Test

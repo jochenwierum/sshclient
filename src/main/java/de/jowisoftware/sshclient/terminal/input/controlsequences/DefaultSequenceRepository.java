@@ -63,6 +63,7 @@ public class DefaultSequenceRepository implements SequenceRepository {
         case 'J': return new ANSISequenceCapitalJ();
         case 'K': return new ANSISequenceCapitalK();
         case 'L': return new ANSISequenceCapitalL();
+        case 'M': return new ANSISequenceCapitalM();
         case 'P': return new ANSISequenceCapitalP();
         case 'X': return new ANSISequenceCapitalX();
         case 'r': return new ANSISequencer();

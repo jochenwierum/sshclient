@@ -306,6 +306,40 @@ public class SynchronizedBufferTest {
         buffer.insertLines(2);
     }
 
+
+    @Test
+    public void insertOneLineWithMargin() {
+        allowSize(80, 24);
+        prepareShift(1, 9, 20);
+        allowMargineDefined(true);
+
+        context.checking(new Expectations() {{
+            allowing(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(7, 10)));
+
+            allowing(positionManager).getBottomMargin();
+                will(returnValue(20));
+        }});
+
+        buffer.insertLines(1);
+    }
+
+    @Test
+    public void insertTwoLinesWithMargin() {
+        allowSize(80, 24);
+        prepareShift(2, 4, 21);
+        allowMargineDefined(true);
+
+        context.checking(new Expectations() {{
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(1, 5)));
+            allowing(positionManager).getBottomMargin();
+                will(returnValue(21));
+        }});
+
+        buffer.insertLines(2);
+    }
+
     @Test
     public void setCursorInMargin() {
         buffer.setCursorRelativeToMargin(true);
@@ -514,5 +548,66 @@ public class SynchronizedBufferTest {
         }});
 
         buffer.tabulator(TabulatorOrientation.HORIZONTAL);
+    }
+
+    @Test
+    public void removeOneLineWithoutMargin() {
+        allowSize(80, 24);
+        prepareShift(-1, 1, 24);
+        allowMargineDefined(false);
+
+        context.checking(new Expectations() {{
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(7, 2)));
+        }});
+
+        buffer.removeLines(1);
+    }
+
+    @Test
+    public void removeTwoLinesWithoutMargin() {
+        allowSize(80, 24);
+        prepareShift(-2, 4, 24);
+        allowMargineDefined(false);
+
+        context.checking(new Expectations() {{
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(1, 5)));
+        }});
+
+        buffer.removeLines(2);
+    }
+
+    @Test
+    public void removeOneLineWithMargin() {
+        allowSize(80, 24);
+        prepareShift(-1, 9, 20);
+        allowMargineDefined(true);
+
+        context.checking(new Expectations() {{
+            allowing(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(7, 10)));
+
+            allowing(positionManager).getBottomMargin();
+                will(returnValue(20));
+        }});
+
+        buffer.removeLines(1);
+    }
+
+    @Test
+    public void removeTwoLinesWithMargin() {
+        allowSize(80, 24);
+        prepareShift(-2, 4, 21);
+        allowMargineDefined(true);
+
+        context.checking(new Expectations() {{
+            oneOf(positionManager).currentPositionInScreen();
+                will(returnValue(new Position(1, 5)));
+            allowing(positionManager).getBottomMargin();
+                will(returnValue(21));
+        }});
+
+        buffer.removeLines(2);
     }
 }

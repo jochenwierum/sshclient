@@ -73,8 +73,14 @@ public class DebugConsoleMain {
     }
 
     private String readFile(final InputStream stream) throws IOException {
-        final String text = IOUtils.toString(stream, "UTF-8").replace("\n", "").replace("\r", "");
+        String text = IOUtils.toString(stream, "UTF-8");
         IOUtils.closeQuietly(stream);
+
+        if (text.contains("\n---EOF---")) {
+            text = text.substring(0, text.indexOf("\n---EOF---"));
+        }
+        text = text.replaceAll("\\n---[^\\n]+(?:\\n|$)", "");
+        text = text.replace("\n", "").replace("\r", "");
 
         final StringBuffer builder = new StringBuffer();
         final Matcher m = Pattern.compile("(\\\\(\\\\|n|r|u[0-9a-fA-F]{4}))").matcher(text);
@@ -93,10 +99,6 @@ public class DebugConsoleMain {
             m.appendReplacement(builder, rep.replace("\\", "\\\\"));
         }
         m.appendTail(builder);
-        String result = builder.toString();
-        if (result.contains("---EOF---")) {
-            result = result.substring(0, result.indexOf("---EOF---"));
-        }
-        return result;
+        return builder.toString();
     }
 }
