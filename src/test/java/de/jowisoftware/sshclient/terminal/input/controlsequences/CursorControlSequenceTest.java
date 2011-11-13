@@ -13,7 +13,6 @@ import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
-import de.jowisoftware.sshclient.terminal.input.controlsequences.CursorControlSequence;
 
 @RunWith(JMock.class)
 public class CursorControlSequenceTest {
@@ -53,9 +52,29 @@ public class CursorControlSequenceTest {
     }
 
     @Test
+    public void esc7SavesCursor() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).saveCursorPosition();
+        }});
+
+        seq.handleSequence("7", sessionInfo);
+    }
+
+    @Test
+    public void esc8RestoresCursor() {
+        context.checking(new Expectations() {{
+            oneOf(buffer).restoreCursorPosition();
+        }});
+
+        seq.handleSequence("8", sessionInfo);
+    }
+
+    @Test
     public void testHandle() {
         assertTrue(seq.canHandleSequence("D"));
         assertTrue(seq.canHandleSequence("E"));
         assertTrue(seq.canHandleSequence("M"));
+        assertTrue(seq.canHandleSequence("7"));
+        assertTrue(seq.canHandleSequence("8"));
     }
 }

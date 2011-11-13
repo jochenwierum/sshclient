@@ -9,7 +9,7 @@ import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 
 public class CursorControlSequence implements NonASCIIControlSequence {
     private static final Logger LOGGER = Logger.getLogger(CursorControlSequence.class);
-    private static final Pattern PATTERN = Pattern.compile("[DEM]");
+    private static final Pattern PATTERN = Pattern.compile("[DEM78]");
 
     @Override
     public boolean isPartialStart(final String sequence) {
@@ -25,8 +25,18 @@ public class CursorControlSequence implements NonASCIIControlSequence {
     public void handleSequence(final String sequence, final SSHSession sessionInfo) {
         if (sequence.equals("D") || sequence.equals("E") || sequence.endsWith("M")) {
             processRollCursor(sessionInfo.getBuffer(), sequence);
+        } else if (sequence.equals("7") || sequence.equals("8")) {
+            processCursorPositionManagerment(sessionInfo.getBuffer(), sequence);
         } else {
             LOGGER.error("Unknown control sequence: <ESC>" + sequence);
+        }
+    }
+
+    private void processCursorPositionManagerment(final Buffer buffer, final String sequence) {
+        if (sequence.endsWith("7")) {
+            buffer.saveCursorPosition();
+        } else if (sequence.endsWith("8")) {
+            buffer.restoreCursorPosition();
         }
     }
 
