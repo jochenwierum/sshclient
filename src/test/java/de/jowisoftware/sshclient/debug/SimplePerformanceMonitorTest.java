@@ -94,12 +94,12 @@ public class SimplePerformanceMonitorTest {
     @Test
     public void lastEventWinsIfMarkedInEnum() {
         expectDate(100);
-        monitor.start(PerformanceType.SELECT_TO_RENDER);
+        monitor.start(PerformanceType.BACKGROUND_RENDER);
 
         expectDate(300);
-        monitor.start(PerformanceType.SELECT_TO_RENDER);
+        monitor.start(PerformanceType.BACKGROUND_RENDER);
 
         expectDate(700);
-        assertEndOfEventAt(PerformanceType.SELECT_TO_RENDER, 400);
+        assertEndOfEventAt(PerformanceType.BACKGROUND_RENDER, 400);
     }
 }
