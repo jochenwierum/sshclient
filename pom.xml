@@ -20,6 +20,11 @@
 		<system>Trac</system>
 		<url>https://jowisoftware.de:4443/trac/ssh</url>
 	</issueManagement>
+	
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>http://tomcat.twoprogrammers.de/jenkins</url>
+    </ciManagement>
 
 	<scm>
 		<connection>scm:svn:https://jowisoftware.de:4443/svn/ssh</connection>
@@ -48,30 +53,49 @@
 			<artifactId>jsch</artifactId>
 			<version>0.1.44</version>
 		</dependency>
-
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
-			<scope>test</scope>
-		</dependency>
+		
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.16</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.3.2</version>
-			<type>jar</type>
-			<scope>compile</scope>
 		</dependency>
+		
+		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>org.jmock</groupId>
 			<artifactId>jmock-junit4</artifactId>
 			<version>2.5.1</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>hamcrest-library</artifactId>
+					<groupId>org.hamcrest</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>hamcrest-core</artifactId>
+					<groupId>org.hamcrest</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+		
+		<dependency>
+		    <groupId>org.hamcrest</groupId>
+		    <artifactId>hamcrest-library</artifactId>
+		    <version>1.2.1</version>
+		    <scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -234,8 +258,4 @@
 			</build>
 		</profile>
 	</profiles>
-	<ciManagement>
-		<system>Jenkins</system>
-		<url>http://tomcat.twoprogrammers.de/jenkins</url>
-	</ciManagement>
 </project>

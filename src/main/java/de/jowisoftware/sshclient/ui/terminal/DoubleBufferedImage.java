@@ -125,20 +125,11 @@ public class DoubleBufferedImage implements Renderer {
         return newFlags;
     }
 
-    // TODO: introduce Position.smaller, Position.bigger
     private boolean isInSelectionRange(final Position currentPosition,
             final Position selectionStart, final Position selectionEnd) {
-        if (currentPosition.y < selectionStart.y ||
-                (currentPosition.y == selectionStart.y &&
-                    currentPosition.x < selectionStart.x)) {
-            return false;
-        } else if(currentPosition.y > selectionEnd.y ||
-                (currentPosition.y == selectionEnd.y &&
-                    currentPosition.x > selectionEnd.x)) {
-            return false;
-        } else {
-            return true;
-        }
+        final boolean outOfRange = currentPosition.isBefore(selectionStart)
+                        || currentPosition.isAfter(selectionEnd);
+        return !outOfRange;
     }
 
     private synchronized void swap() {

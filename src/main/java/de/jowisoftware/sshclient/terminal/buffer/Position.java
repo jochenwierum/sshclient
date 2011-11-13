@@ -83,4 +83,12 @@ public class Position {
     public Range toRange() {
         return new Range(this);
     }
+
+    public boolean isBefore(final Position other) {
+        return y < other.y || (y == other.y && x < other.x);
+    }
+
+    public boolean isAfter(final Position other) {
+        return y > other.y || (y == other.y && x > other.x);
+    }
 }
