@@ -14,6 +14,7 @@ import javax.swing.Timer;
 import org.apache.commons.io.IOUtils;
 
 import de.jowisoftware.sshclient.settings.AWTProfile;
+import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.ui.SSHConsole;
 
 public class DebugConsoleMain {
@@ -29,11 +30,22 @@ public class DebugConsoleMain {
         }
 
         final String text = readFile(stream);
-        final SSHConsole console = showFrame(text);
-        console.gotChars(text.getBytes(), text.getBytes().length);
+        final SSHConsole console = showFrame();
+
+        (new Thread("network-simulator") {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (final InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                console.gotChars(text.getBytes(), text.getBytes().length);
+            }
+        }).start();
     }
 
-    private SSHConsole showFrame(final String text) {
+    private SSHConsole showFrame() {
         final JFrame frame = new JFrame("test");
         final SSHConsole console = new SSHConsole(new AWTProfile());
         frame.add(console);
@@ -44,6 +56,7 @@ public class DebugConsoleMain {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         console.setOutputStream(System.out);
+        console.setDisplayType(DisplayType.FIXED80X24);
         return console;
     }
 
