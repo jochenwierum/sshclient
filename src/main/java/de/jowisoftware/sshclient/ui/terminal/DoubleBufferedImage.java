@@ -80,6 +80,7 @@ public class DoubleBufferedImage implements Renderer {
         final int baseRenderFlags = createRenderFlas();
 
         if (images != null) {
+            PerformanceLogger.start(PerformanceType.BACKGROUND_RENDER);
             for (int y = 0; y < characters.length; ++y) {
                 for (int x = 0; x < characters[0].length; ++x) {
                     final int posx = x * charWidth;
@@ -97,6 +98,7 @@ public class DoubleBufferedImage implements Renderer {
                 }
             }
             swap();
+            PerformanceLogger.end(PerformanceType.BACKGROUND_RENDER);
         }
     }
 
