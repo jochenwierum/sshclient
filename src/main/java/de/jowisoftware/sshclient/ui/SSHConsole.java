@@ -106,6 +106,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
             g.drawImage(image, 0, 0, this);
             PerformanceLogger.end(PerformanceType.REQUEST_TO_RENDER);
             PerformanceLogger.end(PerformanceType.REVEICE_CHAR_TO_RENDER);
+            PerformanceLogger.end(PerformanceType.SELECT_TO_RENDER);
         }
     }
 
