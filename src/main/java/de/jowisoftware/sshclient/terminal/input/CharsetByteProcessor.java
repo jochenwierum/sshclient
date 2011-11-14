@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.terminal.input;
 
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -40,7 +41,12 @@ public class CharsetByteProcessor implements ByteProcessor {
 
     @Override
     public void processByte(final byte value) {
-        inputBuffer.put(value);
+        try {
+            inputBuffer.put(value);
+        } catch(final BufferOverflowException e) {
+            inputBuffer.clear();
+            throw new RuntimeException(e);
+        }
         outputBuffer.clear();
 
         switch(couldConvertToOutputBuffer()) {
