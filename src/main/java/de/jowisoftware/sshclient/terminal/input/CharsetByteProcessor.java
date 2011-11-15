@@ -1,6 +1,5 @@
 package de.jowisoftware.sshclient.terminal.input;
 
-import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -30,8 +29,8 @@ public class CharsetByteProcessor implements ByteProcessor {
         this.callback = callback;
         this.decoder = charset.newDecoder();
 
-        final int maxBytes = (int) Math.ceil(charset.newEncoder().maxBytesPerChar());
-        final int maxChars = (int) Math.ceil(decoder.maxCharsPerByte() * maxBytes);
+        final int maxBytes = (int) Math.ceil(charset.newEncoder().maxBytesPerChar() * 2);
+        final int maxChars = (int) Math.ceil(decoder.maxCharsPerByte() * 2);
 
         inputBuffer = ByteBuffer.allocate(maxBytes);
         outputBuffer = CharBuffer.allocate(maxChars);
@@ -43,9 +42,9 @@ public class CharsetByteProcessor implements ByteProcessor {
     public void processByte(final byte value) {
         try {
             inputBuffer.put(value);
-        } catch(final BufferOverflowException e) {
+        } catch(final RuntimeException e) {
             inputBuffer.clear();
-            throw new RuntimeException(e);
+            throw e;
         }
         outputBuffer.clear();
 
