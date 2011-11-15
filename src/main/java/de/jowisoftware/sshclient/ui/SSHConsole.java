@@ -166,7 +166,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
                 cw = 80;
             }
         }
-        session.getBuffer().render(renderer);
+        session.render();
 
         if (channel != null) {
             LOGGER.debug("Reporting new window size: " + cw + "/" + ch + " "
@@ -243,7 +243,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
             break;
         }
         componentResized(null);
-        session.getBuffer().render(renderer);
+        session.render();
     }
 
     public DisplayType getDisplayType() {

@@ -25,8 +25,8 @@ public interface Buffer {
     void moveCursorDown(boolean resetToFirstColumn);
     void setMargin(int start, int end);
 
-    void render(Renderer renderer);
     void setShowCursor(boolean doIt);
+    BufferSnapshot createSnapshot();
 
     void switchBuffer(BufferSelection selection);
     BufferSelection getSelectedBuffer();

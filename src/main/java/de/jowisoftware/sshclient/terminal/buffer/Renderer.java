@@ -1,7 +1,7 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
 public interface Renderer {
-    void renderChars(GfxChar[][] characters, Position cursorPosition);
+    void renderSnapshot(BufferSnapshot snapshot);
 
     int getLines();
     int getCharsPerLine();

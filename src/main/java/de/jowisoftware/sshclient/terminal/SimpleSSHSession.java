@@ -32,6 +32,7 @@ public class SimpleSSHSession implements SSHSession {
     private DisplayType displayType;
     private OutputStream responseStream;
 
+
     public SimpleSSHSession(final Buffer buffer,
             final Renderer renderer,
             final GfxCharSetup charSetup,
@@ -115,6 +116,6 @@ public class SimpleSSHSession implements SSHSession {
     }
 
     public void render() {
-        buffer.render(renderer);
+        renderer.renderSnapshot(buffer.createSnapshot());
     }
 }

@@ -11,11 +11,13 @@ import javax.swing.SwingUtilities;
 
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.debug.PerformanceType;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
+import de.jowisoftware.sshclient.terminal.buffer.BufferSnapshot;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
+@SuppressWarnings("IS2_INCONSISTENT_SYNC")
 public class DoubleBufferedImage implements Renderer {
     private final AWTGfxInfo gfxInfo;
     private final JPanel parent;
@@ -23,6 +25,7 @@ public class DoubleBufferedImage implements Renderer {
     private BufferedImage[] images;
     private Graphics2D[] graphics;
     private int currentImage = 0;
+    private final Object imageLock = new Object();
 
     private int width;
     private int height;
@@ -40,61 +43,67 @@ public class DoubleBufferedImage implements Renderer {
     public DoubleBufferedImage(final AWTGfxInfo gfxInfo, final JPanel parent) {
         this.gfxInfo = gfxInfo;
         this.parent = parent;
+        setDimensions(1, 1);
     }
 
     public synchronized void dispose() {
-        images = null;
-        if (graphics != null) {
-            graphics[0].dispose();
-            graphics[1].dispose();
+        synchronized (imageLock) {
+            images = null;
+            if (graphics != null) {
+                graphics[0].dispose();
+                graphics[1].dispose();
+            }
+            graphics = null;
         }
-        graphics = null;
     }
 
     public synchronized void setDimensions(final int width, final int height) {
-        this.width = width;
-        this.height = height;
+        synchronized (imageLock) {
+            this.width = width;
+            this.height = height;
 
-        dispose();
-        images = new BufferedImage[2];
-        graphics = new Graphics2D[2];
+            dispose();
+            images = new BufferedImage[2];
+            graphics = new Graphics2D[2];
 
-        for (int i = 0; i < 2; ++i) {
-            images[i] = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-            graphics[i] = images[i].createGraphics();
-            graphics[i].setBackground(gfxInfo.mapColor(ColorName.DEFAULT_BACKGROUND, false));
-            graphics[i].setFont(gfxInfo.getFont());
+            for (int i = 0; i < 2; ++i) {
+                images[i] = new BufferedImage(width, height,
+                        BufferedImage.TYPE_INT_RGB);
+                graphics[i] = images[i].createGraphics();
+                graphics[i].setBackground(gfxInfo.mapColor(
+                        ColorName.DEFAULT_BACKGROUND, false));
+                graphics[i].setFont(gfxInfo.getFont());
+            }
+
+            final FontMetrics fontMetrics = graphics[0].getFontMetrics();
+            this.charWidth = fontMetrics.charWidth('m');
+            this.charHeight = fontMetrics.getHeight();
+            this.baseLinePos = fontMetrics.getAscent() + fontMetrics.getLeading();
         }
-
-        final FontMetrics fontMetrics = graphics[0].getFontMetrics();
-        this.charWidth = fontMetrics.charWidth('m');
-        this.charHeight = fontMetrics.getHeight();
-        this.baseLinePos = fontMetrics.getAscent() + fontMetrics.getLeading();
     }
 
     @Override
-    public synchronized void renderChars(final GfxChar characters[][],
-            final Position cursorPosition) {
+    public synchronized void renderSnapshot(final BufferSnapshot snapshot) {
         final Position selectionStart = this.currentSelectionStart;
         final Position selectionEnd = this.currentSelectionEnd;
         final int baseRenderFlags = createRenderFlas();
 
         if (images != null) {
             PerformanceLogger.start(PerformanceType.BACKGROUND_RENDER);
-            for (int y = 0; y < characters.length; ++y) {
-                for (int x = 0; x < characters[0].length; ++x) {
+            for (int y = 0; y < snapshot.content.length; ++y) {
+                for (int x = 0; x < snapshot.content[0].length; ++x) {
                     final int posx = x * charWidth;
                     final int posy = y * charHeight;
                     final int renderFlags = baseRenderFlags |
                             updateRenderFlags(
-                                    cursorPosition,
+                                    snapshot.cursorPosition,
                                     new Position(x + 1, y + 1),
                                     selectionStart, selectionEnd);
 
                     final Rectangle rect = new Rectangle(posx, posy,
                             charWidth, charHeight);
-                    ((AWTGfxChar)(characters[y][x])).drawAt(rect, baseLinePos,
-                            graphics[1 - currentImage], renderFlags);
+                    ((AWTGfxChar)(snapshot.content[y][x])).drawAt(rect,
+                            baseLinePos, graphics[1 - currentImage], renderFlags);
                 }
             }
             swap();
@@ -102,7 +111,7 @@ public class DoubleBufferedImage implements Renderer {
         }
     }
 
-    public int createRenderFlas() {
+    private int createRenderFlas() {
         if (renderInverted) {
             return RenderFlag.INVERTED.flag;
         }
@@ -134,9 +143,11 @@ public class DoubleBufferedImage implements Renderer {
         return !outOfRange;
     }
 
-    private synchronized void swap() {
-        if (images != null) {
-            currentImage = 1 - currentImage;
+    private void swap() {
+        synchronized (imageLock) {
+            if (images != null) {
+                currentImage = 1 - currentImage;
+            }
         }
         requestRepaint();
     }
@@ -155,12 +166,14 @@ public class DoubleBufferedImage implements Renderer {
         }
     }
 
-    public synchronized Image getImage() {
-        if (images != null) {
+    public Image getImage() {
+        synchronized (imageLock) {
+            if (images == null) {
+                return null;
+            }
+
             queued = false;
             return images[currentImage];
-        } else {
-            return null;
         }
     }
 
@@ -184,18 +197,18 @@ public class DoubleBufferedImage implements Renderer {
     }
 
     @Override
-    public void renderInverted(final boolean inverted) {
+    public synchronized void renderInverted(final boolean inverted) {
         renderInverted = inverted;
     }
 
     @Override
-    public void clearSelection() {
+    public synchronized void clearSelection() {
         this.currentSelectionStart = null;
         this.currentSelectionEnd = null;
     }
 
     @Override
-    public void setSelection(final Position pos1, final Position pos2) {
+    public synchronized void setSelection(final Position pos1, final Position pos2) {
         this.currentSelectionStart = pos1;
         this.currentSelectionEnd = pos2;
     }

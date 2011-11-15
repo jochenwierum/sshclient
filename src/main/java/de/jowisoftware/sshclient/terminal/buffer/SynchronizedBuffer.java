@@ -19,7 +19,7 @@ public class SynchronizedBuffer implements Buffer {
         this.cursorPosition = cursorPositionManager;
     }
 
-    public static SynchronizedBuffer createBuffer(
+    public synchronized static SynchronizedBuffer createBuffer(
             final GfxChar initialClearChar,
             final int width, final int height, final TabStopManager tabstops) {
         final FlippableBufferStorage storage =
@@ -38,60 +38,50 @@ public class SynchronizedBuffer implements Buffer {
             final BufferStorage storage) {
         return new CursorPositionManagerFeedback() {
             @Override
-            public void lineShiftingNeeded(final int offset, final int start, final int end) {
+            public synchronized void lineShiftingNeeded(final int offset, final int start, final int end) {
                 storage.shiftLines(offset, start, end);
             }
         };
     }
 
     @Override
-    public final void newSize(final int width, final int height) {
-        synchronized(this) {
-            storage.newSize(width, height);
-            cursorPosition.newSize(width, height);
+    public synchronized final void newSize(final int width, final int height) {
+        storage.newSize(width, height);
+        cursorPosition.newSize(width, height);
+    }
+
+    @Override
+    public synchronized void setCursorPosition(final Position position) {
+        if (cursorPosition.isMarginDefined() && cursorIsRelativeToMargin) {
+            cursorPosition.setPositionSafelyInMargin(position);
+        } else {
+            cursorPosition.setPositionSafelyInScreen(position);
         }
     }
 
     @Override
-    public void setCursorPosition(final Position position) {
-        synchronized (this) {
-            if (cursorPosition.isMarginDefined() && cursorIsRelativeToMargin) {
-                cursorPosition.setPositionSafelyInMargin(position);
-            } else {
-                cursorPosition.setPositionSafelyInScreen(position);
-            }
+    public synchronized Position getCursorPosition() {
+        if (cursorPosition.isMarginDefined() && cursorIsRelativeToMargin) {
+            return cursorPosition.currentPositionInMargin();
+        } else {
+            return cursorPosition.currentPositionInScreen();
         }
     }
 
     @Override
-    public Position getCursorPosition() {
-        synchronized (this) {
-            if (cursorPosition.isMarginDefined() && cursorIsRelativeToMargin) {
-                return cursorPosition.currentPositionInMargin();
-            } else {
-                return cursorPosition.currentPositionInScreen();
-            }
-        }
+    public synchronized GfxChar getCharacter(final int row, final int column) {
+        return storage.getCharacterAt(row - 1, column - 1);
     }
 
     @Override
-    public GfxChar getCharacter(final int row, final int column) {
-        synchronized(this) {
-            return storage.getCharacterAt(row - 1, column - 1);
-        }
-    }
+    public synchronized void addCharacter(final GfxChar character) {
+        wrapLineIfNeeded();
+        final Position currentPosition = cursorPosition.currentPositionInScreen();
 
-    @Override
-    public void addCharacter(final GfxChar character) {
-        synchronized(this) {
-            wrapLineIfNeeded();
-            final Position currentPosition = cursorPosition.currentPositionInScreen();
-
-            cursorPosition.resetWouldWrap();
-            storage.setCharacter(currentPosition.y - 1,
-                    currentPosition.x - 1, character);
-            cursorPosition.moveToNextPosition();
-        }
+        cursorPosition.resetWouldWrap();
+        storage.setCharacter(currentPosition.y - 1,
+                currentPosition.x - 1, character);
+        cursorPosition.moveToNextPosition();
     }
 
     private void wrapLineIfNeeded() {
@@ -106,15 +96,9 @@ public class SynchronizedBuffer implements Buffer {
     }
 
     @Override
-    public void render(final Renderer renderer) {
-        final GfxChar[][] content;
-        synchronized(this) {
-            content = storage.cloneContent();
-        }
-
-        synchronized(renderer) {
-            renderer.renderChars(content, makeRenderCursor());
-        }
+    public synchronized BufferSnapshot createSnapshot() {
+        final GfxChar[][] content = storage.cloneContent();
+        return new BufferSnapshot(content, makeRenderCursor());
     }
 
     private Position makeRenderCursor() {
@@ -125,71 +109,61 @@ public class SynchronizedBuffer implements Buffer {
     }
 
     @Override
-    public void setMargin(final int rollRangeBegin, final int rollRangeEnd) {
+    public synchronized void setMargin(final int rollRangeBegin, final int rollRangeEnd) {
         cursorPosition.setMargins(rollRangeBegin, rollRangeEnd);
         cursorPosition.setPositionSafelyInMargin(new Position(1, 1));
     }
 
     @Override
-    public void resetMargin() {
+    public synchronized void resetMargin() {
         cursorPosition.setMargins(CursorPositionManager.NO_MARGIN_DEFINED,
                 CursorPositionManager.NO_MARGIN_DEFINED);
     }
 
     @Override
-    public void moveCursor() {
-        synchronized(this) {
-            cursorPosition.moveUpAndRoll();
+    public synchronized void moveCursor() {
+        cursorPosition.moveUpAndRoll();
+    }
+
+    @Override
+    public synchronized void moveCursorDown(final boolean resetToFirstColumn) {
+        cursorPosition.moveDownAndRoll();
+        if (resetToFirstColumn) {
+            cursorPosition.setPositionSafelyInScreen(
+                    cursorPosition.currentPositionInScreen().withX(1));
         }
     }
 
     @Override
-    public void moveCursorDown(final boolean resetToFirstColumn) {
-        synchronized(this) {
-            cursorPosition.moveDownAndRoll();
-            if (resetToFirstColumn) {
-                cursorPosition.setPositionSafelyInScreen(
-                        cursorPosition.currentPositionInScreen().withX(1));
-            }
+    public synchronized Position getSize() {
+        return storage.size();
+    }
+
+    @Override
+    public synchronized void erase(final Range range) {
+        storage.erase(range.offset(-1, -1));
+    }
+
+    @Override
+    public synchronized void insertLines(final int linesCount) {
+        if (cursorPosition.isMarginDefined()) {
+            storage.shiftLines(linesCount,
+                    cursorPosition.currentPositionInScreen().y - 1,
+                    cursorPosition.getBottomMargin());
+        } else {
+            storage.shiftLines(linesCount,
+                    cursorPosition.currentPositionInScreen().y - 1,
+                    storage.size().y);
         }
     }
 
     @Override
-    public Position getSize() {
-        synchronized(this) {
-            return storage.size();
-        }
-    }
-
-    @Override
-    public void erase(final Range range) {
-        synchronized(this) {
-            storage.erase(range.offset(-1, -1));
-        }
-    }
-
-    @Override
-    public void insertLines(final int linesCount) {
-        synchronized(this) {
-            if (cursorPosition.isMarginDefined()) {
-                storage.shiftLines(linesCount,
-                        cursorPosition.currentPositionInScreen().y - 1,
-                        cursorPosition.getBottomMargin());
-            } else {
-                storage.shiftLines(linesCount,
-                        cursorPosition.currentPositionInScreen().y - 1,
-                        storage.size().y);
-            }
-        }
-    }
-
-    @Override
-    public void setCursorRelativeToMargin(final boolean cursorIsRelativeToMargin) {
+    public synchronized void setCursorRelativeToMargin(final boolean cursorIsRelativeToMargin) {
         this.cursorIsRelativeToMargin = cursorIsRelativeToMargin;
     }
 
     @Override
-    public void tabulator(final TabulatorOrientation orientation) {
+    public synchronized void tabulator(final TabulatorOrientation orientation) {
         final Position oldPosition = getCursorPosition();
         final Position newPosition;
 
@@ -202,12 +176,12 @@ public class SynchronizedBuffer implements Buffer {
     }
 
     @Override
-    public void setAutoWrap(final boolean autoWrap) {
+    public synchronized void setAutoWrap(final boolean autoWrap) {
         this.autoWrap = autoWrap;
     }
 
     @Override
-    public void processBackspace() {
+    public synchronized void processBackspace() {
         final Position position = cursorPosition.currentPositionInScreen();
         if (autoWrap && position.x == 1) {
             cursorPosition.setPositionSafelyInScreen(
@@ -218,53 +192,51 @@ public class SynchronizedBuffer implements Buffer {
     }
 
     @Override
-    public void saveCursorPosition() {
+    public synchronized void saveCursorPosition() {
         cursorPosition.save();
     }
 
     @Override
-    public void restoreCursorPosition() {
+    public synchronized void restoreCursorPosition() {
         cursorPosition.restore();
     }
 
     @Override
-    public void switchBuffer(final BufferSelection selection) {
+    public synchronized void switchBuffer(final BufferSelection selection) {
         storage.flipTo(selection);
     }
 
     @Override
-    public BufferSelection getSelectedBuffer() {
+    public synchronized BufferSelection getSelectedBuffer() {
         return storage.getSelectedStorage();
     }
 
     @Override
-    public void setShowCursor(final boolean doIt) {
+    public synchronized void setShowCursor(final boolean doIt) {
         this.showCursor = doIt;
     }
 
     @Override
-    public void setClearChar(final GfxChar clearChar) {
+    public synchronized void setClearChar(final GfxChar clearChar) {
         storage.setClearChar(clearChar);
     }
 
     @Override
-    public void shift(final int charCount) {
+    public synchronized void shift(final int charCount) {
         final Position position = cursorPosition.currentPositionInScreen();
         storage.shiftColumns(charCount, position.x - 1, position.y - 1);
     }
 
     @Override
-    public void removeLines(final int linesCount) {
-        synchronized(this) {
-            if (cursorPosition.isMarginDefined()) {
-                storage.shiftLines(-linesCount,
-                        cursorPosition.currentPositionInScreen().y - 1,
-                        cursorPosition.getBottomMargin());
-            } else {
-                storage.shiftLines(-linesCount,
-                        cursorPosition.currentPositionInScreen().y - 1,
-                        storage.size().y);
-            }
+    public synchronized void removeLines(final int linesCount) {
+        if (cursorPosition.isMarginDefined()) {
+            storage.shiftLines(-linesCount,
+                    cursorPosition.currentPositionInScreen().y - 1,
+                    cursorPosition.getBottomMargin());
+        } else {
+            storage.shiftLines(-linesCount,
+                    cursorPosition.currentPositionInScreen().y - 1,
+                    storage.size().y);
         }
     }
 }

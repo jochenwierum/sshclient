@@ -16,7 +16,7 @@ public class LinkedListEventHub<T> implements EventHub<T> {
 
         final InvocationHandler handler = createInvocationHandler();
         try {
-            proxy = setupMock(clazz, handler);
+            proxy = setupProxy(clazz, handler);
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
@@ -27,7 +27,7 @@ public class LinkedListEventHub<T> implements EventHub<T> {
     }
 
     @SuppressWarnings("unchecked")
-    private T setupMock(final Class<T> clazz, final InvocationHandler handler)
+    private T setupProxy(final Class<T> clazz, final InvocationHandler handler)
             throws InstantiationException, IllegalAccessException,
             InvocationTargetException, NoSuchMethodException {
         final Class<?> proxyClass = Proxy.getProxyClass(
