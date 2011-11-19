@@ -13,6 +13,7 @@ public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
     private String host = "localhost";
     private int port = 22;
     private int timeout = 10000;
+    private String boundaryChars = ":@-./_~?&=%+#";
     private String charsetName = "UTF-8";
     private transient Charset charset;
     private AWTGfxInfo gfxInfo = new AWTGfxInfo();
@@ -106,5 +107,15 @@ public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
             p.environmentMap.put(entry.getKey(), entry.getValue());
         }
         return p;
+    }
+
+    @Override
+    public String getBoundaryChars() {
+        return boundaryChars;
+    }
+
+    @Override
+    public void setBoundaryLocator(final String boundaryChars) {
+        this.boundaryChars = boundaryChars;
     }
 }

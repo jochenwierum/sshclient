@@ -29,6 +29,7 @@ import de.jowisoftware.sshclient.terminal.buffer.ArrayListBackedTabStopManager;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.SynchronizedBuffer;
+import de.jowisoftware.sshclient.terminal.buffer.WordBoundaryLocator;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.input.ByteProcessor;
 import de.jowisoftware.sshclient.terminal.input.CharacterProcessor;
@@ -68,13 +69,25 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         session.getVisualFeedback().register(new GfxFeedback(this, renderer));
 
         clipboard = new AWTClipboard(session);
-        mouseCursorManager = new DefaultMouseCursorManager(buffer, renderer,
-                clipboard);
+        mouseCursorManager = createCursorManager(profile, buffer);
 
         outputProcessor = initializeInputProcessor(profile);
 
         keyboardProcessor.setSession(session);
         doAwtSetup(keyboardProcessor);
+    }
+
+    private DefaultMouseCursorManager createCursorManager(final AWTProfile profile,
+            final Buffer buffer) {
+        final WordBoundaryLocator boundaryLocator = createWordBoundaryLocator(profile, buffer);
+        return new DefaultMouseCursorManager(buffer, renderer,
+                clipboard, boundaryLocator);
+    }
+
+    private WordBoundaryLocator createWordBoundaryLocator(final AWTProfile profile, final Buffer buffer) {
+        final WordBoundaryLocator wordBoundaryLocator = new WordBoundaryLocator(buffer);
+        wordBoundaryLocator.setSelectionChars(profile.getBoundaryChars());
+        return wordBoundaryLocator;
     }
 
     private void doAwtSetup(final KeyboardProcessor keyboardProcessor) {
@@ -187,7 +200,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
 
             final Position charPosition =
                     session.translateMousePositionToCharacterPosition(e.getX(), e.getY());
-            mouseCursorManager.startSelection(charPosition);
+            mouseCursorManager.startSelection(charPosition, e.getClickCount());
             mouseCursorManager.updateSelectionEnd(charPosition);
             session.render();
         }
@@ -208,19 +221,6 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
             PerformanceLogger.start(PerformanceType.SELECT_TO_RENDER);
             updateSelection(e);
-        }
-    }
-
-    @Override
-    public void mouseClicked(final MouseEvent e) {
-        if (e.getClickCount() == 2) {
-            final Position charPosition =
-                    session.translateMousePositionToCharacterPosition(e.getX(), e.getY());
-            mouseCursorManager.copyWordUnderCursor(charPosition);
-        } else if (e.getClickCount() == 3) {
-            final Position charPosition =
-                    session.translateMousePositionToCharacterPosition(e.getX(), e.getY());
-            mouseCursorManager.copyLineUnderCursor(charPosition);
         }
     }
 
@@ -268,4 +268,5 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override public void mouseEntered(final MouseEvent e) { /* ignored */ }
     @Override public void mouseExited(final MouseEvent e) { /* ignored */ }
     @Override public void mouseMoved(final MouseEvent e) { /* ignored */ }
+    @Override public void mouseClicked(final MouseEvent e) { /* ignored */ }
 }

@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.jowisoftware.sshclient.terminal.buffer.BoundaryLocator;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
@@ -21,13 +22,16 @@ public class DefaultMouseCursorManagerTest {
     private Renderer renderer;
     private ClipboardManager clipboard;
     private DefaultMouseCursorManager manager;
+    private BoundaryLocator boundaries;
 
     @Before
     public void setUp() {
         buffer = context.mock(Buffer.class);
         renderer = context.mock(Renderer.class);
         clipboard = context.mock(ClipboardManager.class);
-        manager = new DefaultMouseCursorManager(buffer, renderer, clipboard);
+        boundaries = context.mock(BoundaryLocator.class);
+        manager = new DefaultMouseCursorManager(buffer, renderer, clipboard,
+                boundaries);
     }
 
     private void expectCopy(final String string) {
@@ -71,7 +75,7 @@ public class DefaultMouseCursorManagerTest {
     @Test
     public void selectionIsCopiedToClipboard() {
         allowRenderer();
-        manager.startSelection(new Position(4, 10));
+        manager.startSelection(new Position(4, 10), 1);
         manager.updateSelectionEnd(new Position(10, 12));
 
         allowSize(80, 24);
@@ -89,7 +93,7 @@ public class DefaultMouseCursorManagerTest {
     @Test
     public void invertedSelectionIsCopiedToClipboard() {
         allowRenderer();
-        manager.startSelection(new Position(10, 5));
+        manager.startSelection(new Position(10, 5), 1);
         manager.updateSelectionEnd(new Position(2, 4));
 
         allowSize(40, 24);
@@ -105,7 +109,7 @@ public class DefaultMouseCursorManagerTest {
     @Test
     public void selectionInSingleLineIsCopiedToClipboard() {
         allowRenderer();
-        manager.startSelection(new Position(13, 2));
+        manager.startSelection(new Position(13, 2), 1);
         manager.updateSelectionEnd(new Position(7, 2));
 
         allowCharRequests(2, 7, 12, "works!");
@@ -127,11 +131,11 @@ public class DefaultMouseCursorManagerTest {
                     new Position(6, 2));
         }});
 
-        manager.startSelection(new Position(2, 5));
+        manager.startSelection(new Position(2, 5), 1);
         manager.updateSelectionEnd(new Position(5, 5));
         manager.updateSelectionEnd(new Position(7, 1));
 
-        manager.startSelection(new Position(7, 2));
+        manager.startSelection(new Position(7, 2), 1);
         manager.updateSelectionEnd(new Position(5, 2));
     }
 
@@ -141,7 +145,7 @@ public class DefaultMouseCursorManagerTest {
             oneOf(renderer).clearSelection();
         }});
 
-        manager.startSelection(new Position(1, 2));
+        manager.startSelection(new Position(1, 2), 1);
         manager.updateSelectionEnd(new Position(1, 2));
     }
 
@@ -152,7 +156,7 @@ public class DefaultMouseCursorManagerTest {
                     new Position(4, 5));
         }});
 
-        manager.startSelection(new Position(2, 5));
+        manager.startSelection(new Position(2, 5), 1);
         manager.updateSelectionEnd(new Position(5, 5));
         manager.updateSelectionEnd(new Position(5, 5));
     }
@@ -164,9 +168,120 @@ public class DefaultMouseCursorManagerTest {
         context.checking(new Expectations() {{
             allowing(renderer).clearSelection();
         }});
-        manager.startSelection(new Position(7, 5));
+        manager.startSelection(new Position(7, 5), 1);
         manager.updateSelectionEnd(new Position(7, 5));
         manager.copySelection();
     }
-}
 
+    @Test
+    public void trippleClickOnSamePositionSelectsLine() {
+        allowCharRequests(5, 1, 80, "It works!" + StringUtils.repeat(" ", 71));
+        expectCopy("It works!");
+
+        context.checking(new Expectations() {{
+            allowing(buffer).getSize(); will(returnValue(new Position(80, 24)));
+            oneOf(renderer).setSelection(new Position(1, 5),
+                    new Position(80, 5));
+        }});
+
+        manager.startSelection(new Position(5, 5), 3);
+        manager.updateSelectionEnd(new Position(5, 5));
+        manager.copySelection();
+    }
+
+    @Test
+    public void trippleClickWithNegativeOffsetSelectsLines() {
+        allowCharRequests(7, 1, 80, "Some text" + StringUtils.repeat(" ", 71));
+        allowCharRequests(8, 1, 80, "Copy me :-)" + StringUtils.repeat(" ", 70));
+        expectCopy("Some text\nCopy me :-)");
+
+        context.checking(new Expectations() {{
+            allowing(buffer).getSize(); will(returnValue(new Position(80, 24)));
+            oneOf(renderer).setSelection(new Position(1, 7),
+                    new Position(80, 8));
+        }});
+
+        manager.startSelection(new Position(9, 8), 3);
+        manager.updateSelectionEnd(new Position(15, 7));
+        manager.copySelection();
+    }
+
+    @Test
+    public void trippleClickWithPositiveOffsetSelectsLines() {
+        allowCharRequests(7, 1, 80, "More text" + StringUtils.repeat(" ", 71));
+        allowCharRequests(8, 1, 80, "Boring text" + StringUtils.repeat(" ", 69));
+        expectCopy("More text\nBoring text");
+
+        context.checking(new Expectations() {{
+            allowing(buffer).getSize(); will(returnValue(new Position(80, 24)));
+            oneOf(renderer).setSelection(new Position(1, 7),
+                    new Position(80, 8));
+        }});
+
+        manager.startSelection(new Position(9, 7), 3);
+        manager.updateSelectionEnd(new Position(15, 8));
+        manager.copySelection();
+    }
+
+    @Test
+    public void doubleClickSelectsWord() {
+        allowCharRequests(7, 9, 12, "some");
+        expectCopy("some");
+
+        context.checking(new Expectations() {{
+            allowing(buffer).getSize(); will(returnValue(new Position(80, 24)));
+            oneOf(renderer).setSelection(new Position(9, 7),
+                    new Position(12, 7));
+            allowing(boundaries).findStartOfWord(new Position(9, 7));
+                will(returnValue(new Position(9, 7)));
+            allowing(boundaries).findEndOfWord(new Position(9, 7));
+                will(returnValue(new Position(12, 7)));
+        }});
+
+        manager.startSelection(new Position(9, 7), 2);
+        manager.updateSelectionEnd(new Position(9, 7));
+        manager.copySelection();
+    }
+
+    @Test
+    public void doubleClickSelectsMultipleWords() {
+        allowCharRequests(7, 9, 80, "these words" + StringUtils.repeat(" ", 61));
+        allowCharRequests(8, 1, 12, "are selected" + StringUtils.repeat(" ", 68));
+        expectCopy("these words\nare selected");
+
+        context.checking(new Expectations() {{
+            allowing(buffer).getSize(); will(returnValue(new Position(80, 24)));
+            oneOf(renderer).setSelection(new Position(9, 7),
+                    new Position(12, 8));
+            allowing(boundaries).findStartOfWord(new Position(9, 7));
+                will(returnValue(new Position(9, 7)));
+            allowing(boundaries).findEndOfWord(new Position(10, 8));
+                will(returnValue(new Position(12, 8)));
+        }});
+
+        manager.startSelection(new Position(9, 7), 2);
+        manager.updateSelectionEnd(new Position(10, 8));
+        manager.copySelection();
+    }
+
+    @Test
+    public void doubleClickSelectsMultipleWordsBackwards() {
+        allowCharRequests(7, 9, 80, "these words" + StringUtils.repeat(" ", 61));
+        allowCharRequests(8, 1, 12, "are selected" + StringUtils.repeat(" ", 68));
+        expectCopy("these words\nare selected");
+
+        context.checking(new Expectations() {{
+            allowing(buffer).getSize(); will(returnValue(new Position(80, 24)));
+            oneOf(renderer).setSelection(new Position(9, 7),
+                    new Position(12, 8));
+            allowing(boundaries).findStartOfWord(new Position(9, 7));
+                will(returnValue(new Position(9, 7)));
+            allowing(boundaries).findEndOfWord(new Position(10, 8));
+                will(returnValue(new Position(12, 8)));
+        }});
+
+        manager.startSelection(new Position(10, 8), 2);
+        manager.updateSelectionEnd(new Position(9, 7));
+        manager.copySelection();
+    }
+}

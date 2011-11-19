@@ -2,36 +2,44 @@ package de.jowisoftware.sshclient.terminal.mouse;
 
 import org.apache.log4j.Logger;
 
+import de.jowisoftware.sshclient.terminal.buffer.BoundaryLocator;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 
 public class DefaultMouseCursorManager implements MouseCursorManager {
+    private enum SelectionMode {
+        CHARWISE, WORDWISE, LINEWISE;
+    }
+
     private static final Logger LOGGER = Logger
             .getLogger(DefaultMouseCursorManager.class);
 
     private final Buffer buffer;
     private final ClipboardManager clipboard;
+    private final Renderer renderer;
+    private final BoundaryLocator boundaryLocator;
 
     private Position firstClickPosition;
+    private Position lastSelectionEndPosition;
+    private SelectionMode selectionMode = SelectionMode.CHARWISE;
 
     private Position startPosition;
     private Position endPosition;
 
-    private final Renderer renderer;
-
-    private Position lastSelectionEndPosition;
-
     public DefaultMouseCursorManager(final Buffer buffer,
-            final Renderer renderer, final ClipboardManager clipboard) {
+            final Renderer renderer, final ClipboardManager clipboard,
+            final BoundaryLocator wordBoundaryLocator) {
         this.buffer = buffer;
         this.clipboard = clipboard;
         this.renderer = renderer;
+        this.boundaryLocator = wordBoundaryLocator;
     }
 
     @Override
-    public void startSelection(final Position position) {
+    public void startSelection(final Position position, final int clicks) {
         LOGGER.trace("Start selection: " + position);
+        selectionMode = SelectionMode.values()[Math.min(clicks - 1, 2)];
         firstClickPosition = position;
         lastSelectionEndPosition = null;
     }
@@ -40,7 +48,7 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
     public void updateSelectionEnd(final Position position) {
         if (!position.equals(lastSelectionEndPosition)) {
             LOGGER.trace("End selection: " + position);
-            if (position.equals(firstClickPosition)) {
+            if (position.equals(firstClickPosition) && selectionMode == SelectionMode.CHARWISE) {
                 renderer.clearSelection();
                 startPosition = null;
                 endPosition = null;
@@ -53,20 +61,51 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
     }
 
     private void updateSelectionFields(final Position newPosition) {
-        final boolean swap;
+        final boolean swap = firstClickPosition.isAfter(newPosition);
 
-        if (firstClickPosition.y == newPosition.y) {
-            swap = firstClickPosition.x > newPosition.x;
-        } else {
-            swap = firstClickPosition.y > newPosition.y;
+        switch(selectionMode) {
+        case CHARWISE:
+            updateCharwiseSelectionFields(firstClickPosition, newPosition, swap);
+            break;
+        case WORDWISE:
+            updateWordwiseSelectionFields(firstClickPosition, newPosition, swap);
+            break;
+        case LINEWISE:
+            updateLinewiseSelectionFields(firstClickPosition, newPosition, swap);
+            break;
         }
+    }
 
-        if (swap) {
-            startPosition = newPosition;
-            endPosition = firstClickPosition;
+    private void updateWordwiseSelectionFields(final Position pos1,
+            final Position pos2, final boolean swap) {
+        if (!swap) {
+            startPosition = boundaryLocator.findStartOfWord(pos1);
+            endPosition = boundaryLocator.findEndOfWord(pos2).offset(1, 0);
         } else {
-            startPosition = firstClickPosition;
-            endPosition = newPosition;
+            startPosition = boundaryLocator.findStartOfWord(pos2);
+            endPosition = boundaryLocator.findEndOfWord(pos1).offset(1, 0);
+        }
+    }
+
+    private void updateLinewiseSelectionFields(final Position pos1,
+            final Position pos2, final boolean swap) {
+        if (!swap) {
+            startPosition = pos1.withX(1);
+            endPosition = pos2.withX(buffer.getSize().x + 1);
+        } else {
+            startPosition = pos2.withX(1);
+            endPosition = pos1.withX(buffer.getSize().x + 1);
+        }
+    }
+
+    private void updateCharwiseSelectionFields(final Position pos1,
+            final Position pos2, final boolean swap) {
+        if (!swap) {
+            startPosition = pos1;
+            endPosition = pos2;
+        } else {
+            startPosition = pos2;
+            endPosition = pos1;
         }
     }
 
@@ -122,19 +161,5 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
 
     private String charAt(final int y, final int x) {
         return buffer.getCharacter(y, x).getCharAsString();
-    }
-
-    @Override
-    public void copyWordUnderCursor(final Position charPosition) {
-        // TODO Auto-generated method stub
-        // TODO: introduce BufferParser
-        // dblclick on word: select word
-        // dblclick on non-word: select all equal non-word
-        // non-word: (not: ., /) , [, ], %,
-    }
-
-    @Override
-    public void copyLineUnderCursor(final Position charPosition) {
-        // TODO Auto-generated method stub
     }
 }
