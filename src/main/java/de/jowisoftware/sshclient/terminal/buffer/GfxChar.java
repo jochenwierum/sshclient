@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
 public interface GfxChar {
-    char getChar();
+    String getCharAsString();
+    int getCharCount();
 }

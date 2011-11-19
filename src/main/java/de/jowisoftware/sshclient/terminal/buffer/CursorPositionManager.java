@@ -18,7 +18,7 @@ public interface CursorPositionManager {
     void resetWouldWrap();
     boolean wouldWrap();
 
-    void moveToNextPosition();
+    void moveToNextPosition(int characterWidth);
 
     void setMargins(int rollRangeBegin, int rollRangeEnd);
     int getBottomMargin();

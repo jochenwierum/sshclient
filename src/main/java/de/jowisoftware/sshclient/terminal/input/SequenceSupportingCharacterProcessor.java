@@ -28,6 +28,7 @@ public class SequenceSupportingCharacterProcessor implements CharacterProcessor 
         new Stack<CharacterProcessorState>();
 
     private final SSHSession sessionInfo;
+    private Character surrogateChar;
 
     public SequenceSupportingCharacterProcessor(final SSHSession sessionInfo,
             final SequenceRepository repository) {
@@ -79,6 +80,14 @@ public class SequenceSupportingCharacterProcessor implements CharacterProcessor 
     private void processStandardChar(final char character) {
         if (character == BELL_CHAR) {
             sessionInfo.getVisualFeedback().fire().bell();
+        } else if (surrogateChar != null) {
+            final String characterString = new String(new char[]{surrogateChar,
+                    character});
+            sessionInfo.getBuffer().addCharacter(
+                    sessionInfo.getCharSetup().createMultibyteChar(characterString));
+            surrogateChar = null;
+        } else if (Character.isHighSurrogate(character)) {
+            surrogateChar = character;
         } else {
             sessionInfo.getBuffer().addCharacter(
                 sessionInfo.getCharSetup().createChar(character));

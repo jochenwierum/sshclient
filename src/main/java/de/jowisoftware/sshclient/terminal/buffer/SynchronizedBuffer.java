@@ -81,7 +81,7 @@ public class SynchronizedBuffer implements Buffer {
         cursorPosition.resetWouldWrap();
         storage.setCharacter(currentPosition.y - 1,
                 currentPosition.x - 1, character);
-        cursorPosition.moveToNextPosition();
+        cursorPosition.moveToNextPosition(character.getCharCount());
     }
 
     private void wrapLineIfNeeded() {

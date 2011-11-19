@@ -9,6 +9,8 @@ import org.apache.log4j.Logger;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.LinkedListEventHub;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import de.jowisoftware.sshclient.terminal.buffer.BufferStorage;
+import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.terminal.buffer.TabStopManager;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
@@ -117,5 +119,13 @@ public class SimpleSSHSession implements SSHSession {
 
     public void render() {
         renderer.renderSnapshot(buffer.createSnapshot());
+    }
+
+    public Position translateMousePositionToCharacterPosition(final int x, final int y) {
+        Position position = renderer.translateMousePosition(x, y);
+        while (buffer.getCharacter(position.y, position.x) == BufferStorage.EMPTY) {
+            position = position.offset(-1, 0);
+        }
+        return position;
     }
 }

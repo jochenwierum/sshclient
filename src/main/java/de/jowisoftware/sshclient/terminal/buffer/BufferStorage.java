@@ -1,6 +1,11 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
 public interface BufferStorage {
+    public static final GfxChar EMPTY = new GfxChar() {
+        @Override public int getCharCount() { return 1; }
+        @Override public String getCharAsString() { return null; }
+    };
+
     Position size();
     void newSize(final int width, final int height);
 

@@ -46,7 +46,6 @@ public class CharsetByteProcessor implements ByteProcessor {
             inputBuffer.clear();
             throw e;
         }
-        outputBuffer.clear();
 
         switch(couldConvertToOutputBuffer()) {
         case OUTPUT_GENERATED:
@@ -60,8 +59,6 @@ public class CharsetByteProcessor implements ByteProcessor {
     }
 
     private void processCharacter() {
-        inputBuffer.clear();
-
         final char[] temp = new char[outputBuffer.limit()];
         outputBuffer.get(temp, 0, temp.length);
         for (final char c : temp) {
@@ -100,12 +97,14 @@ public class CharsetByteProcessor implements ByteProcessor {
     }
 
     private DecodeResult couldConvertToOutputBuffer() {
+        outputBuffer.clear();
         final ByteBuffer decodeBuffer = inputBuffer.duplicate();
         decodeBuffer.flip();
         final CoderResult result = decoder.decode(decodeBuffer, outputBuffer, false);
         outputBuffer.flip();
 
         if (result.isUnderflow() && outputBuffer.limit() != 0) {
+            inputBuffer.clear();
             return DecodeResult.OUTPUT_GENERATED;
         } else if (result.isUnderflow()) {
             return DecodeResult.INPUT_NEEDED;

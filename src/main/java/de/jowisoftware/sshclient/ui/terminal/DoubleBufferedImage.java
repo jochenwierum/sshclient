@@ -4,6 +4,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
@@ -12,6 +13,7 @@ import javax.swing.SwingUtilities;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.debug.PerformanceType;
 import de.jowisoftware.sshclient.terminal.buffer.BufferSnapshot;
+import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
@@ -73,6 +75,10 @@ public class DoubleBufferedImage implements Renderer {
                 graphics[i].setBackground(gfxInfo.mapColor(
                         ColorName.DEFAULT_BACKGROUND, false));
                 graphics[i].setFont(gfxInfo.getFont());
+
+                // TODO: introduce option for that
+                graphics[i].setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
             }
 
             final FontMetrics fontMetrics = graphics[0].getFontMetrics();
@@ -91,7 +97,8 @@ public class DoubleBufferedImage implements Renderer {
         if (images != null) {
             PerformanceLogger.start(PerformanceType.BACKGROUND_RENDER);
             for (int y = 0; y < snapshot.content.length; ++y) {
-                for (int x = 0; x < snapshot.content[0].length; ++x) {
+                for (int x = 0; x < snapshot.content[y].length;
+                        x += snapshot.content[y][x].getCharCount()) {
                     final int posx = x * charWidth;
                     final int posy = y * charHeight;
                     final int renderFlags = baseRenderFlags |
@@ -100,9 +107,10 @@ public class DoubleBufferedImage implements Renderer {
                                     new Position(x + 1, y + 1),
                                     selectionStart, selectionEnd);
 
+                    final GfxChar gfxChar = snapshot.content[y][x];
                     final Rectangle rect = new Rectangle(posx, posy,
-                            charWidth, charHeight);
-                    ((AWTGfxChar)(snapshot.content[y][x])).drawAt(rect,
+                            charWidth * gfxChar.getCharCount(), charHeight);
+                    ((AWTGfxChar)gfxChar).drawAt(rect,
                             baseLinePos, graphics[1 - currentImage], renderFlags);
                 }
             }

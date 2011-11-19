@@ -13,7 +13,7 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
     private final Map<ColorName, Color> colors = new HashMap<ColorName, Color>();
     private final Map<ColorName, Color> lightColors = new HashMap<ColorName, Color>();
     private Color cursorColor;
-    private Font font = new Font(Font.MONOSPACED, 0, 10);
+    private Font font = new Font(Font.MONOSPACED, Font.PLAIN, 10);
     private Font boldFont = new Font(Font.MONOSPACED, Font.BOLD, 10);
 
     public AWTGfxInfo() {

@@ -82,6 +82,9 @@ public class ArrayBackedBufferStorage implements BufferStorage {
     @Override
     public void setCharacter(final int y, final int x, final GfxChar character) {
         lines[y][x] = character;
+        for (int offset = 1; offset < character.getCharCount(); ++offset) {
+            lines[y][x + offset] = EMPTY;
+        }
     }
 
     @Override

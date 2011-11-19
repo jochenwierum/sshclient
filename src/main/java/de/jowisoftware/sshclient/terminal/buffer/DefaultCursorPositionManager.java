@@ -68,9 +68,9 @@ public class DefaultCursorPositionManager implements CursorPositionManager {
     }
 
     @Override
-    public void moveToNextPosition() {
-        final Position newPosition = position.offset(1, 0);
-        wouldWrap = (newPosition.x == rightBottomCorner.x + 1);
+    public void moveToNextPosition(final int characterWidth) {
+        final Position newPosition = position.offset(characterWidth, 0);
+        wouldWrap = (newPosition.x >= rightBottomCorner.x + 1);
         position = newPosition.moveInRange(rightBottomCorner.toRange());
     }
 

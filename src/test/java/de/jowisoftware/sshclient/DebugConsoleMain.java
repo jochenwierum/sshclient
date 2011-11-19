@@ -29,18 +29,18 @@ public class DebugConsoleMain {
             return;
         }
 
-        final String text = readFile(stream);
+        final byte[] text = readFile(stream);
         final SSHConsole console = showFrame();
 
         (new Thread("network-simulator") {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(300);
                 } catch (final InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                console.gotChars(text.getBytes(), text.getBytes().length);
+                console.gotChars(text, text.length);
             }
         }).start();
     }
@@ -72,7 +72,7 @@ public class DebugConsoleMain {
         timer.start();
     }
 
-    private String readFile(final InputStream stream) throws IOException {
+    private byte[] readFile(final InputStream stream) throws IOException {
         String text = IOUtils.toString(stream, "UTF-8");
         IOUtils.closeQuietly(stream);
 
@@ -99,6 +99,6 @@ public class DebugConsoleMain {
             m.appendReplacement(builder, rep.replace("\\", "\\\\"));
         }
         m.appendTail(builder);
-        return builder.toString();
+        return builder.toString().getBytes("UTF-8");
     }
 }

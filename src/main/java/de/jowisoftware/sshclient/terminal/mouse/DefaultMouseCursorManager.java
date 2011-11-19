@@ -109,15 +109,19 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
     private String getLineFromBuffer(final int line, final int from, final int to) {
         final StringBuilder builder = new StringBuilder(".");
 
-        for (int i = from; i <= to; ++i) {
+        for (int i = from; i <= to; i += charWidth(line, i)) {
             builder.append(charAt(line, i));
         }
 
         return builder.toString().trim().substring(1);
     }
 
-    private char charAt(final int y, final int x) {
-        return buffer.getCharacter(y, x).getChar();
+    private int charWidth(final int y, final int x) {
+        return buffer.getCharacter(y, x).getCharCount();
+    }
+
+    private String charAt(final int y, final int x) {
+        return buffer.getCharacter(y, x).getCharAsString();
     }
 
     @Override

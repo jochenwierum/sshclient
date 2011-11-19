@@ -20,7 +20,7 @@ public class DebugControlSequence implements NonASCIIControlSequence {
     @Override
     public void handleSequence(final String sequence, final SSHSession sessionInfo) {
         sessionInfo.getCharSetup().reset();
-        final GfxChar gfxChar = sessionInfo.getCharSetup().createMultibyteChar("E");
+        final GfxChar gfxChar = sessionInfo.getCharSetup().createChar('E');
 
         final Buffer buffer = sessionInfo.getBuffer();
         final Position size = buffer.getSize();

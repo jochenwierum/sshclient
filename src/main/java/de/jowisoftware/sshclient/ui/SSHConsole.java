@@ -185,7 +185,8 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         if (e.getButton() == MouseEvent.BUTTON1) {
             requestFocusInWindow();
 
-            final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
+            final Position charPosition =
+                    session.translateMousePositionToCharacterPosition(e.getX(), e.getY());
             mouseCursorManager.startSelection(charPosition);
             mouseCursorManager.updateSelectionEnd(charPosition);
             session.render();
@@ -213,16 +214,19 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override
     public void mouseClicked(final MouseEvent e) {
         if (e.getClickCount() == 2) {
-            final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
+            final Position charPosition =
+                    session.translateMousePositionToCharacterPosition(e.getX(), e.getY());
             mouseCursorManager.copyWordUnderCursor(charPosition);
         } else if (e.getClickCount() == 3) {
-            final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
+            final Position charPosition =
+                    session.translateMousePositionToCharacterPosition(e.getX(), e.getY());
             mouseCursorManager.copyLineUnderCursor(charPosition);
         }
     }
 
     public void updateSelection(final MouseEvent e) {
-        final Position charPosition = renderer.translateMousePosition(e.getX(), e.getY());
+        final Position charPosition =
+                session.translateMousePositionToCharacterPosition(e.getX(), e.getY());
         mouseCursorManager.updateSelectionEnd(charPosition);
         session.render();
     }

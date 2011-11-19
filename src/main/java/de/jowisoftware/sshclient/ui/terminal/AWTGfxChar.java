@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
-import de.jowisoftware.sshclient.terminal.charsets.GfxCharset;
 import de.jowisoftware.sshclient.terminal.gfx.Attribute;
 import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
 
@@ -15,14 +14,7 @@ public class AWTGfxChar implements GfxChar {
     private final TerminalColor fgColor;
     private final TerminalColor bgColor;
     private final String charAsString;
-
-    public AWTGfxChar(final char character,
-            final GfxCharset gfxCharset, final AWTGfxInfo gfxInfo,
-            final TerminalColor fgColor, final TerminalColor bgColor,
-            final int attributes) {
-        this(Character.toString(gfxCharset.convertCharacter(character)),
-                gfxInfo, fgColor, bgColor, attributes);
-    }
+    private final int charWidth;
 
     public AWTGfxChar(final String characterAsString,
             final AWTGfxInfo gfxInfo, final TerminalColor fgColor,
@@ -43,6 +35,7 @@ public class AWTGfxChar implements GfxChar {
         this.bgColor = bgColor;
         this.attributes = attributes;
         this.charAsString = characterAsString;
+        this.charWidth = characterAsString.toCharArray().length;
     }
 
     public void drawAt(final Rectangle rect, final int baseLinePos,
@@ -142,8 +135,8 @@ public class AWTGfxChar implements GfxChar {
     }
 
     @Override
-    public char getChar() {
-        return charAsString.charAt(0);
+    public String getCharAsString() {
+        return charAsString;
     }
 
     @Override
@@ -178,5 +171,10 @@ public class AWTGfxChar implements GfxChar {
                 bgColor.equals(other.bgColor) &&
                 charAsString.equals(other.charAsString) &&
                 fgColor.equals(other.fgColor);
+    }
+
+    @Override
+    public int getCharCount() {
+        return charWidth;
     }
 }

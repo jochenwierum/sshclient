@@ -260,4 +260,17 @@ public class SequenceSupportingCharacterProcessorTest {
         processor.processChar((char) 27);
         processor.processChar('\\');
     }
+
+    @Test
+    public void multipleCharsAreMergedToString() {
+        final char[] chars = Character.toChars(0x024B62); // 𤭢
+
+        processor.processChar(chars[0]);
+
+        context.checking(new Expectations() {{
+            oneOf(setup).createMultibyteChar("𤭢"); will(returnValue(gfxChar));
+            oneOf(buffer).addCharacter(gfxChar);
+        }});
+        processor.processChar(chars[1]);
+    }
 }

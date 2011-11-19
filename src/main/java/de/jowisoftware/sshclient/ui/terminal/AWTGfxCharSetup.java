@@ -106,7 +106,10 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     @Override
     public AWTGfxChar createChar(final char character) {
-        return new AWTGfxChar(character, getCharset(selectedCharset),
+        final GfxCharset charset = getCharset(selectedCharset);
+        final String characterString = Character.toString(
+                charset.convertCharacter(character));
+        return new AWTGfxChar(characterString,
                 gfxInfo, fgColor, bgColor, attributes);
     }
 
@@ -126,8 +129,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     @Override
     public AWTGfxChar createClearChar() {
-        return new AWTGfxChar(' ', new USASCIICharset(),
-                gfxInfo, fgColor, bgColor, 0);
+        return new AWTGfxChar(" ", gfxInfo, fgColor, bgColor, 0);
     }
 
     @Override

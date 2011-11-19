@@ -1,7 +1,11 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
+import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JMock;
 import org.junit.Before;
@@ -9,7 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(JMock.class)
-public class SynchronizedArrayBackedBufferStorageTest {
+public class ArrayBackedBufferStorageTest {
     private final Mockery context = new Mockery();
     private ArrayBackedBufferStorage storage;
     private GfxChar nullChar;
@@ -22,6 +26,11 @@ public class SynchronizedArrayBackedBufferStorageTest {
         char1 = context.mock(GfxChar.class, "char1");
         char2 = context.mock(GfxChar.class, "char2");
         storage = new ArrayBackedBufferStorage(nullChar, 80, 24);
+
+        context.checking(new Expectations() {{
+            allowing(char1).getCharCount(); will(returnValue(1));
+            allowing(char2).getCharCount(); will(returnValue(1));
+        }});
     }
 
     private void assertChar(final int y, final int x, final GfxChar character) {
@@ -296,5 +305,25 @@ public class SynchronizedArrayBackedBufferStorageTest {
         assertChar(3, 5, nullChar);
         assertChar(3, 6, nullChar);
         assertChar(3, 7, char2);
+    }
+
+    @Test
+    public void multiByteCharsMarkFollowingFieldsAsEmpty() {
+        final GfxChar gfxChar = context.mock(GfxChar.class);
+
+        context.checking(new Expectations() {{
+            allowing(gfxChar).getCharCount(); will(returnValue(2));
+        }});
+
+        storage.setCharacter(2, 3, gfxChar);
+
+        assertThat(storage.getCharacterAt(2, 3),
+                is(sameInstance(gfxChar)));
+
+        assertThat(storage.getCharacterAt(2, 4),
+                is(sameInstance(BufferStorage.EMPTY)));
+
+        assertThat(storage.getCharacterAt(2, 5),
+                is(sameInstance(nullChar)));
     }
 }

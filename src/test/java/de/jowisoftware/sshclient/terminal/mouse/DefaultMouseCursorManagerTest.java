@@ -50,9 +50,12 @@ public class DefaultMouseCursorManagerTest {
 
         context.checking(new Expectations() {{
             for (int i = from; i <= to; ++i) {
-                oneOf(buffer).getCharacter(line, i);
+                exactly(2).of(buffer).getCharacter(line, i);
                 will(returnValue(character));
-                oneOf(character).getChar(); will(returnValue(chars[i - from]));
+                oneOf(character).getCharAsString(); will(
+                        returnValue(Character.toString(chars[i - from])));
+                oneOf(character).getCharCount(); will(
+                        returnValue(1));
             }
         }});
 

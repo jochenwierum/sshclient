@@ -64,7 +64,7 @@ public class SynchronizedBufferTest {
 
     private void assertCursorWillBeMovedToNextPosition() {
         context.checking(new Expectations() {{
-            oneOf(positionManager).moveToNextPosition();
+            oneOf(positionManager).moveToNextPosition(1);
         }});
     }
 
@@ -88,6 +88,10 @@ public class SynchronizedBufferTest {
         allowPosition(1, 1);
         allowWordWrap(true);
 
+        context.checking(new Expectations() {{
+            oneOf(character).getCharCount(); will(returnValue(1));
+        }});
+
         assertCharWillBeSet(1, 1, character);
         assertCursorWillBeMovedToNextPosition();
         buffer.addCharacter(character);
@@ -99,6 +103,10 @@ public class SynchronizedBufferTest {
         allowSize(80, 24);
         allowPosition(4, 2);
         allowWordWrap(true);
+
+        context.checking(new Expectations() {{
+            oneOf(character).getCharCount(); will(returnValue(1));
+        }});
 
         assertCharWillBeSet(4, 2, character);
         assertCursorWillBeMovedToNextPosition();
@@ -148,7 +156,8 @@ public class SynchronizedBufferTest {
         assertCharWillBeSet(1, 80, char1);
         context.checking(new Expectations() {{
             allowing(positionManager).resetWouldWrap();
-            allowing(positionManager).moveToNextPosition();
+            allowing(positionManager).moveToNextPosition(1);
+            allowing(char1).getCharCount(); will(returnValue(1));
         }});
         buffer.addCharacter(char1);
 
@@ -156,7 +165,8 @@ public class SynchronizedBufferTest {
         assertCharWillBeSet(4, 80, char2);
         context.checking(new Expectations() {{
             allowing(positionManager).resetWouldWrap();
-            allowing(positionManager).moveToNextPosition();
+            allowing(positionManager).moveToNextPosition(1);
+            allowing(char2).getCharCount(); will(returnValue(1));
         }});
         buffer.addCharacter(char2);
     }
@@ -400,7 +410,9 @@ public class SynchronizedBufferTest {
             oneOf(positionManager).setPositionSafelyInScreen(new Position(1, 2));
             oneOf(positionManager).currentPositionInScreen();
                 will(returnValue(new Position(1, 2)));
-            oneOf(positionManager).moveToNextPosition();
+            oneOf(positionManager).moveToNextPosition(1);
+
+            allowing(character).getCharCount(); will(returnValue(1));
         }});
 
         assertCharWillBeSet(2, 1, character);
@@ -438,7 +450,8 @@ public class SynchronizedBufferTest {
                 will(returnValue(new Position(80, 1)));
             oneOf(positionManager).wouldWrap(); will(returnValue(false));
             oneOf(positionManager).resetWouldWrap();
-            oneOf(positionManager).moveToNextPosition();
+            oneOf(positionManager).moveToNextPosition(1);
+            allowing(character).getCharCount(); will(returnValue(1));
         }});
 
         assertCharWillBeSet(1, 80, character);
