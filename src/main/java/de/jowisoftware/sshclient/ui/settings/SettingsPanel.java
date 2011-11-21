@@ -5,7 +5,6 @@ import static de.jowisoftware.sshclient.i18n.Translation.t;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -15,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.regex.Pattern;
@@ -35,6 +35,7 @@ import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.util.FontUtils;
+import de.jowisoftware.sshclient.util.KeyValue;
 
 public class SettingsPanel extends JPanel {
     private static final long serialVersionUID = 663223636542133238L;
@@ -47,19 +48,20 @@ public class SettingsPanel extends JPanel {
     private final AWTProfile profile;
     private final JTabbedPane tabbedPane;
 
-    private JTextField hostTextField;
-    private JTextField portTextField;
-    private JTextField userTextField;
-    private JComboBox encodingBox;
-    private JTextField timeoutTextField;
-    private JComboBox fontBox;
-    private JComboBox fontStyleBox;
-    private JTextField fontSizeTextField;
-    private JTextField profileNameTextField;
+    private final JTextField hostTextField = new JTextField();
+    private final JTextField portTextField = new JTextField();
+    private final JTextField userTextField = new JTextField();
+    private final JTextField boundaryTextField = new JTextField();
+    private final JComboBox encodingBox = createEncodingsBox();
+    private final JTextField timeoutTextField = new JTextField();
+    private final JComboBox fontBox = createFontSelectionBox();
+    private final JTextField fontSizeTextField = new JTextField(2);
+    private final JTextField profileNameTextField = new JTextField();
+    private final JComboBox antiAliasingBox = createAntiAliasingBox();
 
-    private final GridBagConstraints normalColumn;
-    private final GridBagConstraints spacedColumn;
-    private final GridBagConstraints lastColumn;
+    private final GridBagConstraints normalColumn = createSpacedColumnConstraints(16);
+    private final GridBagConstraints spacedColumn = createSpacedColumnConstraints(45);
+    private final GridBagConstraints lastColumn = createLastColumnConstraints();
     private JList environmentList;
 
 
@@ -70,13 +72,22 @@ public class SettingsPanel extends JPanel {
         setLayout(new BorderLayout());
         add(tabbedPane, BorderLayout.CENTER);
 
-        normalColumn = createSpacedColumnConstraints(16);
-        spacedColumn = createSpacedColumnConstraints(45);
-        lastColumn = createLastColumnConstraints();
-
         addMainTab(profileName, profileNameSettable);
         addColorTab();
         addAdvancedTab();
+    }
+
+    private JComboBox createAntiAliasingBox() {
+        final List<KeyValue<String, Object>> hints = FontUtils.getRenderingHintMap();
+        final String names[] = new String[hints.size()];
+
+        int i = 0;
+        for (final KeyValue<String, Object> hint : hints) {
+            names[i++] = t("profile.color.antialiasing." + hint.key, hint.key);
+        }
+
+        Arrays.sort(names);
+        return new JComboBox(names);
     }
 
     private GridBagConstraints createSpacedColumnConstraints(final int space) {
@@ -118,31 +129,30 @@ public class SettingsPanel extends JPanel {
     private void addMainControls(final JPanel frame, final String profileName,
             final boolean profileNameSettable) {
         addControl(frame, newFormattedLabel(t("profiles.general.profilename", "profile name:")), normalColumn);
-        profileNameTextField = new JTextField(profileName);
+        profileNameTextField.setText(profileName);
         profileNameTextField.setEnabled(profileNameSettable);
         addControl(frame, profileNameTextField, lastColumn);
 
         addControl(frame, newFormattedLabel(t("profiles.general.host", "host:")), normalColumn);
-        hostTextField = new JTextField(profile.getHost());
+        hostTextField.setText(profile.getHost());
         addControl(frame, hostTextField, lastColumn);
 
         addControl(frame, newFormattedLabel(t("profiles.general.port", "port:")), normalColumn);
-        portTextField = new JTextField(Integer.toString(profile.getPort()));
+        portTextField.setText(Integer.toString(profile.getPort()));
         addControl(frame, portTextField, lastColumn);
 
         addControl(frame, newFormattedLabel(t("profiles.general.user", "user:")), normalColumn);
-        userTextField = new JTextField(profile.getUser());
+        userTextField.setText(profile.getUser());
         addControl(frame, userTextField, lastColumn);
 
         addVerticalSpacing(frame);
 
         addControl(frame, newFormattedLabel(t("profiles.general.encoding", "encoding:")), normalColumn);
-        encodingBox = createEncodingsBox();
         encodingBox.setSelectedItem(profile.getCharset().name());
         addControl(frame, encodingBox, lastColumn);
 
         addControl(frame, newFormattedLabel(t("profiles.general.timeout", "timeout (ms):")), normalColumn);
-        timeoutTextField = new JTextField(Integer.toString(profile.getTimeout()));
+        timeoutTextField.setText(Integer.toString(profile.getTimeout()));
         addControl(frame, timeoutTextField, lastColumn);
     }
 
@@ -201,32 +211,20 @@ public class SettingsPanel extends JPanel {
     }
 
     private void addFontControls(final JPanel frame) {
-        final Font font = profile.getGfxSettings().getFont();
-
         addControl(frame, newFormattedLabel(t("profiles.colors.font", "font:")),
                 normalColumn);
-        fontBox = createFontSelectionBox();
-        fontBox.setSelectedItem(font.getName());
+        fontBox.setSelectedItem(profile.getGfxSettings().getFontName());
         addControl(frame, fontBox, lastColumn);
 
         addControl(frame, new JLabel(t("profiles.colors.font.size", "size:")), normalColumn);
-        fontStyleBox = createFontStyleBox();
-        fontStyleBox.setSelectedIndex(font.getStyle());
-        addControl(frame, fontStyleBox, lastColumn);
+        fontSizeTextField.setText(Integer.toString(
+                profile.getGfxSettings().getFontSize()));
 
-        addControl(frame, new JLabel(t("profiles.colors.font.style", "style:")), normalColumn);
-        fontSizeTextField = new JTextField(Integer.toString(font.getSize()), 2);
         addControl(frame, fontSizeTextField, lastColumn);
-    }
 
-    private JComboBox createFontStyleBox() {
-        final String names[] = new String[] {
-                t("profiles.colors.font.normal", "normal"),
-                t("profiles.colors.font.bold", "bold"),
-                t("profiles.colors.font.italic", "italic"),
-                t("profiles.colors.font.bold+italic", "bold + italic")
-        };
-        return new JComboBox(names);
+        antiAliasingBox.setSelectedIndex(profile.getGfxSettings().getAntiAliasingMode());
+        addControl(frame, new JLabel(t("profile.color.antialiasing", "antialiasing:")), normalColumn);
+        addControl(frame, antiAliasingBox, lastColumn);
     }
 
     private JComboBox createFontSelectionBox() {
@@ -363,8 +361,12 @@ public class SettingsPanel extends JPanel {
     private void addAdvancedControls(final JPanel frame) {
         addControl(frame, newFormattedLabel(
                 t("profiles.advanced.environment", "environment:")), normalColumn);
-
         addControl(frame, createEnvironmentPanel(), lastColumn);
+
+        boundaryTextField.setText(profile.getGfxSettings().getBoundaryChars());
+        addControl(frame, newFormattedLabel(
+                t("profiles.advanced.wordcharacters", "word characters:")), normalColumn);
+        addControl(frame, boundaryTextField, lastColumn);
     }
 
     private JComponent createEnvironmentPanel() {
@@ -376,8 +378,8 @@ public class SettingsPanel extends JPanel {
 
         panel.setLayout(new BorderLayout());
 
-        environmentList = new JList(new DefaultListModel());
-        updateeEnvironmentList();
+        environmentList = new JList(new DefaultListModel<String>());
+        updateEnvironmentList();
         final JScrollPane scrollPane = new JScrollPane(environmentList);
         minSize = scrollPane.getMinimumSize();
         minSize.height = 80;
@@ -418,7 +420,7 @@ public class SettingsPanel extends JPanel {
 
                 final String key = getEnvironmentKeys()[index];
                 profile.getEnvironment().remove(key);
-                updateeEnvironmentList();
+                updateEnvironmentList();
             }
         });
         return button;
@@ -432,7 +434,7 @@ public class SettingsPanel extends JPanel {
                 if (Pattern.matches("[A-Za-z0-9_]+", key.getText())) {
                     profile.getEnvironment().put(
                             key.getText(), value.getText());
-                    updateeEnvironmentList();
+                    updateEnvironmentList();
                     key.setText("");
                     value.setText("");
                 }
@@ -441,7 +443,7 @@ public class SettingsPanel extends JPanel {
         return button;
     }
 
-    private void updateeEnvironmentList() {
+    private void updateEnvironmentList() {
         final DefaultListModel model = ((DefaultListModel) environmentList.getModel());
 
         final Map<String, String> envMap = profile.getEnvironment();
@@ -466,12 +468,13 @@ public class SettingsPanel extends JPanel {
         profile.setHost(hostTextField.getText());
         profile.setPort(getInteger(portTextField.getText(), -1));
         profile.setTimeout(getInteger(timeoutTextField.getText(), -1));
+        profile.getGfxSettings().setBoundaryChars(boundaryTextField.getText());
+        profile.getGfxSettings().setAntiAliasingMode(antiAliasingBox.getSelectedIndex());
 
         final AWTGfxInfo gfxSettings = profile.getGfxSettings();
-        gfxSettings.setFont(new Font(
+        gfxSettings.setFont(
                 (String) fontBox.getSelectedItem(),
-                fontStyleBox.getSelectedIndex(),
-                getInteger(fontSizeTextField.getText(), 10)));
+                getInteger(fontSizeTextField.getText(), 10));
     }
 
     private int getInteger(final String string, final int defaultValue) {

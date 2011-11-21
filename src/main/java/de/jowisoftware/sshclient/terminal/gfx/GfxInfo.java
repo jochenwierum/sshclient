@@ -8,4 +8,7 @@ public interface GfxInfo<C> {
     Map<ColorName, C> getColorMap();
     Map<ColorName, C> getLightColorMap();
     void setCursorColor(final C color);
+
+    String getBoundaryChars();
+    void setBoundaryChars(String boundaryChars);
 }

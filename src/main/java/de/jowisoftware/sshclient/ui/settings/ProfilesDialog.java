@@ -38,19 +38,22 @@ import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 
 public class ProfilesDialog extends JDialog {
     private static final long serialVersionUID = 4811060219661889812L;
-    private final ApplicationSettings settings;
-    private SettingsPanel settingsFrame;
-    private JPanel editPanel;
-    private JList selectionList;
-    private JButton closeButton;
-    private JButton saveButton;
-    private JButton revertButton;
-    private JButton addButton;
-    private JButton removeButton;
-    private JButton editButton;
+
+    private final JList selectionList = new JList(new DefaultListModel());
+    private final JButton closeButton = createCloseButton();
+    private final JButton saveButton = createSaveButton();
+    private final JButton revertButton = createRevertButton();
+    private final JButton addButton = createAddButton();
+    private final JButton removeButton = createRemoveButton();
+    private final JButton editButton = createEditButton();
+    private final JPanel buttonPanel = createEditButtonBar();
+    private final JPanel editPanel = createEditPanel();
+
     private AWTProfile profileUnderConstruction;
     private String profileUnderConstructionName;
-    private JPanel buttonPanel;
+    private SettingsPanel settingsFrame;
+
+    private final ApplicationSettings settings;
 
     public ProfilesDialog(final Frame parent, final ApplicationSettings settings) {
         super(parent, t("profiles.title", "Profiles"));
@@ -66,7 +69,6 @@ public class ProfilesDialog extends JDialog {
     }
 
     private void addControls() {
-        editPanel = createEditPanel();
         add(editPanel, BorderLayout.CENTER);
         add(createSelectionFrame(), BorderLayout.WEST);
         add(createButtonBar(), BorderLayout.SOUTH);
@@ -76,7 +78,6 @@ public class ProfilesDialog extends JDialog {
         final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.add(new JLabel(""), BorderLayout.CENTER);
-        buttonPanel = createEditButtonBar();
         panel.add(buttonPanel, BorderLayout.SOUTH);
         return panel;
     }
@@ -84,13 +85,8 @@ public class ProfilesDialog extends JDialog {
     private JPanel createEditButtonBar() {
         final JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-
-        saveButton = createSaveButton();
         panel.add(saveButton);
-
-        revertButton = createRevertButton();
         panel.add(revertButton);
-
         return panel;
     }
 
@@ -152,15 +148,12 @@ public class ProfilesDialog extends JDialog {
 
         constraints.weighty = 0.1;
 
-        editButton = createEditButton();
         layout.addLayoutComponent(editButton, constraints);
         panel.add(editButton);
 
-        removeButton = createRemoveButton();
         layout.addLayoutComponent(removeButton, constraints);
         panel.add(removeButton);
 
-        addButton = createAddButton();
         layout.addLayoutComponent(addButton, constraints);
         panel.add(addButton);
 
@@ -264,8 +257,6 @@ public class ProfilesDialog extends JDialog {
     }
 
     private JScrollPane prepareSelectionList() {
-        selectionList = new JList();
-        selectionList.setModel(new DefaultListModel());
         final JScrollPane pane = new JScrollPane(selectionList);
         selectionList.addMouseListener(createListMouseListener());
         updateSelectionList();
@@ -302,7 +293,6 @@ public class ProfilesDialog extends JDialog {
         final JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-        closeButton = createCloseButton();
         panel.add(closeButton);
         getRootPane().setDefaultButton(closeButton);
 

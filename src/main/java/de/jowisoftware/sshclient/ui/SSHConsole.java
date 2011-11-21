@@ -86,7 +86,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
 
     private WordBoundaryLocator createWordBoundaryLocator(final AWTProfile profile, final Buffer buffer) {
         final WordBoundaryLocator wordBoundaryLocator = new WordBoundaryLocator(buffer);
-        wordBoundaryLocator.setSelectionChars(profile.getBoundaryChars());
+        wordBoundaryLocator.setSelectionChars(profile.getGfxSettings().getBoundaryChars());
         return wordBoundaryLocator;
     }
 

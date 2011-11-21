@@ -24,7 +24,4 @@ public interface Profile<C extends GfxInfo<?>> {
     void setCharsetName(String charsetName);
     String getCharsetName();
     Charset getCharset();
-
-    String getBoundaryChars();
-    void setBoundaryLocator(String boundaryChars);
 }

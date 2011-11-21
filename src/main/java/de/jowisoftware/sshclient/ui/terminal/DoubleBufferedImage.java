@@ -17,6 +17,7 @@ import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.util.FontUtils;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
 @SuppressWarnings("IS2_INCONSISTENT_SYNC")
@@ -76,9 +77,11 @@ public class DoubleBufferedImage implements Renderer {
                         ColorName.DEFAULT_BACKGROUND, false));
                 graphics[i].setFont(gfxInfo.getFont());
 
-                // TODO: introduce option for that
-                graphics[i].setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                        RenderingHints.VALUE_ANTIALIAS_ON);
+                final int aaModeId = gfxInfo.getAntiAliasingMode();
+                final Object aaModeValue = FontUtils.getRenderingHintMap().get(aaModeId).value;
+
+                graphics[i].setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                        aaModeValue);
             }
 
             final FontMetrics fontMetrics = graphics[0].getFontMetrics();

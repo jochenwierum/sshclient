@@ -2,6 +2,7 @@ package de.jowisoftware.sshclient.ui.terminal;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,13 +11,22 @@ import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 
 public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
-    private final Map<ColorName, Color> colors = new HashMap<ColorName, Color>();
-    private final Map<ColorName, Color> lightColors = new HashMap<ColorName, Color>();
+    private Map<ColorName, Color> colors = new HashMap<ColorName, Color>();
+    private Map<ColorName, Color> lightColors = new HashMap<ColorName, Color>();
     private Color cursorColor;
-    private Font font = new Font(Font.MONOSPACED, Font.PLAIN, 10);
-    private Font boldFont = new Font(Font.MONOSPACED, Font.BOLD, 10);
+
+    private final int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+    private Font font;
+    private Font boldFont;
+    private String fontName;
+    private int fontSize;
+    private int antiAliasingMode;
+
+    private String boundaryChars = ":@-./_~?&=%+#";
 
     public AWTGfxInfo() {
+       setFont(Font.MONOSPACED, 10);
+
        colors.put(ColorName.BLACK, color(0, 0, 0));
        colors.put(ColorName.BLUE, color(0, 0, 238));
        colors.put(ColorName.CYAN, color(0, 205, 205));
@@ -83,26 +93,58 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
         this.cursorColor = color;
     }
 
-    public void setFont(final Font font) {
-        this.font = font;
-        if (font != null) {
-            this.boldFont = font.deriveFont(Font.BOLD);
-        } else {
-            this.boldFont = null;
-        }
+    public void setFont(final String fontName, final int fontSize) {
+        final int realFontSize = (int)Math.round(fontSize * screenRes / 72.0);
+        this.fontSize = fontSize;
+        this.fontName = fontName;
+        this.font = new Font(fontName, Font.PLAIN, realFontSize);
+        this.boldFont = font.deriveFont(Font.BOLD);
+    }
+
+    public String getFontName() {
+        return fontName;
+    }
+
+    public int getFontSize() {
+        return fontSize;
     }
 
     @Override
     public Object clone() {
-        final AWTGfxInfo g = new AWTGfxInfo();
+        AWTGfxInfo clone;
+        try {
+            clone = (AWTGfxInfo) super.clone();
+        } catch (final CloneNotSupportedException e1) {
+            throw new RuntimeException(e1);
+        }
+
+        clone.lightColors = new HashMap<ColorName, Color>();
+        clone.colors = new HashMap<ColorName, Color>();
         for (final Entry<ColorName, Color> e : lightColors.entrySet()) {
-            g.lightColors.put(e.getKey(), e.getValue());
+            clone.lightColors.put(e.getKey(), e.getValue());
         }
         for (final Entry<ColorName, Color> e : colors.entrySet()) {
-            g.colors.put(e.getKey(), e.getValue());
+            clone.colors.put(e.getKey(), e.getValue());
         }
-        g.cursorColor = cursorColor;
-        g.font = font;
-        return g;
+
+        return clone;
+    }
+
+    public void setAntiAliasingMode(final int antiAliasingMode) {
+        this.antiAliasingMode = antiAliasingMode;
+    }
+
+    public int getAntiAliasingMode() {
+        return antiAliasingMode;
+    }
+
+    @Override
+    public String getBoundaryChars() {
+        return boundaryChars;
+    }
+
+    @Override
+    public void setBoundaryChars(final String boundaryChars) {
+        this.boundaryChars = boundaryChars;
     }
 }

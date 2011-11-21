@@ -1,7 +1,6 @@
 package de.jowisoftware.sshclient.settings.persisting;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.io.File;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -87,14 +86,24 @@ public class XMLPersister {
 
     private Node storeGfxSettings(final AWTGfxInfo gfxSettings) {
         final Element node = doc.createElement("gfx");
-        node.appendChild(createFont(gfxSettings.getFont()));
+        node.appendChild(createFont(gfxSettings.getFontName(), gfxSettings.getFontSize()));
         node.appendChild(createKeyValue("cursorColor", gfxSettings.getCursorColor()));
+
         final Element colors = doc.createElement("colors");
         persistColors(gfxSettings.getColorMap(), colors);
         node.appendChild(colors);
+
         final Element lightColors = doc.createElement("lightColors");
         persistColors(gfxSettings.getLightColorMap(), lightColors);
         node.appendChild(lightColors);
+
+        final Element antiAliasing = doc.createElement("antiAliasing");
+        antiAliasing.setAttribute("type", Integer.toString(gfxSettings.getAntiAliasingMode()));
+        node.appendChild(antiAliasing);
+
+        final Element boundaryChars = doc.createElement("boundaryChars");
+        boundaryChars.setTextContent(gfxSettings.getBoundaryChars());
+        node.appendChild(boundaryChars);
         return node;
     }
 
@@ -116,11 +125,10 @@ public class XMLPersister {
         return createKeyValue(key, Integer.toString(value));
     }
 
-    private Node createFont(final Font font) {
+    private Node createFont(final String fontName, final int fontSize) {
         final Element node = doc.createElement("font");
-        node.setAttribute("name", font.getName());
-        node.setAttribute("size", Integer.toString(font.getSize()));
-        node.setAttribute("style", Integer.toString(font.getStyle()));
+        node.setAttribute("name", fontName);
+        node.setAttribute("size", Integer.toString(fontSize));
         return node;
     }
 

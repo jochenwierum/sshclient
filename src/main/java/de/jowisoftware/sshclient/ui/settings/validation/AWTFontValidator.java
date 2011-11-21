@@ -11,9 +11,7 @@ public class AWTFontValidator implements Validator<AWTProfile> {
 
     @Override
     public void validate(final AWTProfile profile, final ValidationResult result) {
-        if (profile.getGfxSettings().getFont() == null) {
-            result.addError(FIELD, t("error.font.notset", "no font selected"));
-        } else if (!FontUtils.isMonospacedFont(profile.getGfxSettings().getFont())) {
+        if (!FontUtils.isMonospacedFont(profile.getGfxSettings().getFont())) {
             result.addError(FIELD, t("error.font.wrongfont", "selected font is no monospace font"));
         }
     }

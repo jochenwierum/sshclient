@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public final class FontUtils {
     private FontUtils() { /* util class */ }
 
     private static final List<String> fontCache = new ArrayList<String>();
+    private static final List<KeyValue<String, Object>> renderingHints = new ArrayList<KeyValue<String, Object>>();
 
     public static boolean isMonospacedFont(final Font font) {
         final BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
@@ -77,5 +79,22 @@ public final class FontUtils {
 
             graphics.dispose();
         }
+    }
+
+    public static List<KeyValue<String, Object>> getRenderingHintMap() {
+        if (renderingHints.isEmpty()) {
+            fillRenderingHints();
+        }
+        return new ArrayList<KeyValue<String, Object>>(renderingHints);
+    }
+
+    private static void fillRenderingHints() {
+        renderingHints.add(new KeyValue<String, Object>("automatic", RenderingHints.VALUE_TEXT_ANTIALIAS_GASP));
+        renderingHints.add(new KeyValue<String, Object>("off", RenderingHints.VALUE_TEXT_ANTIALIAS_OFF));
+        renderingHints.add(new KeyValue<String, Object>("on", RenderingHints.VALUE_TEXT_ANTIALIAS_ON));
+        renderingHints.add(new KeyValue<String, Object>("hrgb", RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB));
+        renderingHints.add(new KeyValue<String, Object>("hbgr", RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR));
+        renderingHints.add(new KeyValue<String, Object>("vrgb", RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VRGB));
+        renderingHints.add(new KeyValue<String, Object>("vbgr", RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VBGR));
     }
 }

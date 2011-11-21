@@ -158,26 +158,30 @@ public class XMLLoader {
         if (cursorColor != null) {
             gfxSettings.setCursorColor(cursorColor);
         }
-        final Font font = getFont(gfxNode, "font");
-        if (font != null) {
-            gfxSettings.setFont(font);
+        applyFont(gfxNode, "font", gfxSettings);
+
+        final Integer antiAliasing = getInteger(gfxNode, "antiAliasing/@type", null);
+        if (antiAliasing != null) {
+            gfxSettings.setAntiAliasingMode(antiAliasing);
+        }
+
+        final String boundaryChars = getString(gfxNode, "boundaryChars/text()", null);
+        if (boundaryChars != null) {
+            gfxSettings.setBoundaryChars(boundaryChars);
         }
     }
 
-    private Font getFont(final Element gfxNode, final String expression) {
+    private void applyFont(final Element gfxNode, final String expression,
+            final AWTGfxInfo gfxSettings) {
         final Element fontNode = getElement(gfxNode, expression);
         if (fontNode == null) {
-            return null;
+            return;
         }
 
-        final String fontName = getString(fontNode, "@name", null);
-        final Integer fontSize = getInteger(fontNode, "@size", 11);
-        final Integer fontStyle = getInteger(fontNode, "@size", 0);
+        final String fontName = getString(fontNode, "@name", Font.MONOSPACED);
+        final Integer fontSize = getInteger(fontNode, "@size", 10);
 
-        if (fontName != null) {
-            return new Font(fontName, fontStyle, fontSize);
-        }
-        return null;
+        gfxSettings.setFont(fontName, fontSize);
     }
 
     private Map<ColorName, Color> getColors(

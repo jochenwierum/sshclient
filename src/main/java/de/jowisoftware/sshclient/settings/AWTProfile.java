@@ -13,11 +13,11 @@ public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
     private String host = "localhost";
     private int port = 22;
     private int timeout = 10000;
-    private String boundaryChars = ":@-./_~?&=%+#";
+
     private String charsetName = "UTF-8";
     private transient Charset charset;
     private AWTGfxInfo gfxInfo = new AWTGfxInfo();
-    private final HashMap<String, String> environmentMap = new HashMap<String, String>();
+    private HashMap<String, String> environmentMap = new HashMap<String, String>();
 
     @Override
     public String getDefaultTitle() {
@@ -96,26 +96,20 @@ public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
 
     @Override
     public Object clone() {
-        final AWTProfile p = new AWTProfile();
-        p.charset = charset;
-        p.host = host;
-        p.port = port;
-        p.timeout = timeout;
-        p.user = user;
-        p.gfxInfo = (AWTGfxInfo) gfxInfo.clone();
-        for (final Entry<String, String> entry : environmentMap.entrySet()) {
-            p.environmentMap.put(entry.getKey(), entry.getValue());
+        AWTProfile clone;
+        try {
+            clone = (AWTProfile) super.clone();
+        } catch (final CloneNotSupportedException e) {
+            throw new RuntimeException(e);
         }
-        return p;
-    }
 
-    @Override
-    public String getBoundaryChars() {
-        return boundaryChars;
-    }
+        clone.gfxInfo = (AWTGfxInfo) gfxInfo.clone();
 
-    @Override
-    public void setBoundaryLocator(final String boundaryChars) {
-        this.boundaryChars = boundaryChars;
+        clone.environmentMap = new HashMap<String, String>();
+        for (final Entry<String, String> entry : environmentMap.entrySet()) {
+            clone.environmentMap.put(entry.getKey(), entry.getValue());
+        }
+
+        return clone;
     }
 }

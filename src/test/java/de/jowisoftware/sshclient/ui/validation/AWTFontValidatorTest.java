@@ -2,8 +2,6 @@ package de.jowisoftware.sshclient.ui.validation;
 
 import static org.junit.Assert.assertFalse;
 
-import java.awt.Font;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,19 +22,13 @@ public class AWTFontValidatorTest extends ValidationTest<AWTProfile> {
     }
 
     @Test
-    public void testNull() {
-        profile.getGfxSettings().setFont(null);
-        assertError("gfx.font", "no font selected");
-    }
-
-    @Test
     public void testOk() {
-        profile.getGfxSettings().setFont(new Font("Monospaced", Font.BOLD, 8));
+        profile.getGfxSettings().setFont("Monospaced", 8);
         assertNoError();
 
-        profile.getGfxSettings().setFont(new Font("Courier New", 0, 12));
+        profile.getGfxSettings().setFont("Courier New", 12);
         final ValidationResult result1 = doValidation();
-        profile.getGfxSettings().setFont(new Font("Courier", 0, 12));
+        profile.getGfxSettings().setFont("Courier", 12);
         final ValidationResult result2 = doValidation();
 
         // not all OS'ses have both fonts
@@ -46,10 +38,10 @@ public class AWTFontValidatorTest extends ValidationTest<AWTProfile> {
     @Test
     public void testWrongFont() {
         final String message = "selected font is no monospace font";
-        profile.getGfxSettings().setFont(new Font("Times New Roman", 0, 12));
+        profile.getGfxSettings().setFont("Times New Roman", 12);
         assertError("gfx.font", message);
 
-        profile.getGfxSettings().setFont(new Font("Arial", 0, 12));
+        profile.getGfxSettings().setFont("Arial", 12);
         assertError("gfx.font", message);
     }
 
