@@ -378,7 +378,7 @@ public class SettingsPanel extends JPanel {
 
         panel.setLayout(new BorderLayout());
 
-        environmentList = new JList(new DefaultListModel<String>());
+        environmentList = new JList(new DefaultListModel());
         updateEnvironmentList();
         final JScrollPane scrollPane = new JScrollPane(environmentList);
         minSize = scrollPane.getMinimumSize();
