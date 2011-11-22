@@ -26,7 +26,7 @@ public class ColorValidatorTest extends ValidationTest<AWTProfile> {
         final GfxInfo<?> settings = profile.getGfxSettings();
         settings.getLightColorMap().remove(ColorName.GREEN);
 
-        assertError("gfx.lightcolors", "missing light color: green");
+        assertError("gfx.lightcolors", "missing color: green");
     }
 
     @Test
