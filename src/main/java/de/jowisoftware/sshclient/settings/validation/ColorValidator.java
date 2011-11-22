@@ -21,7 +21,7 @@ public class ColorValidator<T extends Profile<?>> implements Validator<T> {
         for (final ColorName color : ColorName.values()) {
             if (profile.getGfxSettings().getLightColorMap().get(color) == null) {
                 result.addError(LIGHTCOLORFIELD, t("error.colors.missing",
-                        "missing light color: %s", color.name().toLowerCase()));
+                        "missing color: %s", color.name().toLowerCase()));
                 break;
             }
         }

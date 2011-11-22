@@ -80,7 +80,7 @@ public class ConnectionFrame extends JPanel {
                 // TODO: close yourself
                 setContent(new ErrorPane("Image i'm closed"));
             } else {
-                setContent(new ErrorPane(t("errors.could_not_establish_connection",
+                setContent(new ErrorPane(t("error.could_not_establish_connection",
                         "Could not establish connection"), e));
                 LOGGER.error("Could not connect", e);
             }
