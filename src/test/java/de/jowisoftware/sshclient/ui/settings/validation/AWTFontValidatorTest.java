@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.ui.validation;
+package de.jowisoftware.sshclient.ui.settings.validation;
 
 import static org.junit.Assert.assertFalse;
 

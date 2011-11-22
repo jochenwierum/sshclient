@@ -8,6 +8,7 @@ import de.jowisoftware.sshclient.settings.validation.DefaultValidationResult;
 import de.jowisoftware.sshclient.settings.validation.EnvironmentValidator;
 import de.jowisoftware.sshclient.settings.validation.HostNameValidator;
 import de.jowisoftware.sshclient.settings.validation.PortValidator;
+import de.jowisoftware.sshclient.settings.validation.SelectionCharsValidator;
 import de.jowisoftware.sshclient.settings.validation.UserValidator;
 import de.jowisoftware.sshclient.settings.validation.ValidationResult;
 import de.jowisoftware.sshclient.settings.validation.ValidatorCollection;
@@ -28,6 +29,8 @@ public final class AWTProfileValidator {
         collection.addValidator(new CursorColorValidator<AWTProfile>());
         collection.addValidator(new EnvironmentValidator());
         collection.addValidator(new AWTFontValidator());
+        collection.addValidator(new AWTAntiAliasingValidator());
+        collection.addValidator(new SelectionCharsValidator());
     }
 
     public ValidationResult validateProfile() {
