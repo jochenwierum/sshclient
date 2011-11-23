@@ -34,6 +34,7 @@ import javax.swing.ListModel;
 import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.validation.ValidationResult;
+import de.jowisoftware.sshclient.ui.MainWindow;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 
 public class ProfilesDialog extends JDialog {
@@ -55,11 +56,11 @@ public class ProfilesDialog extends JDialog {
 
     private final ApplicationSettings settings;
 
-    public ProfilesDialog(final Frame parent, final ApplicationSettings settings) {
+    public ProfilesDialog(final MainWindow parent) {
         super(parent, t("profiles.title", "Profiles"));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
-        this.settings = settings;
+        this.settings = parent.settings;
         this.settingsFrame = null;
 
         setLayout(new BorderLayout());

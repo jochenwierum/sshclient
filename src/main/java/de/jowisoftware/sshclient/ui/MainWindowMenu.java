@@ -9,31 +9,43 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.ui.settings.ProfilesDialog;
+import de.jowisoftware.sshclient.util.JarUtils;
 
 
 public class MainWindowMenu {
+    private final JMenu dummySessionMenu = createEmptySessionMenu();
+    private final JMenuBar menu = createMenuBar();
+
     private final MainWindow parent;
-    private final JMenuBar menu;
-    private final JMenu dummySessionMenu;
     private JMenu sessionMenu;
-    private final ApplicationSettings settings;
 
-    public MainWindowMenu(final MainWindow parent, final ApplicationSettings settings) {
+    public MainWindowMenu(final MainWindow parent) {
         this.parent = parent;
-        this.settings = settings;
-
-        menu = new JMenuBar();
-        menu.add(createFileMenu());
-        menu.add(createViewMenu());
-        dummySessionMenu = createDummySessionMenu();
         sessionMenu = dummySessionMenu;
-        menu.add(sessionMenu);
     }
 
-    private JMenu createDummySessionMenu() {
+    private JMenuBar createMenuBar() {
+        final JMenuBar menuBar = new JMenuBar();
+        menuBar.add(createFileMenu());
+        menuBar.add(createViewMenu());
+        menuBar.add(dummySessionMenu);
+        menuBar.add(createHelpMenu());
+        return menuBar;
+    }
+
+    private JMenu createHelpMenu() {
+        final JMenu helpMenu = new JMenu(t("mainwindow.menu.help", "Help"));
+        helpMenu.setMnemonic(m("mainwindow.menu.help", 'h'));
+
+        helpMenu.add(createAboutEntry());
+
+        return helpMenu;
+    }
+
+    private JMenu createEmptySessionMenu() {
         final JMenu dummyMenu = new JMenu(t("mainwindow.menu.session", "Session"));
         dummyMenu.setEnabled(false);
         return dummyMenu;
@@ -100,7 +112,7 @@ public class MainWindowMenu {
         entry.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                final ProfilesDialog dialog = new ProfilesDialog(parent, settings);
+                final ProfilesDialog dialog = new ProfilesDialog(parent);
                 dialog.showSettings();
                 dialog.dispose();
                 parent.updateProfiles();
@@ -134,14 +146,14 @@ public class MainWindowMenu {
     }
 
     public void setSessionMenu(final SessionMenu sessionMenu) {
-        newMenu(sessionMenu);
+        updateSessionMenu(sessionMenu);
     }
 
     public void unsetSessionMenu() {
-        newMenu(dummySessionMenu);
+        updateSessionMenu(dummySessionMenu);
     }
 
-    private void newMenu(final JMenu newMenu) {
+    private void updateSessionMenu(final JMenu newMenu) {
         final int index = menu.getComponentIndex(sessionMenu);
         menu.remove(sessionMenu);
         this.sessionMenu = newMenu;
@@ -150,4 +162,21 @@ public class MainWindowMenu {
         menu.invalidate();
         menu.repaint();
     }
+
+
+    private JMenuItem createAboutEntry() {
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.about", "about"));
+        entry.setMnemonic(m("mainwindow.menu.about", 'a'));
+
+        entry.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                JOptionPane.showMessageDialog(parent, "Version: " + JarUtils.getVersion(),
+                        "SSH", JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+
+        return entry;
+    }
+
 }

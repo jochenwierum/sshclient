@@ -19,20 +19,15 @@ import de.jowisoftware.sshclient.settings.AWTProfile;
 
 public class MainWindowToolbar {
     private final MainWindow parent;
-    private JComboBox comboBox;
-    private final JToolBar toolBar;
+    private final JComboBox comboBox = createComboBox();
+    private final JToolBar toolBar = new JToolBar("ssh");
 
     public MainWindowToolbar(final MainWindow parent) {
         this.parent = parent;
 
-        toolBar = new JToolBar("ssh");
         toolBar.setFloatable(false);
-
-        createComboBox();
         toolBar.add(comboBox);
-
-        final JButton button = createConnectButton();
-        toolBar.add(button);
+        toolBar.add(createConnectButton());
     }
 
     private JButton createConnectButton() {
@@ -46,11 +41,11 @@ public class MainWindowToolbar {
         return button;
     }
 
-    private void createComboBox() {
-        comboBox = new JComboBox();
+    private JComboBox createComboBox() {
+        final JComboBox comboBox = new JComboBox();
         comboBox.setPreferredSize(new Dimension(200, comboBox.getPreferredSize().height));
         comboBox.setMaximumSize(comboBox.getPreferredSize());
-        updateProfiles();
+        return comboBox;
     }
 
     public void updateProfiles() {

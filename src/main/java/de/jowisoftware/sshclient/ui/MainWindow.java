@@ -9,10 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.jar.Manifest;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -42,29 +38,34 @@ public class MainWindow extends JFrame {
     private static final long serialVersionUID = -2951599770927217249L;
     private static final Logger LOGGER = Logger.getLogger(MainWindow.class);
 
-    private JTabbedPane pane;
-    private Timer timer;
-    private JComponent logPanel;
-    private PrivateKeyTab keyPanel;
-    private MainWindowMenu menu;
-
     public final ApplicationSettings settings = new ApplicationSettings();
 
-    private final File projectDir;
-    private JSch jsch;
-    private KeyAgentManager keyManager;
-    private MainWindowToolbar toolBar;
+    private final JSch jsch = new JSch();
+    private final KeyAgentManager keyManager = new KeyAgentManager(jsch, settings);
 
+    private final PrivateKeyTab keyPanel = new PrivateKeyTab(jsch, keyManager);
+    private final JComponent logPanel = new LogPanel();
+
+    private final MainWindowMenu menu = new MainWindowMenu(this);
+    private final MainWindowToolbar toolBar = new MainWindowToolbar(this);
+
+    private final JTabbedPane pane = createTabbedPane();
+    private final Timer timer = createTimer(pane);
+
+    private final File projectDir;
 
     public MainWindow() {
         FontUtils.fillAsyncCache();
+
         projectDir = prepareProjectDir();
         final File settingsFile = new File(projectDir, "settings.xml");
         if (settingsFile.isFile()) {
             new XMLLoader(settings).load(settingsFile);
+            toolBar.updateProfiles();
         }
+
         initTranslation();
-        setTitle("SSH " + makeVersion());
+        setTitle("SSH");
 
         try {
             initJSch();
@@ -77,8 +78,6 @@ public class MainWindow extends JFrame {
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         initWindowElements();
-
-        createTimer();
     }
 
     private void initTranslation() {
@@ -86,18 +85,19 @@ public class MainWindow extends JFrame {
         Translation.initStaticTranslationWithLanguage(language);
     }
 
-    private void createTimer() {
-        timer = new Timer(200, new ActionListener() {
+    private Timer createTimer(final JTabbedPane updatePane) {
+        final Timer newTimer = new Timer(200, new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                final Component component = pane.getSelectedComponent();
+                final Component component = updatePane.getSelectedComponent();
                 if (component instanceof ConnectionFrame) {
                     ((ConnectionFrame) component).redraw();
                 }
             }
         });
-        timer.setRepeats(true);
-        timer.start();
+        newTimer.setRepeats(true);
+        newTimer.start();
+        return newTimer;
     }
 
     @Override
@@ -144,15 +144,11 @@ public class MainWindow extends JFrame {
     }
 
     private void initWindowElements() {
-        menu = new MainWindowMenu(this, settings);
         setJMenuBar(menu.getMenuBar());
 
         setLayout(new BorderLayout());
 
-        pane = createPane();
         add(pane, BorderLayout.CENTER);
-
-        toolBar = new MainWindowToolbar(this);
         add(toolBar.getToolBar(), BorderLayout.NORTH);
 
         initTabs();
@@ -162,12 +158,12 @@ public class MainWindow extends JFrame {
         setVisible(true);
     }
 
-    private JTabbedPane createPane() {
+    private JTabbedPane createTabbedPane() {
         final JTabbedPane tabbedPane = new DnDTabbedPane();
         tabbedPane.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(final KeyEvent e) {
-                final Component selectedComponent = pane.getSelectedComponent();
+                final Component selectedComponent = tabbedPane.getSelectedComponent();
                 if (selectedComponent instanceof ConnectionFrame) {
                     ((ConnectionFrame) selectedComponent).takeFocusWithKey(e);
                 }
@@ -199,9 +195,6 @@ public class MainWindow extends JFrame {
     }
 
     private void initTabs() {
-        keyPanel = new PrivateKeyTab(jsch, keyManager);
-        logPanel = new LogPanel();
-
         if (settings.getKeyTabState() == TabState.ALYWAYS_OPEN
                 || settings.getKeyTabState() == TabState.OPENED) {
             setKeyTabVisibility(true);
@@ -239,9 +232,6 @@ public class MainWindow extends JFrame {
 
     private void initJSch() throws JSchException {
         JSch.setLogger(new de.jowisoftware.sshclient.jsch.JschLogger());
-        jsch = new JSch();
-        keyManager = new KeyAgentManager(jsch, settings);
-
         jsch.setKnownHosts(new File(projectDir, "known_hosts").getAbsolutePath());
         keyManager.loadKeyListFromSettings();
 
@@ -267,8 +257,9 @@ public class MainWindow extends JFrame {
     }
 
     public void connect(final AWTProfile profile) {
-        final ConnectionFrame sshFrame = new ConnectionFrame(this, profile, jsch);
-        pane.addTab(profile.getDefaultTitle(), sshFrame);
+        final AWTProfile safeProfile = (AWTProfile) profile.clone();
+        final ConnectionFrame sshFrame = new ConnectionFrame(this, safeProfile, jsch);
+        pane.addTab(safeProfile.getDefaultTitle(), sshFrame);
         pane.setTabComponentAt(pane.getTabCount() - 1,
                 sshFrame.createTabComponent(pane));
         pane.setSelectedComponent(sshFrame);
@@ -287,27 +278,5 @@ public class MainWindow extends JFrame {
 
     public void updateProfiles() {
         toolBar.updateProfiles();
-    }
-
-    private String makeVersion() {
-        String version = "";
-        try {
-            final Enumeration<URL> resources = getClass().getClassLoader()
-                    .getResources("META-INF/MANIFEST.MF");
-            while (resources.hasMoreElements() && version.isEmpty()) {
-                final Manifest manifest =
-                        new Manifest(resources.nextElement().openStream());
-                final String revision = manifest.getMainAttributes().getValue("SCM-Revision");
-                final String branch = manifest.getMainAttributes().getValue("SCM-Branch");
-                final String date = manifest.getMainAttributes().getValue("Build-Date");
-
-                if (revision != null && branch != null && date != null) {
-                    version = branch + "-" + revision + " " + date;
-                }
-            }
-        } catch (final IOException e) {
-        }
-
-        return version;
     }
 }
