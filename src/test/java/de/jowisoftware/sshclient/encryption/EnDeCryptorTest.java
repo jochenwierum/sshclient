@@ -13,10 +13,10 @@ public class EnDeCryptorTest {
         final String password = "secret password";
         final String text = "Lorem Ipsum";
 
-        final EnDeCryptor encrypt = new EnDeCryptor();
+        final EnDeCryptor encrypt = new JavaStandardEnDeCryptor();
         encrypt.setPassword(password);
 
-        final EnDeCryptor decrypt = new EnDeCryptor();
+        final EnDeCryptor decrypt = new JavaStandardEnDeCryptor();
         decrypt.setPassword(password);
 
         final String encrypted = encrypt.encrypt(text);
@@ -31,7 +31,7 @@ public class EnDeCryptorTest {
         final String password = "a password";
         final String text = "My text";
 
-        final EnDeCryptor crypt = new EnDeCryptor();
+        final EnDeCryptor crypt = new JavaStandardEnDeCryptor();
         crypt.setPassword(password);
         final String decrypted = crypt.decrypt(crypt.encrypt(text));
         assertThat(decrypted, is(equalTo(text)));
