@@ -1,12 +1,13 @@
 package de.jowisoftware.sshclient.encryption;
 
+import java.security.SecureRandom;
+
 public class PasswordManagerLock {
-    private final String checkString;
+    private String checkString = null;
     private boolean locked = true;
     private final EnDeCryptor cryptor;
 
-    public PasswordManagerLock(final String checkString, final EnDeCryptor cryptor) {
-        this.checkString = checkString;
+    public PasswordManagerLock(final EnDeCryptor cryptor) {
         this.cryptor = cryptor;
     }
 
@@ -20,11 +21,20 @@ public class PasswordManagerLock {
         }
     }
 
+    public void setCheckString(final String checkString) {
+        this.checkString = checkString;
+        locked = true;
+    }
+
     private void processUnlockException(final Exception e) throws CryptoException {
         throw new CryptoException("could not unlock password storage - illegal password?", e);
     }
 
     private void tryUnlock() throws CryptoException {
+        if (checkString == null) {
+            throw new CryptoException("Checkstring not initialized");
+        }
+
         locked = true;
         final String result = cryptor.decrypt(checkString);
 
@@ -41,5 +51,14 @@ public class PasswordManagerLock {
 
     public void lock() {
         locked = true;
+    }
+
+    public String getCheckString() {
+        return checkString;
+    }
+
+    public void createCheckString() throws CryptoException {
+        final int checkNumber = new SecureRandom().nextInt(Integer.MAX_VALUE / 23) * 23;
+        checkString = cryptor.encrypt(Integer.toString(checkNumber));
     }
 }

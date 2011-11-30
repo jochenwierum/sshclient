@@ -28,8 +28,8 @@ class JavaStandardEnDeCryptor implements EnDeCryptor {
 
     public JavaStandardEnDeCryptor() throws CryptoException {
         try {
-        factory = SecretKeyFactory.getInstance(SECRET_KEY_TYPE);
-        maxKeyLength = Cipher.getMaxAllowedKeyLength(CYPHER_TYPE);
+            factory = SecretKeyFactory.getInstance(SECRET_KEY_TYPE);
+            maxKeyLength = Cipher.getMaxAllowedKeyLength(CYPHER_TYPE);
         } catch(final GeneralSecurityException e) {
             throw new CryptoException("Cyphers are not available", e);
         }
@@ -55,7 +55,7 @@ class JavaStandardEnDeCryptor implements EnDeCryptor {
             throw new CryptoException("Could not encrypt text", e);
         }
 
-        return new Base64(Integer.MAX_VALUE).encodeAsString(info.toByteArray());
+        return new Base64(0).encodeAsString(info.toByteArray());
     }
 
     private byte[] createSalt() {
@@ -74,7 +74,7 @@ class JavaStandardEnDeCryptor implements EnDeCryptor {
 
     @Override
     public String decrypt(final String encrypted) throws CryptoException {
-        final byte[] data = new Base64(Integer.MAX_VALUE).decode(encrypted);
+        final byte[] data = new Base64(0).decode(encrypted);
 
         try {
             final CipherInformation info = new CipherInformation(data);

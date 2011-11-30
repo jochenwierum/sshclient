@@ -58,6 +58,11 @@ public class XMLLoader {
             if (profilesNode != null) {
                 loadProfiles(profilesNode);
             }
+
+            final Element passwordNode = getElement(doc, "/config/passwords");
+            if (passwordNode != null) {
+                loadPasswords(passwordNode);
+            }
         } catch(final Exception e) {
             LOGGER.warn("Unable to load settings file, using default settings", e);
         }
@@ -79,6 +84,42 @@ public class XMLLoader {
     private XPath createXPath() {
         final XPathFactory factory = XPathFactory.newInstance();
         return factory.newXPath();
+    }
+
+
+    private void loadPasswords(final Element passwordNode) {
+        final String checkString = getString(passwordNode, "@check", "");
+        if (checkString.isEmpty()) {
+            return;
+        }
+
+        final Map<String, String> passwords = loadPasswordMap(passwordNode);
+
+        settings.getPasswordManager().setCheckString(checkString);
+        settings.getPasswordManager().importPasswords(passwords);
+    }
+
+    private Map<String, String> loadPasswordMap(final Element passwordNode) {
+        final Map<String, String> passwords = new HashMap<String, String>();
+        NodeList passwordNodes;
+
+        try {
+            passwordNodes = (NodeList) xpath.evaluate("password",
+                    passwordNode, XPathConstants.NODESET);
+        } catch (final XPathExpressionException e) {
+            return passwords;
+        }
+
+        for (int i = 0; i < passwordNodes.getLength(); ++i) {
+            final String id = getString(passwordNodes.item(i), "@id", null);
+            final String password = getString(passwordNodes.item(i), "text()", null);
+
+            if (id != null && password != null) {
+                passwords.put(id, password);
+            }
+        }
+
+        return passwords;
     }
 
     private void loadProfiles(final Element profilesNode) {

@@ -23,6 +23,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+import de.jowisoftware.sshclient.encryption.PasswordManager;
 import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
@@ -45,9 +46,36 @@ public class XMLPersister {
         root.appendChild(storeGeneralSettings());
         root.appendChild(storeKeys());
         root.appendChild(storeProfiles());
+        root.appendChild(storePasswords());
         doc.appendChild(root);
 
         saveXMLToFile(file);
+    }
+
+    private Node storePasswords() {
+        final Element passwords = doc.createElement("passwords");
+        final PasswordManager manager = settings.getPasswordManager();
+
+        if (manager != null && manager.getCheckString() != null) {
+            addCheckAttribute(passwords, manager);
+            addPasswords(passwords, manager.exportPasswords());
+        }
+
+        return passwords;
+    }
+
+    private void addPasswords(final Element passwords,
+            final Map<String, String> exportedPasswords) {
+        for (final Entry<String, String> password : exportedPasswords.entrySet()) {
+            final Element element = doc.createElement("password");
+            element.setAttribute("id", password.getKey());
+            element.setTextContent(password.getValue());
+            passwords.appendChild(element);
+        }
+    }
+
+    private void addCheckAttribute(final Element passwords, final PasswordManager manager) {
+        passwords.setAttribute("check", manager.getCheckString());
     }
 
     private Node storeProfiles() {
