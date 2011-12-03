@@ -112,7 +112,8 @@ public class MainWindowMenu {
         entry.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                final ProfilesDialog dialog = new ProfilesDialog(parent);
+                final ProfilesDialog dialog = new ProfilesDialog(parent,
+                        parent.settings);
                 dialog.showSettings();
                 dialog.dispose();
                 parent.updateProfiles();
