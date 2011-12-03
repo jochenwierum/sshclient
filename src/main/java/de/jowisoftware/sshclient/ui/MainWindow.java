@@ -31,6 +31,7 @@ import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.settings.KeyAgentManager;
 import de.jowisoftware.sshclient.settings.persisting.XMLLoader;
 import de.jowisoftware.sshclient.settings.persisting.XMLPersister;
+import de.jowisoftware.sshclient.ui.security.PasswordManager;
 import de.jowisoftware.sshclient.ui.settings.ConnectDialog;
 import de.jowisoftware.sshclient.util.FontUtils;
 
@@ -51,6 +52,8 @@ public class MainWindow extends JFrame {
 
     private final JTabbedPane pane = createTabbedPane();
     private final Timer timer = createTimer(pane);
+    public final PasswordManager passwordManager = new PasswordManager(this,
+            settings.getPasswordStorage());
 
     private final File projectDir;
 
@@ -258,7 +261,8 @@ public class MainWindow extends JFrame {
 
     public void connect(final AWTProfile profile) {
         final AWTProfile safeProfile = (AWTProfile) profile.clone();
-        final ConnectionFrame sshFrame = new ConnectionFrame(this, safeProfile, jsch);
+        final ConnectionFrame sshFrame = new ConnectionFrame(this, safeProfile,
+        	passwordManager, jsch);
         pane.addTab(safeProfile.getDefaultTitle(), sshFrame);
         pane.setTabComponentAt(pane.getTabCount() - 1,
                 sshFrame.createTabComponent(pane));

@@ -1,60 +1,83 @@
 package de.jowisoftware.sshclient.jsch;
 
-import java.util.Arrays;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import de.jowisoftware.sshclient.jsch.ui.PasswordDialog;
+import com.jcraft.jsch.UserInfo;
 
-public class SSHUserInfo implements com.jcraft.jsch.UserInfo {
-    private char[] password;
-    private char[] passphrase;
+import de.jowisoftware.sshclient.ui.security.PasswordManager;
+import de.jowisoftware.sshclient.ui.security.UserAbortException;
+import de.jowisoftware.sshclient.util.SwingUtils;
+
+public class SSHUserInfo implements UserInfo {
+    private static final int PREFIX_PASSWORD_LENGTH = 13;
+    private static final int PREFIX_PASSPHRASE_LENGTH = 15;
+
     private final JFrame parent;
+    private final PasswordManager passwordManager;
 
-    public SSHUserInfo(final JFrame parent) {
+    private String password;
+    private String passphrase;
+    private int yesNoAnswer;
+
+    private boolean isPasswordFirstInput = true;
+    private boolean isPassphraseFirstInput = true;
+
+    public SSHUserInfo(final JFrame parent, final PasswordManager passwordManager) {
         this.parent = parent;
+        this.passwordManager = passwordManager;
     }
 
     @Override
     public String getPassphrase() {
-        final String result = new String(passphrase);
-        Arrays.fill(passphrase, (char) 0);
-        passphrase = null;
-        return result;
+        return passphrase;
     }
 
     @Override
     public String getPassword() {
-        final String result = new String(password);
-        Arrays.fill(password, (char) 0);
-        password = null;
-        return result;
+        return password;
     }
 
     @Override
     public boolean promptPassword(final String message) {
-        password = readPassword(message);
-        return password != null;
+        final String passwordId = message.substring(PREFIX_PASSWORD_LENGTH);
+        try {
+            password = passwordManager.getPassword(passwordId,
+                    !isPasswordFirstInput);
+        } catch(final UserAbortException e) {
+            return false;
+        }
+        isPasswordFirstInput = false;
+        return true;
     }
 
     @Override
     public boolean promptPassphrase(final String message) {
-        passphrase = readPassword(message);
+        final String passwordId = message.substring(PREFIX_PASSPHRASE_LENGTH);
+        try {
+            passphrase = passwordManager.getPassword(passwordId,
+                    !isPassphraseFirstInput);
+        } catch(final UserAbortException e) {
+            return false;
+        }
+        isPassphraseFirstInput = false;
         return passphrase != null;
     }
 
     @Override
     public boolean promptYesNo(final String message) {
-        return JOptionPane.showConfirmDialog(parent, message) == JOptionPane.YES_OPTION;
+        SwingUtils.runInSwingThread(new Runnable() {
+            @Override
+            public void run() {
+                yesNoAnswer = JOptionPane.showConfirmDialog(parent, message);
+            }
+        });
+
+        return JOptionPane.YES_OPTION == yesNoAnswer;
     }
 
     @Override
     public void showMessage(final String message) {
         JOptionPane.showMessageDialog(parent, message);
-    }
-
-    private char[] readPassword(final String message) {
-        return new PasswordDialog(parent, message).askPassword();
     }
 }
