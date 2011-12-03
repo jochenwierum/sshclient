@@ -4,68 +4,69 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class PasswordManager {
+public class PasswordStorage {
     public enum State {
         UNINITIALIZED, LOCKED, UNLOCKED
     }
 
     private final EnDeCryptor cryptor;
-    private final PasswordManagerLock lock;
+    private final PasswordStorageLock lock;
     private final Map<String, String> passwords = new HashMap<String, String>();
 
-    PasswordManager(final EnDeCryptor cryptor) {
+    PasswordStorage(final EnDeCryptor cryptor) {
         this.cryptor = cryptor;
-        lock = new PasswordManagerLock(cryptor);
+        lock = new PasswordStorageLock(cryptor);
     }
 
-    public PasswordManager() throws CryptoException {
+    public PasswordStorage() throws CryptoException {
         this(new JavaStandardEnDeCryptor());
     }
 
-    public synchronized void unlock(final String password) throws CryptoException {
+    public void unlock(final String password) throws CryptoException {
         cryptor.setPassword(password);
         lock.unlock();
     }
 
-    public synchronized void savePassword(final String passwordId, final String password) throws CryptoException {
+    public void savePassword(final String passwordId, final String password) throws CryptoException {
         checkLock();
         passwords.put(passwordId, cryptor.encrypt(password));
     }
 
-    public synchronized String restorePassword(final String passwordId) throws CryptoException {
+    public String restorePassword(final String passwordId) throws CryptoException {
+        checkLock();
+
         final String cryptedPassword = passwords.get(passwordId);
         if (cryptedPassword == null) {
             return null;
         }
 
-        checkLock();
         return cryptor.decrypt(cryptedPassword);
     }
 
     private void checkLock() throws CryptoException {
         if (lock.isLocked()) {
-            throw new CryptoException("Storage is locked");
+            throw new StorageLockedException("Storage is locked");
         }
     }
 
-    public synchronized void lock() {
+    public void lock() {
         lock.lock();
     }
 
-    public synchronized Map<String, String> exportPasswords() {
+    public Map<String, String> exportPasswords() {
         return new HashMap<String, String>(passwords);
     }
 
-    public synchronized void deletePassword(final String passwordId) throws CryptoException {
+    public void deletePassword(final String passwordId) throws CryptoException {
         checkLock();
         passwords.remove(passwordId);
     }
 
-    public synchronized void importPasswords(final Map<String, String> additionalPasswords) {
+    public void importPasswords(final Map<String, String> additionalPasswords) {
         passwords.putAll(additionalPasswords);
     }
 
-    public synchronized void changePassword(final String newPassword) throws CryptoException {
+    public void changePassword(final String newPassword) throws CryptoException {
         if (lock.getCheckString() != null) {
             checkLock();
         }
@@ -100,15 +101,15 @@ public class PasswordManager {
         return temp;
     }
 
-    public synchronized void setCheckString(final String checkString) {
+    public void setCheckString(final String checkString) {
         lock.setCheckString(checkString);
     }
 
-    public synchronized String getCheckString() {
+    public String getCheckString() {
         return lock.getCheckString();
     }
 
-    public synchronized State getState() {
+    public State getState() {
         if (lock.getCheckString() == null) {
             return State.UNINITIALIZED;
         } else if (lock.isLocked()) {
@@ -116,5 +117,9 @@ public class PasswordManager {
         } else {
             return State.UNLOCKED;
         }
+    }
+
+    public boolean hasPassword(final String passwordId) {
+        return passwords.containsKey(passwordId);
     }
 }

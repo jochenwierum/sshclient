@@ -95,8 +95,8 @@ public class XMLLoader {
 
         final Map<String, String> passwords = loadPasswordMap(passwordNode);
 
-        settings.getPasswordManager().setCheckString(checkString);
-        settings.getPasswordManager().importPasswords(passwords);
+        settings.getPasswordStorage().setCheckString(checkString);
+        settings.getPasswordStorage().importPasswords(passwords);
     }
 
     private Map<String, String> loadPasswordMap(final Element passwordNode) {

@@ -35,6 +35,7 @@ import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.settings.KeyAgentManager;
 import de.jowisoftware.sshclient.settings.persisting.XMLLoader;
 import de.jowisoftware.sshclient.settings.persisting.XMLPersister;
+import de.jowisoftware.sshclient.ui.security.PasswordManager;
 import de.jowisoftware.sshclient.ui.settings.ConnectDialog;
 import de.jowisoftware.sshclient.util.FontUtils;
 
@@ -49,6 +50,8 @@ public class MainWindow extends JFrame {
     private MainWindowMenu menu;
 
     public final ApplicationSettings settings = new ApplicationSettings();
+    public final PasswordManager passwordManager = new PasswordManager(this,
+            settings.getPasswordStorage());
 
     private final File projectDir;
     private JSch jsch;
@@ -267,7 +270,8 @@ public class MainWindow extends JFrame {
     }
 
     public void connect(final AWTProfile profile) {
-        final ConnectionFrame sshFrame = new ConnectionFrame(this, profile, jsch);
+        final ConnectionFrame sshFrame = new ConnectionFrame(this, profile,
+                passwordManager, jsch);
         pane.addTab(profile.getDefaultTitle(), sshFrame);
         pane.setTabComponentAt(pane.getTabCount() - 1,
                 sshFrame.createTabComponent(pane));

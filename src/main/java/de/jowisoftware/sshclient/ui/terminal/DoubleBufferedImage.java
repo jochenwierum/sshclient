@@ -8,7 +8,6 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.debug.PerformanceType;
@@ -164,13 +163,7 @@ public class DoubleBufferedImage implements Renderer {
         if (!queued) {
             queued = true;
             PerformanceLogger.start(PerformanceType.REQUEST_TO_RENDER);
-
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    parent.repaint();
-                }
-            });
+            parent.repaint(); // repaint is thread-safe!
         }
     }
 

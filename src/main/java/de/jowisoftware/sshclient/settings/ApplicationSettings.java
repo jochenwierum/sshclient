@@ -9,7 +9,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.encryption.CryptoException;
-import de.jowisoftware.sshclient.encryption.PasswordManager;
+import de.jowisoftware.sshclient.encryption.PasswordStorage;
 
 public class ApplicationSettings {
     public enum TabState {
@@ -22,22 +22,22 @@ public class ApplicationSettings {
     private final Map<String, AWTProfile> profiles = new HashMap<String, AWTProfile>();
     private final List<File> keyFiles = new ArrayList<File>();
 
-    private final PasswordManager passwordManager;
+    private final PasswordStorage passwordStorage;
 
     private TabState logTabState = TabState.CLOSED;
     private TabState keyTabState = TabState.CLOSED;
     private String language = "en_US";
 
     public ApplicationSettings() {
-        PasswordManager newPasswordManager;
+        PasswordStorage newPasswordManager;
         try {
-            newPasswordManager = new PasswordManager();
+            newPasswordManager = new PasswordStorage();
         } catch(final CryptoException e) {
             newPasswordManager = null;
             LOGGER.error("Could not initialize password manager backend; " +
             		"ignoring it completely", e);
         }
-        this.passwordManager = newPasswordManager;
+        this.passwordStorage = newPasswordManager;
     }
 
     public Map<String, AWTProfile> getProfiles() {
@@ -72,7 +72,7 @@ public class ApplicationSettings {
         this.language = language;
     }
 
-    public PasswordManager getPasswordManager() {
-        return passwordManager;
+    public PasswordStorage getPasswordStorage() {
+        return passwordStorage;
     }
 }

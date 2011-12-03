@@ -49,6 +49,7 @@ public class MainWindowMenu {
 
         fileMenu.add(createConnectEntry());
         fileMenu.add(createSessionsEntry());
+        fileMenu.add(createMasterPasswordEntry());
         fileMenu.add(createQuitMenuEntry());
 
         return fileMenu;
@@ -116,6 +117,18 @@ public class MainWindowMenu {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 parent.connectToCustomProfile();
+            }
+        });
+        return entry;
+    }
+
+    private JMenuItem createMasterPasswordEntry() {
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.masterpassword", "Change master password"));
+        entry.setMnemonic(m("mainwindow.menu.masterpassword", 'm'));
+        entry.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                parent.passwordManager.changeMasterPassword();
             }
         });
         return entry;

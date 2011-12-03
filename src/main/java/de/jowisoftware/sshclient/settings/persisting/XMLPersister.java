@@ -23,7 +23,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-import de.jowisoftware.sshclient.encryption.PasswordManager;
+import de.jowisoftware.sshclient.encryption.PasswordStorage;
 import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
@@ -54,7 +54,7 @@ public class XMLPersister {
 
     private Node storePasswords() {
         final Element passwords = doc.createElement("passwords");
-        final PasswordManager manager = settings.getPasswordManager();
+        final PasswordStorage manager = settings.getPasswordStorage();
 
         if (manager != null && manager.getCheckString() != null) {
             addCheckAttribute(passwords, manager);
@@ -74,7 +74,7 @@ public class XMLPersister {
         }
     }
 
-    private void addCheckAttribute(final Element passwords, final PasswordManager manager) {
+    private void addCheckAttribute(final Element passwords, final PasswordStorage manager) {
         passwords.setAttribute("check", manager.getCheckString());
     }
 

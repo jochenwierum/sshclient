@@ -2,12 +2,12 @@ package de.jowisoftware.sshclient.encryption;
 
 import java.security.SecureRandom;
 
-public class PasswordManagerLock {
+public class PasswordStorageLock {
     private String checkString = null;
     private boolean locked = true;
     private final EnDeCryptor cryptor;
 
-    public PasswordManagerLock(final EnDeCryptor cryptor) {
+    public PasswordStorageLock(final EnDeCryptor cryptor) {
         this.cryptor = cryptor;
     }
 
@@ -27,7 +27,7 @@ public class PasswordManagerLock {
     }
 
     private void processUnlockException(final Exception e) throws CryptoException {
-        throw new CryptoException("could not unlock password storage - illegal password?", e);
+        throw new WrongPasswordException("could not unlock password storage - illegal password?", e);
     }
 
     private void tryUnlock() throws CryptoException {

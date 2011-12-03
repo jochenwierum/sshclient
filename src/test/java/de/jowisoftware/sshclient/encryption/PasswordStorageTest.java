@@ -22,26 +22,26 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.encryption.PasswordManager.State;
+import de.jowisoftware.sshclient.encryption.PasswordStorage.State;
 
 @RunWith(JMock.class)
-public class PasswordManagerTest {
+public class PasswordStorageTest {
     private static final String CHECK_STRING = "check";
     private static final String PASSWORD = "secret";
 
     private final Mockery context = new JUnit4Mockery();
     private EnDeCryptor cryptor;
-    private PasswordManager manager;
+    private PasswordStorage storage;
 
     @Before
     public void setUp() throws CryptoException {
         cryptor = context.mock(EnDeCryptor.class);
 
-        manager = new PasswordManager(cryptor);
-        manager.setCheckString(CHECK_STRING);
+        storage = new PasswordStorage(cryptor);
+        storage.setCheckString(CHECK_STRING);
     }
 
-    private void unlock(final PasswordManager managerToUnlock,
+    private void unlock(final PasswordStorage managerToUnlock,
             final EnDeCryptor includedCryptor) throws CryptoException {
         context.checking(new Expectations() {{
             oneOf(includedCryptor).setPassword(PASSWORD);
@@ -51,7 +51,7 @@ public class PasswordManagerTest {
     }
 
     private void unlock() throws CryptoException {
-        unlock(manager, cryptor);
+        unlock(storage, cryptor);
     }
 
     private void prepareEncrypt(final String input, final String output) throws CryptoException {
@@ -84,7 +84,7 @@ public class PasswordManagerTest {
     @Test public void
     unlockWithCorrectPassword() throws CryptoException {
         unlock();
-        assertThat(manager.getState(), is(equalTo(State.UNLOCKED)));
+        assertThat(storage.getState(), is(equalTo(State.UNLOCKED)));
     }
 
     @Test public void
@@ -95,11 +95,11 @@ public class PasswordManagerTest {
         }});
 
         try {
-            manager.unlock("secret2");
+            storage.unlock("secret2");
             fail("Expected exception");
         } catch(final CryptoException e) { /* ignored, part of the test */ }
 
-        assertThat(manager.getState(), is(equalTo(State.LOCKED)));
+        assertThat(storage.getState(), is(equalTo(State.LOCKED)));
     }
 
     @Test public void
@@ -110,11 +110,11 @@ public class PasswordManagerTest {
         }});
 
         try {
-            manager.unlock("secret3");
+            storage.unlock("secret3");
             fail("Expected exception");
         } catch(final CryptoException e) { /* ignored, part of the test */ }
 
-        assertThat(manager.getState(), is(equalTo(State.LOCKED)));
+        assertThat(storage.getState(), is(equalTo(State.LOCKED)));
     }
 
     @Test public void
@@ -124,42 +124,37 @@ public class PasswordManagerTest {
         prepareEncrypt("password2", "enc-pw2");
         prepareEncrypt("password3", "enc-pw3");
 
-        manager.savePassword("profile1", "password1");
-        manager.savePassword("profile1", "password3");
-        manager.savePassword("profile2", "password2");
+        storage.savePassword("profile1", "password1");
+        storage.savePassword("profile1", "password3");
+        storage.savePassword("profile2", "password2");
 
         prepareDecrypt("enc-pw3", "password3");
         prepareDecrypt("enc-pw2", "password2");
 
-        assertThat(manager.restorePassword("profile1"), is(equalTo("password3")));
-        assertThat(manager.restorePassword("profile2"), is(equalTo("password2")));
+        assertThat(storage.restorePassword("profile1"), is(equalTo("password3")));
+        assertThat(storage.restorePassword("profile2"), is(equalTo("password2")));
     }
 
-    @Test(expected=CryptoException.class) public void
+    @Test(expected=StorageLockedException.class) public void
     saveRequiresUnlocking() throws CryptoException {
-        manager.savePassword("x", "y");
+        storage.savePassword("x", "y");
     }
 
     @Test public void
     managerIsLockable() throws CryptoException {
         unlock();
-        manager.lock();
-        assertThat(manager.getState(), is(equalTo(State.LOCKED)));
+        storage.lock();
+        assertThat(storage.getState(), is(equalTo(State.LOCKED)));
     }
 
-    @Test(expected=CryptoException.class) public void
+    @Test(expected=StorageLockedException.class) public void
     restoresRequiresUnlocking() throws CryptoException {
         unlock();
         prepareEncrypt("y", "enc-y");
 
-        manager.savePassword("x", "y");
-        manager.lock();
-        manager.restorePassword("x");
-    }
-
-    @Test public void
-    restoreUnknownPasswordWhenUnlockedYieldsNull() throws CryptoException {
-        assertThat(manager.restorePassword("x"), is(nullValue()));
+        storage.savePassword("x", "y");
+        storage.lock();
+        storage.restorePassword("x");
     }
 
     @Test public void
@@ -169,10 +164,10 @@ public class PasswordManagerTest {
         prepareEncrypt("y", "enc-y");
         prepareEncrypt("pw123", "enc-pw123");
 
-        manager.savePassword("x", "y");
-        manager.savePassword("y", "pw123");
+        storage.savePassword("x", "y");
+        storage.savePassword("y", "pw123");
 
-        final Map<String, String> passwords = manager.exportPasswords();
+        final Map<String, String> passwords = storage.exportPasswords();
         assertThat(passwords.size(), is(equalTo(2)));
         assertThat(passwords.get("x"), is(not(equalTo("y"))));
     }
@@ -182,15 +177,15 @@ public class PasswordManagerTest {
         unlock();
 
         prepareEncrypt("y", "enc-y");
-        manager.savePassword("x", "y");
-        manager.deletePassword("x");
+        storage.savePassword("x", "y");
+        storage.deletePassword("x");
 
-        assertThat(manager.restorePassword("x"), is(nullValue()));
+        assertThat(storage.restorePassword("x"), is(nullValue()));
     }
 
-    @Test(expected=CryptoException.class) public void
-    deletePasswordsWithUnlockedStorageYieldsException() throws CryptoException {
-        manager.deletePassword("x");
+    @Test(expected=StorageLockedException.class) public void
+    deletePasswordsWithUnlockedStorageThrowsException() throws CryptoException {
+        storage.deletePassword("x");
     }
 
     @Test public void
@@ -200,12 +195,12 @@ public class PasswordManagerTest {
         prepareEncrypt("y", "enc-y");
         prepareEncrypt("pw123", "enc-pw123");
 
-        manager.savePassword("x", "y");
-        manager.savePassword("y", "pw123");
+        storage.savePassword("x", "y");
+        storage.savePassword("y", "pw123");
 
-        final Map<String, String> passwords = manager.exportPasswords();
+        final Map<String, String> passwords = storage.exportPasswords();
 
-        final PasswordManager manager2 = new PasswordManager(cryptor);
+        final PasswordStorage manager2 = new PasswordStorage(cryptor);
         manager2.setCheckString(CHECK_STRING);
         unlock(manager2, cryptor);
         manager2.importPasswords(passwords);
@@ -216,14 +211,14 @@ public class PasswordManagerTest {
         assertThat(manager2.restorePassword("y"), is(equalTo("pw123")));
     }
 
-    @Test(expected=CryptoException.class) public void
+    @Test(expected=StorageLockedException.class) public void
     changingPasswordWhenUnlockedThrowsException() throws CryptoException {
-        manager.changePassword("new password");
+        storage.changePassword("new password");
     }
 
     @Test public void
     settingInitialPasswordRequiresNoUnlock() throws CryptoException {
-        final PasswordManager manager2 = new PasswordManager(cryptor);
+        final PasswordStorage manager2 = new PasswordStorage(cryptor);
 
         final Sequence seq = context.sequence("seq");
         context.checking(new Expectations() {{
@@ -248,8 +243,8 @@ public class PasswordManagerTest {
         prepareEncrypt("pw1", "enc-pw1");
         prepareEncrypt("pw2", "enc-pw2");
 
-        manager.savePassword("x", "pw1");
-        manager.savePassword("y", "pw2");
+        storage.savePassword("x", "pw1");
+        storage.savePassword("y", "pw2");
 
         final States pwState = context.states("pwState");
         context.checking(new Expectations() {{
@@ -278,12 +273,12 @@ public class PasswordManagerTest {
                 will(returnValue("46"));
         }});
 
-        manager.changePassword("new password");
+        storage.changePassword("new password");
 
-        final Map<String, String> passwords = manager.exportPasswords();
+        final Map<String, String> passwords = storage.exportPasswords();
         assertThat(passwords.get("x"), is(equalTo("new-pw1")));
         assertThat(passwords.get("y"), is(equalTo("new-pw2")));
-        assertThat(manager.getCheckString(), is(equalTo("new-check")));
+        assertThat(storage.getCheckString(), is(equalTo("new-check")));
     }
 
     @Test public void
@@ -293,8 +288,8 @@ public class PasswordManagerTest {
         prepareEncrypt("pw1", "enc-pw1");
         prepareEncrypt("pw2", "enc-pw2");
 
-        manager.savePassword("x", "pw1");
-        manager.savePassword("y", "pw2");
+        storage.savePassword("x", "pw1");
+        storage.savePassword("y", "pw2");
 
         final States firstState = context.states("firstState").startsAs("first");
         context.checking(new Expectations() {{
@@ -328,17 +323,36 @@ public class PasswordManagerTest {
         }});
 
         try {
-            manager.changePassword("new password");
+            storage.changePassword("new password");
             fail("Exception was not forwarded");
         } catch(final CryptoException e) {}
 
-        final Map<String, String> passwords = manager.exportPasswords();
+        final Map<String, String> passwords = storage.exportPasswords();
         assertThat(passwords.get("x"), is(equalTo("enc-pw1")));
     }
 
     @Test public void
     checkStringIsNullWithoutPassword() {
-        final String checkString = new PasswordManager(null).getCheckString();
+        final String checkString = new PasswordStorage(null).getCheckString();
         assertThat(checkString, is(nullValue()));
+    }
+
+    @Test(expected=WrongPasswordException.class) public void
+    wrongValidPasswordThrowsException() throws CryptoException {
+        context.checking(new Expectations() {{
+            oneOf(cryptor).setPassword("wrong");
+            oneOf(cryptor).decrypt(CHECK_STRING); will(returnValue("5"));
+        }});
+        storage.unlock("wrong");
+    }
+
+    @Test(expected=WrongPasswordException.class) public void
+    wrongInvalidPasswordThrowsException() throws CryptoException {
+        context.checking(new Expectations() {{
+            oneOf(cryptor).setPassword("wrong");
+            oneOf(cryptor).decrypt(CHECK_STRING); will(throwException(
+                    new CryptoException("")));
+        }});
+        storage.unlock("wrong");
     }
 }
