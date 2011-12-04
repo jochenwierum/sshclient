@@ -123,9 +123,26 @@ public class SimpleSSHSession implements SSHSession {
 
     public Position translateMousePositionToCharacterPosition(final int x, final int y) {
         Position position = renderer.translateMousePosition(x, y);
+        position = moveMousePositionInBufferRange(position);
+        position = movePositionToMultibyteStart(position);
+        return position;
+    }
+
+    private Position movePositionToMultibyteStart(Position position) {
+        if (position.x > buffer.getSize().x) {
+            return position;
+        }
+
         while (buffer.getCharacter(position.y, position.x) == BufferStorage.EMPTY) {
             position = position.offset(-1, 0);
         }
+        return position;
+    }
+
+    private Position moveMousePositionInBufferRange(Position position) {
+        final Position bufferSize = buffer.getSize();
+        position = position.moveInRange(
+                new Position(bufferSize.x + 1, bufferSize.y).toRange());
         return position;
     }
 }

@@ -196,8 +196,7 @@ public class DoubleBufferedImage implements Renderer {
         final int charx = (x + charWidth / 2) / charWidth + 1;
         final int chary = y / charHeight + 1;
 
-        return new Position(charx, chary).moveInRange(
-                        new Position(getCharsPerLine() + 1, getLines()).toRange());
+        return new Position(charx, chary);
     }
 
     @Override

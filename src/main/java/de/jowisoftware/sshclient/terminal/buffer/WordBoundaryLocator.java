@@ -10,7 +10,7 @@ public class WordBoundaryLocator implements BoundaryLocator {
 
     @Override
     public Position findStartOfWord(final Position position) {
-        Position testedPosition = position;
+        Position testedPosition = recoverPositionWhenBeyondMaximum(position);
         Position result = testedPosition;
 
         while(testedPosition.x > 0 && isWordChar(testedPosition)) {
@@ -19,6 +19,14 @@ public class WordBoundaryLocator implements BoundaryLocator {
         }
 
         return result;
+    }
+
+    private Position recoverPositionWhenBeyondMaximum(Position testedPosition) {
+        final int maxX = buffer.getSize().x;
+        if (testedPosition.x > maxX) {
+            testedPosition = testedPosition.withX(maxX);
+        }
+        return testedPosition;
     }
 
     private boolean isWordChar(final Position position) {
@@ -33,7 +41,7 @@ public class WordBoundaryLocator implements BoundaryLocator {
 
     @Override
     public Position findEndOfWord(final Position position) {
-        Position testedPosition = position;
+        Position testedPosition = recoverPositionWhenBeyondMaximum(position);
         Position result = testedPosition;
         final int maxX = buffer.getSize().x;
 

@@ -61,15 +61,21 @@ public class WordBoundaryLocatorTest {
     }
 
     @Test
-    public void findStartOfWordsFindWordBoundary() {
+    public void findStartOfWordFindsWordBoundary() {
         prepareBuffer(5, 11, "+this");
         assertThat(locator.findStartOfWord(aPosition(13, 5)), is(equalTo(aPosition(12, 5))));
     }
 
     @Test
-    public void findStartOfWordsFindWordBoundaryAtBeginningOfLine() {
+    public void findStartOfWordFindsWordBoundaryAtBeginningOfLine() {
         prepareBuffer(3, 1, "that");
         assertThat(locator.findStartOfWord(aPosition(2, 3)), is(equalTo(aPosition(1, 3))));
+    }
+
+    @Test
+    public void findStartOfWordsFindWordBoundaryAfterEndOfLine() {
+        prepareBuffer(3, 76, " last");
+        assertThat(locator.findStartOfWord(aPosition(81, 3)), is(equalTo(aPosition(77, 3))));
     }
 
     @Test
@@ -80,15 +86,27 @@ public class WordBoundaryLocatorTest {
     }
 
     @Test
-    public void findEndOfWordsFindWordBoundary() {
+    public void findEndOfWordFindsWordBoundary() {
         prepareBuffer(5, 11, "this-");
         assertThat(locator.findEndOfWord(aPosition(13, 5)), is(equalTo(aPosition(14, 5))));
     }
 
     @Test
-    public void findEndOfWordsFindWordBoundaryAtBeginningOfLine() {
+    public void findEndOfWordFindsWordBoundaryAtBeginningOfLine() {
         prepareBuffer(3, 77, "that");
         assertThat(locator.findEndOfWord(aPosition(78, 3)), is(equalTo(aPosition(80, 3))));
+    }
+
+    @Test
+    public void findEndOfWordFindsWordBoundaryAfterEndOfLine() {
+        prepareBuffer(3, 77, "last");
+        assertThat(locator.findEndOfWord(aPosition(81, 3)), is(equalTo(aPosition(80, 3))));
+    }
+
+    @Test
+    public void findEndOfWordFindsWordBoundaryAfterEndOfLineWithSpace() {
+        prepareBuffer(3, 76, "last ");
+        assertThat(locator.findEndOfWord(aPosition(81, 3)), is(equalTo(aPosition(80, 3))));
     }
 
     @Test
