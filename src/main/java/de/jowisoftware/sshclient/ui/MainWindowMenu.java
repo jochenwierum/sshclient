@@ -12,7 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import de.jowisoftware.sshclient.ui.settings.ProfilesDialog;
-import de.jowisoftware.sshclient.util.JarUtils;
+import de.jowisoftware.sshclient.util.ApplicationUtils;
 
 
 public class MainWindowMenu {
@@ -40,6 +40,7 @@ public class MainWindowMenu {
         final JMenu helpMenu = new JMenu(t("mainwindow.menu.help", "Help"));
         helpMenu.setMnemonic(m("mainwindow.menu.help", 'h'));
 
+        helpMenu.add(createUpdateEntry());
         helpMenu.add(createAboutEntry());
 
         return helpMenu;
@@ -185,7 +186,7 @@ public class MainWindowMenu {
         entry.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                JOptionPane.showMessageDialog(parent, "Version: " + JarUtils.getVersion(),
+                JOptionPane.showMessageDialog(parent, "Version: " + ApplicationUtils.getVersion(),
                         "SSH", JOptionPane.INFORMATION_MESSAGE);
             }
         });
@@ -193,4 +194,25 @@ public class MainWindowMenu {
         return entry;
     }
 
+
+    private JMenuItem createUpdateEntry() {
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.update_check", "check for updates"));
+        entry.setMnemonic(m("mainwindow.menu.update_check", 'u'));
+
+        entry.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final String version = ApplicationUtils.getAvailableUpdateVersion();
+
+                if (version == null) {
+                    JOptionPane.showMessageDialog(parent, "No new version found");
+                } else {
+                    JOptionPane.showMessageDialog(parent, version,
+                            "SSH", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        });
+
+        return entry;
+    }
 }
