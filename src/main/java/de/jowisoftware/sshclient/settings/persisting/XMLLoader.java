@@ -159,6 +159,8 @@ public class XMLLoader {
         profile.setPort(getInteger(profileNode, "port/text()", -1));
         profile.setTimeout(getInteger(profileNode, "timeout/text()", -1));
 
+        loadForwardings(profile, profileNode);
+
         final String charset = getString(profileNode,
                     "charset/text()", "UTF-8");
         profile.setCharsetName(charset);
@@ -174,6 +176,17 @@ public class XMLLoader {
         }
 
         return profile;
+    }
+
+    private void loadForwardings(final AWTProfile profile, final Node profileNode) {
+        profile.setAgentForwarding(getBoolean(profileNode, "forwardings/forwardAgent/text()",
+                profile.getAgentForwarding()));
+        profile.setX11Forwarding(getBoolean(profileNode, "forwardings/forwardX11/text()",
+                profile.getX11Forwarding()));
+        profile.setX11Host(getString(profileNode, "forwardings/x11Host/text()",
+                profile.getX11Host()));
+        profile.setX11Display(getInteger(profileNode, "forwardings/x11Display/text()",
+                profile.getX11Display()));
     }
 
     private void loadEnvironment(final Element environmentNode,
@@ -349,6 +362,18 @@ public class XMLLoader {
         if (value != null) {
             try {
                 return Integer.parseInt(value);
+            } catch(final NumberFormatException e) {
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
+    private boolean getBoolean(final Node parent, final String path, final boolean defaultValue) {
+        final String value = getString(parent, path, null);
+        if (value != null) {
+            try {
+                return Boolean.parseBoolean(value);
             } catch(final NumberFormatException e) {
                 return defaultValue;
             }

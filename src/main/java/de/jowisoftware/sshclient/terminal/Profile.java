@@ -17,6 +17,15 @@ public interface Profile<C extends GfxInfo<?>> {
     void setTimeout(final int timeout);
     int getTimeout();
 
+    boolean getX11Forwarding();
+    void setX11Forwarding(boolean forward);
+    boolean getAgentForwarding();
+    void setAgentForwarding(boolean forward);
+    String getX11Host();
+    int getX11Display();
+    void setX11Host(String x11Host);
+    void setX11Display(int x11Display);
+
     C getGfxSettings();
 
     Map<String, String> getEnvironment();

@@ -8,8 +8,6 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -53,13 +51,6 @@ public class PasswordDialog extends JDialog implements ActionListener {
     private JCheckBox createSaveCheckBox() {
         final JCheckBox checkbox = new JCheckBox(t("popups.password_save", "Save password"));
         checkbox.setMnemonic(m("popups.password_save", 's'));
-        checkbox.addItemListener(new ItemListener() {
-
-            @Override
-            public void itemStateChanged(final ItemEvent e) {
-                saveFlag = e.getStateChange() == ItemEvent.SELECTED;
-            }
-        });
         return checkbox;
     }
 
@@ -113,6 +104,7 @@ public class PasswordDialog extends JDialog implements ActionListener {
     public void actionPerformed(final ActionEvent e) {
         if (e.getActionCommand().equals(OK)) {
             result = passwordField.getPassword();
+            saveFlag = save.isSelected();
         } else {
             result = null;
         }

@@ -14,6 +14,11 @@ public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
     private int port = 22;
     private int timeout = 10000;
 
+    private boolean agentForwarding;
+    private boolean xForwarding;
+    private String x11Host = "127.0.0.1";
+    private int x11Display = 0;
+
     private String charsetName = "UTF-8";
     private transient Charset charset;
     private AWTGfxInfo gfxInfo = new AWTGfxInfo();
@@ -111,5 +116,45 @@ public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
         }
 
         return clone;
+    }
+
+    @Override
+    public boolean getX11Forwarding() {
+        return xForwarding;
+    }
+
+    @Override
+    public void setX11Forwarding(final boolean forward) {
+        xForwarding = forward;
+    }
+
+    @Override
+    public boolean getAgentForwarding() {
+        return agentForwarding;
+    }
+
+    @Override
+    public void setAgentForwarding(final boolean forward) {
+        agentForwarding = forward;
+    }
+
+    @Override
+    public String getX11Host() {
+        return x11Host;
+    }
+
+    @Override
+    public int getX11Display() {
+        return x11Display ;
+    }
+
+    @Override
+    public void setX11Host(final String x11Host) {
+        this.x11Host = x11Host;
+    }
+
+    @Override
+    public void setX11Display(final int x11Display) {
+        this.x11Display = x11Display;
     }
 }

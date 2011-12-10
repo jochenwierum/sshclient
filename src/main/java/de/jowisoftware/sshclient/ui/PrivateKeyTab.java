@@ -21,27 +21,31 @@ import org.apache.log4j.Logger;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
+import de.jowisoftware.sshclient.settings.KeyAgentEvents;
 import de.jowisoftware.sshclient.settings.KeyAgentManager;
 
-public class PrivateKeyTab extends JPanel {
+public class PrivateKeyTab extends JPanel implements KeyAgentEvents {
     private static final long serialVersionUID = -5696019301183886041L;
 
     private static final Logger LOGGER = Logger.getLogger(PrivateKeyTab.class);
 
     private final JSch jsch;
-    private JList list;
-    private final DefaultListModel listModel = new DefaultListModel();
     private final KeyAgentManager keyAgentManager;
+
+    private final DefaultListModel listModel = new DefaultListModel();
+    private final JList list = new JList(listModel);
 
     public PrivateKeyTab(final JSch jsch,
             final KeyAgentManager keyAgentManager) {
         this.jsch = jsch;
         this.keyAgentManager = keyAgentManager;
+        keyAgentManager.eventListeners().register(this);
 
-        updateListModel();
         setLayout(new BorderLayout());
         addList();
         addButtons();
+
+        updateListModel();
     }
 
     private void updateListModel() {
@@ -61,7 +65,6 @@ public class PrivateKeyTab extends JPanel {
     }
 
     private void addList() {
-        list = new JList(listModel);
         final JScrollPane scrollPane = new JScrollPane(list);
         add(scrollPane, BorderLayout.CENTER);
     }
@@ -100,12 +103,12 @@ public class PrivateKeyTab extends JPanel {
     }
 
     private void assureFileIsLoaded(final File file) {
-        if (keyAgentManager.isKeyAlreadyLoaded(file.getAbsolutePath())) {
+        if (!keyAgentManager.isKeyAlreadyLoaded(file.getAbsolutePath())) {
             LOGGER.info("Adding private key: " + file.getAbsolutePath());
             try {
                 jsch.addIdentity(file.getAbsolutePath());
-            } catch(final JSchException e2) {
-                LOGGER.error("Error while adding identity", e2);
+            } catch(final JSchException e) {
+                LOGGER.error("Error while adding identity", e);
             }
             updateListModel();
         }
@@ -144,7 +147,8 @@ public class PrivateKeyTab extends JPanel {
         });
     }
 
-    public KeyAgentManager getKeyManager() {
-        return keyAgentManager;
+    @Override
+    public void keysUpdated() {
+        updateListModel();
     }
 }

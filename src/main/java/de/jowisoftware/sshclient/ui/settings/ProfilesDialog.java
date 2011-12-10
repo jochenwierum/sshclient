@@ -52,7 +52,7 @@ public class ProfilesDialog extends JDialog {
 
     private AWTProfile profileUnderConstruction;
     private String profileUnderConstructionName;
-    private SettingsPanel settingsFrame;
+    private ProfilePanel settingsFrame;
 
     private final ApplicationSettings settings;
 
@@ -205,7 +205,7 @@ public class ProfilesDialog extends JDialog {
         profileUnderConstructionName = selectedValue;
         profileUnderConstruction = (AWTProfile) settings.getProfiles().get(selectedValue).clone();
 
-        settingsFrame = new SettingsPanel(profileUnderConstruction,
+        settingsFrame = new ProfilePanel(profileUnderConstruction,
                 selectedValue, true);
 
         updateWindowState(true);

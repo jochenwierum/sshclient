@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.ui.settings;
 
+import static de.jowisoftware.sshclient.i18n.Translation.m;
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 import java.awt.BorderLayout;
@@ -12,6 +13,8 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
@@ -21,6 +24,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -37,7 +41,7 @@ import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.util.FontUtils;
 import de.jowisoftware.sshclient.util.KeyValue;
 
-public class SettingsPanel extends JPanel {
+public class ProfilePanel extends JPanel {
     private static final long serialVersionUID = 663223636542133238L;
     private static final int COLOR_BUTTON_SIZE = 20;
 
@@ -58,6 +62,10 @@ public class SettingsPanel extends JPanel {
     private final JTextField fontSizeTextField = new JTextField(2);
     private final JTextField profileNameTextField = new JTextField();
     private final JComboBox antiAliasingBox = createAntiAliasingBox();
+    private final JCheckBox agentForwarding = createAgentForwardingCheckBox();
+    private final JCheckBox x11Forwarding = createXForwardingCheckBox();
+    private final JTextField x11Host = new JTextField();
+    private final JTextField x11Display = new JTextField();
 
     private final GridBagConstraints normalColumn = createSpacedColumnConstraints(16);
     private final GridBagConstraints spacedColumn = createSpacedColumnConstraints(45);
@@ -65,7 +73,7 @@ public class SettingsPanel extends JPanel {
     private JList environmentList;
 
 
-    public SettingsPanel(final AWTProfile profile, final String profileName, final boolean profileNameSettable) {
+    public ProfilePanel(final AWTProfile profile, final String profileName, final boolean profileNameSettable) {
         this.profile = profile;
 
         tabbedPane = new JTabbedPane();
@@ -74,7 +82,69 @@ public class SettingsPanel extends JPanel {
 
         addMainTab(profileName, profileNameSettable);
         addColorTab();
+        addForwardingTab();
         addAdvancedTab();
+    }
+
+    private void addForwardingTab() {
+        final JPanel frame = createTabPane(t("profiles.forwardings.title", "forwardings"));
+        addForwardingControls(frame);
+    }
+
+    private JPanel createTabPane(final String title) {
+        final JPanel frame = new JPanel();
+        final JScrollPane scrollPane = new JScrollPane(frame);
+
+        tabbedPane.addTab(title, scrollPane);
+        frame.setLayout(new GridBagLayout());
+
+        return frame;
+    }
+
+    private void addForwardingControls(final JPanel frame) {
+        agentForwarding.setSelected(profile.getAgentForwarding());
+        addControl(frame, new JLabel(t("profiles.forwardings.agent", "Agent forwarding")), normalColumn);
+        addControl(frame, agentForwarding, lastColumn);
+
+        x11Forwarding.setSelected(profile.getX11Forwarding());
+        addControl(frame, new JLabel(t("profiles.forwardings.x11", "X11 forwarding")), normalColumn);
+        addControl(frame, x11Forwarding, lastColumn);
+
+        x11Host.setText(profile.getX11Host());
+        addControl(frame, new JLabel(t("profiles.forwarding.x11host", "X11 host")), normalColumn);
+        addControl(frame, x11Host, lastColumn);
+
+        x11Display.setText(Integer.toString(profile.getX11Display()));
+        addControl(frame, new JLabel(t("profiles.forwarding.x11display", "X11 display")), normalColumn);
+        addControl(frame, x11Display, lastColumn);
+
+        fillToBottom(frame);
+    }
+
+    private JCheckBox createAgentForwardingCheckBox() {
+        final JCheckBox checkBox = new JCheckBox(t("profiles.advanced.agentfowarding",
+                "forward ssh agent"));
+        checkBox.setMnemonic(m("profiles.advanced.agentfowarding", 'a'));
+        checkBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(final ItemEvent e) {
+                profile.setAgentForwarding(e.getStateChange() == ItemEvent.SELECTED);
+            }
+        });
+        return checkBox;
+    }
+
+    private JCheckBox createXForwardingCheckBox() {
+        final JCheckBox checkBox = new JCheckBox(t("profiles.advanced.xfowarding",
+                "forward X-Server"));
+        checkBox.setMnemonic(m("profiles.advanced.xfowarding", 'x'));
+        checkBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(final ItemEvent e) {
+                profile.setX11Forwarding(e.getStateChange() == ItemEvent.SELECTED);
+            }
+        });
+        return checkBox;
     }
 
     private JComboBox createAntiAliasingBox() {
@@ -109,9 +179,7 @@ public class SettingsPanel extends JPanel {
     }
 
     private void addMainTab(final String profileName, final boolean profileNameSettable) {
-        final JPanel frame = new JPanel();
-        tabbedPane.addTab(t("profiles.general.title", "general"), frame);
-        frame.setLayout(new GridBagLayout());
+        final JPanel frame = createTabPane(t("profiles.general.title", "general"));
 
         addMainControls(frame, profileName, profileNameSettable);
         fillToBottom(frame);
@@ -193,10 +261,7 @@ public class SettingsPanel extends JPanel {
     }
 
     private void addColorTab() {
-        final JPanel frame = new JPanel();
-        final JScrollPane scrollPane = new JScrollPane(frame);
-        tabbedPane.addTab(t("profiles.gfx.title", "graphics"), scrollPane);
-        frame.setLayout(new GridBagLayout());
+        final JPanel frame = createTabPane(t("profiles.gfx.title", "graphics"));
 
         addColorControls(frame);
         fillToBottom(frame);
@@ -284,7 +349,7 @@ public class SettingsPanel extends JPanel {
     }
 
     private void endColumn(final JPanel frame) {
-        addControl(frame, new JLabel(""), lastColumn);
+        addControl(frame, new JLabel(), lastColumn);
     }
 
     private String colorTranslation(final ColorName color, final String colorPrefix) {
@@ -321,7 +386,7 @@ public class SettingsPanel extends JPanel {
             public void actionPerformed(final ActionEvent e) {
                 final JButton source = (JButton) e.getSource();
                 final Color newColor = JColorChooser.showDialog(
-                        SettingsPanel.this,
+                        ProfilePanel.this,
                         t("profiles.gfx.choosecolor", "choose color"),
                         source.getBackground());
 
@@ -350,12 +415,8 @@ public class SettingsPanel extends JPanel {
     }
 
     private void addAdvancedTab() {
-        final JPanel frame = new JPanel();
-        tabbedPane.addTab(t("profiles.advanced.title", "advanced"), frame);
-        frame.setLayout(new GridBagLayout());
-
+        final JPanel frame = createTabPane(t("profiles.advanced.title", "advanced"));
         addAdvancedControls(frame);
-        fillToBottom(frame);
     }
 
     private void addAdvancedControls(final JPanel frame) {
@@ -470,6 +531,8 @@ public class SettingsPanel extends JPanel {
         profile.setTimeout(getInteger(timeoutTextField.getText(), -1));
         profile.getGfxSettings().setBoundaryChars(boundaryTextField.getText());
         profile.getGfxSettings().setAntiAliasingMode(antiAliasingBox.getSelectedIndex());
+        profile.setX11Host(x11Host.getText());
+        profile.setX11Display(getInteger(x11Display.getText(), 0));
 
         final AWTGfxInfo gfxSettings = profile.getGfxSettings();
         gfxSettings.setFont(

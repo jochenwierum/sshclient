@@ -32,7 +32,7 @@ public class ConnectionFrame extends JPanel {
     private final SessionMenu sessionMenu;
     private final PasswordManager passwordManager;
 
-    private JSchConnection connnection;
+    private JSchConnection connection;
     private SSHTabComponent recentTabComponent;
     private SSHConsole console = null;
 
@@ -71,10 +71,10 @@ public class ConnectionFrame extends JPanel {
     public void connect() {
         try {
             final SSHUserInfo userInfo = new SSHUserInfo(parent, passwordManager);
-            connnection = new JSchConnection(jsch, profile, userInfo, console);
-            connnection.connect();
-            console.setOutputStream(connnection.getOutputStream());
-            console.setChannel(connnection.getChannel());
+            connection = new JSchConnection(jsch, profile, userInfo, console);
+            connection.connect();
+            console.setOutputStream(connection.getOutputStream());
+            console.setChannel(connection.getChannel());
             setContent(console);
             sessionMenu.updateMenuStates();
         } catch(final Exception e) {
@@ -112,8 +112,8 @@ public class ConnectionFrame extends JPanel {
             console = null;
         }
 
-        if (connnection != null) {
-            connnection.close();
+        if (connection != null) {
+            connection.close();
         }
     }
 

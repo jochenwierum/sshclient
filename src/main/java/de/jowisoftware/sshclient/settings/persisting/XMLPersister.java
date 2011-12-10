@@ -99,6 +99,16 @@ public class XMLPersister {
         profileNode.appendChild(createKeyValue("charset", profile.getCharset().name()));
         profileNode.appendChild(storeEnvironment(profile.getEnvironment()));
         profileNode.appendChild(storeGfxSettings(profile.getGfxSettings()));
+        profileNode.appendChild(createForwardings(profile));
+    }
+
+    private Node createForwardings(final AWTProfile profile) {
+        final Element node = doc.createElement("forwardings");
+        node.appendChild(createKeyValue("forwardX11", profile.getX11Forwarding()));
+        node.appendChild(createKeyValue("forwardAgent", profile.getAgentForwarding()));
+        node.appendChild(createKeyValue("x11Host", profile.getX11Host()));
+        node.appendChild(createKeyValue("x11Display", profile.getX11Display()));
+        return node;
     }
 
     private Node storeEnvironment(final Map<String, String> environment) {
@@ -164,6 +174,10 @@ public class XMLPersister {
         final Element node = doc.createElement(key);
         node.appendChild(doc.createTextNode(value));
         return node;
+    }
+
+    private Node createKeyValue(final String key, final boolean value) {
+        return createKeyValue(key, Boolean.toString(value));
     }
 
     private Element storeKeys() {

@@ -24,12 +24,12 @@ import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 
 public class ConnectDialog extends JDialog implements WindowListener {
     private static final long serialVersionUID = 4811060219661889812L;
-    private final SettingsPanel settingsFrame;
+    private final ProfilePanel settingsFrame;
     private AWTProfile profile = new AWTProfile();
 
     public ConnectDialog(final Frame parent) {
         super(parent, t("connect.connect.title", "Direct connect"));
-        settingsFrame = new SettingsPanel(profile, "", false);
+        settingsFrame = new ProfilePanel(profile, "", false);
 
         addWindowListener(this);
         setLayout(new BorderLayout());
