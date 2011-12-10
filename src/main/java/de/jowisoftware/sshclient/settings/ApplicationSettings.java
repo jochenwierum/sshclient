@@ -23,6 +23,7 @@ public class ApplicationSettings {
     private final List<File> keyFiles = new ArrayList<File>();
 
     private final PasswordStorage passwordStorage;
+    private boolean unlockKeysOnStartup = false;
 
     private TabState logTabState = TabState.CLOSED;
     private TabState keyTabState = TabState.CLOSED;
@@ -74,5 +75,13 @@ public class ApplicationSettings {
 
     public PasswordStorage getPasswordStorage() {
         return passwordStorage;
+    }
+
+    public boolean getUnlockKeysOnStartup() {
+        return unlockKeysOnStartup;
+    }
+
+    public void setUnlockKeysOnStartup(final boolean unlockKeysOnStartup) {
+        this.unlockKeysOnStartup = unlockKeysOnStartup;
     }
 }

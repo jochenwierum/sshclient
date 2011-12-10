@@ -42,10 +42,6 @@ public class MainWindow extends JFrame {
     public final ApplicationSettings settings = new ApplicationSettings();
 
     private final JSch jsch = new JSch();
-    private final KeyAgentManager keyManager = new KeyAgentManager(jsch, settings);
-
-    private final PrivateKeyTab keyPanel = new PrivateKeyTab(jsch, keyManager);
-    private final JComponent logPanel = new LogPanel();
 
     private final MainWindowMenu menu = new MainWindowMenu(this);
     private final MainWindowToolbar toolBar = new MainWindowToolbar(this);
@@ -54,6 +50,10 @@ public class MainWindow extends JFrame {
     private final Timer timer = createTimer(pane);
     public final PasswordManager passwordManager = new PasswordManager(this,
             settings.getPasswordStorage());
+    private final KeyAgentManager keyManager = new KeyAgentManager(jsch, settings, passwordManager);
+
+    private final PrivateKeyTab keyPanel = new PrivateKeyTab(jsch, keyManager);
+    private final JComponent logPanel = new LogPanel();
 
     private final File projectDir;
 
@@ -240,7 +240,7 @@ public class MainWindow extends JFrame {
 
         final File privKey = new File(projectDir, "id_rsa");
         if (privKey.isFile()) {
-            keyManager.loadKey(privKey.getAbsolutePath());
+            keyManager.loadKey(privKey.getAbsolutePath(), null);
         }
     }
 
