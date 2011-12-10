@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.settings.persisting;
+package de.jowisoftware.sshclient.application.persisting;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -22,13 +22,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.jowisoftware.sshclient.settings.AWTProfile;
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
-import de.jowisoftware.sshclient.settings.validation.ValidationResult;
+import de.jowisoftware.sshclient.application.ApplicationSettings;
+import de.jowisoftware.sshclient.application.ApplicationSettings.TabState;
+import de.jowisoftware.sshclient.application.validation.ValidationResult;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class XMLLoader {
     private static final Logger LOGGER = Logger.getLogger(XMLLoader.class);

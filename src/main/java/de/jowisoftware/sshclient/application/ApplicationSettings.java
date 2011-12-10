@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.settings;
+package de.jowisoftware.sshclient.application;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.encryption.CryptoException;
 import de.jowisoftware.sshclient.encryption.PasswordStorage;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class ApplicationSettings {
     public enum TabState {

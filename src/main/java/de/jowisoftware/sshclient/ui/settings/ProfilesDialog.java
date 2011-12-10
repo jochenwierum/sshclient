@@ -32,10 +32,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 
-import de.jowisoftware.sshclient.settings.AWTProfile;
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.settings.validation.ValidationResult;
+import de.jowisoftware.sshclient.application.ApplicationSettings;
+import de.jowisoftware.sshclient.application.validation.ValidationResult;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class ProfilesDialog extends JDialog {
     private static final long serialVersionUID = 4811060219661889812L;

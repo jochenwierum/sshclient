@@ -18,9 +18,9 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import de.jowisoftware.sshclient.settings.AWTProfile;
-import de.jowisoftware.sshclient.settings.validation.ValidationResult;
+import de.jowisoftware.sshclient.application.validation.ValidationResult;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class ConnectDialog extends JDialog implements WindowListener {
     private static final long serialVersionUID = 4811060219661889812L;

@@ -2,29 +2,33 @@ package de.jowisoftware.sshclient.ui.security;
 
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
 
+import de.jowisoftware.sshclient.application.Application;
+import de.jowisoftware.sshclient.application.PasswordManager;
+import de.jowisoftware.sshclient.application.UserAbortException;
 import de.jowisoftware.sshclient.encryption.CryptoException;
 import de.jowisoftware.sshclient.encryption.PasswordStorage;
 import de.jowisoftware.sshclient.encryption.PasswordStorage.State;
 import de.jowisoftware.sshclient.encryption.WrongPasswordException;
 import de.jowisoftware.sshclient.util.SwingUtils;
 
-public class PasswordManager {
+public class SimplePasswordManager implements PasswordManager {
     private static final Logger LOGGER = Logger
-            .getLogger(PasswordManager.class);
+            .getLogger(SimplePasswordManager.class);
 
-    private final PasswordStorage storage;
-    private final JFrame parent;
+    private PasswordStorage storage;
+    private Application application;
 
-    public PasswordManager(final JFrame parent, final PasswordStorage storage) {
-        this.parent = parent;
-        this.storage = storage;
+    @Override
+    public void init(final Application newApplication) {
+        this.application = newApplication;
+        storage = application.settings.getPasswordStorage();
     }
 
+    @Override
     public String getPassword(final String passwordId, final boolean firstWasWrong)
             throws UserAbortException {
 
@@ -66,7 +70,7 @@ public class PasswordManager {
         final PasswordRequestingSwingRunnable runnable =
                 new PasswordRequestingSwingRunnable(
                         createMessage(passwordId),
-                        allowSaving, parent);
+                        allowSaving, application.mainWindow);
         return runnable.askUser();
     }
 
@@ -86,7 +90,7 @@ public class PasswordManager {
             LOGGER.error("Could not restore password, ignoring it", e);
             return null;
         } catch (final UserAbortException e) {
-            LOGGER.info("User did cancel request to open password storage, ignoring it", e);
+            LOGGER.info("User did cancel request to open password storage, ignoring it");
             return null;
         }
     }
@@ -143,9 +147,10 @@ public class PasswordManager {
     }
 
     private void showMessage(final String message) {
-        SwingUtils.showMessage(parent, message, "SSH", JOptionPane.ERROR_MESSAGE);
+        SwingUtils.showMessage(application.mainWindow, message, "SSH", JOptionPane.ERROR_MESSAGE);
     }
 
+    @Override
     public void changeMasterPassword() {
         try {
             if (storage.getState() == State.LOCKED) {

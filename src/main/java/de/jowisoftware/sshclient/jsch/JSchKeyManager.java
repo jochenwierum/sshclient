@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.settings;
+package de.jowisoftware.sshclient.jsch;
 
 import java.io.File;
 
@@ -8,21 +8,24 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
 
+import de.jowisoftware.sshclient.application.ApplicationSettings;
+import de.jowisoftware.sshclient.application.KeyManager;
+import de.jowisoftware.sshclient.application.KeyManagerEvents;
+import de.jowisoftware.sshclient.application.PasswordManager;
+import de.jowisoftware.sshclient.application.UserAbortException;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.EventHubClient;
 import de.jowisoftware.sshclient.events.LinkedListEventHub;
-import de.jowisoftware.sshclient.ui.security.PasswordManager;
-import de.jowisoftware.sshclient.ui.security.UserAbortException;
 
-public class KeyAgentManager {
-    private static final Logger LOGGER = Logger.getLogger(KeyAgentManager.class);
+public class JSchKeyManager implements KeyManager {
+    private static final Logger LOGGER = Logger.getLogger(JSchKeyManager.class);
     private final JSch jsch;
     private final ApplicationSettings settings;
     private final PasswordManager passwordManager;
 
-    private final EventHub<KeyAgentEvents> events = LinkedListEventHub.forEventClass(KeyAgentEvents.class);
+    private final EventHub<KeyManagerEvents> events = LinkedListEventHub.forEventClass(KeyManagerEvents.class);
 
-    public KeyAgentManager(final JSch jsch,
+    public JSchKeyManager(final JSch jsch,
             final ApplicationSettings settings,
             final PasswordManager passwordManager) {
         this.jsch = jsch;
@@ -30,6 +33,7 @@ public class KeyAgentManager {
         this.passwordManager = passwordManager;
     }
 
+    @Override
     public void persistKeyListToSettings() {
         try {
             LOGGER.info("Persisting " + jsch.getIdentityNames().size() + " private keys");
@@ -43,6 +47,7 @@ public class KeyAgentManager {
         }
     }
 
+    @Override
     public void loadKeyListFromSettings() {
         for (final File file : settings.getKeyFiles()) {
             final String filePath = file.getAbsolutePath();
@@ -89,6 +94,7 @@ public class KeyAgentManager {
         return password;
     }
 
+    @Override
     public void loadKey(final String absolutePath, final String password) {
         if (isKeyAlreadyLoaded(absolutePath)) {
             return;
@@ -102,6 +108,7 @@ public class KeyAgentManager {
         }
     }
 
+    @Override
     public void removeIdentity(final String name) {
         try {
             jsch.removeIdentity(name);
@@ -111,7 +118,7 @@ public class KeyAgentManager {
         }
     }
 
-    public boolean isKeyAlreadyLoaded(final String fullPath) {
+    private boolean isKeyAlreadyLoaded(final String fullPath) {
         final String search = fullPath.toLowerCase();
         try {
             for (final Object o : jsch.getIdentityNames()) {
@@ -125,7 +132,7 @@ public class KeyAgentManager {
         return false;
     }
 
-    public EventHubClient<KeyAgentEvents> eventListeners() {
+    public EventHubClient<KeyManagerEvents> eventListeners() {
         return events;
     }
 }

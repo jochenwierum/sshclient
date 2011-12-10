@@ -1,17 +1,19 @@
 package de.jowisoftware.sshclient.ui.settings.validation;
 
-import de.jowisoftware.sshclient.settings.AWTProfile;
-import de.jowisoftware.sshclient.settings.validation.CharsetValidator;
-import de.jowisoftware.sshclient.settings.validation.ColorValidator;
-import de.jowisoftware.sshclient.settings.validation.CursorColorValidator;
-import de.jowisoftware.sshclient.settings.validation.DefaultValidationResult;
-import de.jowisoftware.sshclient.settings.validation.EnvironmentValidator;
-import de.jowisoftware.sshclient.settings.validation.HostNameValidator;
-import de.jowisoftware.sshclient.settings.validation.PortValidator;
-import de.jowisoftware.sshclient.settings.validation.SelectionCharsValidator;
-import de.jowisoftware.sshclient.settings.validation.UserValidator;
-import de.jowisoftware.sshclient.settings.validation.ValidationResult;
-import de.jowisoftware.sshclient.settings.validation.ValidatorCollection;
+import de.jowisoftware.sshclient.application.validation.CharsetValidator;
+import de.jowisoftware.sshclient.application.validation.ColorValidator;
+import de.jowisoftware.sshclient.application.validation.CursorColorValidator;
+import de.jowisoftware.sshclient.application.validation.DefaultValidationResult;
+import de.jowisoftware.sshclient.application.validation.EnvironmentValidator;
+import de.jowisoftware.sshclient.application.validation.HostNameValidator;
+import de.jowisoftware.sshclient.application.validation.PortValidator;
+import de.jowisoftware.sshclient.application.validation.SelectionCharsValidator;
+import de.jowisoftware.sshclient.application.validation.UserValidator;
+import de.jowisoftware.sshclient.application.validation.ValidationResult;
+import de.jowisoftware.sshclient.application.validation.ValidatorCollection;
+import de.jowisoftware.sshclient.application.validation.X11DisplayValidator;
+import de.jowisoftware.sshclient.application.validation.X11HostValidator;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public final class AWTProfileValidator {
     private final ValidatorCollection<AWTProfile> collection =
@@ -31,6 +33,8 @@ public final class AWTProfileValidator {
         collection.addValidator(new AWTFontValidator());
         collection.addValidator(new AWTAntiAliasingValidator());
         collection.addValidator(new SelectionCharsValidator());
+        collection.addValidator(new X11DisplayValidator());
+        collection.addValidator(new X11HostValidator());
     }
 
     public ValidationResult validateProfile() {

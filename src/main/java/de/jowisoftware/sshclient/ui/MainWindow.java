@@ -12,7 +12,6 @@ import java.io.File;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
@@ -20,72 +19,42 @@ import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Logger;
 
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.JSchException;
-
-import de.jowisoftware.sshclient.i18n.Translation;
+import de.jowisoftware.sshclient.application.Application;
+import de.jowisoftware.sshclient.application.ApplicationSettings.TabState;
+import de.jowisoftware.sshclient.application.persisting.XMLPersister;
 import de.jowisoftware.sshclient.log.LogPanel;
-import de.jowisoftware.sshclient.settings.AWTProfile;
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
-import de.jowisoftware.sshclient.settings.KeyAgentManager;
-import de.jowisoftware.sshclient.settings.persisting.XMLLoader;
-import de.jowisoftware.sshclient.settings.persisting.XMLPersister;
-import de.jowisoftware.sshclient.ui.security.PasswordManager;
 import de.jowisoftware.sshclient.ui.settings.ConnectDialog;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.util.FontUtils;
 
 public class MainWindow extends JFrame {
     private static final long serialVersionUID = -2951599770927217249L;
     private static final Logger LOGGER = Logger.getLogger(MainWindow.class);
 
-    public final ApplicationSettings settings = new ApplicationSettings();
+    private final Application application;
 
-    private final JSch jsch = new JSch();
-
-    private final MainWindowMenu menu = new MainWindowMenu(this);
-    private final MainWindowToolbar toolBar = new MainWindowToolbar(this);
+    private final MainWindowMenu menu;
+    private final MainWindowToolbar toolBar;
 
     private final JTabbedPane pane = createTabbedPane();
     private final Timer timer = createTimer(pane);
-    public final PasswordManager passwordManager = new PasswordManager(this,
-            settings.getPasswordStorage());
-    private final KeyAgentManager keyManager = new KeyAgentManager(jsch, settings, passwordManager);
 
-    private final PrivateKeyTab keyPanel = new PrivateKeyTab(jsch, keyManager);
     private final JComponent logPanel = new LogPanel();
+    private final PrivateKeyTab keyPanel;
 
-    private final File projectDir;
+    public MainWindow(final Application application) {
+        super("SSH");
+        this.application = application;
+        application.setMainWindow(this);
 
-    public MainWindow() {
         FontUtils.fillAsyncCache();
 
-        projectDir = prepareProjectDir();
-        final File settingsFile = new File(projectDir, "settings.xml");
-        if (settingsFile.isFile()) {
-            new XMLLoader(settings).load(settingsFile);
-            toolBar.updateProfiles();
-        }
-
-        initTranslation();
-        setTitle("SSH");
-
-        try {
-            initJSch();
-        } catch(final JSchException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "SSH",
-                    JOptionPane.ERROR_MESSAGE);
-            dispose();
-            throw new RuntimeException(e);
-        }
+        menu = new MainWindowMenu(application, this);
+        toolBar = new MainWindowToolbar(application, this);
+        keyPanel = new PrivateKeyTab(application, this);
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         initWindowElements();
-    }
-
-    private void initTranslation() {
-        final String language = settings.getLanguage();
-        Translation.initStaticTranslationWithLanguage(language);
     }
 
     private Timer createTimer(final JTabbedPane updatePane) {
@@ -120,8 +89,8 @@ public class MainWindow extends JFrame {
         }
 
         try {
-            new XMLPersister(settings).save(
-                    new File(projectDir, "settings.xml"));
+            new XMLPersister(application.settings).save(
+                    new File(application.sshDir, "settings.xml"));
         } catch(final RuntimeException e) {
             LOGGER.error("Could not save settings", e);
         }
@@ -130,19 +99,19 @@ public class MainWindow extends JFrame {
 
     private void persistTabStates() {
         if (pane.indexOfComponent(keyPanel) >= 0
-                && settings.getKeyTabState() == TabState.CLOSED) {
-            settings.setKeyTabState(TabState.OPENED);
+                && application.settings.getKeyTabState() == TabState.CLOSED) {
+            application.settings.setKeyTabState(TabState.OPENED);
         } else if (pane.indexOfComponent(keyPanel) == -1
-                && settings.getKeyTabState() == TabState.OPENED) {
-            settings.setKeyTabState(TabState.CLOSED);
+                && application.settings.getKeyTabState() == TabState.OPENED) {
+            application.settings.setKeyTabState(TabState.CLOSED);
         }
 
         if (pane.indexOfComponent(logPanel) >= 0
-                && settings.getLogTabState() == TabState.CLOSED) {
-            settings.setLogTabState(TabState.OPENED);
+                && application.settings.getLogTabState() == TabState.CLOSED) {
+            application.settings.setLogTabState(TabState.OPENED);
         } else if (pane.indexOfComponent(logPanel) == -1
-                && settings.getLogTabState() == TabState.OPENED) {
-            settings.setLogTabState(TabState.CLOSED);
+                && application.settings.getLogTabState() == TabState.OPENED) {
+            application.settings.setLogTabState(TabState.CLOSED);
         }
     }
 
@@ -158,7 +127,6 @@ public class MainWindow extends JFrame {
 
         setSize(640, 480);
         setLocationRelativeTo(null);
-        setVisible(true);
     }
 
     private JTabbedPane createTabbedPane() {
@@ -198,13 +166,13 @@ public class MainWindow extends JFrame {
     }
 
     private void initTabs() {
-        if (settings.getKeyTabState() == TabState.ALYWAYS_OPEN
-                || settings.getKeyTabState() == TabState.OPENED) {
+        if (application.settings.getKeyTabState() == TabState.ALYWAYS_OPEN
+                || application.settings.getKeyTabState() == TabState.OPENED) {
             setKeyTabVisibility(true);
         }
 
-        if (settings.getLogTabState() == TabState.ALYWAYS_OPEN
-                || settings.getLogTabState() == TabState.OPENED) {
+        if (application.settings.getLogTabState() == TabState.ALYWAYS_OPEN
+                || application.settings.getLogTabState() == TabState.OPENED) {
             setLogTabVisibility(true);
         }
     }
@@ -233,36 +201,9 @@ public class MainWindow extends JFrame {
         }
     }
 
-    private void initJSch() throws JSchException {
-        JSch.setLogger(new de.jowisoftware.sshclient.jsch.JschLogger());
-        jsch.setKnownHosts(new File(projectDir, "known_hosts").getAbsolutePath());
-        keyManager.loadKeyListFromSettings();
-
-        final File privKey = new File(projectDir, "id_rsa");
-        if (privKey.isFile()) {
-            keyManager.loadKey(privKey.getAbsolutePath(), null);
-        }
-    }
-
-    private File prepareProjectDir() {
-        final File home = new File(System.getProperty("user.home"));
-
-        final File finalProjectDir = new File(home, ".ssh");
-        if (finalProjectDir.isDirectory()) {
-            if (!finalProjectDir.exists()) {
-                if(!finalProjectDir.mkdir()) {
-                    throw new RuntimeException("Could not create directory: " +
-                            finalProjectDir.getAbsolutePath());
-                }
-            }
-        }
-        return finalProjectDir;
-    }
-
     public void connect(final AWTProfile profile) {
         final AWTProfile safeProfile = (AWTProfile) profile.clone();
-        final ConnectionFrame sshFrame = new ConnectionFrame(this, safeProfile,
-        	passwordManager, jsch);
+        final ConnectionFrame sshFrame = new ConnectionFrame(application, safeProfile);
         pane.addTab(safeProfile.getDefaultTitle(), sshFrame);
         pane.setTabComponentAt(pane.getTabCount() - 1,
                 sshFrame.createTabComponent(pane));
@@ -278,9 +219,5 @@ public class MainWindow extends JFrame {
         if (profile != null) {
             connect(profile);
         }
-    }
-
-    public void updateProfiles() {
-        toolBar.updateProfiles();
     }
 }

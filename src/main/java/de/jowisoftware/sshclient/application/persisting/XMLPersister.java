@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.settings.persisting;
+package de.jowisoftware.sshclient.application.persisting;
 
 import java.awt.Color;
 import java.io.File;
@@ -22,12 +22,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+import de.jowisoftware.sshclient.application.ApplicationSettings;
+import de.jowisoftware.sshclient.application.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.encryption.PasswordStorage;
-import de.jowisoftware.sshclient.settings.AWTProfile;
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.settings.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class XMLPersister {
     private final ApplicationSettings settings;

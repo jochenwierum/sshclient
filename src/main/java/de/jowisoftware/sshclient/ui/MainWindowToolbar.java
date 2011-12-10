@@ -15,19 +15,25 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JToolBar;
 
-import de.jowisoftware.sshclient.settings.AWTProfile;
+import de.jowisoftware.sshclient.application.Application;
+import de.jowisoftware.sshclient.application.ProfileEvent;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
-public class MainWindowToolbar {
+public class MainWindowToolbar implements ProfileEvent {
     private final MainWindow parent;
     private final JComboBox comboBox = createComboBox();
     private final JToolBar toolBar = new JToolBar("ssh");
+    private final Application application;
 
-    public MainWindowToolbar(final MainWindow parent) {
+    public MainWindowToolbar(final Application application, final MainWindow parent) {
         this.parent = parent;
+        this.application = application;
+        application.profileEvents.register(this);
 
         toolBar.setFloatable(false);
         toolBar.add(comboBox);
         toolBar.add(createConnectButton());
+        profilesUpdated();
     }
 
     private JButton createConnectButton() {
@@ -48,20 +54,6 @@ public class MainWindowToolbar {
         return comboBox;
     }
 
-    public void updateProfiles() {
-        final String[] profileNames = new String[parent.settings.getProfiles().size()];
-        final Object oldValue = comboBox.getSelectedItem();
-        int i = 0;
-
-        for (final Entry<String, AWTProfile> p : parent.settings.getProfiles().entrySet()) {
-            profileNames[i++] = p.getKey();
-        }
-
-        final ComboBoxModel model = new DefaultComboBoxModel(profileNames);
-        comboBox.setSelectedItem(oldValue);
-        comboBox.setModel(model);
-    }
-
     private JButton createButton(final String text, final String image) {
         final URL icon = getClass().getResource("/gfx/" + image + ".png");
         final JButton button = new JButton();
@@ -76,10 +68,25 @@ public class MainWindowToolbar {
     private void connectToSelectedProfile() {
         final String profileName = (String) comboBox.getSelectedItem();
         if (profileName != null) {
-            final AWTProfile profile = parent.settings.getProfiles().get(profileName);
+            final AWTProfile profile = application.settings.getProfiles().get(profileName);
             if (profile != null) {
                 parent.connect(profile);
             }
         }
+    }
+
+    @Override
+    public void profilesUpdated() {
+        final String[] profileNames = new String[application.settings.getProfiles().size()];
+        final Object oldValue = comboBox.getSelectedItem();
+        int i = 0;
+
+        for (final Entry<String, AWTProfile> p : application.settings.getProfiles().entrySet()) {
+            profileNames[i++] = p.getKey();
+        }
+
+        final ComboBoxModel model = new DefaultComboBoxModel(profileNames);
+        comboBox.setSelectedItem(oldValue);
+        comboBox.setModel(model);
     }
 }

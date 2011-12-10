@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.settings.validation;
+package de.jowisoftware.sshclient.application.validation;
 
 import de.jowisoftware.sshclient.terminal.Profile;
 

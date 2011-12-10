@@ -6,6 +6,9 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import de.jowisoftware.sshclient.application.validation.DefaultValidationResult;
+import de.jowisoftware.sshclient.application.validation.ValidationResult;
+
 public class ValidationResultTest {
     @Test
     public void testAllOk() {

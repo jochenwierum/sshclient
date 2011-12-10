@@ -1,8 +1,8 @@
-package de.jowisoftware.sshclient.jsch;
+package de.jowisoftware.sshclient.application;
 
 import org.apache.log4j.Logger;
 
-public class JschLogger implements com.jcraft.jsch.Logger {
+class JschLogger implements com.jcraft.jsch.Logger {
     private static final Logger LOGGER = Logger.getLogger(JschLogger.class);
 
     @Override

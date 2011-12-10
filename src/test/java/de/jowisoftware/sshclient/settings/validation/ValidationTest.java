@@ -7,6 +7,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+import de.jowisoftware.sshclient.application.validation.DefaultValidationResult;
+import de.jowisoftware.sshclient.application.validation.ValidationResult;
+import de.jowisoftware.sshclient.application.validation.Validator;
 import de.jowisoftware.sshclient.i18n.Translation;
 import de.jowisoftware.sshclient.terminal.Profile;
 

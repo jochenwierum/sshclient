@@ -22,7 +22,6 @@ import com.jcraft.jsch.ChannelShell;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.debug.PerformanceType;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
-import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.SimpleSSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.ArrayListBackedTabStopManager;
@@ -39,6 +38,7 @@ import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequence
 import de.jowisoftware.sshclient.terminal.mouse.DefaultMouseCursorManager;
 import de.jowisoftware.sshclient.terminal.mouse.MouseCursorManager;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxCharSetup;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 
 public class SSHConsole extends JPanel implements InputStreamEvent, ComponentListener,

@@ -11,6 +11,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.ui.settings.ProfilesDialog;
 import de.jowisoftware.sshclient.util.ApplicationUtils;
 
@@ -20,9 +21,11 @@ public class MainWindowMenu {
     private final JMenuBar menu = createMenuBar();
 
     private final MainWindow parent;
+    private final Application application;
     private JMenu sessionMenu;
 
-    public MainWindowMenu(final MainWindow parent) {
+    public MainWindowMenu(final Application application, final MainWindow parent) {
+        this.application = application;
         this.parent = parent;
         sessionMenu = dummySessionMenu;
     }
@@ -115,10 +118,10 @@ public class MainWindowMenu {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 final ProfilesDialog dialog = new ProfilesDialog(parent,
-                        parent.settings);
+                        application.settings);
                 dialog.showSettings();
                 dialog.dispose();
-                parent.updateProfiles();
+                application.profileEvents.fire().profilesUpdated();
             }
         });
         return entry;
@@ -142,7 +145,7 @@ public class MainWindowMenu {
         entry.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                parent.passwordManager.changeMasterPassword();
+                application.passwordManager.changeMasterPassword();
             }
         });
         return entry;

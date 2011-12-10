@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.settings.validation;
+package de.jowisoftware.sshclient.application.validation;
 
 import java.util.HashMap;
 import java.util.Map;

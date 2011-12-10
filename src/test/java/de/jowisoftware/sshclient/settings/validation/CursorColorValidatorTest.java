@@ -5,7 +5,8 @@ import java.awt.Color;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.settings.AWTProfile;
+import de.jowisoftware.sshclient.application.validation.CursorColorValidator;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class CursorColorValidatorTest extends ValidationTest<AWTProfile> {
     @Before

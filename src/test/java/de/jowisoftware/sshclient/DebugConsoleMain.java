@@ -13,9 +13,9 @@ import javax.swing.Timer;
 
 import org.apache.commons.io.IOUtils;
 
-import de.jowisoftware.sshclient.settings.AWTProfile;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.ui.SSHConsole;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class DebugConsoleMain {
     public static void main(final String args[]) throws Exception {

@@ -3,8 +3,9 @@ package de.jowisoftware.sshclient.settings.validation;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.settings.AWTProfile;
+import de.jowisoftware.sshclient.application.validation.CharsetValidator;
 import de.jowisoftware.sshclient.terminal.Profile;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class CharsetValidatorTest extends ValidationTest<Profile<?>> {
     @Before

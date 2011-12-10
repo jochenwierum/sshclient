@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.settings;
+package de.jowisoftware.sshclient.ui.terminal;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.jowisoftware.sshclient.terminal.Profile;
-import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 
 public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
     private String user = System.getProperty("user.name");

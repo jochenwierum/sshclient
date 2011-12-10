@@ -5,8 +5,8 @@ import javax.swing.JOptionPane;
 
 import com.jcraft.jsch.UserInfo;
 
-import de.jowisoftware.sshclient.ui.security.PasswordManager;
-import de.jowisoftware.sshclient.ui.security.UserAbortException;
+import de.jowisoftware.sshclient.application.PasswordManager;
+import de.jowisoftware.sshclient.application.UserAbortException;
 import de.jowisoftware.sshclient.util.SwingUtils;
 
 public class SSHUserInfo implements UserInfo {
