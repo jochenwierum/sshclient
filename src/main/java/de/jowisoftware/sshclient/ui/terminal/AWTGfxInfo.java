@@ -119,15 +119,20 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
         }
 
         clone.lightColors = new HashMap<ColorName, Color>();
+        copyColorMap(lightColors, clone.lightColors);
+
         clone.colors = new HashMap<ColorName, Color>();
-        for (final Entry<ColorName, Color> e : lightColors.entrySet()) {
-            clone.lightColors.put(e.getKey(), e.getValue());
-        }
-        for (final Entry<ColorName, Color> e : colors.entrySet()) {
-            clone.colors.put(e.getKey(), e.getValue());
-        }
+        copyColorMap(colors, clone.colors);
 
         return clone;
+    }
+
+    private void copyColorMap(
+            final Map<ColorName, Color> source,
+            final Map<ColorName, Color> destination) {
+        for (final Entry<ColorName, Color> e : source.entrySet()) {
+            destination.put(e.getKey(), e.getValue());
+        }
     }
 
     public void setAntiAliasingMode(final int antiAliasingMode) {
