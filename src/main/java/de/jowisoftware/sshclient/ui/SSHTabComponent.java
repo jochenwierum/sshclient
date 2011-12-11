@@ -4,7 +4,6 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
@@ -28,20 +27,15 @@ public class SSHTabComponent extends AbstractClosableTabcomponent {
 
     @Override
     public void mouseClicked(final MouseEvent e) {
-        (parent).close();
+        parent.close();
         super.mouseClicked(e);
-    }
-
-    public void updateLabel() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                label.invalidate();
-            }
-        });
     }
 
     public void updateLabel(final String title) {
         label.setText(title);
+    }
+
+    public String getLabel() {
+        return label.getText();
     }
 }

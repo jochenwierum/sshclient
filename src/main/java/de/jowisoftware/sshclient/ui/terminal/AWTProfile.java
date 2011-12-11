@@ -23,6 +23,8 @@ public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
     private AWTGfxInfo gfxInfo = new AWTGfxInfo();
     private HashMap<String, String> environmentMap = new HashMap<String, String>();
 
+    private CloseTabMode closeTabMode = CloseTabMode.NO_ERROR;
+
     @Override
     public String getDefaultTitle() {
         return user + "@" + host;
@@ -155,5 +157,13 @@ public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
     @Override
     public void setX11Display(final int x11Display) {
         this.x11Display = x11Display;
+    }
+
+    public void setCloseTabMode(final CloseTabMode newCloseTabMode) {
+        this.closeTabMode = newCloseTabMode;
+    }
+
+    public CloseTabMode getCloseTabMode() {
+        return closeTabMode;
     }
 }

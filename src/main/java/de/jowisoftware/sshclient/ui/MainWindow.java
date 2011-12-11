@@ -203,10 +203,10 @@ public class MainWindow extends JFrame {
 
     public void connect(final AWTProfile profile) {
         final AWTProfile safeProfile = (AWTProfile) profile.clone();
-        final ConnectionFrame sshFrame = new ConnectionFrame(application, safeProfile);
+        final ConnectionFrame sshFrame = new ConnectionFrame(application, safeProfile, pane);
         pane.addTab(safeProfile.getDefaultTitle(), sshFrame);
         pane.setTabComponentAt(pane.getTabCount() - 1,
-                sshFrame.createTabComponent(pane));
+                sshFrame.createTabComponent());
         pane.setSelectedComponent(sshFrame);
         sshFrame.connect();
         sshFrame.takeFocus();

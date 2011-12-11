@@ -12,6 +12,9 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
+import de.jowisoftware.sshclient.events.EventHub;
+import de.jowisoftware.sshclient.events.EventHubClient;
+import de.jowisoftware.sshclient.events.LinkedListEventHub;
 import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
@@ -23,22 +26,26 @@ public class JSchConnection {
     private final JSch jsch;
     private final SSHUserInfo userInfo;
     private final Profile<?> profile;
-    private final InputStreamEvent callback;
 
     private Session session;
     private ChannelShell channel;
     private OutputStream outputStream;
 
+    private final EventHub<InputStreamEvent> events =
+            LinkedListEventHub.forEventClass(InputStreamEvent.class);
+
     public JSchConnection(final JSch jsch, final Profile<?> profile,
-            final SSHUserInfo userInfo, final InputStreamEvent callback) {
+            final SSHUserInfo userInfo) {
         this.profile = profile;
         this.jsch = jsch;
-        this.callback = callback;
         this.userInfo = userInfo;
     }
 
+    public EventHubClient<InputStreamEvent> events() {
+        return events;
+    }
+
     public void connect() throws JSchException, IOException {
-        checkState();
         LOGGER.warn("Connecting to " + profile.getDefaultTitle());
 
         openSession();
@@ -76,18 +83,10 @@ public class JSchConnection {
         channel.setAgentForwarding(profile.getAgentForwarding());
     }
 
-    private void checkState() {
-        if (callback == null) {
-            throw new IllegalStateException("Callback not set");
-        }
-
-        if (userInfo == null) {
-            throw new IllegalStateException("UserInfo not set");
-        }
-    }
-
     private void setupStreams() throws IOException {
-        new AsyncInputStreamReaderThread(channel, callback).start();
+        final AsyncInputStreamReaderThread streamReader =
+                new AsyncInputStreamReaderThread(channel, events.fire());
+        streamReader.start();
         outputStream = channel.getOutputStream();
     }
 

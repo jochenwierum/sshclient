@@ -269,4 +269,5 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override public void mouseExited(final MouseEvent e) { /* ignored */ }
     @Override public void mouseMoved(final MouseEvent e) { /* ignored */ }
     @Override public void mouseClicked(final MouseEvent e) { /* ignored */ }
+    @Override public void streamClosed(final int exitCode) { /* ignored */ }
 }

@@ -23,6 +23,7 @@ public class Init {
         setupLookAndFeel();
 
         final Application application = createApplication();
+        loadSettings(application);
         showWindow(application);
         initApplication(application);
     }
@@ -59,12 +60,14 @@ public class Init {
     }
 
     private void initApplication(final Application application) {
+        application.importKeys();
+    }
+
+    private void loadSettings(final Application application) {
         final File settingsFile = new File(application.sshDir, "settings.xml");
         if (settingsFile.isFile()) {
             new XMLLoader(application.settings).load(settingsFile);
             application.profileEvents.fire().profilesUpdated();
         }
-
-        application.importKeys();
     }
 }

@@ -29,6 +29,7 @@ import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 
 public class XMLLoader {
     private static final Logger LOGGER = Logger.getLogger(XMLLoader.class);
@@ -159,11 +160,10 @@ public class XMLLoader {
         profile.setPort(getInteger(profileNode, "port/text()", -1));
         profile.setTimeout(getInteger(profileNode, "timeout/text()", -1));
 
-        loadForwardings(profile, profileNode);
+        restoreForwardings(profile, profileNode);
 
-        final String charset = getString(profileNode,
-                    "charset/text()", "UTF-8");
-        profile.setCharsetName(charset);
+        restoreCharset(profileNode, profile);
+        restoreCloseTaMode(profileNode, profile);
 
         final Element environmentNode = getElement(profileNode, "environment");
         if (environmentNode != null) {
@@ -178,7 +178,26 @@ public class XMLLoader {
         return profile;
     }
 
-    private void loadForwardings(final AWTProfile profile, final Node profileNode) {
+    private void restoreCharset(final Node profileNode, final AWTProfile profile) {
+        final String charset = getString(profileNode,
+                    "charset/text()", "UTF-8");
+        profile.setCharsetName(charset);
+    }
+
+    private void restoreCloseTaMode(final Node profileNode,
+            final AWTProfile profile) {
+        final String closeTabMode = getString(profileNode, "closeTabMode/text()", null);
+        if (closeTabMode != null) {
+            final String enumValue = closeTabMode.toUpperCase();
+            try {
+                 profile.setCloseTabMode(CloseTabMode.valueOf(enumValue));
+            } catch(final Exception e) {
+                LOGGER.warn("unable to find CloseTabMode: " + enumValue, e);
+            }
+        }
+    }
+
+    private void restoreForwardings(final AWTProfile profile, final Node profileNode) {
         profile.setAgentForwarding(getBoolean(profileNode, "forwardings/forwardAgent/text()",
                 profile.getAgentForwarding()));
         profile.setX11Forwarding(getBoolean(profileNode, "forwardings/forwardX11/text()",

@@ -4,6 +4,7 @@ import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -14,11 +15,13 @@ import org.apache.log4j.Logger;
 import com.jcraft.jsch.JSchException;
 
 import de.jowisoftware.sshclient.application.Application;
+import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
 import de.jowisoftware.sshclient.terminal.JSchConnection;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 
 public class ConnectionFrame extends JPanel {
     private static final long serialVersionUID = 7873084199411017370L;
@@ -28,12 +31,15 @@ public class ConnectionFrame extends JPanel {
     private final SessionMenu sessionMenu;
 
     private JSchConnection connection;
-    private SSHTabComponent recentTabComponent;
+    private final SSHTabComponent tabComponent;
     private SSHConsole console = null;
 
     private final Application application;
+    private final JTabbedPane parent;
 
-    public ConnectionFrame(final Application application, final AWTProfile profile) {
+    public ConnectionFrame(final Application application, final AWTProfile profile,
+            final JTabbedPane parent) {
+        this.parent = parent;
         this.profile = profile;
         this.application = application;
 
@@ -42,42 +48,32 @@ public class ConnectionFrame extends JPanel {
 
         console = new SSHConsole(profile);
         sessionMenu = new SessionMenu(console);
-        registerListener();
+        tabComponent = new SSHTabComponent(this, profile, parent);
+        registerVisualFeedbackListener();
     }
 
-    private void registerListener() {
-        console.getSession().getVisualFeedback().register(new VisualEvent() {
+    private void registerVisualFeedbackListener() {
+        console.getSession().getVisualFeedback().register(new VisualEvent.VisualEventAdapter() {
             @Override
             public void newTitle(final String title) {
-                recentTabComponent.updateLabel(title);
+                tabComponent.updateLabel(title);
             }
 
             @Override
             public void setDisplayType(final DisplayType displayType) {
                 sessionMenu.updateMenuStates();
             }
-
-            @Override public void bell() { /* ignored */ }
-            @Override public void newInverseMode(final boolean active) { /* ignored */ }
         });
     }
 
     public void connect() {
         try {
-            final SSHUserInfo userInfo = new SSHUserInfo(application.mainWindow,
-                    application.passwordManager);
-            connection = new JSchConnection(application.jsch, profile, userInfo, console);
-            connection.connect();
-            console.setOutputStream(connection.getOutputStream());
-            console.setChannel(connection.getChannel());
-            setContent(console);
-            sessionMenu.updateMenuStates();
+            tryConnect();
         } catch(final Exception e) {
             close();
             console = null;
             if (authWasCanceled(e)) {
-                // TODO: close yourself
-                setContent(new ErrorPane("Image i'm closed"));
+                closeTab();
             } else {
                 setContent(new ErrorPane(t("error.could_not_establish_connection",
                         "Could not establish connection"), e));
@@ -85,6 +81,51 @@ public class ConnectionFrame extends JPanel {
             }
             return;
         }
+    }
+
+    private void tryConnect() throws JSchException, IOException {
+        final SSHUserInfo userInfo = new SSHUserInfo(application.mainWindow,
+                application.passwordManager);
+        setupJSchConnection(userInfo);
+        setupConsole();
+        sessionMenu.updateMenuStates();
+    }
+
+    private void setupConsole() {
+        console.setOutputStream(connection.getOutputStream());
+        console.setChannel(connection.getChannel());
+        setContent(console);
+    }
+
+    private void setupJSchConnection(final SSHUserInfo userInfo)
+            throws JSchException, IOException {
+        connection = new JSchConnection(application.jsch, profile, userInfo);
+        connection.events().register(console);
+        registerInputStreamEventListener();
+        connection.connect();
+    }
+
+    private void registerInputStreamEventListener() {
+        connection.events().register(new InputStreamEvent.InputStreamEventAdapter() {
+            @Override
+            public void streamClosed(final int exitCode) {
+                final boolean successfullyClosed = exitCode == 0;
+                final CloseTabMode closeMode = profile.getCloseTabMode();
+                final boolean closeTab = closeMode == CloseTabMode.ALWAYS ||
+                        (successfullyClosed && closeMode != CloseTabMode.NEVER);
+
+                if (closeTab) {
+                    closeTab();
+                } else {
+                    tabComponent.updateLabel(t("closedtab", "[closed] %s",
+                            tabComponent.getLabel()));
+                }
+            }
+        });
+    }
+
+    private void closeTab() {
+        parent.removeTabAt(parent.indexOfComponent(this));
     }
 
     private boolean authWasCanceled(final Exception e) {
@@ -118,9 +159,8 @@ public class ConnectionFrame extends JPanel {
         }
     }
 
-    public JComponent createTabComponent(final JTabbedPane pane) {
-        recentTabComponent = new SSHTabComponent(this, profile, pane);
-        return recentTabComponent.create();
+    public JComponent createTabComponent() {
+        return tabComponent.create();
     }
 
     public void takeFocusWithKey(final KeyEvent e) {

@@ -38,6 +38,7 @@ import javax.swing.JTextField;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 import de.jowisoftware.sshclient.util.FontUtils;
 import de.jowisoftware.sshclient.util.KeyValue;
 
@@ -66,6 +67,7 @@ public class ProfilePanel extends JPanel {
     private final JCheckBox x11Forwarding = createXForwardingCheckBox();
     private final JTextField x11Host = new JTextField();
     private final JTextField x11Display = new JTextField();
+    private final JComboBox closeTabBox = createCloseTabBox();
 
     private final GridBagConstraints normalColumn = createSpacedColumnConstraints(16);
     private final GridBagConstraints spacedColumn = createSpacedColumnConstraints(45);
@@ -157,6 +159,19 @@ public class ProfilePanel extends JPanel {
         }
 
         Arrays.sort(names);
+        return new JComboBox(names);
+    }
+
+    private JComboBox createCloseTabBox() {
+        final CloseTabMode modes[] = CloseTabMode.values();
+        final String names[] = new String[modes.length];
+
+        int i = 0;
+        for (final CloseTabMode mode : modes) {
+            names[i++] = t("profile.close." + mode.toString().toLowerCase(),
+                    mode.niceName);
+        }
+
         return new JComboBox(names);
     }
 
@@ -420,6 +435,11 @@ public class ProfilePanel extends JPanel {
     }
 
     private void addAdvancedControls(final JPanel frame) {
+        closeTabBox.setSelectedIndex(profile.getCloseTabMode().ordinal());
+        addControl(frame, newFormattedLabel(t("profiles.advanced.close",
+                "close tab:")), normalColumn);
+        addControl(frame, closeTabBox, lastColumn);
+
         addControl(frame, newFormattedLabel(
                 t("profiles.advanced.environment", "environment:")), normalColumn);
         addControl(frame, createEnvironmentPanel(), lastColumn);
@@ -533,6 +553,7 @@ public class ProfilePanel extends JPanel {
         profile.getGfxSettings().setAntiAliasingMode(antiAliasingBox.getSelectedIndex());
         profile.setX11Host(x11Host.getText());
         profile.setX11Display(getInteger(x11Display.getText(), 0));
+        profile.setCloseTabMode(CloseTabMode.values()[closeTabBox.getSelectedIndex()]);
 
         final AWTGfxInfo gfxSettings = profile.getGfxSettings();
         gfxSettings.setFont(
