@@ -1,6 +1,7 @@
 package de.jowisoftware.sshclient.util;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -56,5 +57,25 @@ public class FixedSizeArrayRingBufferTest {
         buffer = new FixedSizeArrayRingBuffer<Integer>(3);
         fillBuffer(10, 2, 30, 4, 50);
         assertThat(buffer, contains(30, 4, 50));
+    }
+
+    @Test
+    public void arrayConversionWithLessEntries() {
+        fillBuffer(1, 2, 3);
+        assertThat(buffer.toArray(new Integer[0]),
+                is(equalTo(new Integer[]{1, 2, 3})));
+    }
+
+    @Test
+    public void arrayConversionWithFullEntries() {
+        fillBuffer(10, 2, 30, 4, 50, 60, 7, 80, 9, 100, 11, 120, 13, 140);
+        assertThat(buffer.toArray(new Integer[0]),
+                is(equalTo(new Integer[]{50, 60, 7, 80, 9, 100, 11, 120, 13, 140})));
+    }
+
+    @Test
+    public void emptyArrayConversionReturnsEmptyArray() {
+        assertThat(buffer.toArray(new Integer[0]),
+                is(equalTo(new Integer[0])));
     }
 }

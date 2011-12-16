@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.application.persisting.XMLPersister;
+import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.log.LogPanel;
 import de.jowisoftware.sshclient.ui.settings.ConnectDialog;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
@@ -95,6 +96,7 @@ public class MainWindow extends JFrame {
             LOGGER.error("Could not save settings", e);
         }
         super.dispose();
+        PerformanceLogger.quit();
     }
 
     private void persistTabStates() {

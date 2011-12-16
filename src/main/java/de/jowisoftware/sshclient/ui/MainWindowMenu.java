@@ -12,6 +12,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
 import de.jowisoftware.sshclient.application.Application;
+import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.ui.settings.ProfilesDialog;
 import de.jowisoftware.sshclient.util.ApplicationUtils;
 
@@ -44,6 +45,7 @@ public class MainWindowMenu {
         helpMenu.setMnemonic(m("mainwindow.menu.help", 'h'));
 
         helpMenu.add(createUpdateEntry());
+        helpMenu.add(createPerformanceEntry());
         helpMenu.add(createAboutEntry());
 
         return helpMenu;
@@ -181,6 +183,20 @@ public class MainWindowMenu {
         menu.repaint();
     }
 
+
+    private JMenuItem createPerformanceEntry() {
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.performance", "performance"));
+        entry.setMnemonic(m("mainwindow.menu.performance", 'p'));
+
+        entry.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                PerformanceLogger.showWindowProfiling();
+            }
+        });
+
+        return entry;
+    }
 
     private JMenuItem createAboutEntry() {
         final JMenuItem entry = new JMenuItem(t("mainwindow.menu.about", "about"));

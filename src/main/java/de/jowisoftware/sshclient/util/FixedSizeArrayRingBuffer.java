@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.util;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class FixedSizeArrayRingBuffer<E> implements RingBuffer<E> {
@@ -36,12 +37,12 @@ public class FixedSizeArrayRingBuffer<E> implements RingBuffer<E> {
     }
 
     @Override
-    public E get(final int i) {
+    public synchronized E get(final int i) {
         return data[(start + i) % data.length];
     }
 
     @Override
-    public void append(final E element) {
+    public synchronized void append(final E element) {
         if (next == start && full) {
             start = increaseModulo(start);
         }
@@ -59,7 +60,26 @@ public class FixedSizeArrayRingBuffer<E> implements RingBuffer<E> {
     }
 
     @Override
-    public int size() {
+    public synchronized int size() {
         return full ? data.length : next;
+    }
+
+    @Override
+    public synchronized E[] toArray(final E[] array) {
+        final E[] result = Arrays.copyOf(array, size());
+        if (start < next && result.length > 0) {
+            System.arraycopy(data, start, result, 0, next);
+        } else if(result.length > 0) {
+            System.arraycopy(data, start, result, 0, data.length - start);
+            System.arraycopy(data, 0, result, data.length - start, next);
+        }
+        return result;
+    }
+
+    @Override
+    public void clear() {
+        start = 0;
+        next = 0;
+        full = false;
     }
 }
