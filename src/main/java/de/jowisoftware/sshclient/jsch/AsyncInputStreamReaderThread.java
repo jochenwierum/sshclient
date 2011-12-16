@@ -36,6 +36,7 @@ public class AsyncInputStreamReaderThread extends Thread {
 
         IOUtils.closeQuietly(stream);
         callback.streamClosed(channel.getExitStatus());
+        channel.disconnect();
         LOGGER.info("Thread ended");
     }
 

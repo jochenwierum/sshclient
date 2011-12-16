@@ -120,6 +120,7 @@ public class ConnectionFrame extends JPanel {
                     tabComponent.updateLabel(t("closedtab", "[closed] %s",
                             tabComponent.getLabel()));
                 }
+                connection.close();
             }
         });
     }

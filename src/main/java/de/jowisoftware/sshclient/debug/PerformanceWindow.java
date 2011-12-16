@@ -54,7 +54,6 @@ public class PerformanceWindow extends JFrame implements ActionListener, WindowL
 
         prepareDrawing();
         timer.start();
-        Timer.setLogTimers(true);
 
         addWindowListener(this);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
