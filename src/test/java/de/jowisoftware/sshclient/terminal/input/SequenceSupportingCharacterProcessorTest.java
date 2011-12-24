@@ -16,6 +16,7 @@ import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
+import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
 import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.NonASCIIControlSequence;
@@ -261,8 +262,8 @@ public class SequenceSupportingCharacterProcessorTest {
         processor.processChar('\\');
     }
 
-    @Test
-    public void multipleCharsAreMergedToString() {
+    @Test public void
+    multipleCharsAreMergedToString() {
         final char[] chars = Character.toChars(0x024B62); // 𤭢
 
         processor.processChar(chars[0]);
@@ -272,5 +273,21 @@ public class SequenceSupportingCharacterProcessorTest {
             oneOf(buffer).addCharacter(gfxChar);
         }});
         processor.processChar(chars[1]);
+    }
+
+    @Test public void
+    shiftInIsRecognized() {
+        context.checking(new Expectations() {{
+            oneOf(setup).selectCharset(TerminalCharsetSelection.G0);
+        }});
+        processor.processChar((char) 0xf);
+    }
+
+    @Test public void
+    shiftOutIsRecognized() {
+        context.checking(new Expectations() {{
+            oneOf(setup).selectCharset(TerminalCharsetSelection.G1);
+        }});
+        processor.processChar((char) 0xe);
     }
 }

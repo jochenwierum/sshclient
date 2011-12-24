@@ -51,19 +51,19 @@ public class CursorControlSequenceTest {
         seq.handleSequence("M", sessionInfo);
     }
 
-    @Test
-    public void esc7SavesCursor() {
+    @Test public void
+    esc7SavesCursor() {
         context.checking(new Expectations() {{
-            oneOf(buffer).saveCursorPosition();
+            oneOf(sessionInfo).saveState();
         }});
 
         seq.handleSequence("7", sessionInfo);
     }
 
-    @Test
-    public void esc8RestoresCursor() {
+    @Test public void
+    esc8RestoresCursor() {
         context.checking(new Expectations() {{
-            oneOf(buffer).restoreCursorPosition();
+            oneOf(sessionInfo).restoreState();
         }});
 
         seq.handleSequence("8", sessionInfo);

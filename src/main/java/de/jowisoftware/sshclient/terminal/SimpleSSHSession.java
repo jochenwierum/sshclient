@@ -145,4 +145,16 @@ public class SimpleSSHSession implements SSHSession {
                 new Position(bufferSize.x + 1, bufferSize.y).toRange());
         return position;
     }
+
+    @Override
+    public void saveState() {
+        buffer.saveCursorPosition();
+        charSetup.save();
+    }
+
+    @Override
+    public void restoreState() {
+        buffer.restoreCursorPosition();
+        charSetup.restore();
+    }
 }

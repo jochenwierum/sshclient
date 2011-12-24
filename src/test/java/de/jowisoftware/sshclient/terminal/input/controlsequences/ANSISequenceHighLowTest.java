@@ -110,7 +110,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     @Test
     public void testSaveCursorPosition() {
         context.checking(new Expectations() {{
-            oneOf(buffer).saveCursorPosition();
+            oneOf(sessionInfo).saveState();
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('h', sessionInfo, "?1048");
@@ -119,7 +119,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     @Test
     public void testRestoreCursorPosition() {
         context.checking(new Expectations() {{
-            oneOf(buffer).restoreCursorPosition();
+            oneOf(sessionInfo).restoreState();
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo, "?1048");
@@ -129,7 +129,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     public void handleAlternateScreenBufferWithRestoredCursor() {
         context.checking(new Expectations() {{
             oneOf(buffer).switchBuffer(BufferSelection.PRIMARY);
-            oneOf(buffer).restoreCursorPosition();
+            oneOf(sessionInfo).restoreState();
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('l', sessionInfo, "?1049");
@@ -139,7 +139,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     public void handleAlternateScreenBufferWithSavedCursor() {
         final Position size = new Position(80, 24);
         context.checking(new Expectations() {{
-            oneOf(buffer).saveCursorPosition();
+            oneOf(sessionInfo).saveState();
             oneOf(buffer).switchBuffer(BufferSelection.ALTERNATIVE);
             oneOf(buffer).getSize(); will(returnValue(size));
             oneOf(buffer).erase(size.toRange());

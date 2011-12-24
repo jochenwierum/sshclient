@@ -22,4 +22,7 @@ public interface GfxCharSetup {
     GfxChar createChar(char character);
     GfxChar createMultibyteChar(String composedCharacter);
     GfxChar createClearChar();
+
+    void save();
+    void restore();
 }

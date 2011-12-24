@@ -14,19 +14,33 @@ import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
 
 public class AWTGfxCharSetup implements GfxCharSetup {
+    private static class CharSetupState implements Cloneable {
+        public int attributes;
+        public TerminalColor fgColor;
+        public TerminalColor bgColor;
+        public TerminalCharsetSelection selectedCharset = TerminalCharsetSelection.G0;
+        public GfxCharset charsetG0 = new USASCIICharset();
+        public GfxCharset charsetG1 = new USASCIICharset();
+        public boolean createBrightColors;
+
+        @Override
+        public CharSetupState clone() {
+            try {
+                return (CharSetupState) super.clone();
+            } catch (final CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     private static final Logger LOGGER = Logger
             .getLogger(AWTGfxCharSetup.class);
 
     private final AWTColorFactory colorFactory;
     private final AWTGfxInfo gfxInfo;
-    private int attributes;
-    private TerminalColor fgColor;
-    private TerminalColor bgColor;
-    private TerminalCharsetSelection selectedCharset = TerminalCharsetSelection.G0;
-    private GfxCharset charsetG0 = new USASCIICharset();
-    private GfxCharset charsetG1 = new USASCIICharset();
+    private CharSetupState charState = new CharSetupState();
+    private CharSetupState savedState = new CharSetupState();
 
-    private boolean createBrightColors;
 
     public AWTGfxCharSetup(final AWTGfxInfo gfxInfo) {
         this.gfxInfo = gfxInfo;
@@ -36,33 +50,33 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     @Override
     public void reset() {
-        createBrightColors = false;
-        fgColor = colorFactory.createStandardColor(ColorName.DEFAULT, true);
-        bgColor = colorFactory.createStandardColor(ColorName.DEFAULT_BACKGROUND, false);
-        attributes = 0;
+        charState.createBrightColors = false;
+        charState.fgColor = colorFactory.createStandardColor(ColorName.DEFAULT, true);
+        charState.bgColor = colorFactory.createStandardColor(ColorName.DEFAULT_BACKGROUND, false);
+        charState.attributes = 0;
     }
 
     @Override
     public void setAttribute(final Attribute attribute) {
         if (attribute.equals(Attribute.BRIGHT)) {
-            attributes &= ~Attribute.DIM.flag;
-            createBrightColors = true;
+            charState.attributes &= ~Attribute.DIM.flag;
+            charState.createBrightColors = true;
         } else if (attribute.equals(Attribute.DIM)) {
-            attributes &= ~Attribute.BRIGHT.flag;
-            createBrightColors = false;
+            charState.attributes &= ~Attribute.BRIGHT.flag;
+            charState.createBrightColors = false;
         } else if (attribute.equals(Attribute.HIDDEN)) {
-            fgColor = bgColor;
+            charState.fgColor = charState.bgColor;
         }
 
-        attributes |= attribute.flag;
+        charState.attributes |= attribute.flag;
     }
 
     @Override
     public void removeAttribute(final Attribute attribute) {
         if (attribute.equals(Attribute.HIDDEN)) {
-            fgColor = colorFactory.createStandardColor(ColorName.DEFAULT, true);
+            charState.fgColor = colorFactory.createStandardColor(ColorName.DEFAULT, true);
         } else {
-            attributes &= ~attribute.flag;
+            charState.attributes &= ~attribute.flag;
         }
     }
 
@@ -88,9 +102,9 @@ public class AWTGfxCharSetup implements GfxCharSetup {
         }
 
         if (selection.equals(TerminalCharsetSelection.G0)) {
-            this.charsetG0 = charset;
+            this.charState.charsetG0 = charset;
         } else {
-            this.charsetG1 = charset;
+            this.charState.charsetG1 = charset;
         }
 
         LOGGER.info("Charset " + selection + " is now " +
@@ -99,62 +113,71 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     @Override
     public void selectCharset(final TerminalCharsetSelection selection) {
-        this.selectedCharset = selection;
-        LOGGER.info("Switched charset to " + selection + " ("
-                + selectedCharset.getClass().getSimpleName() + ")");
+        this.charState.selectedCharset = selection;
+        LOGGER.info("Switched charset to " + selection);
     }
 
     @Override
     public AWTGfxChar createChar(final char character) {
-        final GfxCharset charset = getCharset(selectedCharset);
+        final GfxCharset charset = getCharset(charState.selectedCharset);
         final String characterString = Character.toString(
                 charset.convertCharacter(character));
         return new AWTGfxChar(characterString,
-                gfxInfo, fgColor, bgColor, attributes);
+                gfxInfo, charState.fgColor, charState.bgColor, charState.attributes);
     }
 
     @Override
     public AWTGfxChar createMultibyteChar(final String characterAsString) {
         return new AWTGfxChar(characterAsString,
-                gfxInfo, fgColor, bgColor, attributes);
+                gfxInfo, charState.fgColor, charState.bgColor, charState.attributes);
     }
 
     private GfxCharset getCharset(final TerminalCharsetSelection selectedCharset2) {
-        if (selectedCharset.equals(TerminalCharsetSelection.G1)) {
-            return charsetG1;
+        if (charState.selectedCharset.equals(TerminalCharsetSelection.G1)) {
+            return charState.charsetG1;
         } else {
-            return charsetG0;
+            return charState.charsetG0;
         }
     }
 
     @Override
     public AWTGfxChar createClearChar() {
-        return new AWTGfxChar(" ", gfxInfo, fgColor, bgColor, 0);
+        return new AWTGfxChar(" ", gfxInfo, charState.fgColor, charState.bgColor, 0);
     }
 
     @Override
     public void setForeground(final ColorName color) {
-        fgColor = colorFactory.createStandardColor(color, createBrightColors);
+        charState.fgColor = colorFactory.createStandardColor(color, charState.createBrightColors);
     }
 
     @Override
     public void setBackground(final ColorName color) {
-         bgColor = colorFactory.createStandardColor(color, false);
+         charState.bgColor = colorFactory.createStandardColor(color, false);
     }
 
     @Override
     public void setForeground(final int colorCode) {
-        fgColor = colorFactory.createCustomColor(colorCode);
+        charState.fgColor = colorFactory.createCustomColor(colorCode);
     }
 
     @Override
     public void setBackground(final int colorCode) {
-        bgColor = colorFactory.createCustomColor(colorCode);
+        charState.bgColor = colorFactory.createCustomColor(colorCode);
     }
 
     @Override
     public void updateCustomColor(final int colorNumber, final int r,
             final int g, final int b) {
         colorFactory.updateCustomColor(colorNumber, r, g, b);
+    }
+
+    @Override
+    public void save() {
+        savedState = charState.clone();
+    }
+
+    @Override
+    public void restore() {
+        charState = savedState.clone();
     }
 }

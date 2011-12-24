@@ -88,19 +88,19 @@ public class ANSISequenceHighLow implements ANSISequence {
         final Buffer buffer = sessionInfo.getBuffer();
         if (isHigh) {
             buffer.switchBuffer(BufferSelection.ALTERNATIVE);
-            buffer.saveCursorPosition();
+            sessionInfo.saveState();
             buffer.erase(buffer.getSize().toRange());
         } else {
             buffer.switchBuffer(BufferSelection.PRIMARY);
-            buffer.restoreCursorPosition();
+            sessionInfo.restoreState();
         }
     }
 
     private void processCursorStorage(final SSHSession sessionInfo) {
         if (isHigh) {
-            sessionInfo.getBuffer().saveCursorPosition();
+            sessionInfo.saveState();
         } else {
-            sessionInfo.getBuffer().restoreCursorPosition();
+            sessionInfo.restoreState();
         }
     }
 

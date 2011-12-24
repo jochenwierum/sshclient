@@ -26,17 +26,17 @@ public class CursorControlSequence implements NonASCIIControlSequence {
         if (sequence.equals("D") || sequence.equals("E") || sequence.endsWith("M")) {
             processRollCursor(sessionInfo.getBuffer(), sequence);
         } else if (sequence.equals("7") || sequence.equals("8")) {
-            processCursorPositionManagerment(sessionInfo.getBuffer(), sequence);
+            processCursorPositionManagerment(sessionInfo, sequence);
         } else {
             LOGGER.error("Unknown control sequence: <ESC>" + sequence);
         }
     }
 
-    private void processCursorPositionManagerment(final Buffer buffer, final String sequence) {
+    private void processCursorPositionManagerment(final SSHSession sessionInfo, final String sequence) {
         if (sequence.endsWith("7")) {
-            buffer.saveCursorPosition();
+            sessionInfo.saveState();
         } else if (sequence.endsWith("8")) {
-            buffer.restoreCursorPosition();
+            sessionInfo.restoreState();
         }
     }
 

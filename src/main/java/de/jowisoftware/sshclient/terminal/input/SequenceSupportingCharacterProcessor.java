@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.TabulatorOrientation;
+import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
 import de.jowisoftware.sshclient.terminal.input.CharacterProcessorState.State;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.ANSISequence;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.NonASCIIControlSequence;
@@ -22,6 +23,8 @@ public class SequenceSupportingCharacterProcessor implements CharacterProcessor 
     private static final char BACKSPACE_CHAR = (char) 8;
     private static final char VTAB_CHAR = (char) 11;
     private static final char HTAB_CHAR = (char) 9;
+    private static final char SHIFT_OUT = (char) 14;
+    private static final char SHIFT_IN = (char) 15;
 
     private final SequenceRepository sequenceRepository;
     private final Stack<CharacterProcessorState> states =
@@ -69,6 +72,10 @@ public class SequenceSupportingCharacterProcessor implements CharacterProcessor 
         } else if (character == CARRIDGE_RETURN_CHAR) {
             sessionInfo.getBuffer().setCursorPosition(
                     new Position(1, sessionInfo.getBuffer().getCursorPosition().y));
+        } else if (character == SHIFT_IN) {
+            sessionInfo.getCharSetup().selectCharset(TerminalCharsetSelection.G0);
+        } else if (character == SHIFT_OUT) {
+            sessionInfo.getCharSetup().selectCharset(TerminalCharsetSelection.G1);
         } else if (character == ESC_CHAR) {
             enterNewState();
         } else {

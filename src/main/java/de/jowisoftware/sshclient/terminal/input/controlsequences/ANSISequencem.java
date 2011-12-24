@@ -32,16 +32,14 @@ public class ANSISequencem implements ANSISequence {
                 i += 2;
             } else {
                 final Integer arg = parseArg(args[i]);
-                if (arg != null) {
-                    processPartialSequence(sessionInfo, arg);
-                }
+                processPartialSequence(sessionInfo, arg);
             }
         }
     }
 
     private Integer parseArg(final String argument) {
         if (argument.length() == 0) {
-            return null;
+            return 0;
         }
         return Integer.parseInt(argument);
     }
