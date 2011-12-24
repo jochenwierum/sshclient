@@ -4,6 +4,9 @@ import java.util.Map;
 
 
 public class DECCharset extends AbstractMappingCharset {
+    private static final DECCharset instance = new DECCharset();
+    private DECCharset() {}
+
     @Override
     protected void init(final Map<Integer, Character> charMap) {
         charMap.put(95,  ' ');
@@ -38,5 +41,9 @@ public class DECCharset extends AbstractMappingCharset {
         charMap.put(124, '≠');
         charMap.put(125, '£');
         charMap.put(125, '∙');
+    }
+
+    public static GfxCharset instance() {
+        return instance;
     }
 }

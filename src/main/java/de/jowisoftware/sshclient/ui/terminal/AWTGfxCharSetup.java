@@ -19,8 +19,8 @@ public class AWTGfxCharSetup implements GfxCharSetup {
         public TerminalColor fgColor;
         public TerminalColor bgColor;
         public TerminalCharsetSelection selectedCharset = TerminalCharsetSelection.G0;
-        public GfxCharset charsetG0 = new USASCIICharset();
-        public GfxCharset charsetG1 = new USASCIICharset();
+        public GfxCharset charsetG0 = USASCIICharset.instance();
+        public GfxCharset charsetG1 = USASCIICharset.instance();
         public boolean createBrightColors;
 
         @Override
@@ -88,16 +88,16 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
         switch(newCharset) {
         case USASCII:
-            charset = new USASCIICharset();
+            charset = USASCIICharset.instance();
             break;
         case DECCHARS:
-            charset = new DECCharset();
+            charset = DECCharset.instance();
             break;
         case UK:
-            charset = new UKCharset();
+            charset = UKCharset.instance();
             break;
         default:
-            charset = new USASCIICharset();
+            charset = USASCIICharset.instance();
             LOGGER.warn("Switch to unknown charset: " + newCharset);
         }
 
