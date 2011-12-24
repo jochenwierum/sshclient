@@ -28,13 +28,35 @@ public class DefaultCursorPositionManagerTest {
         assertThat(manager.currentPositionInScreen(), equalTo(new Position(x, y)));
     }
 
-    @Test
-    public void testCursorPosition() {
+    @Test public void
+    settingCursorPosition() {
         manager.setPositionSafelyInScreen(new Position(2, 4));
         assertPosition(4, 2);
 
         manager.setPositionSafelyInMargin(new Position(1, 1));
         assertPosition(1, 1);
+    }
+
+    @Test public void
+    settingPositionInMarginScrollsDown() {
+        manager.setMargins(12, 14);
+        context.checking(new Expectations() {{
+            oneOf(feedback).lineShiftingNeeded(-5, 12, 14);
+        }});
+
+        manager.setPositionSafelyInMargin(new Position(1, 8));
+        assertPosition(14, 1);
+    }
+
+    @Test public void
+    settingPositionInMarginScrollsUp() {
+        manager.setMargins(13, 14);
+        context.checking(new Expectations() {{
+            oneOf(feedback).lineShiftingNeeded(3, 13, 14);
+        }});
+
+        manager.setPositionSafelyInMargin(new Position(1, -2));
+        assertPosition(13, 1);
     }
 
     @Test

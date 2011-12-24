@@ -326,4 +326,34 @@ public class ArrayBackedBufferStorageTest {
         assertThat(storage.getCharacterAt(2, 5),
                 is(sameInstance(nullChar)));
     }
+
+    @Test public void
+    shiftMoreLinesUpThanAvailable() {
+        storage.setCharacter(9, 0, char2);
+        storage.setCharacter(10, 0, char1);
+        storage.setCharacter(11, 0, char1);
+        storage.setCharacter(12, 0, char2);
+
+        storage.shiftLines(-15, 10, 12);
+
+        assertChar(9, 0, char2);
+        assertChar(10, 0, nullChar);
+        assertChar(11, 0, nullChar);
+        assertChar(12, 0, char2);
+    }
+
+    @Test public void
+    shiftMoreLinesDownThanAvailable() {
+        storage.setCharacter(9, 0, char2);
+        storage.setCharacter(10, 0, char1);
+        storage.setCharacter(11, 0, char1);
+        storage.setCharacter(12, 0, char2);
+
+        storage.shiftLines(60, 10, 12);
+
+        assertChar(9, 0, char2);
+        assertChar(10, 0, nullChar);
+        assertChar(11, 0, nullChar);
+        assertChar(12, 0, char2);
+    }
 }

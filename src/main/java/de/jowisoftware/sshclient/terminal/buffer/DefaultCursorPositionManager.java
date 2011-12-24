@@ -81,7 +81,20 @@ public class DefaultCursorPositionManager implements CursorPositionManager {
 
     @Override
     public void setPositionSafelyInMargin(final Position position) {
-        setPositionSafelyInScreen(position.offset(0, topMargin - 1));
+        Position screenPosition = position.offset(0, topMargin - 1);
+
+        if (screenPosition.y > bottomMargin) {
+            feedback.lineShiftingNeeded(bottomMargin - screenPosition.y,
+                    topMargin, bottomMargin);
+            screenPosition = screenPosition.withY(bottomMargin);
+        } else if (screenPosition.y < topMargin) {
+            feedback.lineShiftingNeeded(topMargin - screenPosition.y,
+                    topMargin, bottomMargin);
+            screenPosition = screenPosition.withY(topMargin);
+        }
+
+
+        setPositionSafelyInScreen(screenPosition);
     }
 
     @Override

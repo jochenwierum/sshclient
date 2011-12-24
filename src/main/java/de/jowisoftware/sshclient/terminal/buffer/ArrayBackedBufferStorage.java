@@ -58,9 +58,9 @@ public class ArrayBackedBufferStorage implements BufferStorage {
         final int clearEnd;
         if (offset > 0) {
             clearStart = start;
-            clearEnd = start + offset;
+            clearEnd = Math.min(start + offset, lines.length);
         } else {
-            clearStart = end + offset;
+            clearStart = Math.max(0, end + offset);
             clearEnd = end;
         }
 
