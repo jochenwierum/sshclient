@@ -9,13 +9,18 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.AbstractAction;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JRootPane;
+import javax.swing.KeyStroke;
 
 /**
  * A simple password input dialog. The Dialog is not thread safe. The caller
@@ -46,6 +51,26 @@ public class PasswordDialog extends JDialog implements ActionListener {
         save.setEnabled(passwordIsSaveable);
 
         updateWindowParameters(parent);
+    }
+
+    @Override
+    protected JRootPane createRootPane() {
+        final JRootPane pane = new JRootPane();
+        final KeyStroke stroke = KeyStroke.getKeyStroke("ESCAPE");
+
+        @SuppressWarnings("serial")
+        final AbstractAction action = new AbstractAction() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                PasswordDialog.this.actionPerformed(e);
+            }
+        };
+
+        final InputMap inputMap = pane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        inputMap.put(stroke, "ESCAPE");
+        pane.getActionMap().put("ESCAPE", action);
+
+        return pane;
     }
 
     private JCheckBox createSaveCheckBox() {
