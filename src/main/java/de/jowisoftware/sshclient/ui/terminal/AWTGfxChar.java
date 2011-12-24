@@ -91,19 +91,13 @@ public class AWTGfxChar implements GfxChar {
     }
 
     private void applyForgroundColor(final Graphics g, final int flags) {
-        if ((attributes & Attribute.BLINK.flag) == 0) {
+        final boolean blinksNow = (flags & RenderFlag.BLINKING.flag) != 0;
+        final boolean canBlink = (attributes & Attribute.BLINK.flag) != 0;
+        if (!canBlink || blinksNow) {
             g.setColor(getForeColor(flags));
         } else {
-            if (blinkIsForeground()) {
-                g.setColor(getForeColor(flags));
-            } else {
-                g.setColor(getBackColor(flags));
-            }
+            g.setColor(getBackColor(flags));
         }
-    }
-
-    private boolean blinkIsForeground() {
-        return (System.currentTimeMillis() / 400) % 2 == 0;
     }
 
     private Color getBackColor(final int flags) {

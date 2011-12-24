@@ -94,7 +94,7 @@ public class DoubleBufferedImage implements Renderer {
     public synchronized void renderSnapshot(final BufferSnapshot snapshot) {
         final Position selectionStart = this.currentSelectionStart;
         final Position selectionEnd = this.currentSelectionEnd;
-        final int baseRenderFlags = createRenderFlas();
+        final int baseRenderFlags = createRenderFlags();
 
         if (images != null) {
             PerformanceLogger.start(PerformanceType.BACKGROUND_RENDER);
@@ -121,11 +121,20 @@ public class DoubleBufferedImage implements Renderer {
         }
     }
 
-    private int createRenderFlas() {
+    private int createRenderFlags() {
+        int flags = 0;
         if (renderInverted) {
-            return RenderFlag.INVERTED.flag;
+            flags |= RenderFlag.INVERTED.flag;
         }
-        return 0;
+        if (blinkIsForeground()) {
+            flags |= RenderFlag.BLINKING.flag;
+        }
+        return flags;
+    }
+
+
+    private boolean blinkIsForeground() {
+        return (System.currentTimeMillis() / 400) % 2 == 0;
     }
 
     private int updateRenderFlags(
