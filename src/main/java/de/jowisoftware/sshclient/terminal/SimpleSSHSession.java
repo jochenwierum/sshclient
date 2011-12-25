@@ -34,8 +34,12 @@ public class SimpleSSHSession implements SSHSession {
     private DisplayType displayType;
     private OutputStream responseStream;
 
+    private Thread backgroundRenderer;
 
-    public SimpleSSHSession(final Buffer buffer,
+    private final String name;
+
+    public SimpleSSHSession(final String name,
+            final Buffer buffer,
             final Renderer renderer,
             final GfxCharSetup charSetup,
             final TabStopManager tabstopManager) {
@@ -43,6 +47,29 @@ public class SimpleSSHSession implements SSHSession {
         this.charSetup = charSetup;
         this.tabstopManager = tabstopManager;
         this.renderer = renderer;
+        this.name = name;
+
+        initBackgroundRenderer();
+    }
+
+    private void initBackgroundRenderer() {
+        backgroundRenderer = new Thread("BackgroundRenderer-" + name) {
+            @Override
+            public void run() {
+                while(true) {
+                    synchronized(this) {
+                        try {
+                            this.wait();
+                        } catch (final InterruptedException e) {
+                            Logger.getLogger(getClass()).error("Error in background-Renderer: " + e);
+                        }
+                    }
+                    renderer.renderSnapshot(buffer.createSnapshot());
+                }
+            }
+        };
+        backgroundRenderer.setDaemon(true);
+        backgroundRenderer.start();
     }
 
     @Override
@@ -118,7 +145,9 @@ public class SimpleSSHSession implements SSHSession {
     }
 
     public void render() {
-        renderer.renderSnapshot(buffer.createSnapshot());
+        synchronized(backgroundRenderer) {
+            backgroundRenderer.notify();
+        }
     }
 
     public Position translateMousePositionToCharacterPosition(final int x, final int y) {

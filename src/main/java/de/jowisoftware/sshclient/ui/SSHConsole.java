@@ -64,7 +64,8 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         final Buffer buffer = SynchronizedBuffer.createBuffer(
                 charSetup.createClearChar(), 80, 24, tabstopManager);
 
-        session = new SimpleSSHSession(buffer, renderer, charSetup, tabstopManager);
+        session = new SimpleSSHSession(profile.getDefaultTitle(),
+                buffer, renderer, charSetup, tabstopManager);
         session.getKeyboardFeedback().register(keyboardProcessor);
         session.getVisualFeedback().register(new GfxFeedback(this, renderer));
 

@@ -27,7 +27,7 @@ public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
 
     @Override
     public String getDefaultTitle() {
-        return user + "@" + host;
+        return user + "@" + host + ":" + port;
     }
 
     @Override

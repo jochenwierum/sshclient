@@ -47,8 +47,10 @@ public class DefaultCursorPositionManager implements CursorPositionManager {
     @Override
     public void setPositionSafelyInScreen(final Position newPosition) {
         if (newPosition.y > rightBottomCorner.y) {
-            LOGGER.debug("invalid terminal position, shifting lines: " +
-                    newPosition.x + "/" + newPosition.y);
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("invalid terminal position, shifting lines: " +
+                        newPosition.x + "/" + newPosition.y);
+            }
             final int offset = (-newPosition.y - rightBottomCorner.y) % rightBottomCorner.y;
             feedback.lineShiftingNeeded(offset, 0, rightBottomCorner.y);
         }
