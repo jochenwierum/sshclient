@@ -61,24 +61,33 @@ public class SequenceSupportingCharacterProcessor implements CharacterProcessor 
     }
 
     private boolean processSpecialChar(final char character) {
-        if (character == VTAB_CHAR) {
+        switch(character) {
+        case VTAB_CHAR:
             sessionInfo.getBuffer().tabulator(TabulatorOrientation.VERTICAL);
-        } else if(character == HTAB_CHAR) {
+            break;
+        case HTAB_CHAR:
             sessionInfo.getBuffer().tabulator(TabulatorOrientation.HORIZONTAL);
-        } else if (character == BACKSPACE_CHAR) {
+            break;
+        case BACKSPACE_CHAR:
             sessionInfo.getBuffer().processBackspace();
-        } else if (character == NEWLINE_CHAR) {
+            break;
+        case NEWLINE_CHAR:
             sessionInfo.getBuffer().moveCursorDown(false);
-        } else if (character == CARRIDGE_RETURN_CHAR) {
+            break;
+        case CARRIDGE_RETURN_CHAR:
             sessionInfo.getBuffer().setCursorPosition(
                     new Position(1, sessionInfo.getBuffer().getCursorPosition().y));
-        } else if (character == SHIFT_IN) {
+            break;
+        case SHIFT_IN:
             sessionInfo.getCharSetup().selectCharset(TerminalCharsetSelection.G0);
-        } else if (character == SHIFT_OUT) {
+            break;
+        case SHIFT_OUT:
             sessionInfo.getCharSetup().selectCharset(TerminalCharsetSelection.G1);
-        } else if (character == ESC_CHAR) {
+            break;
+        case ESC_CHAR:
             enterNewState();
-        } else {
+            break;
+        default:
             return false;
         }
         return true;
