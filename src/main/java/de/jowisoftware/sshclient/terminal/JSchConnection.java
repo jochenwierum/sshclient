@@ -14,9 +14,9 @@ import com.jcraft.jsch.Session;
 
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.EventHubClient;
-import de.jowisoftware.sshclient.events.LinkedListEventHub;
 import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
+import de.jowisoftware.sshclient.jsch.InputStreamEventHub;
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
 
 public class JSchConnection {
@@ -32,7 +32,7 @@ public class JSchConnection {
     private OutputStream outputStream;
 
     private final EventHub<InputStreamEvent> events =
-            LinkedListEventHub.forEventClass(InputStreamEvent.class);
+            new InputStreamEventHub();
 
     public JSchConnection(final JSch jsch, final Profile<?> profile,
             final SSHUserInfo userInfo) {

@@ -2,9 +2,11 @@ package de.jowisoftware.sshclient.ui.terminal;
 
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
@@ -69,8 +71,9 @@ public class DoubleBufferedImage implements Renderer {
             graphics = new Graphics2D[2];
 
             for (int i = 0; i < 2; ++i) {
-                images[i] = new BufferedImage(width, height,
-                        BufferedImage.TYPE_INT_RGB);
+                images[i] = GraphicsEnvironment.getLocalGraphicsEnvironment()
+                        .getDefaultScreenDevice().getDefaultConfiguration()
+                        .createCompatibleImage(width, height, Transparency.OPAQUE);
                 graphics[i] = images[i].createGraphics();
                 graphics[i].setBackground(gfxInfo.mapColor(
                         ColorName.DEFAULT_BACKGROUND, false));

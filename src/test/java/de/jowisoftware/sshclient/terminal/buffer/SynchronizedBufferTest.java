@@ -29,9 +29,12 @@ public class SynchronizedBufferTest {
 
     private void allowSize(final int width, final int height) {
         context.checking(new Expectations() {{
-            allowing(storage).size();
-            will(returnValue(new Position(width, height)));
+            allowing(storage).newSize(width, height);
+            allowing(positionManager).newSize(width, height);
+            //allowing(storage).size();
+            //will(returnValue(new Position(width, height)));
         }});
+        buffer.newSize(width, height);
     }
 
     private void prepareShift(final int offset, final int from, final int to) {

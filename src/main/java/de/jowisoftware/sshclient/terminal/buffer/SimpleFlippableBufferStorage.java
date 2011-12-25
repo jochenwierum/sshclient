@@ -41,11 +41,6 @@ public class SimpleFlippableBufferStorage implements FlippableBufferStorage {
     }
 
     @Override
-    public Position size() {
-        return selectedBuffer.size();
-    }
-
-    @Override
     public void newSize(final int width, final int height) {
         primaryBuffer.newSize(width, height);
         secondaryBuffer.newSize(width, height);

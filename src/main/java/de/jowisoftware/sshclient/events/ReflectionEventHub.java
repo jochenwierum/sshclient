@@ -7,11 +7,11 @@ import java.lang.reflect.Proxy;
 import java.util.LinkedList;
 import java.util.List;
 
-public class LinkedListEventHub<T> implements EventHub<T> {
+public class ReflectionEventHub<T> implements EventHub<T> {
     private final List<T> listeners;
     private final T proxy;
 
-    private LinkedListEventHub(final Class<T> clazz) {
+    private ReflectionEventHub(final Class<T> clazz) {
         listeners = new LinkedList<T>();
 
         final InvocationHandler handler = createInvocationHandler();
@@ -23,7 +23,7 @@ public class LinkedListEventHub<T> implements EventHub<T> {
     }
 
     public static <T> EventHub<T> forEventClass(final Class<T> clazz) {
-        return new LinkedListEventHub<T>(clazz);
+        return new ReflectionEventHub<T>(clazz);
     }
 
     @SuppressWarnings("unchecked")

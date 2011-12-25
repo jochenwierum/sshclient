@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.events.EventHub;
-import de.jowisoftware.sshclient.events.LinkedListEventHub;
+import de.jowisoftware.sshclient.events.ReflectionEventHub;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.BufferStorage;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
@@ -25,9 +25,9 @@ public class SimpleSSHSession implements SSHSession {
     private final Buffer buffer;
     private final Renderer renderer;
     private final EventHub<KeyboardEvent> keyboadFeedback =
-            LinkedListEventHub.forEventClass(KeyboardEvent.class);
+            ReflectionEventHub.forEventClass(KeyboardEvent.class);
     private final EventHub<VisualEvent> visualEvents =
-            LinkedListEventHub.forEventClass(VisualEvent.class);
+            ReflectionEventHub.forEventClass(VisualEvent.class);
     private final GfxCharSetup charSetup;
     private final TabStopManager tabstopManager;
 

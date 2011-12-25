@@ -6,7 +6,6 @@ public interface BufferStorage {
         @Override public String getCharAsString() { return null; }
     };
 
-    Position size();
     void newSize(final int width, final int height);
 
     void shiftLines(final int offset, final int start, final int end);

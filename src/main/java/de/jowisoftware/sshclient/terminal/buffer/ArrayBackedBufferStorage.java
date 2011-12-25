@@ -26,11 +26,6 @@ public class ArrayBackedBufferStorage implements BufferStorage {
     }
 
     @Override
-    public Position size() {
-        return new Position(lines[0].length, lines.length);
-    }
-
-    @Override
     public void newSize(final int width, final int height) {
         final GfxChar[][] newLines = new GfxChar[height][width];
         for (int row = 0; row < newLines.length; ++row) {

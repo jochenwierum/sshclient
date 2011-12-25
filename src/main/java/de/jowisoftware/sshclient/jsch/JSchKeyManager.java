@@ -15,7 +15,7 @@ import de.jowisoftware.sshclient.application.PasswordManager;
 import de.jowisoftware.sshclient.application.UserAbortException;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.EventHubClient;
-import de.jowisoftware.sshclient.events.LinkedListEventHub;
+import de.jowisoftware.sshclient.events.ReflectionEventHub;
 
 public class JSchKeyManager implements KeyManager {
     private static final Logger LOGGER = Logger.getLogger(JSchKeyManager.class);
@@ -23,7 +23,7 @@ public class JSchKeyManager implements KeyManager {
     private final ApplicationSettings settings;
     private final PasswordManager passwordManager;
 
-    private final EventHub<KeyManagerEvents> events = LinkedListEventHub.forEventClass(KeyManagerEvents.class);
+    private final EventHub<KeyManagerEvents> events = ReflectionEventHub.forEventClass(KeyManagerEvents.class);
 
     public JSchKeyManager(final JSch jsch,
             final ApplicationSettings settings,

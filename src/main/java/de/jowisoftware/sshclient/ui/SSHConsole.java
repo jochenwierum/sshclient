@@ -133,7 +133,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override
     public void gotChars(final byte[] chars, final int count) {
         processCharacters(chars, count);
-        session.render();
+        //session.render();
     }
 
     private void processCharacters(final byte[] chars, final int count) {

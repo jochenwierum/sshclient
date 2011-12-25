@@ -39,7 +39,7 @@ public class LinkedListEventHubTest {
     public void registerListenerAndFireEvent() {
         final EventProbe probe = new EventProbe();
         final EventHub<EventHubTestEvent> hub =
-                LinkedListEventHub.forEventClass(EventHubTestEvent.class);
+                ReflectionEventHub.forEventClass(EventHubTestEvent.class);
 
         hub.register(probe);
         hub.fire().test1();
@@ -54,7 +54,7 @@ public class LinkedListEventHubTest {
         final EventProbe probe1 = new EventProbe();
         final EventProbe probe2 = new EventProbe();
         final EventHub<EventHubTestEvent> hub =
-                LinkedListEventHub.forEventClass(EventHubTestEvent.class);
+                ReflectionEventHub.forEventClass(EventHubTestEvent.class);
 
         hub.register(probe1);
         hub.register(probe2);

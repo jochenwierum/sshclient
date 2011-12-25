@@ -10,6 +10,9 @@ public class SynchronizedBuffer implements Buffer {
     private boolean autoWrap = true;
     private boolean showCursor = true;
 
+    private int width;
+    private int height;
+
     public SynchronizedBuffer(
             final FlippableBufferStorage storage,
             final TabStopManager tabstopManager,
@@ -48,6 +51,9 @@ public class SynchronizedBuffer implements Buffer {
     public synchronized final void newSize(final int width, final int height) {
         storage.newSize(width, height);
         cursorPosition.newSize(width, height);
+
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -86,7 +92,7 @@ public class SynchronizedBuffer implements Buffer {
 
     private void wrapLineIfNeeded() {
         final Position currentPosition = cursorPosition.currentPositionInScreen();
-        final boolean willWrapCursor = autoWrap && currentPosition.x == getSize().x
+        final boolean willWrapCursor = autoWrap && currentPosition.x == width
                 && cursorPosition.wouldWrap();
 
         if (willWrapCursor) {
@@ -136,7 +142,7 @@ public class SynchronizedBuffer implements Buffer {
 
     @Override
     public synchronized Position getSize() {
-        return storage.size();
+        return new Position(width, height);
     }
 
     @Override
@@ -153,7 +159,7 @@ public class SynchronizedBuffer implements Buffer {
         } else {
             storage.shiftLines(linesCount,
                     cursorPosition.currentPositionInScreen().y - 1,
-                    storage.size().y);
+                    height);
         }
     }
 
@@ -185,7 +191,7 @@ public class SynchronizedBuffer implements Buffer {
         final Position position = cursorPosition.currentPositionInScreen();
         if (autoWrap && position.x == 1) {
             cursorPosition.setPositionSafelyInScreen(
-                    position.withX(getSize().x).offset(0, -1));
+                    position.withX(width).offset(0, -1));
         } else {
             cursorPosition.setPositionSafelyInScreen(position.offset(-1, 0));
         }
@@ -236,7 +242,7 @@ public class SynchronizedBuffer implements Buffer {
         } else {
             storage.shiftLines(-linesCount,
                     cursorPosition.currentPositionInScreen().y - 1,
-                    storage.size().y);
+                    height);
         }
     }
 }

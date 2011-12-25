@@ -11,7 +11,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
 import de.jowisoftware.sshclient.events.EventHub;
-import de.jowisoftware.sshclient.events.LinkedListEventHub;
+import de.jowisoftware.sshclient.events.ReflectionEventHub;
 
 public class Application {
     private static final Logger LOGGER = Logger.getLogger(Application.class);
@@ -26,7 +26,7 @@ public class Application {
     public JFrame mainWindow;
 
     public final EventHub<ProfileEvent> profileEvents =
-            LinkedListEventHub.forEventClass(ProfileEvent.class);
+            ReflectionEventHub.forEventClass(ProfileEvent.class);
 
     public Application(final JSch jsch, final ApplicationSettings settings,
             final PasswordManager passwordManager, final KeyManager keyManager) {
