@@ -45,7 +45,7 @@ public class CursorControlSequenceTest {
     @Test
     public void testMoveDownAndRoll() {
         context.checking(new Expectations() {{
-            oneOf(buffer).moveCursor();
+            oneOf(buffer).moveCursorUp();
         }});
 
         seq.handleSequence("M", sessionInfo);

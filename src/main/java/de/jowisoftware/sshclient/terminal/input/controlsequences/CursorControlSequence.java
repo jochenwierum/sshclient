@@ -46,7 +46,7 @@ public class CursorControlSequence implements NonASCIIControlSequence {
         } else if (sequence.endsWith("E")) {
             buffer.moveCursorDown(true);
         } else if (sequence.endsWith("M")) {
-            buffer.moveCursor();
+            buffer.moveCursorUp();
         }
     }
 }

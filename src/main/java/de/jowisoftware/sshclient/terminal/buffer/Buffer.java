@@ -21,7 +21,7 @@ public interface Buffer {
     void saveCursorPosition();
     void restoreCursorPosition();
     void resetMargin();
-    void moveCursor();
+    void moveCursorUp();
     void moveCursorDown(boolean resetToFirstColumn);
     void setMargin(int start, int end);
 

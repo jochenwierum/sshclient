@@ -204,7 +204,7 @@ public class SynchronizedBufferTest {
         context.checking(new Expectations() {{
             oneOf(positionManager).moveUpAndRoll();
         }});
-        buffer.moveCursor();
+        buffer.moveCursorUp();
     }
 
     @Test

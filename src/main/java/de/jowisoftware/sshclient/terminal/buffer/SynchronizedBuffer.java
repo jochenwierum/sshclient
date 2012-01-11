@@ -127,7 +127,7 @@ public class SynchronizedBuffer implements Buffer {
     }
 
     @Override
-    public synchronized void moveCursor() {
+    public synchronized void moveCursorUp() {
         cursorPosition.moveUpAndRoll();
     }
 

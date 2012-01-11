@@ -133,7 +133,11 @@ public class DefaultCursorPositionManager implements CursorPositionManager {
     @Override
     public void moveUpAndRoll() {
         if (!isMarginDefined()) {
-            position = position.offset(0, -1).moveInRange(rightBottomCorner.toRange());
+            if (position.y == 1) {
+                feedback.lineShiftingNeeded(1, 0, rightBottomCorner.y);
+            } else {
+                position = position.offset(0, -1);
+            }
         } else {
             if (position.y == topMargin) {
                 feedback.lineShiftingNeeded(1, topMargin - 1, bottomMargin);
