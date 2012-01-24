@@ -97,7 +97,7 @@ public class DoubleBufferedImage implements Renderer {
     public synchronized void renderSnapshot(final BufferSnapshot snapshot) {
         final Position selectionStart = this.currentSelectionStart;
         final Position selectionEnd = this.currentSelectionEnd;
-        final int baseRenderFlags = createRenderFlags();
+        final int baseRenderFlags = createGlobalRenderFlags();
 
         if (images != null) {
             PerformanceLogger.start(PerformanceType.BACKGROUND_RENDER);
@@ -107,7 +107,7 @@ public class DoubleBufferedImage implements Renderer {
                     final int posx = x * charWidth;
                     final int posy = y * charHeight;
                     final int renderFlags = baseRenderFlags |
-                            updateRenderFlags(
+                            createCharRenderFlags(
                                     snapshot.cursorPosition,
                                     new Position(x + 1, y + 1),
                                     selectionStart, selectionEnd);
@@ -124,7 +124,7 @@ public class DoubleBufferedImage implements Renderer {
         }
     }
 
-    private int createRenderFlags() {
+    private int createGlobalRenderFlags() {
         int flags = 0;
         if (renderInverted) {
             flags |= RenderFlag.INVERTED.flag;
@@ -140,7 +140,7 @@ public class DoubleBufferedImage implements Renderer {
         return (System.currentTimeMillis() / 400) % 2 == 0;
     }
 
-    private int updateRenderFlags(
+    private int createCharRenderFlags(
             final Position cursorPosition, final Position renderPosition,
             final Position selectionStart, final Position selectionEnd) {
 

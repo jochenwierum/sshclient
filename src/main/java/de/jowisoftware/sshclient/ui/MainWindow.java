@@ -96,7 +96,7 @@ public class MainWindow extends JFrame {
             LOGGER.error("Could not save settings", e);
         }
         super.dispose();
-        PerformanceLogger.quit();
+        PerformanceLogger.INSTANCE.quit();
     }
 
     private void persistTabStates() {

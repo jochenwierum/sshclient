@@ -14,29 +14,35 @@ public class PerformanceLogger {
 
     private static final int LIST_SIZE = 100;
 
-    private static PerformanceLogger instance = new PerformanceLogger();
+    public static final PerformanceLogger INSTANCE = new PerformanceLogger();
 
     private final SimplePerformanceMonitor monitor = new SimplePerformanceMonitor();
     private final Map<PerformanceType, RingBuffer<Long>> recentTimings =
             new HashMap<PerformanceType, RingBuffer<Long>>();
 
-    private final PerformanceWindow window;
+    private PerformanceWindow window;
 
     public static void start(final PerformanceType performanceType) {
-        instance.startLogging(performanceType);
+        INSTANCE.startLogging(performanceType);
     }
 
     public static void end(final PerformanceType performanceType) {
-        instance.endLogging(performanceType);
+        INSTANCE.endLogging(performanceType);
     }
 
-    public static void showWindowProfiling() {
-        instance.window.setVisible(true);
+    public void showWindowProfiling() {
+        getWindow().setVisible(true);
+    }
+
+    private PerformanceWindow getWindow() {
+        if (window == null) {
+            window = new PerformanceWindow(recentTimings);
+        }
+        return window;
     }
 
     private PerformanceLogger() {
         prepareTimingList();
-        window = new PerformanceWindow(recentTimings);
     }
 
     private void prepareTimingList() {
@@ -61,7 +67,7 @@ public class PerformanceLogger {
         }
     }
 
-    public static void quit() {
-        instance.window.dispose();
+    public void quit() {
+        getWindow().dispose();
     }
 }

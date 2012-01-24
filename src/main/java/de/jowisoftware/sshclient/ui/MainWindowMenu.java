@@ -191,7 +191,7 @@ public class MainWindowMenu {
         entry.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                PerformanceLogger.showWindowProfiling();
+                PerformanceLogger.INSTANCE.showWindowProfiling();
             }
         });
 
