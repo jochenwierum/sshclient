@@ -1,13 +1,9 @@
 package de.jowisoftware.sshclient.ui;
 
-import static de.jowisoftware.sshclient.i18n.Translation.m;
-import static de.jowisoftware.sshclient.i18n.Translation.t;
-
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
+import com.jcraft.jsch.JSchException;
+import de.jowisoftware.sshclient.application.Application;
+import de.jowisoftware.sshclient.application.KeyManagerEvents;
+import org.apache.log4j.Logger;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -15,13 +11,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
-import org.apache.log4j.Logger;
-
-import com.jcraft.jsch.JSchException;
-
-import de.jowisoftware.sshclient.application.Application;
-import de.jowisoftware.sshclient.application.KeyManagerEvents;
+import static de.jowisoftware.sshclient.i18n.Translation.m;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class PrivateKeyTab extends JPanel implements KeyManagerEvents {
     private static final long serialVersionUID = -5696019301183886041L;
@@ -38,11 +35,9 @@ public class PrivateKeyTab extends JPanel implements KeyManagerEvents {
         setLayout(new BorderLayout());
         addList();
         addButtons();
-    }
 
-    public void init(final Application newApplication) {
-        this.application = newApplication;
         application.keyManager.eventListeners().register(this);
+        updateListModel();
     }
 
     private void updateListModel() {
@@ -57,7 +52,6 @@ public class PrivateKeyTab extends JPanel implements KeyManagerEvents {
             }
         } catch (final JSchException e) {
             LOGGER.error("Error while fetching identities", e);
-            return;
         }
     }
 
