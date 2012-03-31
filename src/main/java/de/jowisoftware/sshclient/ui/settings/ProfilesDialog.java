@@ -32,12 +32,16 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 
+import org.apache.log4j.Logger;
+
 import de.jowisoftware.sshclient.application.ApplicationSettings;
 import de.jowisoftware.sshclient.application.validation.ValidationResult;
+import de.jowisoftware.sshclient.encryption.CryptoException;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class ProfilesDialog extends JDialog {
+    private static final Logger LOGGER = Logger.getLogger(ProfilesDialog.class);
     private static final long serialVersionUID = 4811060219661889812L;
 
     private final JList selectionList = new JList(new DefaultListModel());
@@ -243,9 +247,31 @@ public class ProfilesDialog extends JDialog {
                 JOptionPane.QUESTION_MESSAGE);
 
         if (result == JOptionPane.YES_OPTION) {
+            deletePasswordIfUnused(selectedValue);
             settings.getProfiles().remove(selectedValue);
             updateSelectionList();
         }
+    }
+
+    private void deletePasswordIfUnused(final String selectedValue) {
+        final String passwordId = passwordId(settings.getProfiles().get(selectedValue));
+
+        for (final Entry<String, AWTProfile> profileEntry : settings.getProfiles().entrySet()) {
+            if (!profileEntry.getKey().equals(selectedValue)
+                    && passwordId.equals(passwordId(profileEntry.getValue()))) {
+                return;
+            }
+        }
+
+        try {
+            settings.getPasswordStorage().deletePassword(passwordId);
+        } catch (final CryptoException e) {
+            LOGGER.error("Could not remove password: " + selectedValue, e);
+        }
+    }
+
+    private String passwordId(final AWTProfile p) {
+        return p.getUser() + "@" + p.getHost();
     }
 
     private void createProfile() {
