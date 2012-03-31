@@ -237,8 +237,15 @@ public class ProfilesDialog extends JDialog {
     }
 
     private void delete(final String selectedValue) {
-        settings.getProfiles().remove(selectedValue);
-        updateSelectionList();
+        final int result = JOptionPane.showConfirmDialog(this, t("profiles.delete.question",
+                "You are about to delete '%s'. Are you sure?", selectedValue),
+                getTitle(), JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+        if (result == JOptionPane.YES_OPTION) {
+            settings.getProfiles().remove(selectedValue);
+            updateSelectionList();
+        }
     }
 
     private void createProfile() {
