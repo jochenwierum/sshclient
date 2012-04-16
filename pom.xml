@@ -74,6 +74,13 @@
 		
 		<!-- Test Dependencies -->
 		<dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>1.2.1</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
 			<groupId>org.jmock</groupId>
 			<artifactId>jmock-junit4</artifactId>
 			<version>2.5.1</version>
@@ -87,22 +94,19 @@
 					<artifactId>hamcrest-core</artifactId>
 					<groupId>org.hamcrest</groupId>
 				</exclusion>
+				<exclusion>
+					<artifactId>junit-dep</artifactId>
+					<groupId>junit</groupId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		
         <dependency>
             <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.8.2</version>
+            <artifactId>junit-dep</artifactId>
+            <version>4.10</version>
             <scope>test</scope>
         </dependency>
-		
-		<dependency>
-		    <groupId>org.hamcrest</groupId>
-		    <artifactId>hamcrest-library</artifactId>
-		    <version>1.2.1</version>
-		    <scope>test</scope>
-		</dependency>
 		
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
@@ -126,6 +130,7 @@
 					<target>${java.version}</target>
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
+					<compilerId>javac</compilerId>
 				</configuration>
 			</plugin>
 

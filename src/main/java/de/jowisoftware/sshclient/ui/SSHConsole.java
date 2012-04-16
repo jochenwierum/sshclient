@@ -62,7 +62,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         final KeyboardProcessor keyboardProcessor = new KeyboardProcessor();
         final ArrayListBackedTabStopManager tabstopManager = new ArrayListBackedTabStopManager(80);
         final Buffer buffer = SynchronizedBuffer.createBuffer(
-                charSetup.createClearChar(), 80, 24, tabstopManager);
+                charSetup.createClearChar(), 80, 24, 1000, tabstopManager);
 
         session = new SimpleSSHSession(profile.getDefaultTitle(),
                 buffer, renderer, charSetup, tabstopManager);

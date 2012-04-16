@@ -24,9 +24,11 @@ public class SynchronizedBuffer implements Buffer {
 
     public synchronized static SynchronizedBuffer createBuffer(
             final GfxChar initialClearChar,
-            final int width, final int height, final TabStopManager tabstops) {
+            final int width, final int height,
+            final int historySize, final TabStopManager tabstops) {
         final FlippableBufferStorage storage =
-                SimpleFlippableBufferStorage.create(initialClearChar, width, height);
+                SimpleFlippableBufferStorage.create(initialClearChar, width,
+                        height, historySize);
         final CursorPositionManagerFeedback positionManagerCallback =
                 createPositionManagerCallback(storage);
         final DefaultCursorPositionManager positionManager =

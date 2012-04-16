@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import de.jowisoftware.sshclient.util.RingBuffer;
+
 public class ArrayBackedBufferStorage implements BufferStorage {
     /**
      * displayed characters
@@ -143,6 +145,14 @@ public class ArrayBackedBufferStorage implements BufferStorage {
             } else {
                 lines[y][i] = clearChar;
             }
+        }
+    }
+
+    @Override
+    public void copyToHistory(final RingBuffer<GfxChar[]> history, final int count) {
+        for (int i = 0; i < count; ++i) {
+            System.out.println("Adding line " + i);
+            history.append(lines[i]);
         }
     }
 }

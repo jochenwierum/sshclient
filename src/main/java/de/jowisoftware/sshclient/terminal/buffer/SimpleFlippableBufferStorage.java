@@ -1,24 +1,33 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import de.jowisoftware.sshclient.util.FixedSizeArrayRingBuffer;
+import de.jowisoftware.sshclient.util.RingBuffer;
+
 public class SimpleFlippableBufferStorage implements FlippableBufferStorage {
-    BufferStorage primaryBuffer;
-    BufferStorage secondaryBuffer;
-    BufferStorage selectedBuffer;
+    private final BufferStorage primaryBuffer;
+    private final BufferStorage secondaryBuffer;
+    private BufferStorage selectedBuffer;
+    private final RingBuffer<GfxChar[]> history;
 
     public SimpleFlippableBufferStorage(final BufferStorage primary,
-            final BufferStorage secondary) {
+            final BufferStorage secondary,
+            final RingBuffer<GfxChar[]> history) {
         this.primaryBuffer = primary;
         this.secondaryBuffer = secondary;
         this.selectedBuffer = primary;
+        this.history = history;
     }
 
     public static SimpleFlippableBufferStorage create(
-            final GfxChar initialClearChar, final int width, final int height) {
+            final GfxChar initialClearChar, final int width, final int height,
+            final int historySize) {
         final ArrayBackedBufferStorage primary =
                 new ArrayBackedBufferStorage(initialClearChar, width, height);
         final ArrayBackedBufferStorage secondary =
                 new ArrayBackedBufferStorage(initialClearChar, width, height);
-        return new SimpleFlippableBufferStorage(primary, secondary);
+        final RingBuffer<GfxChar[]> history = new FixedSizeArrayRingBuffer<GfxChar[]>(
+                historySize);
+        return new SimpleFlippableBufferStorage(primary, secondary, history);
     }
 
     @Override
@@ -48,6 +57,9 @@ public class SimpleFlippableBufferStorage implements FlippableBufferStorage {
 
     @Override
     public void shiftLines(final int offset, final int start, final int end) {
+        if (start == 0 && offset < 0 && selectedBuffer == primaryBuffer) {
+            selectedBuffer.copyToHistory(history, -offset);
+        }
         selectedBuffer.shiftLines(offset, start, end);
     }
 
@@ -79,5 +91,10 @@ public class SimpleFlippableBufferStorage implements FlippableBufferStorage {
     @Override
     public GfxChar[][] cloneContent() {
         return selectedBuffer.cloneContent();
+    }
+
+    @Override
+    public void copyToHistory(final RingBuffer<GfxChar[]> history, final int end) {
+        selectedBuffer.copyToHistory(history, end);
     }
 }

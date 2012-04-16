@@ -17,7 +17,7 @@ public class FixedSizeArrayRingBuffer<E> implements RingBuffer<E> {
     @Override
     public Iterator<E> iterator() {
         return new Iterator<E>() {
-            int iteratorPosition = 0;
+            private int iteratorPosition = 0;
 
             @Override
             public boolean hasNext() {
@@ -81,5 +81,32 @@ public class FixedSizeArrayRingBuffer<E> implements RingBuffer<E> {
         start = 0;
         next = 0;
         full = false;
+    }
+
+    @Override
+    public Iterable<E> reversed() {
+        return new Iterable<E>() {
+            @Override
+            public Iterator<E> iterator() {
+                return new Iterator<E>() {
+                    private int iteratorPosition = size();
+
+                    @Override
+                    public boolean hasNext() {
+                        return iteratorPosition > 0;
+                    }
+
+                    @Override
+                    public E next() {
+                        return get(--iteratorPosition);
+                    }
+
+                    @Override
+                    public void remove() {
+                        throw new UnsupportedOperationException();
+                    }
+                };
+            }
+        };
     }
 }

@@ -1,33 +1,33 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import static de.jowisoftware.sshclient.HamcrestHelper.containsElementThat;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.isA;
 import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
+import java.util.List;
+
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
 public class DefaultSequenceRepositoryTest {
     @Test
     public void invalidSequenceDoesNotReturnNull() {
         assertThat(new DefaultSequenceRepository().getANSISequence('?'),
-                is(ANSISequence.class));
+                isA(ANSISequence.class));
     }
 
+    // TODO: fix this warnings!
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void defaultRepositoryContiansAllCommandSequences() {
-        assertThat(new DefaultSequenceRepository().getNonASCIISequences(),
-                containsElementThat(is(CursorControlSequence.class)));
-        assertThat(new DefaultSequenceRepository().getNonASCIISequences(),
-                containsElementThat(is(KeyboardControlSequence.class)));
-        assertThat(new DefaultSequenceRepository().getNonASCIISequences(),
-                containsElementThat(is(OperatingSystemCommandSequence.class)));
-        assertThat(new DefaultSequenceRepository().getNonASCIISequences(),
-                containsElementThat(is(DebugControlSequence.class)));
-        assertThat(new DefaultSequenceRepository().getNonASCIISequences(),
-                containsElementThat(is(CharsetControlSequence.class)));
-        assertThat(new DefaultSequenceRepository().getNonASCIISequences(),
-                containsElementThat(is(ColorCommandSequence.class)));
-        assertThat(new DefaultSequenceRepository().getNonASCIISequences(),
-                containsElementThat(is(TabstopSequence.class)));
+        final List<NonASCIIControlSequence> sequences = new DefaultSequenceRepository().getNonASCIISequences();
+        assertThat(sequences, (Matcher) hasItem(isA(CursorControlSequence.class)));
+        assertThat(sequences, (Matcher) hasItem(isA(CursorControlSequence.class)));
+        assertThat(sequences, (Matcher) hasItem(isA(KeyboardControlSequence.class)));
+        assertThat(sequences, (Matcher) hasItem(isA(OperatingSystemCommandSequence.class)));
+        assertThat(sequences, (Matcher) hasItem(isA(DebugControlSequence.class)));
+        assertThat(sequences, (Matcher) hasItem(isA(CharsetControlSequence.class)));
+        assertThat(sequences, (Matcher) hasItem(isA(ColorCommandSequence.class)));
+        assertThat(sequences, (Matcher) hasItem(isA(TabstopSequence.class)));
     }
 }
