@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.i18n;
 
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -69,12 +70,12 @@ public class Translation {
                 Character.toString(defaultKey));
 
         if (charString.equals(key)) {
-            return defaultKey;
+            return KeyEvent.getExtendedKeyCodeForChar(defaultKey);
         } else if (charString.length() == 1) {
-            return charString.charAt(0);
+            return KeyEvent.getExtendedKeyCodeForChar(charString.charAt(0));
         } else {
             LOGGER.warn("Illegal key for mnemonic " + key + ": " + charString);
-            return defaultKey;
+            return KeyEvent.getExtendedKeyCodeForChar(defaultKey);
         }
     }
 }
