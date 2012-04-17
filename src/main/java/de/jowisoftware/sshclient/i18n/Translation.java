@@ -72,8 +72,7 @@ public class Translation {
                 Character.toString(defaultKey));
 
         if (charString.equals(key)) {
-            SwingUtils.charToVK(defaultKey);
-            return KeyEvent.getExtendedKeyCodeForChar(defaultKey);
+            return SwingUtils.charToVK(defaultKey);
         } else if (charString.length() == 1) {
             return KeyEvent.getExtendedKeyCodeForChar(charString.charAt(0));
         } else {
