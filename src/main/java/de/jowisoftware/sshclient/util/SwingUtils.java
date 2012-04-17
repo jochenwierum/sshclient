@@ -16,7 +16,7 @@ public final class SwingUtils {
     static {
         VKMappings.put('a', KeyEvent.VK_A);
         VKMappings.put('b', KeyEvent.VK_B);
-        VKMappings.put('c', KeyEvent.VK_V);
+        VKMappings.put('c', KeyEvent.VK_C);
         VKMappings.put('d', KeyEvent.VK_D);
         VKMappings.put('e', KeyEvent.VK_E);
         VKMappings.put('f', KeyEvent.VK_F);
