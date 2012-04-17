@@ -419,7 +419,7 @@ public class ProfilePanel extends JPanel {
         final AWTGfxInfo gfxSettings = profile.getGfxSettings();
         if (COLORTYPE_CURSOR.equals(colorTypes[0])) {
             gfxSettings.setCursorColor(newColor);
-        } else if (COLORTYPE_DEFAULT.equals(colorTypes[1])) {
+        } else if (COLORTYPE_DEFAULT.equals(colorTypes[0])) {
             gfxSettings.getColorMap().put(
                     ColorName.valueOf(colorTypes[1]),
                     newColor);
