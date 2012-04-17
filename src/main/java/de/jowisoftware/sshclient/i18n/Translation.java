@@ -11,6 +11,8 @@ import java.util.Properties;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
+import de.jowisoftware.sshclient.util.SwingUtils;
+
 public class Translation {
     private static final Logger LOGGER = Logger.getLogger(Translation.class);
     private static final Object NEUTRAL_LANGUAGE = "en_US";
@@ -70,12 +72,13 @@ public class Translation {
                 Character.toString(defaultKey));
 
         if (charString.equals(key)) {
+            SwingUtils.charToVK(defaultKey);
             return KeyEvent.getExtendedKeyCodeForChar(defaultKey);
         } else if (charString.length() == 1) {
             return KeyEvent.getExtendedKeyCodeForChar(charString.charAt(0));
         } else {
             LOGGER.warn("Illegal key for mnemonic " + key + ": " + charString);
-            return KeyEvent.getExtendedKeyCodeForChar(defaultKey);
+            return SwingUtils.charToVK(defaultKey);
         }
     }
 }
