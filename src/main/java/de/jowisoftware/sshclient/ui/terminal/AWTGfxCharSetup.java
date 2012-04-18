@@ -51,7 +51,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
     @Override
     public void reset() {
         charState.createBrightColors = false;
-        charState.fgColor = colorFactory.createStandardColor(ColorName.DEFAULT, true);
+        charState.fgColor = colorFactory.createStandardColor(ColorName.DEFAULT, false);
         charState.bgColor = colorFactory.createStandardColor(ColorName.DEFAULT_BACKGROUND, false);
         charState.attributes = 0;
     }
@@ -69,6 +69,10 @@ public class AWTGfxCharSetup implements GfxCharSetup {
         }
 
         charState.attributes |= attribute.flag;
+
+        if (charState.fgColor.name() != null) {
+            setForeground(charState.fgColor.name());
+        }
     }
 
     @Override

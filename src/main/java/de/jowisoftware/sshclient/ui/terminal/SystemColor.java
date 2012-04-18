@@ -61,4 +61,9 @@ public class SystemColor implements TerminalColor {
         final SystemColor other = (SystemColor) obj;
         return colorName == other.colorName && isBright != other.isBright;
     }
+
+    @Override
+    public ColorName name() {
+        return colorName;
+    }
 }

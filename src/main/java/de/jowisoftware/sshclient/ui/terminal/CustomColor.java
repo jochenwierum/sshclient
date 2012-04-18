@@ -56,4 +56,9 @@ public class CustomColor implements TerminalColor {
             return color.equals(other.color);
         }
     }
+
+    @Override
+    public ColorName name() {
+        return null;
+    }
 }
