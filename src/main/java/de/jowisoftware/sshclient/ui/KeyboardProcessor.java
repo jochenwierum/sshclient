@@ -1,14 +1,13 @@
 package de.jowisoftware.sshclient.ui;
 
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
 
-public class KeyboardProcessor implements KeyListener, KeyboardEvent {
+public class KeyboardProcessor implements KeyboardEvent {
     private static final Logger LOGGER = Logger.getLogger(KeyboardProcessor.class);
 
     private static final char ESC = 27;

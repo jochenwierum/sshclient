@@ -47,7 +47,7 @@ import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 
 public class SSHConsole extends JPanel implements InputStreamEvent, ComponentListener,
-        MouseListener, MouseMotionListener, AdjustmentListener {
+        MouseListener, MouseMotionListener, AdjustmentListener, KeyListener {
     private static final long serialVersionUID = 5102110929763645596L;
     private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
 
@@ -101,7 +101,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
                 this.addComponentListener(SSHConsole.this);
                 this.addMouseListener(SSHConsole.this);
                 this.addMouseMotionListener(SSHConsole.this);
-                this.addKeyListener(keyboardProcessor);
+                this.addKeyListener(SSHConsole.this);
 
                 setFocusable(true);
                 setRequestFocusEnabled(true);
@@ -289,13 +289,50 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         image.requestFocusInWindow();
     }
 
-    public void processKey(final KeyEvent e) {
-        ((KeyListener) session.getKeyboardFeedback()).keyPressed(e);
+
+    @Override
+    public void keyPressed(final KeyEvent e) {
+        if (!handleScrollEvent(e)) {
+            session.getKeyboardFeedback().fire().keyPressed(e);
+        }
+    }
+
+    private boolean handleScrollEvent(final KeyEvent e) {
+        if (e.isShiftDown()) {
+            switch(e.getKeyCode()) {
+            case KeyEvent.VK_PAGE_DOWN:
+                scrollbar.setValue(Math.min(0,
+                        scrollbar.getValue() + scrollbar.getBlockIncrement()));
+                renderOffsetChanged();
+                return true;
+            case KeyEvent.VK_PAGE_UP:
+                scrollbar.setValue(Math.max(scrollbar.getMinimum(),
+                        scrollbar.getValue() - scrollbar.getBlockIncrement()));
+                renderOffsetChanged();
+                return true;
+            case KeyEvent.VK_DOWN:
+                scrollbar.setValue(scrollbar.getValue() + 1);
+                renderOffsetChanged();
+                return true;
+            case KeyEvent.VK_UP:
+                scrollbar.setValue(scrollbar.getValue() - 1);
+                renderOffsetChanged();
+                return true;
+            default:
+                return false;
+            }
+        }
+        return false;
     }
 
     @Override
     public void adjustmentValueChanged(final AdjustmentEvent e) {
+        renderOffsetChanged();
+    }
+
+    private void renderOffsetChanged() {
         session.setRenderOffset(-scrollbar.getValue());
+        session.render();
     }
 
     @Override public void componentMoved(final ComponentEvent e) { /* ignored */ }
@@ -306,4 +343,6 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override public void mouseMoved(final MouseEvent e) { /* ignored */ }
     @Override public void mouseClicked(final MouseEvent e) { /* ignored */ }
     @Override public void streamClosed(final int exitCode) { /* ignored */ }
+    @Override public void keyTyped(final KeyEvent e) { /* ignored */ }
+    @Override public void keyReleased(final KeyEvent e) { /* ignored */ }
 }
