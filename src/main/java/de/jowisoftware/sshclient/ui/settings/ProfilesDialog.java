@@ -301,7 +301,7 @@ public class ProfilesDialog extends JDialog {
         return new MouseAdapter() {
             @Override
             public void mouseClicked(final MouseEvent e) {
-                if(e.getClickCount() == 2){
+                if(e.getClickCount() == 2 && selectionList.isEnabled()){
                     final int index = selectionList.locationToIndex(e.getPoint());
                     final ListModel model = selectionList.getModel();
                     selectionList.ensureIndexIsVisible(index);
