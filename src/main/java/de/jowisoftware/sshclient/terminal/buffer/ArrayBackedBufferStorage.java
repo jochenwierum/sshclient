@@ -160,4 +160,9 @@ public class ArrayBackedBufferStorage implements BufferStorage {
 
         return new SnapshotWithHistory(content, history.getSnapshot());
     }
+
+    @Override
+    public int getHistorySize() {
+        return history.size();
+    }
 }

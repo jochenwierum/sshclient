@@ -19,4 +19,5 @@ public interface BufferStorage {
     void erase(final Range range);
 
     SnapshotWithHistory cloneContentWithHistory();
+    public int getHistorySize();
 }

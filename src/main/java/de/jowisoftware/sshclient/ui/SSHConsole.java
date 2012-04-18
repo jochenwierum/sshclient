@@ -5,6 +5,8 @@ import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.InputEvent;
@@ -45,7 +47,7 @@ import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 
 public class SSHConsole extends JPanel implements InputStreamEvent, ComponentListener,
-        MouseListener, MouseMotionListener {
+        MouseListener, MouseMotionListener, AdjustmentListener {
     private static final long serialVersionUID = 5102110929763645596L;
     private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
 
@@ -86,7 +88,9 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         setLayout(new BorderLayout());
         add(image, BorderLayout.CENTER);
         add(scrollbar, BorderLayout.EAST);
+        scrollbar.setMinimum(0);
         scrollbar.setEnabled(false);
+        scrollbar.addAdjustmentListener(this);
     }
 
     private JPanel createImagePane(final KeyboardProcessor keyboardProcessor) {
@@ -152,6 +156,11 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override
     public void gotChars(final byte[] chars, final int count) {
         processCharacters(chars, count);
+        final int max = session.getBuffer().getHistorySize();
+        scrollbar.setMinimum(-max);
+        scrollbar.setValue(scrollbar.getVisibleAmount());
+        scrollbar.setEnabled(max > 0);
+        session.setRenderOffset(0);
         session.render();
     }
 
@@ -198,6 +207,9 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
                 cw = 80;
             }
         }
+        scrollbar.setVisibleAmount(ch);
+        scrollbar.setMaximum(ch);
+        scrollbar.setBlockIncrement(ch);
         session.render();
 
         if (channel != null) {
@@ -279,6 +291,11 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
 
     public void processKey(final KeyEvent e) {
         ((KeyListener) session.getKeyboardFeedback()).keyPressed(e);
+    }
+
+    @Override
+    public void adjustmentValueChanged(final AdjustmentEvent e) {
+        session.setRenderOffset(-scrollbar.getValue());
     }
 
     @Override public void componentMoved(final ComponentEvent e) { /* ignored */ }

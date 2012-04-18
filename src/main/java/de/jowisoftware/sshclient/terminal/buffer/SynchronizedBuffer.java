@@ -248,4 +248,9 @@ public class SynchronizedBuffer implements Buffer {
                     height);
         }
     }
+
+    @Override
+    public int getHistorySize() {
+        return storage.getHistorySize();
+    }
 }

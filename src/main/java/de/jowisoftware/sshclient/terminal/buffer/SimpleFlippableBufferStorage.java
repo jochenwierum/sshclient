@@ -95,4 +95,9 @@ public class SimpleFlippableBufferStorage implements FlippableBufferStorage {
         result.setCursorPosition(snapshot.getCursorPosition());
         return result;
     }
+
+    @Override
+    public int getHistorySize() {
+        return primaryBuffer.getHistorySize();
+    }
 }

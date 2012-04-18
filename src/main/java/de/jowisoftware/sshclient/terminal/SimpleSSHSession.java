@@ -37,6 +37,7 @@ public class SimpleSSHSession implements SSHSession {
     private Thread backgroundRenderer;
 
     private final String name;
+    private int renderOffset;
 
     public SimpleSSHSession(final String name,
             final Buffer buffer,
@@ -64,7 +65,7 @@ public class SimpleSSHSession implements SSHSession {
                             Logger.getLogger(getClass()).error("Error in background-Renderer: " + e);
                         }
                     }
-                    renderer.renderSnapshot(buffer.createSnapshot().createSimpleSnapshot(0));
+                    renderer.renderSnapshot(buffer.createSnapshot().createSimpleSnapshot(renderOffset));
                 }
             }
         };
@@ -185,5 +186,9 @@ public class SimpleSSHSession implements SSHSession {
     public void restoreState() {
         buffer.restoreCursorPosition();
         charSetup.restore();
+    }
+
+    public void setRenderOffset(final int newOffset) {
+        renderOffset = newOffset;
     }
 }
