@@ -14,6 +14,13 @@ public class FixedSizeArrayRingBuffer<E> implements RingBuffer<E> {
         data = (E[]) new Object[size];
     }
 
+    private FixedSizeArrayRingBuffer(final FixedSizeArrayRingBuffer<E> other) {
+        this.full = other.full;
+        this.start = other.start;
+        this.next = other.next;
+        this.data = other.data.clone();
+    }
+
     @Override
     public Iterator<E> iterator() {
         return new Iterator<E>() {
@@ -108,5 +115,10 @@ public class FixedSizeArrayRingBuffer<E> implements RingBuffer<E> {
                 };
             }
         };
+    }
+
+    @Override
+    public RingBuffer<E> getSnapshot() {
+        return new FixedSizeArrayRingBuffer<E>(this);
     }
 }

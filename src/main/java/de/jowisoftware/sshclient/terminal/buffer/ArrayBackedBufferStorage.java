@@ -15,10 +15,13 @@ public class ArrayBackedBufferStorage implements BufferStorage {
     private volatile GfxChar[][] lines;
     private final GfxChar backgroundChar;
     private GfxChar clearChar;
+    private final RingBuffer<GfxChar[]> history;
 
-    public ArrayBackedBufferStorage(final GfxChar backgroundChar, final int width, final int height) {
+    public ArrayBackedBufferStorage(final GfxChar backgroundChar,
+            final int width, final int height, final RingBuffer<GfxChar[]> history) {
         this.backgroundChar = backgroundChar;
         this.clearChar = backgroundChar;
+        this.history = history;
         newSize(width, height);
     }
 
@@ -44,6 +47,10 @@ public class ArrayBackedBufferStorage implements BufferStorage {
 
     @Override
     public void shiftLines(final int offset, final int start, final int end) {
+        if (start == 0 && offset < 0) {
+            copyToHistory(history, -offset);
+        }
+
         final List<GfxChar[]> newLines = new ArrayList<GfxChar[]>();
         for (final GfxChar[] line : lines) {
             newLines.add(line);
@@ -82,17 +89,6 @@ public class ArrayBackedBufferStorage implements BufferStorage {
         for (int offset = 1; offset < character.getCharCount(); ++offset) {
             lines[y][x + offset] = EMPTY;
         }
-    }
-
-    @Override
-    public GfxChar[][] cloneContent() {
-        final GfxChar[][] content = new GfxChar[lines.length][lines[0].length];
-
-        for (int i = 0; i < lines.length; ++i) {
-            System.arraycopy(lines[i], 0, content[i], 0, lines[0].length);
-        }
-
-        return content;
     }
 
     @Override
@@ -148,11 +144,20 @@ public class ArrayBackedBufferStorage implements BufferStorage {
         }
     }
 
-    @Override
-    public void copyToHistory(final RingBuffer<GfxChar[]> history, final int count) {
+    private void copyToHistory(final RingBuffer<GfxChar[]> history, final int count) {
         for (int i = 0; i < count; ++i) {
-            System.out.println("Adding line " + i);
             history.append(lines[i]);
         }
+    }
+
+    @Override
+    public SnapshotWithHistory cloneContentWithHistory() {
+        final GfxChar[][] content = new GfxChar[lines.length][lines[0].length];
+
+        for (int i = 0; i < lines.length; ++i) {
+            System.arraycopy(lines[i], 0, content[i], 0, lines[0].length);
+        }
+
+        return new SnapshotWithHistory(content, history.getSnapshot());
     }
 }

@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import de.jowisoftware.sshclient.util.EmptyRingBuffer;
 import de.jowisoftware.sshclient.util.FixedSizeArrayRingBuffer;
 import de.jowisoftware.sshclient.util.RingBuffer;
 
@@ -21,12 +22,14 @@ public class SimpleFlippableBufferStorage implements FlippableBufferStorage {
     public static SimpleFlippableBufferStorage create(
             final GfxChar initialClearChar, final int width, final int height,
             final int historySize) {
-        final ArrayBackedBufferStorage primary =
-                new ArrayBackedBufferStorage(initialClearChar, width, height);
-        final ArrayBackedBufferStorage secondary =
-                new ArrayBackedBufferStorage(initialClearChar, width, height);
+
         final RingBuffer<GfxChar[]> history = new FixedSizeArrayRingBuffer<GfxChar[]>(
                 historySize);
+
+        final ArrayBackedBufferStorage primary =
+                new ArrayBackedBufferStorage(initialClearChar, width, height, history);
+        final ArrayBackedBufferStorage secondary =
+                new ArrayBackedBufferStorage(initialClearChar, width, height, new EmptyRingBuffer<GfxChar[]>());
         return new SimpleFlippableBufferStorage(primary, secondary, history);
     }
 
@@ -57,9 +60,6 @@ public class SimpleFlippableBufferStorage implements FlippableBufferStorage {
 
     @Override
     public void shiftLines(final int offset, final int start, final int end) {
-        if (start == 0 && offset < 0 && selectedBuffer == primaryBuffer) {
-            selectedBuffer.copyToHistory(history, -offset);
-        }
         selectedBuffer.shiftLines(offset, start, end);
     }
 
@@ -89,12 +89,10 @@ public class SimpleFlippableBufferStorage implements FlippableBufferStorage {
     }
 
     @Override
-    public GfxChar[][] cloneContent() {
-        return selectedBuffer.cloneContent();
-    }
-
-    @Override
-    public void copyToHistory(final RingBuffer<GfxChar[]> history, final int end) {
-        selectedBuffer.copyToHistory(history, end);
+    public SnapshotWithHistory cloneContentWithHistory() {
+        final SnapshotWithHistory snapshot = selectedBuffer.cloneContentWithHistory();
+        final SnapshotWithHistory result = new SnapshotWithHistory(snapshot.getBuffer(), history);
+        result.setCursorPosition(snapshot.getCursorPosition());
+        return result;
     }
 }

@@ -104,9 +104,10 @@ public class SynchronizedBuffer implements Buffer {
     }
 
     @Override
-    public synchronized BufferSnapshot createSnapshot() {
-        final GfxChar[][] content = storage.cloneContent();
-        return new BufferSnapshot(content, makeRenderCursor());
+    public synchronized SnapshotWithHistory createSnapshot() {
+        final SnapshotWithHistory content = storage.cloneContentWithHistory();
+        content.setCursorPosition(makeRenderCursor());
+        return content;
     }
 
     private Position makeRenderCursor() {

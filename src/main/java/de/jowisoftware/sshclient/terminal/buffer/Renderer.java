@@ -1,7 +1,9 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import de.jowisoftware.sshclient.ui.terminal.Snapshot;
+
 public interface Renderer {
-    void renderSnapshot(BufferSnapshot snapshot);
+    void renderSnapshot(Snapshot snapshot);
 
     int getLines();
     int getCharsPerLine();

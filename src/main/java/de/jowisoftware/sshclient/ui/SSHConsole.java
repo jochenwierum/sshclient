@@ -1,5 +1,7 @@
 package de.jowisoftware.sshclient.ui;
 
+import java.awt.Adjustable;
+import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -14,6 +16,7 @@ import java.awt.event.MouseMotionListener;
 import java.io.OutputStream;
 
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 
 import org.apache.log4j.Logger;
 
@@ -52,6 +55,9 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     private final MouseCursorManager mouseCursorManager;
     private final AWTClipboard clipboard;
 
+    private final JScrollBar scrollbar = new JScrollBar(Adjustable.VERTICAL);
+    private final JPanel image;
+
     private ChannelShell channel;
     private DisplayType displayType = DisplayType.DYNAMIC;
 
@@ -75,7 +81,42 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         outputProcessor = initializeInputProcessor(profile);
 
         keyboardProcessor.setSession(session);
-        doAwtSetup(keyboardProcessor);
+        image = createImagePane(keyboardProcessor);
+
+        setLayout(new BorderLayout());
+        add(image, BorderLayout.CENTER);
+        add(scrollbar, BorderLayout.EAST);
+        scrollbar.setEnabled(false);
+    }
+
+    private JPanel createImagePane(final KeyboardProcessor keyboardProcessor) {
+        return new JPanel() {
+            private static final long serialVersionUID = -2670879662532285317L;
+
+            {
+                this.addComponentListener(SSHConsole.this);
+                this.addMouseListener(SSHConsole.this);
+                this.addMouseMotionListener(SSHConsole.this);
+                this.addKeyListener(keyboardProcessor);
+
+                setFocusable(true);
+                setRequestFocusEnabled(true);
+                setFocusTraversalKeysEnabled(false);
+                setCursor(new Cursor(Cursor.TEXT_CURSOR));
+            }
+
+            @Override
+            public void paintComponent(final Graphics g) {
+                final Image image = renderer.getImage();
+                if (image != null) {
+                    g.drawImage(image, 0, 0, this);
+                    PerformanceLogger.end(PerformanceType.REQUEST_TO_RENDER);
+                    PerformanceLogger.end(PerformanceType.REVEICE_CHAR_TO_RENDER);
+                    PerformanceLogger.end(PerformanceType.SELECT_TO_RENDER);
+                }
+            }
+
+        };
     }
 
     private DefaultMouseCursorManager createCursorManager(final AWTProfile profile,
@@ -91,18 +132,6 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         return wordBoundaryLocator;
     }
 
-    private void doAwtSetup(final KeyboardProcessor keyboardProcessor) {
-        this.addComponentListener(this);
-        this.addMouseListener(this);
-        this.addMouseMotionListener(this);
-        this.addKeyListener(keyboardProcessor);
-
-        setFocusable(true);
-        setRequestFocusEnabled(true);
-        setFocusTraversalKeysEnabled(false);
-        setCursor(new Cursor(Cursor.TEXT_CURSOR));
-    }
-
     public SSHSession getSession() {
         return session;
     }
@@ -111,17 +140,6 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         final DefaultSequenceRepository repository = new DefaultSequenceRepository();
         final CharacterProcessor processor = new SequenceSupportingCharacterProcessor(session, repository);
         return new CharsetByteProcessor(processor, profile.getCharset());
-    }
-
-    @Override
-    public void paintComponent(final Graphics g) {
-        final Image image = renderer.getImage();
-        if (image != null) {
-            g.drawImage(image, 0, 0, this);
-            PerformanceLogger.end(PerformanceType.REQUEST_TO_RENDER);
-            PerformanceLogger.end(PerformanceType.REVEICE_CHAR_TO_RENDER);
-            PerformanceLogger.end(PerformanceType.SELECT_TO_RENDER);
-        }
     }
 
     public void dispose() {
@@ -161,8 +179,8 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
 
     @Override
     public void componentResized(final ComponentEvent e) {
-        final int pw = getWidth();
-        final int ph = getHeight();
+        final int pw = image.getWidth();
+        final int ph = image.getHeight();
 
         final int cw;
         final int ch;
@@ -197,7 +215,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override
     public void mousePressed(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            requestFocusInWindow();
+            image.requestFocusInWindow();
 
             final Position charPosition =
                     session.translateMousePositionToCharacterPosition(e.getX(), e.getY());
@@ -256,7 +274,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     }
 
     public void takeFocus() {
-        this.requestFocusInWindow();
+        image.requestFocusInWindow();
     }
 
     public void processKey(final KeyEvent e) {

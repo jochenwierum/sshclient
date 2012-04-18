@@ -64,7 +64,7 @@ public class SimpleSSHSession implements SSHSession {
                             Logger.getLogger(getClass()).error("Error in background-Renderer: " + e);
                         }
                     }
-                    renderer.renderSnapshot(buffer.createSnapshot());
+                    renderer.renderSnapshot(buffer.createSnapshot().createSimpleSnapshot(0));
                 }
             }
         };

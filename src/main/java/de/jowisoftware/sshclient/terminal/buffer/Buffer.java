@@ -26,7 +26,7 @@ public interface Buffer {
     void setMargin(int start, int end);
 
     void setShowCursor(boolean doIt);
-    BufferSnapshot createSnapshot();
+    SnapshotWithHistory createSnapshot();
 
     void switchBuffer(BufferSelection selection);
     BufferSelection getSelectedBuffer();

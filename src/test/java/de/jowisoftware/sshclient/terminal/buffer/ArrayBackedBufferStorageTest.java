@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.jowisoftware.sshclient.util.RingBuffer;
+
 @RunWith(JMock.class)
 public class ArrayBackedBufferStorageTest {
     private final Mockery context = new Mockery();
@@ -20,14 +22,20 @@ public class ArrayBackedBufferStorageTest {
     private GfxChar char1;
     private GfxChar char2;
 
+    // TODO: add Tests for storage
+    private RingBuffer<GfxChar[]> history;
+
+    @SuppressWarnings("unchecked")
     @Before
     public void setUp() {
         nullChar = context.mock(GfxChar.class, "nullChar");
         char1 = context.mock(GfxChar.class, "char1");
         char2 = context.mock(GfxChar.class, "char2");
-        storage = new ArrayBackedBufferStorage(nullChar, 80, 24);
+        history = context.mock(RingBuffer.class, "history");
+        storage = new ArrayBackedBufferStorage(nullChar, 80, 24, history);
 
         context.checking(new Expectations() {{
+            allowing(history);
             allowing(char1).getCharCount(); will(returnValue(1));
             allowing(char2).getCharCount(); will(returnValue(1));
         }});

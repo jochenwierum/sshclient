@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.debug.PerformanceType;
-import de.jowisoftware.sshclient.terminal.buffer.BufferSnapshot;
 import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
@@ -94,7 +93,7 @@ public class DoubleBufferedImage implements Renderer {
     }
 
     @Override
-    public synchronized void renderSnapshot(final BufferSnapshot snapshot) {
+    public synchronized void renderSnapshot(final Snapshot snapshot) {
         final Position selectionStart = this.currentSelectionStart;
         final Position selectionEnd = this.currentSelectionEnd;
         final int baseRenderFlags = createGlobalRenderFlags();
