@@ -46,6 +46,10 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
 
     @Override
     public void updateSelectionEnd(final Position position) {
+        if (firstClickPosition == null) {
+            return;
+        }
+
         if (!position.equals(lastSelectionEndPosition)) {
             LOGGER.trace("End selection: " + position);
             if (position.equals(firstClickPosition) && selectionMode == SelectionMode.CHARWISE) {
