@@ -91,6 +91,8 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         scrollbar.setMinimum(0);
         scrollbar.setEnabled(false);
         scrollbar.addAdjustmentListener(this);
+
+        session.startRenderer();
     }
 
     private JPanel createImagePane(final KeyboardProcessor keyboardProcessor) {

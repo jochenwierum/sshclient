@@ -70,7 +70,6 @@ public class SimpleSSHSession implements SSHSession {
             }
         };
         backgroundRenderer.setDaemon(true);
-        backgroundRenderer.start();
     }
 
     @Override
@@ -190,5 +189,13 @@ public class SimpleSSHSession implements SSHSession {
 
     public void setRenderOffset(final int newOffset) {
         renderOffset = newOffset;
+    }
+
+    public void startRenderer() {
+        if (backgroundRenderer.isAlive()) {
+            throw new IllegalStateException("BackgroundRenderer is already running");
+        }
+        backgroundRenderer.start();
+        render();
     }
 }
