@@ -20,6 +20,39 @@ import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.util.StringUtils;
 
 public class SimpleSSHSession implements SSHSession {
+    private final class BackgroundRenderThread extends Thread {
+        private volatile boolean run = true;
+
+        private BackgroundRenderThread(final String name) {
+            super(name);
+        }
+
+        @Override
+        public void run() {
+            while(true) {
+                synchronized(this) {
+                    while(!run) {
+                        try {
+                            this.wait();
+                        } catch (final InterruptedException e) {
+                            Logger.getLogger(getClass()).error("Error in background-Renderer: " + e);
+                        }
+                    }
+                }
+
+                run = false;
+                renderer.renderSnapshot(buffer.createSnapshot().createSimpleSnapshot(renderOffset));
+            }
+        }
+
+        public void render() {
+            synchronized(this) {
+                run = true;
+                this.notify();
+            }
+        }
+    }
+
     private static final Logger LOGGER = Logger.getLogger(SimpleSSHSession.class);
 
     private final Buffer buffer;
@@ -34,7 +67,7 @@ public class SimpleSSHSession implements SSHSession {
     private DisplayType displayType;
     private OutputStream responseStream;
 
-    private Thread backgroundRenderer;
+    private BackgroundRenderThread backgroundRenderer;
 
     private final String name;
     private int renderOffset;
@@ -54,21 +87,7 @@ public class SimpleSSHSession implements SSHSession {
     }
 
     private void initBackgroundRenderer() {
-        backgroundRenderer = new Thread("BackgroundRenderer-" + name) {
-            @Override
-            public void run() {
-                while(true) {
-                    synchronized(this) {
-                        try {
-                            this.wait();
-                        } catch (final InterruptedException e) {
-                            Logger.getLogger(getClass()).error("Error in background-Renderer: " + e);
-                        }
-                    }
-                    renderer.renderSnapshot(buffer.createSnapshot().createSimpleSnapshot(renderOffset));
-                }
-            }
-        };
+        backgroundRenderer = new BackgroundRenderThread("BackgroundRenderer-" + name);
         backgroundRenderer.setDaemon(true);
     }
 
@@ -145,9 +164,7 @@ public class SimpleSSHSession implements SSHSession {
     }
 
     public void render() {
-        synchronized(backgroundRenderer) {
-            backgroundRenderer.notify();
-        }
+        backgroundRenderer.render();
     }
 
     public Position translateMousePositionToCharacterPosition(final int x, final int y) {
@@ -196,6 +213,5 @@ public class SimpleSSHSession implements SSHSession {
             throw new IllegalStateException("BackgroundRenderer is already running");
         }
         backgroundRenderer.start();
-        render();
     }
 }
