@@ -57,7 +57,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     private final MouseCursorManager mouseCursorManager;
     private final AWTClipboard clipboard;
 
-    private final JScrollBar scrollbar = new JScrollBar(Adjustable.VERTICAL);
+    private final JScrollBar scrollBar = new JScrollBar(Adjustable.VERTICAL, 0, 24, 0, 24);
     private final JPanel image;
 
     private ChannelShell channel;
@@ -87,12 +87,17 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
 
         setLayout(new BorderLayout());
         add(image, BorderLayout.CENTER);
-        add(scrollbar, BorderLayout.EAST);
-        scrollbar.setMinimum(0);
-        scrollbar.setEnabled(false);
-        scrollbar.addAdjustmentListener(this);
+        add(scrollBar, BorderLayout.EAST);
 
+        initScrollBar();
         session.startRenderer();
+    }
+
+    private void initScrollBar() {
+        scrollBar.setBlockIncrement(24);
+        scrollBar.setEnabled(false);
+        scrollBar.addAdjustmentListener(this);
+        renderOffsetChanged();
     }
 
     private JPanel createImagePane(final KeyboardProcessor keyboardProcessor) {
@@ -159,9 +164,9 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     public void gotChars(final byte[] chars, final int count) {
         processCharacters(chars, count);
         final int max = session.getBuffer().getHistorySize();
-        scrollbar.setMinimum(-max);
-        scrollbar.setValue(scrollbar.getVisibleAmount());
-        scrollbar.setEnabled(max > 0);
+        scrollBar.setMinimum(-max);
+        scrollBar.setValue(scrollBar.getVisibleAmount());
+        scrollBar.setEnabled(max > 0);
         session.setRenderOffset(0);
         session.render();
     }
@@ -190,6 +195,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
 
     @Override
     public void componentResized(final ComponentEvent e) {
+        session.pauseRendering();
         final int pw = image.getWidth();
         final int ph = image.getHeight();
 
@@ -209,10 +215,11 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
                 cw = 80;
             }
         }
-        scrollbar.setVisibleAmount(ch);
-        scrollbar.setMaximum(ch);
-        scrollbar.setBlockIncrement(ch);
-        session.render();
+        scrollBar.setVisibleAmount(ch);
+        scrollBar.setMaximum(ch);
+        scrollBar.setBlockIncrement(ch);
+        scrollBar.setValue(0);
+        session.setRenderOffset(0);
 
         if (channel != null) {
             LOGGER.debug("Reporting new window size: " + cw + "/" + ch + " "
@@ -224,6 +231,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
                 LOGGER.error("Could not send SIGWINCH", e2);
             }
         }
+        session.resumeRendering();
     }
 
     @Override
@@ -265,8 +273,9 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     }
 
     public void setDisplayType(final DisplayType displayType) {
-        this.displayType = displayType;
         LOGGER.info("Setting new terminal display type: " + displayType);
+        this.displayType = displayType;
+
         switch(displayType) {
         case DYNAMIC:
              break;
@@ -279,8 +288,8 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
             session.getTabStopManager().newWidth(80);
             break;
         }
+
         componentResized(null);
-        session.render();
     }
 
     public DisplayType getDisplayType() {
@@ -303,21 +312,21 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         if (e.isShiftDown()) {
             switch(e.getKeyCode()) {
             case KeyEvent.VK_PAGE_DOWN:
-                scrollbar.setValue(Math.min(0,
-                        scrollbar.getValue() + scrollbar.getBlockIncrement()));
+                scrollBar.setValue(Math.min(0,
+                        scrollBar.getValue() + scrollBar.getBlockIncrement()));
                 renderOffsetChanged();
                 return true;
             case KeyEvent.VK_PAGE_UP:
-                scrollbar.setValue(Math.max(scrollbar.getMinimum(),
-                        scrollbar.getValue() - scrollbar.getBlockIncrement()));
+                scrollBar.setValue(Math.max(scrollBar.getMinimum(),
+                        scrollBar.getValue() - scrollBar.getBlockIncrement()));
                 renderOffsetChanged();
                 return true;
             case KeyEvent.VK_DOWN:
-                scrollbar.setValue(scrollbar.getValue() + 1);
+                scrollBar.setValue(scrollBar.getValue() + 1);
                 renderOffsetChanged();
                 return true;
             case KeyEvent.VK_UP:
-                scrollbar.setValue(scrollbar.getValue() - 1);
+                scrollBar.setValue(scrollBar.getValue() - 1);
                 renderOffsetChanged();
                 return true;
             default:
@@ -333,7 +342,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     }
 
     private void renderOffsetChanged() {
-        session.setRenderOffset(-scrollbar.getValue());
+        session.setRenderOffset(-scrollBar.getValue());
         session.render();
     }
 

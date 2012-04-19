@@ -22,6 +22,7 @@ import de.jowisoftware.sshclient.util.StringUtils;
 public class SimpleSSHSession implements SSHSession {
     private final class BackgroundRenderThread extends Thread {
         private volatile boolean run = true;
+        private volatile boolean paused = false;
 
         private BackgroundRenderThread(final String name) {
             super(name);
@@ -31,17 +32,21 @@ public class SimpleSSHSession implements SSHSession {
         public void run() {
             while(true) {
                 synchronized(this) {
-                    while(!run) {
+                    while(!run && !paused) {
                         try {
                             this.wait();
                         } catch (final InterruptedException e) {
-                            Logger.getLogger(getClass()).error("Error in background-Renderer: " + e);
+                            Logger.getLogger(getClass()).error("Error in background renderer: " + e);
                         }
                     }
+                    run = false;
                 }
 
-                run = false;
+                try {
                 renderer.renderSnapshot(buffer.createSnapshot().createSimpleSnapshot(renderOffset));
+                } catch(final RuntimeException e) {
+                    Logger.getLogger(getClass()).error("background rendering failed", e);
+                }
             }
         }
 
@@ -50,6 +55,23 @@ public class SimpleSSHSession implements SSHSession {
                 run = true;
                 this.notify();
             }
+        }
+
+        public void pauseRendering() {
+            synchronized(this) {
+                paused = true;
+                while(run && this.isAlive()) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (final InterruptedException e) {
+                    }
+                }
+            }
+        }
+
+        public void resumeRendering() {
+            paused = false;
+            render();
         }
     }
 
@@ -167,6 +189,14 @@ public class SimpleSSHSession implements SSHSession {
         backgroundRenderer.render();
     }
 
+    public void pauseRendering() {
+        backgroundRenderer.pauseRendering();
+    }
+
+    public void resumeRendering() {
+        backgroundRenderer.resumeRendering();
+    }
+
     public Position translateMousePositionToCharacterPosition(final int x, final int y) {
         Position position = renderer.translateMousePosition(x, y);
         position = moveMousePositionInBufferRange(position);
@@ -205,6 +235,9 @@ public class SimpleSSHSession implements SSHSession {
     }
 
     public void setRenderOffset(final int newOffset) {
+        if (newOffset < 0) {
+            throw new IllegalArgumentException("Tried to set offset to " + newOffset);
+        }
         renderOffset = newOffset;
     }
 
