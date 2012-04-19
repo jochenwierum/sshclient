@@ -129,6 +129,7 @@ public class SimpleSSHSession implements SSHSession {
         return renderer;
     }
 
+    @Override
     public void render() {
         backgroundRenderer.render();
     }
@@ -178,11 +179,23 @@ public class SimpleSSHSession implements SSHSession {
         charSetup.restore();
     }
 
+    /*
+     *  FIXME: this try block is just a hack - TODO: find the real reason why
+     *  this illegal call is made
+     */
+    @Override
     public void setRenderOffset(final int newOffset) {
-        if (newOffset < 0) {
-            throw new IllegalArgumentException("Tried to set offset to " + newOffset);
+        try {
+            if (newOffset < 0) {
+                throw new IllegalArgumentException("Tried to set offset to "
+                        + newOffset);
+            }
+            backgroundRenderer.setRenderOffset(newOffset);
+        } catch (final IllegalArgumentException e) {
+            LOGGER.error("Ingoring this problem for now, setting offset to 0",
+                    e);
+            backgroundRenderer.setRenderOffset(0);
         }
-        backgroundRenderer.setRenderOffset(newOffset);
     }
 
     public void startRenderer() {
