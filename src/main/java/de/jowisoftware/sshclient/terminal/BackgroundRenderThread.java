@@ -6,6 +6,9 @@ import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 
 final class BackgroundRenderThread extends Thread {
+    private static final Logger LOGGER = Logger
+            .getLogger(BackgroundRenderThread.class);
+
     private volatile boolean run = true;
     private volatile boolean paused = false;
     private final Renderer renderer;
@@ -30,16 +33,17 @@ final class BackgroundRenderThread extends Thread {
                     try {
                         this.wait();
                     } catch (final InterruptedException e) {
-                        Logger.getLogger(getClass()).error("Error in background renderer: " + e);
+                        LOGGER.error("Error in background renderer: " + e);
                     }
                 }
                 run = false;
             }
 
             try {
-            renderer.renderSnapshot(buffer.createSnapshot().createSimpleSnapshot(renderOffset));
+                renderer.renderSnapshot(
+                        buffer.createSnapshot().createSimpleSnapshot(renderOffset));
             } catch(final RuntimeException e) {
-                Logger.getLogger(getClass()).error("background rendering failed", e);
+                LOGGER.error("background rendering failed", e);
             }
         }
     }
