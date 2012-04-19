@@ -1,24 +1,16 @@
 package de.jowisoftware.sshclient.ui;
 
-import java.awt.Adjustable;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.io.OutputStream;
 
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 
 import org.apache.log4j.Logger;
 
@@ -46,8 +38,7 @@ import de.jowisoftware.sshclient.ui.terminal.AWTGfxCharSetup;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 
-public class SSHConsole extends JPanel implements InputStreamEvent, ComponentListener,
-        MouseListener, MouseMotionListener, AdjustmentListener, KeyListener {
+public class SSHConsole extends JPanel implements InputStreamEvent, ComponentListener {
     private static final long serialVersionUID = 5102110929763645596L;
     private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
 
@@ -57,8 +48,9 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     private final MouseCursorManager mouseCursorManager;
     private final AWTClipboard clipboard;
 
-    private final JScrollBar scrollBar = new JScrollBar(Adjustable.VERTICAL, 0, 24, 0, 24);
+    private final SSHConsoleHistory history;
     private final JPanel image;
+    private final SSHConsoleKeyListener keyListener;
 
     private ChannelShell channel;
     private DisplayType displayType = DisplayType.DYNAMIC;
@@ -77,38 +69,35 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         session.getKeyboardFeedback().register(keyboardProcessor);
         session.getVisualFeedback().register(new GfxFeedback(this, renderer));
 
+        history = new SSHConsoleHistory(session);
         clipboard = new AWTClipboard(session);
         mouseCursorManager = createCursorManager(profile, buffer);
 
         outputProcessor = initializeInputProcessor(profile);
+        keyListener = new SSHConsoleKeyListener(session, history);
 
         keyboardProcessor.setSession(session);
-        image = createImagePane(keyboardProcessor);
+        image = createImagePane(keyboardProcessor, keyListener);
 
         setLayout(new BorderLayout());
         add(image, BorderLayout.CENTER);
-        add(scrollBar, BorderLayout.EAST);
+        add(history.getScrollBar(), BorderLayout.EAST);
 
-        initScrollBar();
         session.startRenderer();
     }
 
-    private void initScrollBar() {
-        scrollBar.setBlockIncrement(24);
-        scrollBar.setEnabled(false);
-        scrollBar.addAdjustmentListener(this);
-        renderOffsetChanged();
-    }
-
-    private JPanel createImagePane(final KeyboardProcessor keyboardProcessor) {
+    private JPanel createImagePane(final KeyboardProcessor keyboardProcessor,
+            final SSHConsoleKeyListener keyListener2) {
         return new JPanel() {
             private static final long serialVersionUID = -2670879662532285317L;
 
             {
                 this.addComponentListener(SSHConsole.this);
-                this.addMouseListener(SSHConsole.this);
-                this.addMouseMotionListener(SSHConsole.this);
-                this.addKeyListener(SSHConsole.this);
+                final SSHConsoleMouseListener mouseListener = new SSHConsoleMouseListener(
+                        this, mouseCursorManager, session, clipboard);
+                this.addMouseListener(mouseListener);
+                this.addMouseMotionListener(mouseListener);
+                this.addKeyListener(keyListener2);
 
                 setFocusable(true);
                 setRequestFocusEnabled(true);
@@ -163,10 +152,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override
     public void gotChars(final byte[] chars, final int count) {
         processCharacters(chars, count);
-        final int max = session.getBuffer().getHistorySize();
-        scrollBar.setMinimum(-max);
-        scrollBar.setValue(scrollBar.getVisibleAmount());
-        scrollBar.setEnabled(max > 0);
+        history.updateHistorySize(session.getBuffer().getHistorySize());
         session.setRenderOffset(0);
         session.render();
     }
@@ -215,11 +201,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
                 cw = 80;
             }
         }
-        scrollBar.setVisibleAmount(ch);
-        scrollBar.setMaximum(ch);
-        scrollBar.setBlockIncrement(ch);
-        scrollBar.setValue(0);
-        session.setRenderOffset(0);
+        history.updateWindowSize(ch);
 
         if (channel != null) {
             LOGGER.debug("Reporting new window size: " + cw + "/" + ch + " "
@@ -232,37 +214,6 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
             }
         }
         session.resumeRendering();
-    }
-
-    @Override
-    public void mousePressed(final MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            image.requestFocusInWindow();
-
-            final Position charPosition =
-                    session.translateMousePositionToCharacterPosition(e.getX(), e.getY());
-            mouseCursorManager.startSelection(charPosition, e.getClickCount());
-            mouseCursorManager.updateSelectionEnd(charPosition);
-            session.render();
-        }
-    }
-
-    @Override
-    public void mouseReleased(final MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            mouseCursorManager.copySelection();
-            updateSelection(e);
-        } else if (e.getButton() == MouseEvent.BUTTON3) {
-            clipboard.pasteToServer();
-        }
-    }
-
-    @Override
-    public void mouseDragged(final MouseEvent e) {
-        if ((e.getModifiers() & InputEvent.BUTTON1_MASK) == InputEvent.BUTTON1_MASK) {
-            PerformanceLogger.start(PerformanceType.SELECT_TO_RENDER);
-            updateSelection(e);
-        }
     }
 
     public void updateSelection(final MouseEvent e) {
@@ -300,60 +251,12 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         image.requestFocusInWindow();
     }
 
-
-    @Override
     public void keyPressed(final KeyEvent e) {
-        if (!handleScrollEvent(e)) {
-            session.getKeyboardFeedback().fire().keyPressed(e);
-        }
-    }
-
-    private boolean handleScrollEvent(final KeyEvent e) {
-        if (e.isShiftDown()) {
-            switch(e.getKeyCode()) {
-            case KeyEvent.VK_PAGE_DOWN:
-                scrollBar.setValue(Math.min(0,
-                        scrollBar.getValue() + scrollBar.getBlockIncrement()));
-                renderOffsetChanged();
-                return true;
-            case KeyEvent.VK_PAGE_UP:
-                scrollBar.setValue(Math.max(scrollBar.getMinimum(),
-                        scrollBar.getValue() - scrollBar.getBlockIncrement()));
-                renderOffsetChanged();
-                return true;
-            case KeyEvent.VK_DOWN:
-                scrollBar.setValue(scrollBar.getValue() + 1);
-                renderOffsetChanged();
-                return true;
-            case KeyEvent.VK_UP:
-                scrollBar.setValue(scrollBar.getValue() - 1);
-                renderOffsetChanged();
-                return true;
-            default:
-                return false;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void adjustmentValueChanged(final AdjustmentEvent e) {
-        renderOffsetChanged();
-    }
-
-    private void renderOffsetChanged() {
-        session.setRenderOffset(-scrollBar.getValue());
-        session.render();
+        keyListener.keyPressed(e);
     }
 
     @Override public void componentMoved(final ComponentEvent e) { /* ignored */ }
     @Override public void componentShown(final ComponentEvent e) { /* ignored */ }
     @Override public void componentHidden(final ComponentEvent e) { /* ignored */ }
-    @Override public void mouseEntered(final MouseEvent e) { /* ignored */ }
-    @Override public void mouseExited(final MouseEvent e) { /* ignored */ }
-    @Override public void mouseMoved(final MouseEvent e) { /* ignored */ }
-    @Override public void mouseClicked(final MouseEvent e) { /* ignored */ }
     @Override public void streamClosed(final int exitCode) { /* ignored */ }
-    @Override public void keyTyped(final KeyEvent e) { /* ignored */ }
-    @Override public void keyReleased(final KeyEvent e) { /* ignored */ }
 }

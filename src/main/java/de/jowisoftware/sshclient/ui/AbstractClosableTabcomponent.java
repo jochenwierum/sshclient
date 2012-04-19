@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-public abstract class AbstractClosableTabcomponent extends JPanel implements MouseListener {
+abstract class AbstractClosableTabcomponent extends JPanel implements MouseListener {
     private static final long serialVersionUID = 4533946005667886601L;
 
     private JButton button;

@@ -25,4 +25,7 @@ public interface SSHSession {
 
     public void saveState();
     public void restoreState();
+
+    void setRenderOffset(int i);
+    void render();
 }

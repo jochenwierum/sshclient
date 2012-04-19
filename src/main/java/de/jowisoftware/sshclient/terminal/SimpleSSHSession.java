@@ -20,61 +20,6 @@ import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.util.StringUtils;
 
 public class SimpleSSHSession implements SSHSession {
-    private final class BackgroundRenderThread extends Thread {
-        private volatile boolean run = true;
-        private volatile boolean paused = false;
-
-        private BackgroundRenderThread(final String name) {
-            super(name);
-        }
-
-        @Override
-        public void run() {
-            while(true) {
-                synchronized(this) {
-                    while(!run && !paused) {
-                        try {
-                            this.wait();
-                        } catch (final InterruptedException e) {
-                            Logger.getLogger(getClass()).error("Error in background renderer: " + e);
-                        }
-                    }
-                    run = false;
-                }
-
-                try {
-                renderer.renderSnapshot(buffer.createSnapshot().createSimpleSnapshot(renderOffset));
-                } catch(final RuntimeException e) {
-                    Logger.getLogger(getClass()).error("background rendering failed", e);
-                }
-            }
-        }
-
-        public void render() {
-            synchronized(this) {
-                run = true;
-                this.notify();
-            }
-        }
-
-        public void pauseRendering() {
-            synchronized(this) {
-                paused = true;
-                while(run && this.isAlive()) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (final InterruptedException e) {
-                    }
-                }
-            }
-        }
-
-        public void resumeRendering() {
-            paused = false;
-            render();
-        }
-    }
-
     private static final Logger LOGGER = Logger.getLogger(SimpleSSHSession.class);
 
     private final Buffer buffer;
@@ -92,7 +37,6 @@ public class SimpleSSHSession implements SSHSession {
     private BackgroundRenderThread backgroundRenderer;
 
     private final String name;
-    private int renderOffset;
 
     public SimpleSSHSession(final String name,
             final Buffer buffer,
@@ -109,7 +53,7 @@ public class SimpleSSHSession implements SSHSession {
     }
 
     private void initBackgroundRenderer() {
-        backgroundRenderer = new BackgroundRenderThread("BackgroundRenderer-" + name);
+        backgroundRenderer = new BackgroundRenderThread(name, renderer, buffer);
         backgroundRenderer.setDaemon(true);
     }
 
@@ -238,7 +182,7 @@ public class SimpleSSHSession implements SSHSession {
         if (newOffset < 0) {
             throw new IllegalArgumentException("Tried to set offset to " + newOffset);
         }
-        renderOffset = newOffset;
+        backgroundRenderer.setRenderOffset(newOffset);
     }
 
     public void startRenderer() {
