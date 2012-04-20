@@ -18,7 +18,7 @@ class JavaStandardEnDeCryptor implements EnDeCryptor {
     private static final String SECRET_KEY_TYPE = "PBKDF2WithHmacSHA1";
     private static final String CYPHER_TYPE = "AES/CBC/PKCS5Padding";
     private static final String ENCRYPTION_TYPE = "AES";
-    private static final int ITERATION_COUNT = 2048;
+    private static final int ITERATION_COUNT = 65136;
     private static final int SALT_LENGTH = 8;
 
     private static final SecureRandom random = new SecureRandom();
@@ -29,7 +29,7 @@ class JavaStandardEnDeCryptor implements EnDeCryptor {
     public JavaStandardEnDeCryptor() throws CryptoException {
         try {
             factory = SecretKeyFactory.getInstance(SECRET_KEY_TYPE);
-            maxKeyLength = Cipher.getMaxAllowedKeyLength(CYPHER_TYPE);
+            maxKeyLength = Math.min(256, Cipher.getMaxAllowedKeyLength(CYPHER_TYPE));
         } catch(final GeneralSecurityException e) {
             throw new CryptoException("Cyphers are not available", e);
         }
@@ -87,7 +87,7 @@ class JavaStandardEnDeCryptor implements EnDeCryptor {
     }
 
     private Cipher createDecryptionCipher(final CipherInformation info)
-                    throws GeneralSecurityException {
+            throws GeneralSecurityException {
         final Cipher cipher = Cipher.getInstance(CYPHER_TYPE);
         final SecretKey secret = createSecretKey(info.salt, info.keyLength);
         cipher.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(info.iv));
