@@ -56,13 +56,11 @@ final class BackgroundRenderThread extends Thread {
     }
 
     public void pauseRendering() {
-        synchronized(this) {
-            paused = true;
-            while(run && this.isAlive()) {
-                try {
-                    Thread.sleep(10);
-                } catch (final InterruptedException e) {
-                }
+        paused = true;
+        while(run && this.isAlive()) {
+            try {
+                Thread.sleep(10);
+            } catch (final InterruptedException e) {
             }
         }
     }
