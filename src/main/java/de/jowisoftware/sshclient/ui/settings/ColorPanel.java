@@ -37,7 +37,7 @@ class ColorPanel extends JPanel {
 
     private void addColors() {
         for (final ColorName color : ColorName.values()) {
-            add(new RightAlignedLabel(colorTranslation(color)));
+            add(new JLabel(colorTranslation(color)));
             add(createColorButton(
                     gfxInfo.getColorMap().get(color),
                     COLORTYPE_DEFAULT + "." + color.name()));

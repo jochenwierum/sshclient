@@ -5,6 +5,7 @@ import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -174,6 +175,7 @@ public class ProfilesDialog extends JDialog {
                 createProfile();
             }
         });
+        updateButtonDimension(button);
         return button;
     }
 
@@ -188,6 +190,7 @@ public class ProfilesDialog extends JDialog {
                 }
             }
         });
+        updateButtonDimension(button);
         return button;
     }
 
@@ -202,7 +205,14 @@ public class ProfilesDialog extends JDialog {
                 }
             }
         });
+        updateButtonDimension(button);
         return button;
+    }
+
+    private void updateButtonDimension(final JButton button) {
+        final int width = (int) (button.getPreferredSize().width * 1.2);
+        final int height = button.getMinimumSize().height;
+        button.setPreferredSize(new Dimension(width, height));
     }
 
     private void edit(final String selectedValue) {
@@ -294,6 +304,9 @@ public class ProfilesDialog extends JDialog {
         final JScrollPane pane = new JScrollPane(selectionList);
         selectionList.addMouseListener(createListMouseListener());
         updateSelectionList();
+
+        final Dimension size = selectionList.getPreferredSize();
+        selectionList.setPreferredSize(new Dimension((int) (size.width * 1.3), size.height));
         return pane;
     }
 
@@ -350,7 +363,6 @@ public class ProfilesDialog extends JDialog {
         setModalityType(ModalityType.APPLICATION_MODAL);
         setSize(600, 300);
         setLocationRelativeTo(parent);
-        setResizable(false);
     }
 
     private String buildErrorMessage(final Map<String, String> errors) {
