@@ -41,8 +41,7 @@ public class KeyboardProcessor implements KeyboardEvent {
             return;
         }
 
-        LOGGER.trace("Ignoring action key: " + e.getKeyCode() + " ("
-                + e.getKeyChar() + ")");
+        LOGGER.trace("Ignoring action key: " + e.getKeyCode());
     }
 
     private void handleChar(final KeyEvent e) {
