@@ -29,26 +29,21 @@ public class SSHConsoleHistory implements AdjustmentListener, MouseWheelListener
     }
 
     public void updateHistorySize(final int max) {
-        scrollBar.setMinimum(-max);
-
-        scrollBar.setValue(0);
+        scrollBar.getModel().setRangeProperties(0, scrollBar.getVisibleAmount(),
+                -max, scrollBar.getMaximum(), true);
         scrollBar.setEnabled(-scrollBar.getMinimum() > 0);
         session.setRenderOffset(0);
     }
 
     public void updateWindowSize(final int ch) {
-        scrollBar.setVisibleAmount(ch);
-        scrollBar.setMaximum(ch);
+        scrollBar.getModel().setRangeProperties(0, ch, scrollBar.getMinimum(), ch, true);
         scrollBar.setBlockIncrement(ch);
-
-        scrollBar.setValue(0);
         scrollBar.setEnabled(-scrollBar.getMinimum() > 0);
         session.setRenderOffset(0);
     }
 
     private void renderOffsetChanged() {
         session.setRenderOffset(-scrollBar.getValue());
-        session.render();
     }
 
     @Override
@@ -57,32 +52,27 @@ public class SSHConsoleHistory implements AdjustmentListener, MouseWheelListener
     }
 
     public void scrollDown() {
-        scrollBar.setValue(scrollBar.getValue() + 1);
-        renderOffsetChanged();
+        down(1);
     }
 
     public void scrollUp() {
         up(1);
-        renderOffsetChanged();
     }
 
     public void scrollPageDown() {
-        up(scrollBar.getBlockIncrement());
-        renderOffsetChanged();
+        down(scrollBar.getBlockIncrement());
     }
 
     public void scrollPageUp() {
-        down(scrollBar.getBlockIncrement());
-        renderOffsetChanged();
-    }
-
-    private void up(final int amount) {
-        scrollBar.setValue(Math.min(0, scrollBar.getValue() + amount));
+        up(scrollBar.getBlockIncrement());
     }
 
     private void down(final int amount) {
-        scrollBar.setValue(Math.max(scrollBar.getMinimum(),
-                scrollBar.getValue() - amount));
+        scrollBar.setValue(scrollBar.getValue() + amount);
+    }
+
+    private void up(final int amount) {
+        scrollBar.setValue(scrollBar.getValue() - amount);
     }
 
     @Override
@@ -95,9 +85,9 @@ public class SSHConsoleHistory implements AdjustmentListener, MouseWheelListener
         }
 
         if (amount > 0) {
-            up(amount);
+            up(-amount);
         } else if (amount < 0) {
-            down(-amount);
+            down(amount);
         }
     }
 

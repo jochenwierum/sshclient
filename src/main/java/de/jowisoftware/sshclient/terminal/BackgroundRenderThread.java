@@ -23,6 +23,7 @@ final class BackgroundRenderThread extends Thread {
 
     public void setRenderOffset(final int renderOffset) {
         this.renderOffset = renderOffset;
+        render();
     }
 
     @Override

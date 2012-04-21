@@ -37,6 +37,7 @@ import de.jowisoftware.sshclient.terminal.mouse.MouseCursorManager;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxCharSetup;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
+import de.jowisoftware.sshclient.util.SwingUtils;
 
 public class SSHConsole extends JPanel implements InputStreamEvent, ComponentListener {
     private static final long serialVersionUID = 5102110929763645596L;
@@ -155,7 +156,6 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         processCharacters(chars, count);
         history.updateHistorySize(session.getBuffer().getHistorySize());
         session.setRenderOffset(0);
-        session.render();
     }
 
     private void processCharacters(final byte[] chars, final int count) {
@@ -202,7 +202,12 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
                 cw = 80;
             }
         }
-        history.updateWindowSize(ch);
+        SwingUtils.runInSwingThread(new Runnable() {
+            @Override
+            public void run() {
+                history.updateWindowSize(ch);
+            }
+        });
 
         if (channel != null) {
             LOGGER.debug("Reporting new window size: " + cw + "/" + ch + " "
@@ -256,8 +261,12 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         keyListener.keyPressed(e);
     }
 
+    @Override
+    public void streamClosed(final int exitCode) {
+        session.setOutputStream(null);
+    }
+
     @Override public void componentMoved(final ComponentEvent e) { /* ignored */ }
     @Override public void componentShown(final ComponentEvent e) { /* ignored */ }
     @Override public void componentHidden(final ComponentEvent e) { /* ignored */ }
-    @Override public void streamClosed(final int exitCode) { /* ignored */ }
 }
