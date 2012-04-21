@@ -171,4 +171,8 @@ public class AWTGfxChar implements GfxChar {
     public int getCharCount() {
         return charWidth;
     }
+
+    public Color getBackground() {
+        return (Color) bgColor.getColor();
+    }
 }

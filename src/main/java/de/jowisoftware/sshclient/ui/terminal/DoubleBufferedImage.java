@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.ui.terminal;
 
+import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
@@ -101,10 +102,12 @@ public class DoubleBufferedImage implements Renderer {
         if (images != null) {
             PerformanceLogger.start(PerformanceType.BACKGROUND_RENDER);
             for (int y = 0; y < snapshot.content.length; ++y) {
-                for (int x = 0; x < snapshot.content[y].length;
+                final int yPos = y * charHeight;
+                int x;
+
+                for (x = 0; x < snapshot.content[y].length;
                         x += snapshot.content[y][x].getCharCount()) {
-                    final int posx = x * charWidth;
-                    final int posy = y * charHeight;
+                    final int xPos = x * charWidth;
                     final int renderFlags = baseRenderFlags |
                             createCharRenderFlags(
                                     snapshot.cursorPosition,
@@ -112,15 +115,23 @@ public class DoubleBufferedImage implements Renderer {
                                     selectionStart, selectionEnd);
 
                     final GfxChar gfxChar = snapshot.content[y][x];
-                    final Rectangle rect = new Rectangle(posx, posy,
+                    final Rectangle rect = new Rectangle(xPos, yPos,
                             charWidth * gfxChar.getCharCount(), charHeight);
                     ((AWTGfxChar)gfxChar).drawAt(rect,
                             baseLinePos, graphics[1 - currentImage], renderFlags);
                 }
+                final AWTGfxChar lastChar = (AWTGfxChar)snapshot.content[y][snapshot.content[y].length - 1];
+                fillLine(yPos, x, lastChar.getBackground());
             }
             swap();
             PerformanceLogger.end(PerformanceType.BACKGROUND_RENDER);
         }
+    }
+
+    private void fillLine(final int yPos, final int x, final Color background) {
+        final int xPos = x * charWidth;
+        graphics[1 - currentImage].setColor(background);
+        graphics[1 - currentImage].fillRect(xPos, yPos, width - xPos, charHeight);
     }
 
     private int createGlobalRenderFlags() {
