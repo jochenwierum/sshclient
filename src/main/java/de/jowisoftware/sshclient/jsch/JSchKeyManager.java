@@ -1,8 +1,13 @@
 package de.jowisoftware.sshclient.jsch;
 
+import java.io.File;
+
+import org.apache.log4j.Logger;
+
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
+
 import de.jowisoftware.sshclient.application.ApplicationSettings;
 import de.jowisoftware.sshclient.application.KeyManager;
 import de.jowisoftware.sshclient.application.KeyManagerEvents;
@@ -11,9 +16,6 @@ import de.jowisoftware.sshclient.application.UserAbortException;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.EventHubClient;
 import de.jowisoftware.sshclient.events.ReflectionEventHub;
-import org.apache.log4j.Logger;
-
-import java.io.File;
 
 public class JSchKeyManager implements KeyManager {
     private static final Logger LOGGER = Logger.getLogger(JSchKeyManager.class);
@@ -130,6 +132,7 @@ public class JSchKeyManager implements KeyManager {
         return false;
     }
 
+    @Override
     public EventHubClient<KeyManagerEvents> eventListeners() {
         return events;
     }

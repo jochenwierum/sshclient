@@ -98,6 +98,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
                 this.addMouseListener(mouseListener);
                 this.addMouseMotionListener(mouseListener);
                 this.addKeyListener(keyListener2);
+                this.addMouseWheelListener(history);
 
                 setFocusable(true);
                 setRequestFocusEnabled(true);

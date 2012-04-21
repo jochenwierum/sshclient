@@ -3,12 +3,14 @@ package de.jowisoftware.sshclient.ui;
 import java.awt.Adjustable;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.JScrollBar;
 
 import de.jowisoftware.sshclient.terminal.SSHSession;
 
-public class SSHConsoleHistory implements AdjustmentListener {
+public class SSHConsoleHistory implements AdjustmentListener, MouseWheelListener {
     private final JScrollBar scrollBar = new JScrollBar(Adjustable.VERTICAL, 0,
             24, 0, 24);
     private final SSHSession session;
@@ -60,19 +62,43 @@ public class SSHConsoleHistory implements AdjustmentListener {
     }
 
     public void scrollUp() {
-        scrollBar.setValue(scrollBar.getValue() - 1);
+        up(1);
         renderOffsetChanged();
     }
 
     public void scrollPageDown() {
-        scrollBar.setValue(Math.min(0,
-                scrollBar.getValue() + scrollBar.getBlockIncrement()));
+        up(scrollBar.getBlockIncrement());
         renderOffsetChanged();
     }
 
     public void scrollPageUp() {
-        scrollBar.setValue(Math.max(scrollBar.getMinimum(),
-                scrollBar.getValue() - scrollBar.getBlockIncrement()));
+        down(scrollBar.getBlockIncrement());
         renderOffsetChanged();
     }
+
+    private void up(final int amount) {
+        scrollBar.setValue(Math.min(0, scrollBar.getValue() + amount));
+    }
+
+    private void down(final int amount) {
+        scrollBar.setValue(Math.max(scrollBar.getMinimum(),
+                scrollBar.getValue() - amount));
+    }
+
+    @Override
+    public void mouseWheelMoved(final MouseWheelEvent e) {
+        final int amount;
+        if(e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+            amount = e.getUnitsToScroll();
+        } else {
+            amount = scrollBar.getBlockIncrement() * e.getWheelRotation();
+        }
+
+        if (amount > 0) {
+            up(amount);
+        } else if (amount < 0) {
+            down(-amount);
+        }
+    }
+
 }
