@@ -27,29 +27,25 @@ public class AsyncInputStreamReaderThread extends Thread {
 
     @Override
     public void run() {
-        int exitStatus = channel.getExitStatus();
         try {
-            exitStatus = processInputStream();
+            processInputStream();
         } catch (final IOException e) {
-            exitStatus = Integer.MAX_VALUE;
             LOGGER.warn("Exception while reading from socket", e);
         }
 
-        callback.streamClosed(exitStatus);
         channel.disconnect();
+        final int exitStatus = channel.getExitStatus();
+        callback.streamClosed(exitStatus);
         LOGGER.info("Thread ended, exit status: " + exitStatus);
     }
 
-    private int processInputStream() throws IOException {
+    private void processInputStream() throws IOException {
         final InputStream stream = channel.getInputStream();
 
         while (channel.isConnected() && processStreamContent(stream)) {
         }
 
-        final int exitStatus = channel.getExitStatus();
         IOUtils.closeQuietly(stream);
-
-        return exitStatus;
     }
 
     private boolean processStreamContent(final InputStream stream)
