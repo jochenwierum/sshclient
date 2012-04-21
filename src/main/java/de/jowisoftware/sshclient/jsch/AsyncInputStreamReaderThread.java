@@ -27,37 +27,25 @@ public class AsyncInputStreamReaderThread extends Thread {
 
     @Override
     public void run() {
-        InputStream stream = null;
         try {
-            stream = processInputStream();
+            processInputStream();
         } catch (final IOException e) {
             LOGGER.warn("Exception while reading from socket", e);
         }
 
-        IOUtils.closeQuietly(stream);
         callback.streamClosed(channel.getExitStatus());
         channel.disconnect();
         LOGGER.info("Thread ended");
     }
 
-    private InputStream processInputStream() throws IOException {
-        InputStream stream = null;
+    private void processInputStream() throws IOException {
         final byte[] buffer = new byte[1024];
-        stream = channel.getInputStream();
+        final InputStream stream = channel.getInputStream();
 
         while (channel.isConnected()) {
-            while (stream.available() > 0) {
-                processStreamContent(stream, buffer);
-            }
-
-            try {
-                Thread.sleep(30);
-            } catch (final InterruptedException e) {
-                /* no error handling here, just go on in the loop */
-            }
+            processStreamContent(stream, buffer);
         }
-
-        return stream;
+        IOUtils.closeQuietly(stream);
     }
 
     private void processStreamContent(final InputStream stream, final byte[] buffer)

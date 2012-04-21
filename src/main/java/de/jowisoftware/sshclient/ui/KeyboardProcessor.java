@@ -20,11 +20,7 @@ public class KeyboardProcessor implements KeyboardEvent {
     }
 
     private void send(final char... value) {
-        final byte bytes[] = new byte[value.length];
-        for (int i = 0; i < bytes.length; ++i) {
-            bytes[i] = (byte) value[i];
-        }
-        session.sendToServer(bytes);
+        session.sendToServer(value);
     }
 
     @Override

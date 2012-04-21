@@ -11,7 +11,7 @@ import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 
 public interface SSHSession {
     void sendToServer(String string);
-    void sendToServer(byte[] bs);
+    void sendToServer(char[] bs);
 
     Buffer getBuffer();
     EventHub<KeyboardEvent> getKeyboardFeedback();

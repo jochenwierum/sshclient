@@ -2,6 +2,7 @@ package de.jowisoftware.sshclient.terminal;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
 import org.apache.log4j.Logger;
@@ -33,6 +34,7 @@ public class SimpleSSHSession implements SSHSession {
 
     private DisplayType displayType;
     private OutputStream responseStream;
+    private final Charset charset;
 
     private BackgroundRenderThread backgroundRenderer;
 
@@ -42,11 +44,13 @@ public class SimpleSSHSession implements SSHSession {
             final Buffer buffer,
             final Renderer renderer,
             final GfxCharSetup charSetup,
-            final TabStopManager tabstopManager) {
+            final TabStopManager tabstopManager,
+            final Charset charset) {
         this.buffer = buffer;
         this.charSetup = charSetup;
         this.tabstopManager = tabstopManager;
         this.renderer = renderer;
+        this.charset = charset;
         this.name = name;
 
         initBackgroundRenderer();
@@ -93,17 +97,16 @@ public class SimpleSSHSession implements SSHSession {
 
     @Override
     public void sendToServer(final String string) {
-        sendToServer(
-                ((Charset.defaultCharset()
-                        .encode(string).array())));
+        sendToServer(string.toCharArray());
     }
 
     @Override
-    public void sendToServer(final byte[] bytes) {
+    public void sendToServer(final char[] chars) {
         if (responseStream == null) {
             return;
         }
 
+        final byte[] bytes = charset.encode(CharBuffer.wrap(chars)).array();
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Sending: " +
                     StringUtils.escapeForLogs(bytes, 0, bytes.length));

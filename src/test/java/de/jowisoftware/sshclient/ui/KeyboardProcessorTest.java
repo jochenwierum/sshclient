@@ -3,7 +3,6 @@ package de.jowisoftware.sshclient.ui;
 import java.awt.Label;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-import java.nio.charset.Charset;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -63,18 +62,16 @@ public class KeyboardProcessorTest {
         }});
     }
 
-    private void expectBytes(final byte[] bytes) {
+    private void expectChars(final char[] chars) {
         context.checking(new Expectations() {{
-            oneOf(session).sendToServer(bytes);
+            oneOf(session).sendToServer(chars);
         }});
     }
 
     private void assertSequence(final KeyEvent e, final char... chars) {
-        final byte[] bytes = Charset.defaultCharset()
-            .encode(new String(chars)).array();
         expectRendererSelectionReset(3);
         expectString("x");
-        expectBytes(bytes);
+        expectChars(chars);
         expectString("x");
 
         final KeyEvent x = new KeyEvent(new Label(), 0, 0, 0, KeyEvent.VK_X,
