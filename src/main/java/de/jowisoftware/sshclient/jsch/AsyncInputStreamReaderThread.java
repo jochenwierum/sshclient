@@ -27,30 +27,40 @@ public class AsyncInputStreamReaderThread extends Thread {
 
     @Override
     public void run() {
+        int exitStatus = channel.getExitStatus();
         try {
-            processInputStream();
+            exitStatus = processInputStream();
         } catch (final IOException e) {
+            exitStatus = Integer.MAX_VALUE;
             LOGGER.warn("Exception while reading from socket", e);
         }
 
-        callback.streamClosed(channel.getExitStatus());
+        callback.streamClosed(exitStatus);
         channel.disconnect();
-        LOGGER.info("Thread ended");
+        LOGGER.info("Thread ended, exit status: " + exitStatus);
     }
 
-    private void processInputStream() throws IOException {
-        final byte[] buffer = new byte[1024];
+    private int processInputStream() throws IOException {
         final InputStream stream = channel.getInputStream();
 
-        while (channel.isConnected()) {
-            processStreamContent(stream, buffer);
+        while (channel.isConnected() && processStreamContent(stream)) {
         }
+
+        final int exitStatus = channel.getExitStatus();
         IOUtils.closeQuietly(stream);
+
+        return exitStatus;
     }
 
-    private void processStreamContent(final InputStream stream, final byte[] buffer)
+    private boolean processStreamContent(final InputStream stream)
             throws IOException {
+        final byte[] buffer = new byte[1024];
         final int read = stream.read(buffer);
+
+        if (read == -1) {
+            return false;
+        }
+
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Got " + read + " bytes: " +
                     StringUtils.escapeForLogs(buffer, 0, read));
@@ -62,5 +72,7 @@ public class AsyncInputStreamReaderThread extends Thread {
         } catch(final RuntimeException e) {
             LOGGER.error("Reader thread catched exception", e);
         }
+
+        return true;
     }
 }
