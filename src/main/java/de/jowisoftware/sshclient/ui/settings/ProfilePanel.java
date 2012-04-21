@@ -6,7 +6,6 @@ import static de.jowisoftware.sshclient.i18n.Translation.t;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -25,7 +24,6 @@ import java.util.regex.Pattern;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -35,7 +33,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
-import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
@@ -44,11 +41,6 @@ import de.jowisoftware.sshclient.util.KeyValue;
 
 public class ProfilePanel extends JPanel {
     private static final long serialVersionUID = 663223636542133238L;
-    private static final int COLOR_BUTTON_SIZE = 20;
-
-    private static final String COLORTYPE_DEFAULT = "color";
-    private static final String COLORTYPE_LIGHT = "lightcolor";
-    private static final String COLORTYPE_CURSOR = "cursor";
 
     private final AWTProfile profile;
     private final JTabbedPane tabbedPane;
@@ -70,10 +62,8 @@ public class ProfilePanel extends JPanel {
     private final JComboBox closeTabBox = createCloseTabBox();
 
     private final GridBagConstraints normalColumn = createSpacedColumnConstraints(16);
-    private final GridBagConstraints spacedColumn = createSpacedColumnConstraints(45);
     private final GridBagConstraints lastColumn = createLastColumnConstraints();
     private JList environmentList;
-
 
     public ProfilePanel(final AWTProfile profile, final String profileName, final boolean profileNameSettable) {
         this.profile = profile;
@@ -83,7 +73,7 @@ public class ProfilePanel extends JPanel {
         add(tabbedPane, BorderLayout.CENTER);
 
         addMainTab(profileName, profileNameSettable);
-        addColorTab();
+        addGraphicsTab();
         addForwardingTab();
         addAdvancedTab();
     }
@@ -211,30 +201,30 @@ public class ProfilePanel extends JPanel {
 
     private void addMainControls(final JPanel frame, final String profileName,
             final boolean profileNameSettable) {
-        addControl(frame, newFormattedLabel(t("profiles.general.profilename", "profile name:")), normalColumn);
+        addControl(frame, new RightAlignedLabel(t("profiles.general.profilename", "profile name:")), normalColumn);
         profileNameTextField.setText(profileName);
         profileNameTextField.setEnabled(profileNameSettable);
         addControl(frame, profileNameTextField, lastColumn);
 
-        addControl(frame, newFormattedLabel(t("profiles.general.host", "host:")), normalColumn);
+        addControl(frame, new RightAlignedLabel(t("profiles.general.host", "host:")), normalColumn);
         hostTextField.setText(profile.getHost());
         addControl(frame, hostTextField, lastColumn);
 
-        addControl(frame, newFormattedLabel(t("profiles.general.port", "port:")), normalColumn);
+        addControl(frame, new RightAlignedLabel(t("profiles.general.port", "port:")), normalColumn);
         portTextField.setText(Integer.toString(profile.getPort()));
         addControl(frame, portTextField, lastColumn);
 
-        addControl(frame, newFormattedLabel(t("profiles.general.user", "user:")), normalColumn);
+        addControl(frame, new RightAlignedLabel(t("profiles.general.user", "user:")), normalColumn);
         userTextField.setText(profile.getUser());
         addControl(frame, userTextField, lastColumn);
 
         addVerticalSpacing(frame);
 
-        addControl(frame, newFormattedLabel(t("profiles.general.encoding", "encoding:")), normalColumn);
+        addControl(frame, new RightAlignedLabel(t("profiles.general.encoding", "encoding:")), normalColumn);
         encodingBox.setSelectedItem(profile.getCharset().name());
         addControl(frame, encodingBox, lastColumn);
 
-        addControl(frame, newFormattedLabel(t("profiles.general.timeout", "timeout (ms):")), normalColumn);
+        addControl(frame, new RightAlignedLabel(t("profiles.general.timeout", "timeout (ms):")), normalColumn);
         timeoutTextField.setText(Integer.toString(profile.getTimeout()));
         addControl(frame, timeoutTextField, lastColumn);
     }
@@ -269,20 +259,14 @@ public class ProfilePanel extends JPanel {
         ((GridBagLayout) parent.getLayout()).setConstraints(child, constraints);
     }
 
-    private JLabel newFormattedLabel(final String text) {
-        final JLabel label = new JLabel(text);
-        label.setAlignmentX(RIGHT_ALIGNMENT);
-        return label;
-    }
-
-    private void addColorTab() {
+    private void addGraphicsTab() {
         final JPanel frame = createTabPane(t("profiles.gfx.title", "graphics"));
 
-        addColorControls(frame);
+        addGraphicsControls(frame);
         fillToBottom(frame);
     }
 
-    private void addColorControls(final JPanel frame) {
+    private void addGraphicsControls(final JPanel frame) {
         addFontControls(frame);
         addVerticalSpacing(frame);
         addCursorColorChooser(frame);
@@ -291,7 +275,7 @@ public class ProfilePanel extends JPanel {
     }
 
     private void addFontControls(final JPanel frame) {
-        addControl(frame, newFormattedLabel(t("profiles.colors.font", "font:")),
+        addControl(frame, new RightAlignedLabel(t("profiles.colors.font", "font:")),
                 normalColumn);
         fontBox.setSelectedItem(profile.getGfxSettings().getFontName());
         addControl(frame, fontBox, lastColumn);
@@ -314,119 +298,7 @@ public class ProfilePanel extends JPanel {
     }
 
     private void addColorChooserMatrix(final JPanel frame) {
-        addColorChooserMatrixTitles(frame);
-        addColors(frame);
-    }
-
-    private void addColorChooserMatrixTitles(final JPanel frame) {
-        GridBagConstraints constraints = (GridBagConstraints) normalColumn.clone();
-        constraints.gridwidth = 2;
-        JLabel label = new JLabel(t("profiles.colors.normal", "normal colors"));
-        ((GridBagLayout) frame.getLayout()).setConstraints(label, constraints);
-        frame.add(label);
-
-        constraints = (GridBagConstraints) constraints.clone();
-        constraints.fill = GridBagConstraints.REMAINDER;
-        label = new JLabel(t("profiles.colors.light", "light colors"));
-        ((GridBagLayout) frame.getLayout()).setConstraints(label, constraints);
-        frame.add(label);
-
-        addControl(frame, new JLabel(), lastColumn);
-    }
-
-    private void addCursorColorChooser(final JPanel frame) {
-        addControl(frame, newFormattedLabel(t("profiles.colors.cursor",
-                "cursor color:")), normalColumn);
-        addControl(frame, createColorButton(
-                profile.getGfxSettings().getCursorColor(),
-                COLORTYPE_CURSOR), normalColumn);
-        addControl(frame, new JLabel(), lastColumn);
-    }
-
-    private void addColors(final JPanel frame) {
-        for (final ColorName color : ColorName.values()) {
-            addControl(frame, newFormattedLabel(
-                    t(colorTranslation(color, COLORTYPE_DEFAULT),
-                            color.niceName().toLowerCase())), normalColumn);
-            addControl(frame, createColorButton(
-                    profile.getGfxSettings().getColorMap().get(color),
-                    COLORTYPE_DEFAULT + "." + color.name()), spacedColumn);
-
-            addControl(frame, newFormattedLabel(
-                    t(colorTranslation(color, COLORTYPE_LIGHT),
-                            color.niceName().toLowerCase())), normalColumn);
-            addControl(frame, createColorButton(
-                    profile.getGfxSettings().getLightColorMap().get(color),
-                    COLORTYPE_LIGHT + "." + color.name()), normalColumn);
-
-            endColumn(frame);
-        }
-    }
-
-    private void endColumn(final JPanel frame) {
-        addControl(frame, new JLabel(), lastColumn);
-    }
-
-    private String colorTranslation(final ColorName color, final String colorPrefix) {
-        return "profiles." + colorPrefix + "." + color.name();
-    }
-
-    private JButton createColorButton(final Color initialColor, final String colorName) {
-        final JButton button = new JButton("change") {
-            private static final long serialVersionUID = 2446946735787872705L;
-
-            @Override
-            protected void paintComponent(final Graphics g) {
-                g.setColor(getBackground());
-                g.fillRect(0, 0, getWidth() - 1, getHeight() - 1);
-            }
-
-        };
-        button.setActionCommand(colorName);
-        button.setBackground(initialColor);
-
-        final Dimension size = getMinimumSize();
-        size.height = COLOR_BUTTON_SIZE;
-        size.width = COLOR_BUTTON_SIZE;
-        button.setMinimumSize(size);
-        button.setPreferredSize(size);
-
-        button.addActionListener(createColorActionListener());
-        return button;
-    }
-
-    private ActionListener createColorActionListener() {
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                final JButton source = (JButton) e.getSource();
-                final Color newColor = JColorChooser.showDialog(
-                        ProfilePanel.this,
-                        t("profiles.gfx.choosecolor", "choose color"),
-                        source.getBackground());
-
-                if (newColor != null) {
-                    source.setBackground(newColor);
-                    saveColor(e.getActionCommand(), newColor);
-                }
-            }
-        };
-    }
-
-    protected void saveColor(final String actionCommand, final Color newColor) {
-        final String[] colorTypes = actionCommand.split("\\.");
-
-        final AWTGfxInfo gfxSettings = profile.getGfxSettings();
-        if (COLORTYPE_CURSOR.equals(colorTypes[0])) {
-            gfxSettings.setCursorColor(newColor);
-        } else if (COLORTYPE_DEFAULT.equals(colorTypes[0])) {
-            gfxSettings.getColorMap().put(
-                    ColorName.valueOf(colorTypes[1]),
-                    newColor);
-        } else if (COLORTYPE_LIGHT.equals(colorTypes[0])) {
-            gfxSettings.getLightColorMap().put(
-                    ColorName.valueOf(colorTypes[1]), newColor);
-        }
+        addControl(frame, new ColorPanel(profile.getGfxSettings()), lastColumn);
     }
 
     private void addAdvancedTab() {
@@ -436,17 +308,15 @@ public class ProfilePanel extends JPanel {
 
     private void addAdvancedControls(final JPanel frame) {
         closeTabBox.setSelectedIndex(profile.getCloseTabMode().ordinal());
-        addControl(frame, newFormattedLabel(t("profiles.advanced.close",
-                "close tab:")), normalColumn);
+        addControl(frame, new RightAlignedLabel(t("profiles.advanced.close",
+        "close tab:")), normalColumn);
         addControl(frame, closeTabBox, lastColumn);
 
-        addControl(frame, newFormattedLabel(
-                t("profiles.advanced.environment", "environment:")), normalColumn);
+        addControl(frame, new RightAlignedLabel(t("profiles.advanced.environment", "environment:")), normalColumn);
         addControl(frame, createEnvironmentPanel(), lastColumn);
 
         boundaryTextField.setText(profile.getGfxSettings().getBoundaryChars());
-        addControl(frame, newFormattedLabel(
-                t("profiles.advanced.wordcharacters", "word characters:")), normalColumn);
+        addControl(frame, new RightAlignedLabel(t("profiles.advanced.wordcharacters", "word characters:")), normalColumn);
         addControl(frame, boundaryTextField, lastColumn);
     }
 
@@ -571,5 +441,23 @@ public class ProfilePanel extends JPanel {
 
     public String getProfileName() {
         return profileNameTextField.getText();
+    }
+
+    private void addCursorColorChooser(final JPanel frame) {
+        addControl(frame, new RightAlignedLabel(t("profiles.colors.cursor",
+        "cursor color:")), normalColumn);
+        addControl(frame, createCursorColorButton(), normalColumn);
+        addControl(frame, new JLabel(), lastColumn);
+    }
+
+    private JButton createCursorColorButton() {
+        return new AbstractColorButton(profile.getGfxSettings().getCursorColor()) {
+            private static final long serialVersionUID = -4068617458848972294L;
+
+            @Override
+            void saveColor(final Color newColor, final ActionEvent e) {
+                profile.getGfxSettings().setCursorColor(newColor);
+            }
+        };
     }
 }
