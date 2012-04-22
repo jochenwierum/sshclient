@@ -10,7 +10,7 @@ import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
 public class KeyboardProcessor implements KeyboardEvent {
     private static final Logger LOGGER = Logger.getLogger(KeyboardProcessor.class);
 
-    private static final char ESC = 27;
+    private static final byte ESC = 27;
     private boolean cursorsInAppMode = false;
     private boolean numpadInAppMode;
     private SSHSession session;
@@ -19,8 +19,8 @@ public class KeyboardProcessor implements KeyboardEvent {
         this.session = session;
     }
 
-    private void send(final char... value) {
-        session.sendToServer(value);
+    private void send(final byte... value) {
+        session.rawSendToServer(value);
     }
 
     @Override
@@ -63,59 +63,59 @@ public class KeyboardProcessor implements KeyboardEvent {
 
         switch (e.getKeyCode()) {
         case KeyEvent.VK_NUMPAD0:
-            processed = sendNumpadNumber('0', 'p');
+            processed = sendNumpadNumber((byte) '0', (byte) 'p');
             break;
         case KeyEvent.VK_NUMPAD1:
-            processed = sendNumpadNumber('1', 'q');
+            processed = sendNumpadNumber((byte) '1', (byte) 'q');
             break;
         case KeyEvent.VK_NUMPAD2:
-            processed = sendNumpadNumber('2', 'r');
+            processed = sendNumpadNumber((byte) '2', (byte) 'r');
             break;
         case KeyEvent.VK_NUMPAD3:
-            processed = sendNumpadNumber('3', 's');
+            processed = sendNumpadNumber((byte) '3', (byte) 's');
             break;
         case KeyEvent.VK_NUMPAD4:
-            processed = sendNumpadNumber('4', 't');
+            processed = sendNumpadNumber((byte) '4', (byte) 't');
             break;
         case KeyEvent.VK_NUMPAD5:
-            processed = sendNumpadNumber('5', 'u');
+            processed = sendNumpadNumber((byte) '5', (byte) 'u');
             break;
         case KeyEvent.VK_NUMPAD6:
-            processed = sendNumpadNumber('6', 'v');
+            processed = sendNumpadNumber((byte) '6', (byte) 'v');
             break;
         case KeyEvent.VK_NUMPAD7:
-            processed = sendNumpadNumber('7', 'w');
+            processed = sendNumpadNumber((byte) '7', (byte) 'w');
             break;
         case KeyEvent.VK_NUMPAD8:
-            processed = sendNumpadNumber('8', 'x');
+            processed = sendNumpadNumber((byte) '8', (byte) 'x');
             break;
         case KeyEvent.VK_NUMPAD9:
-            processed = sendNumpadNumber('9', 'y');
+            processed = sendNumpadNumber((byte) '9', (byte) 'y');
             break;
         case KeyEvent.VK_PLUS:
-            processed = sendNumpadKey('+', 'M', isOnNumpad);
+            processed = sendNumpadKey((byte) '+', (byte) 'M', isOnNumpad);
             break;
         case KeyEvent.VK_MINUS:
-            processed = sendNumpadKey('-', 'm', isOnNumpad);
+            processed = sendNumpadKey((byte) '-', (byte) 'm', isOnNumpad);
             break;
         case KeyEvent.VK_MULTIPLY:
-            processed = sendNumpadKey('*', 'l', isOnNumpad);
+            processed = sendNumpadKey((byte) '*', (byte) 'l', isOnNumpad);
             break;
         case KeyEvent.VK_DIVIDE:
-            send('/');
+            send((byte) '/');
             processed = true;
             break;
         case KeyEvent.VK_COMMA:
-            processed = sendNumpadKey(',', 'n', isOnNumpad);
+            processed = sendNumpadKey((byte) ',', (byte) 'n', isOnNumpad);
             break;
         }
         return processed;
     }
 
-    private boolean sendNumpadKey(final char normalChar, final char appModeChar,
+    private boolean sendNumpadKey(final byte normalChar, final byte appModeChar,
             final boolean isOnNumpad) {
         if (numpadInAppMode && isOnNumpad) {
-            send(ESC, 'O', appModeChar);
+            send(ESC, (byte) 'O', appModeChar);
         } else if (isOnNumpad) {
             send(normalChar);
         } else {
@@ -124,9 +124,9 @@ public class KeyboardProcessor implements KeyboardEvent {
         return true;
     }
 
-    private boolean sendNumpadNumber(final char normalChar, final char appModeChar) {
+    private boolean sendNumpadNumber(final byte normalChar, final byte appModeChar) {
         if (numpadInAppMode) {
-            send(ESC, 'O', appModeChar);
+            send(ESC, (byte) 'O', appModeChar);
         } else {
             send(normalChar);
         }
@@ -136,39 +136,39 @@ public class KeyboardProcessor implements KeyboardEvent {
     private boolean processMiscKeys(final KeyEvent e) {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_DELETE:
-            send((char) 127);
+            send((byte) 127);
             // TODO: read from config?
             // case KeyEvent.VK_DELETE: send(ESC, '[', '3', '~'); break;
             return true;
         case KeyEvent.VK_HOME:
-            send(ESC, '[', '1', '~');
+            send(ESC, (byte) '[', (byte) '1', (byte) '~');
             return true;
         case KeyEvent.VK_END:
-            send(ESC, '[', '4', '~');
+            send(ESC, (byte) '[', (byte) '4', (byte) '~');
             return true;
         case KeyEvent.VK_INSERT:
-            send(ESC, '[', '2', '~');
+            send(ESC, (byte) '[', (byte) '2', (byte) '~');
             return true;
         case KeyEvent.VK_PAGE_UP:
-            send(ESC, '[', '5', '~');
+            send(ESC, (byte) '[', (byte) '5', (byte) '~');
             return true;
         case KeyEvent.VK_PAGE_DOWN:
-            send(ESC, '[', '6', '~');
+            send(ESC, (byte) '[', (byte) '6', (byte) '~');
             return true;
         case KeyEvent.VK_ENTER:
-            send('\n');
+            send((byte) '\n');
             return true;
         case KeyEvent.VK_BACK_SPACE:
-            send((char) 8);
+            send((byte) 8);
             return true;
         case KeyEvent.VK_ESCAPE:
             send(ESC);
             return true;
         case KeyEvent.VK_TAB:
             if (e.isShiftDown()) {
-                send(ESC, '[', 'z');
+                send(ESC, (byte) '[', (byte) 'z');
             } else {
-                send((char) 9);
+                send((byte) 9);
             }
             return true;
         default:
@@ -180,30 +180,30 @@ public class KeyboardProcessor implements KeyboardEvent {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_UP:
             if (cursorsInAppMode) {
-                send(ESC, 'O', 'A');
+                send(ESC, (byte) 'O', (byte) 'A');
             } else {
-                send(ESC, '[', 'A');
+                send(ESC, (byte) '[', (byte) 'A');
             }
             return true;
         case KeyEvent.VK_DOWN:
             if (cursorsInAppMode) {
-                send(ESC, 'O', 'B');
+                send(ESC, (byte) 'O', (byte) 'B');
             } else {
-                send(ESC, '[', 'B');
+                send(ESC, (byte) '[', (byte) 'B');
             }
             return true;
         case KeyEvent.VK_RIGHT:
             if (cursorsInAppMode) {
-                send(ESC, 'O', 'C');
+                send(ESC, (byte) 'O', (byte) 'C');
             } else {
-                send(ESC, '[', 'C');
+                send(ESC, (byte) '[', (byte) 'C');
             }
             return true;
         case KeyEvent.VK_LEFT:
             if (cursorsInAppMode) {
-                send(ESC, 'O', 'D');
+                send(ESC, (byte) 'O', (byte) 'D');
             } else {
-                send(ESC, '[', 'D');
+                send(ESC, (byte) '[', (byte) 'D');
             }
             return true;
         default:
@@ -214,40 +214,40 @@ public class KeyboardProcessor implements KeyboardEvent {
     private boolean processFunctionKeys(final KeyEvent e) {
         switch (e.getKeyCode()) {
         case KeyEvent.VK_F1:
-            send(ESC, 'O', 'p');
+            send(ESC, (byte) 'O', (byte) 'P');
             break;
         case KeyEvent.VK_F2:
-            send(ESC, 'O', 'q');
+            send(ESC, (byte) 'O', (byte) 'Q');
             break;
         case KeyEvent.VK_F3:
-            send(ESC, 'O', 'r');
+            send(ESC, (byte) 'O', (byte) 'R');
             break;
         case KeyEvent.VK_F4:
-            send(ESC, 'O', 's');
+            send(ESC, (byte) 'O', (byte) 'S');
             break;
         case KeyEvent.VK_F5:
-            send(ESC, 'O', 't');
+            send(ESC, (byte) '[', (byte) '1', (byte) '5', (byte) '~');
             break;
         case KeyEvent.VK_F6:
-            send(ESC, '1', '7', '~');
+            send(ESC, (byte) '[', (byte) '1', (byte) '7', (byte) '~');
             break;
         case KeyEvent.VK_F7:
-            send(ESC, '1', '8', '~');
+            send(ESC, (byte) '[', (byte) '1', (byte) '8', (byte) '~');
             break;
         case KeyEvent.VK_F8:
-            send(ESC, '1', '9', '~');
+            send(ESC, (byte) '[', (byte) '1', (byte) '9', (byte) '~');
             break;
         case KeyEvent.VK_F9:
-            send(ESC, '2', '0', '~');
+            send(ESC, (byte) '[', (byte) '2', (byte) '0', (byte) '~');
             break;
         case KeyEvent.VK_F10:
-            send(ESC, '2', '1', '~');
+            send(ESC, (byte) '[', (byte) '2', (byte) '1', (byte) '~');
             break;
         case KeyEvent.VK_F11:
-            send(ESC, '2', '3', '~');
+            send(ESC, (byte) '[', (byte) '2', (byte) '3', (byte) '~');
             break;
         case KeyEvent.VK_F12:
-            send(ESC, '2', '4', '~');
+            send(ESC, (byte) '[', (byte) '2', (byte) '4', (byte) '~');
             break;
         default:
             return false;

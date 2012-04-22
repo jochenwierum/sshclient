@@ -107,6 +107,11 @@ public class SimpleSSHSession implements SSHSession {
         }
 
         final byte[] bytes = charset.encode(CharBuffer.wrap(chars)).array();
+        rawSendToServer(bytes);
+    }
+
+    @Override
+    public void rawSendToServer(final byte[] bytes) {
         if (LOGGER.isTraceEnabled()) {
             LOGGER.trace("Sending: " +
                     StringUtils.escapeForLogs(bytes, 0, bytes.length));

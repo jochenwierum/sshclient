@@ -63,8 +63,13 @@ public class KeyboardProcessorTest {
     }
 
     private void expectChars(final char[] chars) {
+        final byte[] bytes = new byte[chars.length];
+        for (int i = 0; i < bytes.length; ++i) {
+            bytes[i] = (byte) chars[i];
+        }
+
         context.checking(new Expectations() {{
-            oneOf(session).sendToServer(chars);
+            oneOf(session).rawSendToServer(bytes);
         }});
     }
 
@@ -135,18 +140,18 @@ public class KeyboardProcessorTest {
         assertSequence(makeEvent(KeyEvent.VK_INSERT), ESC, '[', '2', '~');
         assertSequence(makeEvent(KeyEvent.VK_PAGE_UP), ESC, '[', '5', '~');
         assertSequence(makeEvent(KeyEvent.VK_PAGE_DOWN), ESC, '[', '6', '~');
-        assertSequence(makeEvent(KeyEvent.VK_F1), ESC, 'O', 'p');
-        assertSequence(makeEvent(KeyEvent.VK_F2), ESC, 'O', 'q');
-        assertSequence(makeEvent(KeyEvent.VK_F3), ESC, 'O', 'r');
-        assertSequence(makeEvent(KeyEvent.VK_F4), ESC, 'O', 's');
-        assertSequence(makeEvent(KeyEvent.VK_F5), ESC, 'O', 't');
-        assertSequence(makeEvent(KeyEvent.VK_F6), ESC, '1', '7', '~');
-        assertSequence(makeEvent(KeyEvent.VK_F7), ESC, '1', '8', '~');
-        assertSequence(makeEvent(KeyEvent.VK_F8), ESC, '1', '9', '~');
-        assertSequence(makeEvent(KeyEvent.VK_F9), ESC, '2', '0', '~');
-        assertSequence(makeEvent(KeyEvent.VK_F10), ESC, '2', '1', '~');
-        assertSequence(makeEvent(KeyEvent.VK_F11), ESC, '2', '3', '~');
-        assertSequence(makeEvent(KeyEvent.VK_F12), ESC, '2', '4', '~');
+        assertSequence(makeEvent(KeyEvent.VK_F1), ESC, 'O', 'P');
+        assertSequence(makeEvent(KeyEvent.VK_F2), ESC, 'O', 'Q');
+        assertSequence(makeEvent(KeyEvent.VK_F3), ESC, 'O', 'R');
+        assertSequence(makeEvent(KeyEvent.VK_F4), ESC, 'O', 'S');
+        assertSequence(makeEvent(KeyEvent.VK_F5), ESC, '[', '1', '5', '~');
+        assertSequence(makeEvent(KeyEvent.VK_F6), ESC, '[', '1', '7', '~');
+        assertSequence(makeEvent(KeyEvent.VK_F7), ESC, '[', '1', '8', '~');
+        assertSequence(makeEvent(KeyEvent.VK_F8), ESC, '[', '1', '9', '~');
+        assertSequence(makeEvent(KeyEvent.VK_F9), ESC, '[', '2', '0', '~');
+        assertSequence(makeEvent(KeyEvent.VK_F10), ESC, '[', '2', '1', '~');
+        assertSequence(makeEvent(KeyEvent.VK_F11), ESC, '[', '2', '3', '~');
+        assertSequence(makeEvent(KeyEvent.VK_F12), ESC, '[', '2', '4', '~');
         assertSequence(makeEvent(KeyEvent.VK_TAB), (char) 9);
     }
 
