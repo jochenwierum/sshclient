@@ -1,0 +1,11 @@
+target/
+
+.classpath
+.project
+.settings
+.idea
+sshclient.iml
+
+build.*
+ssh*.jar
+
