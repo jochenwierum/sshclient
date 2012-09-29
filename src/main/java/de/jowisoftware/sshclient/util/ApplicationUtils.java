@@ -63,12 +63,9 @@ public class ApplicationUtils {
             return "Error while fetching update information: " + e.getMessage();
         }
 
-        final int thisRevision = Integer.parseInt(thisVersion.revision);
-        final int newRevision = Integer.parseInt(properties.getProperty("SCM-Revision"));
-
-        if (thisRevision < newRevision) {
-            return "Build " + newRevision + " (" +
-                properties.getProperty("SCM-Branch") + ", build: " +
+        final String newRevision = properties.getProperty("SCM-Revision");
+        if (!thisVersion.revision.equals(newRevision)) {
+            return "Build " + newRevision + " (built: " +
                 properties.getProperty("Build-Date") + ")";
         } else {
             return null;
