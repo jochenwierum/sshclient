@@ -9,14 +9,18 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.JScrollBar;
 
 import de.jowisoftware.sshclient.terminal.SSHSession;
+import de.jowisoftware.sshclient.terminal.mouse.MouseCursorManager;
 
 public class SSHConsoleHistory implements AdjustmentListener, MouseWheelListener {
     private final JScrollBar scrollBar = new JScrollBar(Adjustable.VERTICAL, 0,
             24, 0, 24);
     private final SSHSession session;
+    private final MouseCursorManager mouseCursorManager;
 
-    public SSHConsoleHistory(final SSHSession session) {
+    public SSHConsoleHistory(final SSHSession session,
+            final MouseCursorManager mouseCursorManager) {
         this.session = session;
+        this.mouseCursorManager = mouseCursorManager;
 
         scrollBar.setBlockIncrement(24);
         scrollBar.setEnabled(false);
@@ -32,18 +36,19 @@ public class SSHConsoleHistory implements AdjustmentListener, MouseWheelListener
         scrollBar.getModel().setRangeProperties(0, scrollBar.getVisibleAmount(),
                 -max, scrollBar.getMaximum(), true);
         scrollBar.setEnabled(-scrollBar.getMinimum() > 0);
-        session.setRenderOffset(0);
+        renderOffsetChanged();
     }
 
     public void updateWindowSize(final int ch) {
         scrollBar.getModel().setRangeProperties(0, ch, scrollBar.getMinimum(), ch, true);
         scrollBar.setBlockIncrement(ch);
         scrollBar.setEnabled(-scrollBar.getMinimum() > 0);
-        session.setRenderOffset(0);
+        renderOffsetChanged();
     }
 
     private void renderOffsetChanged() {
         session.setRenderOffset(-scrollBar.getValue());
+        mouseCursorManager.setRenderOffset(-scrollBar.getValue());
     }
 
     @Override

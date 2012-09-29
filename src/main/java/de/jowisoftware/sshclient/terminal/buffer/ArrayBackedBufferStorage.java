@@ -158,7 +158,7 @@ public class ArrayBackedBufferStorage implements BufferStorage {
             System.arraycopy(lines[i], 0, content[i], 0, lines[0].length);
         }
 
-        return new SnapshotWithHistory(content, history.getSnapshot());
+        return new ArrayBackedSnapshotWithHistory(content, history.getSnapshot());
     }
 
     @Override

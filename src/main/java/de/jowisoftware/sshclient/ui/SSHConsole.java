@@ -70,9 +70,9 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
         session.getKeyboardFeedback().register(keyboardProcessor);
         session.getVisualFeedback().register(new GfxFeedback(this, renderer));
 
-        history = new SSHConsoleHistory(session);
         clipboard = new AWTClipboard(session);
         mouseCursorManager = createCursorManager(profile, buffer);
+        history = new SSHConsoleHistory(session, mouseCursorManager);
 
         outputProcessor = initializeInputProcessor(profile);
         keyListener = new SSHConsoleKeyListener(session, history);
@@ -155,7 +155,6 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     public void gotChars(final byte[] chars, final int count) {
         processCharacters(chars, count);
         history.updateHistorySize(session.getBuffer().getHistorySize());
-        session.setRenderOffset(0);
     }
 
     private void processCharacters(final byte[] chars, final int count) {

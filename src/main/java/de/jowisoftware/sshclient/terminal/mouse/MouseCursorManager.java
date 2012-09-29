@@ -6,4 +6,5 @@ public interface MouseCursorManager {
     void startSelection(Position charPosition, int clicks);
     void updateSelectionEnd(Position charPosition);
     void copySelection();
+    void setRenderOffset(int offset);
 }

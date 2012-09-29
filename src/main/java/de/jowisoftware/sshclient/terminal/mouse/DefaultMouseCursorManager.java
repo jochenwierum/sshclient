@@ -6,6 +6,7 @@ import de.jowisoftware.sshclient.terminal.buffer.BoundaryLocator;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
+import de.jowisoftware.sshclient.ui.terminal.Snapshot;
 
 public class DefaultMouseCursorManager implements MouseCursorManager {
     private enum SelectionMode {
@@ -26,6 +27,8 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
 
     private Position startPosition;
     private Position endPosition;
+
+    private int renderOffset;
 
     public DefaultMouseCursorManager(final Buffer buffer,
             final Renderer renderer, final ClipboardManager clipboard,
@@ -119,51 +122,66 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
             return;
         }
 
+        final Snapshot snapshot = buffer.createSnapshot().createSimpleSnapshot(renderOffset);
+
         LOGGER.debug("Copying range to clipboard: " + startPosition + " to "
                 + endPosition);
 
         final String selectedText;
         if (startPosition.y == endPosition.y) {
-            selectedText = getLineFromBuffer(startPosition.y,
+            selectedText = getLineFromSnapshot(snapshot, startPosition.y,
                     startPosition.x, endPosition.x - 1);
         } else {
-            selectedText = appendSelectionToBuilder(startPosition, endPosition,
-                    buffer.getSize());
+            selectedText = appendSelectionToBuilder(snapshot,
+                    startPosition, endPosition, buffer.getSize());
         }
 
         clipboard.copyPlaintext(selectedText);
     }
 
-    public String appendSelectionToBuilder(final Position pos1,
+    public String appendSelectionToBuilder(final Snapshot snapshot, final Position pos1,
             final Position pos2, final Position size) {
         final StringBuilder builder = new StringBuilder();
-        builder.append(getLineFromBuffer(pos1.y,
-                pos1.x, size.x));
+        builder.append(getLineFromSnapshot(snapshot, pos1.y, pos1.x, size.x));
         builder.append("\n");
 
         for (int line = pos1.y + 1; line < pos2.y; ++line) {
-            builder.append(getLineFromBuffer(line, 1, size.x));
+            builder.append(getLineFromSnapshot(snapshot, line, 1, size.x));
             builder.append("\n");
         }
-        builder.append(getLineFromBuffer(pos2.y, 1, pos2.x - 1));
+        builder.append(getLineFromSnapshot(snapshot, pos2.y, 1, pos2.x - 1));
         return builder.toString();
     }
 
-    private String getLineFromBuffer(final int line, final int from, final int to) {
+    private String getLineFromSnapshot(final Snapshot snapshot, final int line,
+            final int from, final int to) {
         final StringBuilder builder = new StringBuilder(".");
 
-        for (int i = from; i <= to; i += charWidth(line, i)) {
-            builder.append(charAt(line, i));
+        for (int i = from; i <= to; i += charWidth(snapshot, line, i)) {
+            builder.append(charAt(snapshot, line, i));
         }
 
         return builder.toString().trim().substring(1);
     }
 
-    private int charWidth(final int y, final int x) {
-        return buffer.getCharacter(y, x).getCharCount();
+    private int charWidth(final Snapshot snapshot, final int y, final int x) {
+        if (snapshot.content[y - 1].length < x) {
+            return 1;
+        } else {
+            return snapshot.content[y - 1][x - 1].getCharCount();
+        }
     }
 
-    private String charAt(final int y, final int x) {
-        return buffer.getCharacter(y, x).getCharAsString();
+    private String charAt(final Snapshot snapshot, final int y, final int x) {
+        if (snapshot.content[y - 1].length < x) {
+            return " ";
+        } else {
+            return snapshot.content[y - 1][x - 1].getCharAsString();
+        }
+    }
+
+    @Override
+    public void setRenderOffset(final int offset) {
+        this.renderOffset = offset;
     }
 }

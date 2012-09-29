@@ -91,7 +91,8 @@ public class SimpleFlippableBufferStorage implements FlippableBufferStorage {
     @Override
     public SnapshotWithHistory cloneContentWithHistory() {
         final SnapshotWithHistory snapshot = selectedBuffer.cloneContentWithHistory();
-        final SnapshotWithHistory result = new SnapshotWithHistory(snapshot.getBuffer(), history);
+        final SnapshotWithHistory result = new ArrayBackedSnapshotWithHistory(
+                snapshot.getBuffer(), history);
         result.setCursorPosition(snapshot.getCursorPosition());
         return result;
     }
