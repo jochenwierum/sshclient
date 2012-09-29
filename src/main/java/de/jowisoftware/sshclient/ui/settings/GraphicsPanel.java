@@ -55,7 +55,7 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
         add(fontSizeTextField, makeConstraints(2, offset + 2));
 
         antiAliasingBox.setSelectedIndex(gfxSettings.getAntiAliasingMode());
-        add(new JLabel(t("profile.color.antialiasing", "antialiasing:")),
+        add(new JLabel(t("profiles.color.antialiasing", "antialiasing:")),
                 makeConstraints(1, offset + 3));
         add(antiAliasingBox, makeConstraints(2, offset + 3));
     }
@@ -97,10 +97,9 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
 
         int i = 0;
         for (final KeyValue<String, Object> hint : hints) {
-            names[i++] = t("profile.color.antialiasing." + hint.key, hint.key);
+            names[i++] = t("profiles.color.antialiasing." + hint.key, hint.key);
         }
 
-        Arrays.sort(names);
         return new JComboBox(names);
     }
 

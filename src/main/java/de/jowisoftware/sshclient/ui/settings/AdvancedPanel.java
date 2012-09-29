@@ -135,7 +135,7 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
 
         int i = 0;
         for (final CloseTabMode mode : modes) {
-            names[i++] = t("profile.close." + mode.toString().toLowerCase(),
+            names[i++] = t("profiles.close." + mode.toString().toLowerCase(),
                     mode.niceName);
         }
 
