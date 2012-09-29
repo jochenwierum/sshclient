@@ -1,18 +1,23 @@
 package de.jowisoftware.sshclient.ui.settings;
 
+import static de.jowisoftware.sshclient.i18n.Translation.m;
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.util.FontUtils;
 import de.jowisoftware.sshclient.util.KeyValue;
@@ -24,6 +29,7 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
     private final JComboBox fontBox = createFontSelectionBox();
     private final JTextField fontSizeTextField = new JTextField(2);
     private final JComboBox antiAliasingBox = createAntiAliasingBox();
+    private final JComboBox cursorStyleBox = createCursorStyleBox();
     private final AWTGfxInfo gfxSettings;
 
     public GraphicsPanel(final AWTGfxInfo gfxSettings) {
@@ -33,8 +39,10 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
         addVerticalSpacing(3);
         addCursorColorChooser(4);
         addVerticalSpacing(5);
-        addColorChooserMatrix(6);
-        fillToBottom(7);
+        addCursorStyle(6);
+        addVerticalSpacing(8);
+        addColorChooserMatrix(9);
+        fillToBottom(10);
     }
 
     private void addVerticalSpacing(final int offset) {
@@ -78,6 +86,16 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
         add(createCursorColorButton(), makeConstraints(2, offset + 1));
     }
 
+    private void addCursorStyle(final int offset) {
+        add(new JLabel(t("profiles.cursor.style", "Cursor Style:")),
+                makeConstraints(1, offset + 1));
+        cursorStyleBox.setSelectedIndex(gfxSettings.getCursorStyle().ordinal());
+        add(cursorStyleBox, makeConstraints(2, offset + 1));
+
+        final JCheckBox checkbox = createBlinkingCheckBox();
+        checkbox.setSelected(gfxSettings.cursorBlinks());
+        add(checkbox, makeConstraints(2, offset + 2));
+    }
 
     private JButton createCursorColorButton() {
         return new AbstractColorButton(gfxSettings.getCursorColor()) {
@@ -90,6 +108,32 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
         };
     }
 
+    private JComboBox createCursorStyleBox() {
+        final CursorStyle[] styles = CursorStyle.values();
+        final String names[] = new String[styles.length];
+
+        int i = 0;
+        for (final CursorStyle style : styles) {
+            names[i++] = t("profiles.cursor.style." + style.name().toLowerCase(),
+                    style.name().toLowerCase());
+        }
+
+        return new JComboBox(names);
+    }
+
+    private JCheckBox createBlinkingCheckBox() {
+        final JCheckBox checkBox = new JCheckBox(t("profiles.cursor.blink",
+                "enable blinking cursor"));
+        checkBox.setMnemonic(m("profiles.cursor.blink", 'b'));
+        checkBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(final ItemEvent e) {
+                gfxSettings.setCursorBlinks(e.getStateChange() == ItemEvent.SELECTED);
+            }
+        });
+
+        return checkBox;
+    }
 
     private JComboBox createAntiAliasingBox() {
         final List<KeyValue<String, Object>> hints = FontUtils.getRenderingHintMap();
@@ -114,7 +158,7 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
         gfxSettings.setFont(
                 (String) fontBox.getSelectedItem(),
                 StringUtils.getInteger(fontSizeTextField.getText(), 10));
-
+        gfxSettings.setCursorStyle(CursorStyle.values()[cursorStyleBox.getSelectedIndex()]);
     }
 
 }

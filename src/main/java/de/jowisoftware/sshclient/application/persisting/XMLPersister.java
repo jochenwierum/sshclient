@@ -144,6 +144,15 @@ public class XMLPersister {
         final Element boundaryChars = doc.createElement("boundaryChars");
         boundaryChars.setTextContent(gfxSettings.getBoundaryChars());
         node.appendChild(boundaryChars);
+
+        final Element cursorBlinks = doc.createElement("cursorBlinks");
+        cursorBlinks.setTextContent(Boolean.toString(gfxSettings.cursorBlinks()));
+        node.appendChild(cursorBlinks);
+
+        final Element cursorStyle = doc.createElement("cursorStyle");
+        cursorStyle.setTextContent(Integer.toString(gfxSettings.getCursorStyle().ordinal()));
+        node.appendChild(cursorStyle);
+
         return node;
     }
 

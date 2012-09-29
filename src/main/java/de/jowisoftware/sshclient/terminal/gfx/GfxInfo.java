@@ -9,6 +9,9 @@ public interface GfxInfo<C> {
     Map<ColorName, C> getLightColorMap();
     void setCursorColor(final C color);
 
+    CursorStyle getCursorStyle();
+    boolean cursorBlinks();
+
     String getBoundaryChars();
     void setBoundaryChars(String boundaryChars);
 }

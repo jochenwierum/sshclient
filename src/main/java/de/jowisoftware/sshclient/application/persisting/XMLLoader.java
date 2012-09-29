@@ -26,6 +26,7 @@ import de.jowisoftware.sshclient.application.ApplicationSettings;
 import de.jowisoftware.sshclient.application.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.application.validation.ValidationResult;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
@@ -241,6 +242,14 @@ public class XMLLoader {
         final String boundaryChars = getString(gfxNode, "boundaryChars/text()", null);
         if (boundaryChars != null) {
             gfxSettings.setBoundaryChars(boundaryChars);
+        }
+
+        final boolean cursorBlinks = getBoolean(gfxNode, "cursorBlinks/text()", true);
+        gfxSettings.setCursorBlinks(cursorBlinks);
+
+        final Integer cursorStyle = getInteger(gfxNode, "cursorStyle/text()", null);
+        if (cursorStyle != null) {
+            gfxSettings.setCursorStyle(CursorStyle.values()[cursorStyle]);
         }
     }
 

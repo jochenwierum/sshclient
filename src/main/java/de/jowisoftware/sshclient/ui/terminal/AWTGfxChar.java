@@ -57,13 +57,29 @@ public class AWTGfxChar implements GfxChar {
         eraseArea(g, rect, flags);
 
         if ((flags & RenderFlag.CURSOR.flag) != 0) {
-            drawCursor(g, rect);
+            drawCursor(g, rect, flags);
         }
     }
 
-    private void drawCursor(final Graphics g, final Rectangle rect) {
+    private void drawCursor(final Graphics g, final Rectangle rect, final int flags) {
+        final Rectangle cursorRect;
+        switch (gfxInfo.getCursorStyle()) {
+            case Block: cursorRect = rect; break;
+            case Underline: cursorRect = new Rectangle(
+                    rect.x, rect.y + rect.height - 4, rect.width, 4); break;
+            case Horizontal: cursorRect = new Rectangle(
+                    rect.x, rect.y, 3, rect.height); break;
+            default: throw new RuntimeException("Unsupported cursor style");
+        }
+
         g.setColor(gfxInfo.getCursorColor());
-        g.drawRect(rect.x, rect.y, rect.width - 1, rect.height - 1);
+        if ((flags & RenderFlag.FOCUSED.flag) != 0) {
+            if ((flags & RenderFlag.BLINKING.flag) != 0 || !gfxInfo.cursorBlinks()) {
+                g.fillRect(cursorRect.x, cursorRect.y, cursorRect.width - 1, cursorRect.height - 1);
+            }
+        } else {
+            g.drawRect(cursorRect.x, cursorRect.y, cursorRect.width - 1, cursorRect.height - 1);
+        }
     }
 
     private void eraseArea(final Graphics g, final Rectangle rect,

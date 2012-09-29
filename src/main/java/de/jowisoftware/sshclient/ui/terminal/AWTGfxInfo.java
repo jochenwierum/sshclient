@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
 import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 
 public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
@@ -21,6 +22,8 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
     private String fontName;
     private int fontSize;
     private int antiAliasingMode;
+    private CursorStyle cursorStyle;
+    private boolean cursorBlinks;
 
     private String boundaryChars = ":@-./_~?&=%+#";
 
@@ -50,6 +53,8 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
        lightColors.put(ColorName.YELLOW, color(255, 255, 0));
 
        cursorColor = Color.GREEN;
+       cursorBlinks = true;
+       cursorStyle = CursorStyle.Block;
     }
 
     private static Color color(final int r, final int g, final int b) {
@@ -151,5 +156,23 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
     @Override
     public void setBoundaryChars(final String boundaryChars) {
         this.boundaryChars = boundaryChars;
+    }
+
+    @Override
+    public CursorStyle getCursorStyle() {
+        return cursorStyle;
+    }
+
+    public void setCursorStyle(final CursorStyle cursorStyle) {
+        this.cursorStyle = cursorStyle;
+    }
+
+    @Override
+    public boolean cursorBlinks() {
+        return cursorBlinks;
+    }
+
+    public void setCursorBlinks(final boolean cursorBlinks) {
+        this.cursorBlinks = cursorBlinks;
     }
 }

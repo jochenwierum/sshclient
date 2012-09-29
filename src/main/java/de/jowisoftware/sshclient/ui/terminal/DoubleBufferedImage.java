@@ -43,6 +43,7 @@ public class DoubleBufferedImage implements Renderer {
 
     private Position currentSelectionStart;
     private Position currentSelectionEnd;
+    private boolean isFocused;
 
     public DoubleBufferedImage(final AWTGfxInfo gfxInfo, final JPanel parent) {
         this.gfxInfo = gfxInfo;
@@ -142,12 +143,15 @@ public class DoubleBufferedImage implements Renderer {
         if (blinkIsForeground()) {
             flags |= RenderFlag.BLINKING.flag;
         }
+        if (isFocused) {
+            flags |= RenderFlag.FOCUSED.flag;
+        }
         return flags;
     }
 
 
     private boolean blinkIsForeground() {
-        return (System.currentTimeMillis() / 400) % 2 == 0;
+        return (System.currentTimeMillis() / 600) % 2 == 0;
     }
 
     private int createCharRenderFlags(
@@ -236,5 +240,10 @@ public class DoubleBufferedImage implements Renderer {
     public synchronized void setSelection(final Position pos1, final Position pos2) {
         this.currentSelectionStart = pos1;
         this.currentSelectionEnd = pos2;
+    }
+
+    @Override
+    public void setFocused(final boolean isFocused) {
+        this.isFocused = isFocused;
     }
 }

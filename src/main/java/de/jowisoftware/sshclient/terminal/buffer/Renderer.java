@@ -14,4 +14,6 @@ public interface Renderer {
 
     void clearSelection();
     void setSelection(Position pos1, Position pos2);
+
+    void setFocused(boolean isFocused);
 }

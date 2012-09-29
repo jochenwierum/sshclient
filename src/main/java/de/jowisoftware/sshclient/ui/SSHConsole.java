@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.OutputStream;
@@ -39,7 +41,8 @@ import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 import de.jowisoftware.sshclient.util.SwingUtils;
 
-public class SSHConsole extends JPanel implements InputStreamEvent, ComponentListener {
+public class SSHConsole extends JPanel implements InputStreamEvent,
+        ComponentListener, FocusListener {
     private static final long serialVersionUID = 5102110929763645596L;
     private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
 
@@ -94,6 +97,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
 
             {
                 this.addComponentListener(SSHConsole.this);
+                this.addFocusListener(SSHConsole.this);
                 final SSHConsoleMouseListener mouseListener = new SSHConsoleMouseListener(
                         this, mouseCursorManager, session, clipboard);
                 this.addMouseListener(mouseListener);
@@ -263,6 +267,16 @@ public class SSHConsole extends JPanel implements InputStreamEvent, ComponentLis
     @Override
     public void streamClosed(final int exitCode) {
         session.setOutputStream(null);
+    }
+
+    @Override
+    public void focusGained(final FocusEvent e) {
+        renderer.setFocused(true);
+    }
+
+    @Override
+    public void focusLost(final FocusEvent e) {
+        renderer.setFocused(false);
     }
 
     @Override public void componentMoved(final ComponentEvent e) { /* ignored */ }
