@@ -14,10 +14,11 @@ import javax.swing.JPanel;
 
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.debug.PerformanceType;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
+import de.jowisoftware.sshclient.terminal.buffer.Snapshot;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 import de.jowisoftware.sshclient.util.Constants;
 import de.jowisoftware.sshclient.util.FontUtils;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;

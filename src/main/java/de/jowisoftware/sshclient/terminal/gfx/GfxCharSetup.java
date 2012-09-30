@@ -1,6 +1,5 @@
 package de.jowisoftware.sshclient.terminal.gfx;
 
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.charsets.TerminalCharset;
 import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
 

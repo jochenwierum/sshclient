@@ -3,9 +3,9 @@ package de.jowisoftware.sshclient.terminal.input.controlsequences;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.SSHSession;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.gfx.Attribute;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.util.StringUtils;
 

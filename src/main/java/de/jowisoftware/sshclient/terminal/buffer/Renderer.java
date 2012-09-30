@@ -1,6 +1,5 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import de.jowisoftware.sshclient.ui.terminal.Snapshot;
 
 public interface Renderer {
     void renderSnapshot(Snapshot snapshot);

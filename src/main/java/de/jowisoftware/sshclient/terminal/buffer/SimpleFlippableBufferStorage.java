@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 import de.jowisoftware.sshclient.util.EmptyRingBuffer;
 import de.jowisoftware.sshclient.util.FixedSizeArrayRingBuffer;
 import de.jowisoftware.sshclient.util.RingBuffer;

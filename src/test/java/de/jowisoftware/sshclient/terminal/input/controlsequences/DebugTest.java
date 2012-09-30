@@ -6,8 +6,8 @@ import static org.junit.Assert.assertTrue;
 import org.jmock.Expectations;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 
 public class DebugTest extends AbstractSequenceTest {
     @Test

@@ -1,5 +1,7 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
+
 
 public interface BufferStorage {
     public static final GfxChar EMPTY = new GfxChar() {

@@ -1,5 +1,7 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
+
 public class SynchronizedBuffer implements Buffer {
     private volatile FlippableBufferStorage storage;
 

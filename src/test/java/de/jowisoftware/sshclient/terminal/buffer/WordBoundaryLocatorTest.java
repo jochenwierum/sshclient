@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
+
 @RunWith(JMock.class)
 public class WordBoundaryLocatorTest {
     private final Mockery context = new JUnit4Mockery();

@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 import de.jowisoftware.sshclient.util.RingBuffer;
 
 @RunWith(JMock.class)

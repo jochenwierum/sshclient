@@ -1,7 +1,6 @@
-package de.jowisoftware.sshclient.ui.terminal;
+package de.jowisoftware.sshclient.terminal.buffer;
 
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
-import de.jowisoftware.sshclient.terminal.buffer.Position;
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 
 public class Snapshot {
     public Position cursorPosition;

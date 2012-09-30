@@ -2,7 +2,7 @@ package de.jowisoftware.sshclient.terminal.buffer;
 
 import java.util.Iterator;
 
-import de.jowisoftware.sshclient.ui.terminal.Snapshot;
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 import de.jowisoftware.sshclient.util.RingBuffer;
 
 public class ArrayBackedSnapshotWithHistory implements SnapshotWithHistory  {

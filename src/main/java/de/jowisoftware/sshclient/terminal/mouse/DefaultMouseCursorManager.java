@@ -6,7 +6,7 @@ import de.jowisoftware.sshclient.terminal.buffer.BoundaryLocator;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
-import de.jowisoftware.sshclient.ui.terminal.Snapshot;
+import de.jowisoftware.sshclient.terminal.buffer.Snapshot;
 
 public class DefaultMouseCursorManager implements MouseCursorManager {
     private enum SelectionMode {

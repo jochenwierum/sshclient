@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
+
 @RunWith(JMock.class)
 public class SynchronizedBufferTest {
     private final Mockery context = new JUnit4Mockery();

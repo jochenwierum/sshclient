@@ -6,7 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.SSHSession;
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 
 public class DefaultSequenceRepository implements SequenceRepository {
     private static class WarnSequenceHandler implements ANSISequence {

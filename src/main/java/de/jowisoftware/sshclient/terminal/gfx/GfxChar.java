@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.terminal.buffer;
+package de.jowisoftware.sshclient.terminal.gfx;
 
 public interface GfxChar {
     String getCharAsString();

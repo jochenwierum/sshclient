@@ -6,9 +6,9 @@ import org.jmock.integration.junit4.JMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.gfx.Attribute;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 
 @RunWith(JMock.class)
 public class ANSISequenceAttributeTest extends AbstractSequenceTest {
