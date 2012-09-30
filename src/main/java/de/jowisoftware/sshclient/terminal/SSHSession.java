@@ -24,8 +24,8 @@ public interface SSHSession {
     DisplayType getDisplayType();
     void setDisplayType(DisplayType newDisplayType);
 
-    public void saveState();
-    public void restoreState();
+    void saveState();
+    void restoreState();
 
     void setRenderOffset(int i);
     void render();

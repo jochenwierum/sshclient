@@ -3,12 +3,12 @@ package de.jowisoftware.sshclient.ui;
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 import java.awt.BorderLayout;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 
 import org.apache.log4j.Logger;
 
@@ -18,12 +18,16 @@ import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
 import de.jowisoftware.sshclient.terminal.JSchConnection;
+import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.events.VisualEvent;
+import de.jowisoftware.sshclient.ui.tabpanel.Redrawable;
+import de.jowisoftware.sshclient.ui.tabpanel.RedrawingTabPane;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
+import de.jowisoftware.sshclient.util.Constants;
 
-public class ConnectionFrame extends JPanel {
+public class ConnectionFrame extends JPanel implements Redrawable {
     private static final long serialVersionUID = 7873084199411017370L;
 
     private static final Logger LOGGER = Logger.getLogger(ConnectionFrame.class);
@@ -35,10 +39,10 @@ public class ConnectionFrame extends JPanel {
     private SSHConsole console = null;
 
     private final Application application;
-    private final JTabbedPane parent;
+    private final RedrawingTabPane parent;
 
     public ConnectionFrame(final Application application, final AWTProfile profile,
-            final JTabbedPane parent) {
+            final RedrawingTabPane parent) {
         this.parent = parent;
         this.profile = profile;
         this.application = application;
@@ -53,7 +57,8 @@ public class ConnectionFrame extends JPanel {
     }
 
     private void registerVisualFeedbackListener() {
-        console.getSession().getVisualFeedback().register(new VisualEvent.VisualEventAdapter() {
+        final SSHSession session = console.getSession();
+        session.getVisualFeedback().register(new VisualEvent.VisualEventAdapter() {
             @Override
             public void newTitle(final String title) {
                 tabComponent.updateLabel(title);
@@ -62,6 +67,19 @@ public class ConnectionFrame extends JPanel {
             @Override
             public void setDisplayType(final DisplayType displayType) {
                 sessionMenu.updateMenuStates();
+            }
+
+            @Override
+            public void bell() {
+                switch(application.settings.getBellType()) {
+                    case Sound:
+                        Toolkit.getDefaultToolkit().beep();
+                        break;
+                    case Visual:
+                        session.getRenderer().invertFor(Constants.FLASH_TIMER);
+                        parent.restartTimer();
+                        break;
+                }
             }
         });
     }
@@ -154,6 +172,7 @@ public class ConnectionFrame extends JPanel {
         }
     }
 
+    @Override
     public void redraw() {
         if (console != null) {
             console.redrawConsole();

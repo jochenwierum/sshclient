@@ -15,9 +15,7 @@ public class GfxFeedback implements VisualEvent {
     }
 
     @Override
-    public void bell() {
-        System.err.println("BELL!");
-    }
+    public void bell() { /* ignored */ }
 
     @Override
     public void newTitle(final String title) { /* ignored */ }

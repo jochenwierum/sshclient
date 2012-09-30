@@ -220,6 +220,10 @@ public class XMLPersister {
         language.appendChild(doc.createTextNode(settings.getLanguage()));
         element.appendChild(language);
 
+        final Element bellType = doc.createElement("bellType");
+        bellType.setTextContent(Integer.toString(settings.getBellType().ordinal()));
+        element.appendChild(bellType);
+
         return element;
     }
 

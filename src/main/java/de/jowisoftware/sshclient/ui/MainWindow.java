@@ -4,16 +4,12 @@ import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
-import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -25,6 +21,7 @@ import de.jowisoftware.sshclient.application.persisting.XMLPersister;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.log.LogPanel;
 import de.jowisoftware.sshclient.ui.settings.ConnectDialog;
+import de.jowisoftware.sshclient.ui.tabpanel.RedrawingTabPane;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.util.FontUtils;
 
@@ -37,9 +34,7 @@ public class MainWindow extends JFrame {
     private final MainWindowMenu menu;
     private final MainWindowToolbar toolBar;
 
-    private final JTabbedPane pane = createTabbedPane();
-    private final Timer timer = createTimer(pane);
-
+    private final RedrawingTabPane pane = createTabbedPane();
     private final JComponent logPanel = new LogPanel();
     private final PrivateKeyTab keyPanel;
 
@@ -58,28 +53,13 @@ public class MainWindow extends JFrame {
         initWindowElements();
     }
 
-    private Timer createTimer(final JTabbedPane updatePane) {
-        final Timer newTimer = new Timer(200, new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                final Component component = updatePane.getSelectedComponent();
-                if (component instanceof ConnectionFrame) {
-                    ((ConnectionFrame) component).redraw();
-                }
-            }
-        });
-        newTimer.setRepeats(true);
-        newTimer.start();
-        return newTimer;
-    }
-
     @Override
     public void dispose() {
         // TODO: if state is connecting, we get a problem here
 
         persistTabStates();
 
-        timer.stop();
+        pane.stopRedraw();
         while(pane.getTabCount() > 0) {
             final Component component = pane.getComponentAt(0);
             if (component instanceof ConnectionFrame) {
@@ -131,8 +111,8 @@ public class MainWindow extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    private JTabbedPane createTabbedPane() {
-        final JTabbedPane tabbedPane = new DnDTabbedPane();
+    private RedrawingTabPane createTabbedPane() {
+        final RedrawingTabPane tabbedPane = new RedrawingTabPane();
         tabbedPane.addKeyListener(new KeyAdapter() {
             @Override
             public void keyTyped(final KeyEvent e) {

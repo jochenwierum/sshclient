@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.ui;
+package de.jowisoftware.sshclient.ui.tabpanel;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;

@@ -16,4 +16,5 @@ public interface Renderer {
     void setSelection(Position pos1, Position pos2);
 
     void setFocused(boolean isFocused);
+    void invertFor(int invertMillis);
 }

@@ -29,6 +29,7 @@ public class ApplicationSettings {
     private TabState logTabState = TabState.CLOSED;
     private TabState keyTabState = TabState.CLOSED;
     private String language = "en_US";
+    private BellType bellType = BellType.Visual;
 
     public ApplicationSettings() {
         PasswordStorage newPasswordManager;
@@ -84,5 +85,13 @@ public class ApplicationSettings {
 
     public void setUnlockKeysOnStartup(final boolean unlockKeysOnStartup) {
         this.unlockKeysOnStartup = unlockKeysOnStartup;
+    }
+
+    public BellType getBellType() {
+        return bellType;
+    }
+
+    public void setBellType(final BellType bellType) {
+        this.bellType = bellType;
     }
 }

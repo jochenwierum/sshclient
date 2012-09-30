@@ -9,3 +9,4 @@ sshclient.iml
 build.*
 ssh*.jar
 
+src/test/resources/debug.txt

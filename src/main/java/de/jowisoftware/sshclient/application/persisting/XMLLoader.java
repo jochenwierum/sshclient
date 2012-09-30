@@ -24,6 +24,7 @@ import org.xml.sax.SAXException;
 
 import de.jowisoftware.sshclient.application.ApplicationSettings;
 import de.jowisoftware.sshclient.application.ApplicationSettings.TabState;
+import de.jowisoftware.sshclient.application.BellType;
 import de.jowisoftware.sshclient.application.validation.ValidationResult;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
@@ -350,6 +351,9 @@ public class XMLLoader {
 
         final String language = getString(settingsNode, "language/text()", "en_US");
         settings.setLanguage(language);
+
+        final int bellType = getInteger(settingsNode, "bellType/text()", 1);
+        settings.setBellType(BellType.values()[bellType]);
     }
 
 

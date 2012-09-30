@@ -18,6 +18,7 @@ import de.jowisoftware.sshclient.terminal.buffer.GfxChar;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.util.Constants;
 import de.jowisoftware.sshclient.util.FontUtils;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 
@@ -43,7 +44,9 @@ public class DoubleBufferedImage implements Renderer {
 
     private Position currentSelectionStart;
     private Position currentSelectionEnd;
+
     private boolean isFocused;
+    private long invertUntil;
 
     public DoubleBufferedImage(final AWTGfxInfo gfxInfo, final JPanel parent) {
         this.gfxInfo = gfxInfo;
@@ -137,7 +140,7 @@ public class DoubleBufferedImage implements Renderer {
 
     private int createGlobalRenderFlags() {
         int flags = 0;
-        if (renderInverted) {
+        if ((renderInverted && !invertTimed()) || (!renderInverted && invertTimed())) {
             flags |= RenderFlag.INVERTED.flag;
         }
         if (blinkIsForeground()) {
@@ -149,9 +152,8 @@ public class DoubleBufferedImage implements Renderer {
         return flags;
     }
 
-
     private boolean blinkIsForeground() {
-        return (System.currentTimeMillis() / 600) % 2 == 0;
+        return (System.currentTimeMillis() / Constants.BLINK_TIMER) % 2 == 0;
     }
 
     private int createCharRenderFlags(
@@ -245,5 +247,14 @@ public class DoubleBufferedImage implements Renderer {
     @Override
     public void setFocused(final boolean isFocused) {
         this.isFocused = isFocused;
+    }
+
+    @Override
+    public void invertFor(final int invertMillis) {
+        invertUntil = System.currentTimeMillis() + invertMillis;
+    }
+
+    private boolean invertTimed() {
+        return invertUntil > System.currentTimeMillis();
     }
 }
