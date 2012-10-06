@@ -75,7 +75,7 @@ public class ApplicationUtils {
     private static VersionInformation readUpdateProperties() throws IOException {
         final URL url = new URL(UPDATE_URL);
         final InputStream urlStream = url.openStream();
-        final VersionInformation result = readFromStream(urlStream);
+        final VersionInformation result = readFromStream(urlStream, false);
         urlStream.close();
         return result;
     }
@@ -85,7 +85,7 @@ public class ApplicationUtils {
                 .getResources("META-INF/MANIFEST.MF");
         while (resources.hasMoreElements()) {
             final InputStream stream = resources.nextElement().openStream();
-            final VersionInformation result = readFromStream(stream);
+            final VersionInformation result = readFromStream(stream, true);
             stream.close();
             if (result != null) {
                 return result;
@@ -95,7 +95,8 @@ public class ApplicationUtils {
         return new VersionInformation("unknown", "unknown", "unknown");
     }
 
-    private static VersionInformation readFromStream(final InputStream stream)
+    private static VersionInformation readFromStream(final InputStream stream,
+            final boolean filter)
             throws IOException {
         final Properties manifest = new Properties();
         manifest.load(stream);
@@ -108,7 +109,7 @@ public class ApplicationUtils {
         final boolean isSSHManifest = mainClass != null && SSHApp.class.getName().equals(mainClass);
         final boolean containsVersionInformation = revision != null && branch != null && date != null;
 
-        if (isSSHManifest && containsVersionInformation) {
+        if (!filter || (isSSHManifest && containsVersionInformation)) {
             return new VersionInformation(revision, branch, date);
         }
         return null;
