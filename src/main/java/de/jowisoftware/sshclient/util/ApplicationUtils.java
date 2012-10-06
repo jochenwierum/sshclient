@@ -8,6 +8,8 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+import de.jowisoftware.sshclient.SSHApp;
+
 public class ApplicationUtils {
     private static final String UPDATE_URL = "http://jowisoftware.de/ssh/build.properties";
 
@@ -101,8 +103,10 @@ public class ApplicationUtils {
         final String revision = manifest.getProperty("SCM-Revision");
         final String branch = manifest.getProperty("SCM-Branch");
         final String date = manifest.getProperty("Build-Date");
+        final String mainClass = manifest.getProperty("Main-Class");
 
-        if (revision != null && branch != null && date != null) {
+        if (mainClass.equals(SSHApp.class.getName())
+                && revision != null && branch != null && date != null) {
             return new VersionInformation(revision, branch, date);
         }
         return null;
