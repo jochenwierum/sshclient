@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Properties;
-import java.util.jar.Manifest;
 
 import org.apache.log4j.Logger;
 
@@ -41,7 +40,7 @@ public class ApplicationUtils {
     }
 
     public static String getAvailableUpdateVersion() {
-        final Properties properties;
+        final VersionInformation updateVersion;
         final VersionInformation thisVersion;
 
         try {
@@ -57,28 +56,26 @@ public class ApplicationUtils {
         }
 
         try {
-            properties = readUpdateProperties();
+            updateVersion = readUpdateProperties();
         } catch (final IOException e) {
             LOGGER.warn("Error while fetching update information", e);
             return "Error while fetching update information: " + e.getMessage();
         }
 
-        final String newRevision = properties.getProperty("SCM-Revision");
-        if (!thisVersion.revision.equals(newRevision)) {
-            return "Build " + newRevision + " (built: " +
-                properties.getProperty("Build-Date") + ")";
+        if (!thisVersion.revision.equals(updateVersion.revision)) {
+            return "Build " + updateVersion.revision + " (built: " +
+                    updateVersion.date + ")";
         } else {
             return null;
         }
     }
 
-    private static Properties readUpdateProperties() throws IOException {
-        final Properties properties = new Properties();
+    private static VersionInformation readUpdateProperties() throws IOException {
         final URL url = new URL(UPDATE_URL);
         final InputStream urlStream = url.openStream();
-        properties.load(urlStream);
+        final VersionInformation result = readFromStream(urlStream);
         urlStream.close();
-        return properties;
+        return result;
     }
 
     private static VersionInformation readVersion() throws IOException {
@@ -86,18 +83,28 @@ public class ApplicationUtils {
                 .getResources("META-INF/MANIFEST.MF");
         while (resources.hasMoreElements()) {
             final InputStream stream = resources.nextElement().openStream();
-            final Manifest manifest = new Manifest(stream);
+            final VersionInformation result = readFromStream(stream);
             stream.close();
-
-            final String revision = manifest.getMainAttributes().getValue("SCM-Revision");
-            final String branch = manifest.getMainAttributes().getValue("SCM-Branch");
-            final String date = manifest.getMainAttributes().getValue("Build-Date");
-
-            if (revision != null && branch != null && date != null) {
-                return new VersionInformation(revision, branch, date);
+            if (result != null) {
+                return result;
             }
         }
 
         return new VersionInformation("unknown", "unknown", "unknown");
+    }
+
+    private static VersionInformation readFromStream(final InputStream stream)
+            throws IOException {
+        final Properties manifest = new Properties();
+        manifest.load(stream);
+
+        final String revision = manifest.getProperty("SCM-Revision");
+        final String branch = manifest.getProperty("SCM-Branch");
+        final String date = manifest.getProperty("Build-Date");
+
+        if (revision != null && branch != null && date != null) {
+            return new VersionInformation(revision, branch, date);
+        }
+        return null;
     }
 }
