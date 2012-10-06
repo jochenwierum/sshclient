@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -16,17 +17,28 @@ public class ApplicationUtils {
     private static final Logger LOGGER = Logger
             .getLogger(ApplicationUtils.class);
 
+    private static boolean isLuja;
+
     private ApplicationUtils() { /* Util classes will not be instanciated */ }
 
-    private static class VersionInformation {
+    public static class VersionInformation {
         public final String revision;
         public final String branch;
         public final String date;
+        private boolean isUpdatable;
 
         public VersionInformation(final String revision, final String branch, final String date) {
             this.revision = revision;
             this.branch = branch;
             this.date = date;
+        }
+
+        public boolean isUpdatable() {
+            return isUpdatable;
+        }
+
+        void setSaneUpdate() {
+            isUpdatable = true;
         }
     }
 
@@ -41,7 +53,7 @@ public class ApplicationUtils {
         return version.branch + "-" + version.revision + " " + version.date;
     }
 
-    public static String getAvailableUpdateVersion() {
+    public static VersionInformation getAvailableUpdateVersion() {
         final VersionInformation updateVersion;
         final VersionInformation thisVersion;
 
@@ -52,21 +64,21 @@ public class ApplicationUtils {
             return null;
         }
 
-        if (thisVersion.revision.isEmpty()) {
-            LOGGER.info("No SCM-Build, skipping update check");
-            return null;
-        }
-
         try {
             updateVersion = readUpdateProperties();
         } catch (final IOException e) {
             LOGGER.warn("Error while fetching update information", e);
-            return "Error while fetching update information: " + e.getMessage();
+            return null;
+        }
+
+        if (thisVersion.revision.isEmpty()) {
+            LOGGER.info("No SCM-Build, skipping update check");
+            return updateVersion;
         }
 
         if (!thisVersion.revision.equals(updateVersion.revision)) {
-            return "Build " + updateVersion.revision + " (built: " +
-                    updateVersion.date + ")";
+            updateVersion.setSaneUpdate();
+            return updateVersion;
         } else {
             return null;
         }
@@ -92,7 +104,7 @@ public class ApplicationUtils {
             }
         }
 
-        return new VersionInformation("unknown", "unknown", "unknown");
+        return new VersionInformation("", "unknown", "unknown");
     }
 
     private static VersionInformation readFromStream(final InputStream stream,
@@ -113,5 +125,31 @@ public class ApplicationUtils {
             return new VersionInformation(revision, branch, date);
         }
         return null;
+    }
+
+    public static void saveStartupMethod() {
+        isLuja = isLuja();
+    }
+
+    public static boolean isUsingLuja() {
+        return isLuja;
+    }
+
+    private static boolean isLuja() {
+        final Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
+        final Thread mainThread = findMainThread(stackTraces);
+
+        final StackTraceElement firstFrame = stackTraces.get(mainThread)[0];
+        return "de.jowisoftware.luja.Main".equals(firstFrame.getClassName());
+    }
+
+    private static Thread findMainThread(final Map<Thread, StackTraceElement[]> stackTraces) {
+        for (final Thread thread : stackTraces.keySet()) {
+            if (thread.getName().equals("main")) {
+                return thread;
+            }
+        }
+        throw new IllegalStateException("This softare assumes a main-thread, " +
+                "which was not found");
     }
 }

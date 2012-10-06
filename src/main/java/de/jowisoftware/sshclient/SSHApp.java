@@ -1,6 +1,5 @@
 package de.jowisoftware.sshclient;
 
-
 public class SSHApp {
     private SSHApp() { /* This class cannot be intantiated */ }
 

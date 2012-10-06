@@ -23,6 +23,7 @@ import de.jowisoftware.sshclient.log.LogPanel;
 import de.jowisoftware.sshclient.ui.settings.ConnectDialog;
 import de.jowisoftware.sshclient.ui.tabpanel.RedrawingTabPane;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.util.ApplicationUtils;
 import de.jowisoftware.sshclient.util.FontUtils;
 
 public class MainWindow extends JFrame {
@@ -44,6 +45,7 @@ public class MainWindow extends JFrame {
         application.setMainWindow(this);
 
         FontUtils.fillAsyncCache();
+        ApplicationUtils.saveStartupMethod();
 
         menu = new MainWindowMenu(application, this);
         toolBar = new MainWindowToolbar(application, this);
