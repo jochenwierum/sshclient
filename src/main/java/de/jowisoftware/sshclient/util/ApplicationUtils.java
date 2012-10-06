@@ -105,8 +105,10 @@ public class ApplicationUtils {
         final String date = manifest.getProperty("Build-Date");
         final String mainClass = manifest.getProperty("Main-Class");
 
-        if (mainClass.equals(SSHApp.class.getName())
-                && revision != null && branch != null && date != null) {
+        final boolean isSSHManifest = mainClass != null && SSHApp.class.getName().equals(mainClass);
+        final boolean containsVersionInformation = revision != null && branch != null && date != null;
+
+        if (isSSHManifest && containsVersionInformation) {
             return new VersionInformation(revision, branch, date);
         }
         return null;
