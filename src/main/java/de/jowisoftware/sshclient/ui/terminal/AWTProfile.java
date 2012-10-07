@@ -3,11 +3,10 @@ package de.jowisoftware.sshclient.ui.terminal;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import de.jowisoftware.sshclient.terminal.Profile;
 
-public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
+public final class AWTProfile implements Profile<AWTGfxInfo> {
     private String user = System.getProperty("user.name");
     private String host = "localhost";
     private int port = 22;
@@ -20,10 +19,34 @@ public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
 
     private String charsetName = "UTF-8";
     private transient Charset charset;
-    private AWTGfxInfo gfxInfo = new AWTGfxInfo();
-    private HashMap<String, String> environmentMap = new HashMap<String, String>();
+
+    private final AWTGfxInfo gfxInfo;
+    private final HashMap<String, String> environmentMap;
 
     private CloseTabMode closeTabMode = CloseTabMode.NO_ERROR;
+
+
+    public AWTProfile() {
+        gfxInfo = new AWTGfxInfo();
+        environmentMap = new HashMap<String, String>();
+    }
+
+    public AWTProfile(final AWTProfile copy) {
+        gfxInfo = new AWTGfxInfo(copy.gfxInfo);
+        environmentMap = new HashMap<String, String>(copy.environmentMap);
+
+        user = copy.user;
+        host = copy.host;
+        port = copy.port;
+        timeout = copy.timeout;
+        agentForwarding = copy.agentForwarding;
+        xForwarding = copy.xForwarding;
+        x11Host = copy.x11Host;
+        x11Display = copy.x11Display;
+        charsetName = copy.charsetName;
+        charset = copy.charset;
+        closeTabMode = copy.closeTabMode;
+    }
 
     @Override
     public String getDefaultTitle() {
@@ -98,25 +121,6 @@ public final class AWTProfile implements Profile<AWTGfxInfo>, Cloneable {
     @Override
     public Map<String, String> getEnvironment() {
         return environmentMap;
-    }
-
-    @Override
-    public Object clone() {
-        AWTProfile clone;
-        try {
-            clone = (AWTProfile) super.clone();
-        } catch (final CloneNotSupportedException e) {
-            throw new RuntimeException(e);
-        }
-
-        clone.gfxInfo = (AWTGfxInfo) gfxInfo.clone();
-
-        clone.environmentMap = new HashMap<String, String>();
-        for (final Entry<String, String> entry : environmentMap.entrySet()) {
-            clone.environmentMap.put(entry.getKey(), entry.getValue());
-        }
-
-        return clone;
     }
 
     @Override

@@ -217,7 +217,7 @@ public class ProfilesDialog extends JDialog {
 
     private void edit(final String selectedValue) {
         profileUnderConstructionName = selectedValue;
-        profileUnderConstruction = (AWTProfile) settings.getProfiles().get(selectedValue).clone();
+        profileUnderConstruction = new AWTProfile(settings.getProfiles().get(selectedValue));
 
         settingsFrame = new ProfilePanel(profileUnderConstruction,
                 selectedValue, true);

@@ -186,7 +186,7 @@ public class MainWindow extends JFrame {
     }
 
     public void connect(final AWTProfile profile) {
-        final AWTProfile safeProfile = (AWTProfile) profile.clone();
+        final AWTProfile safeProfile = new AWTProfile(profile);
         final ConnectionFrame sshFrame = new ConnectionFrame(application, safeProfile, pane);
         pane.addTab(safeProfile.getDefaultTitle(), sshFrame);
         pane.setTabComponentAt(pane.getTabCount() - 1,

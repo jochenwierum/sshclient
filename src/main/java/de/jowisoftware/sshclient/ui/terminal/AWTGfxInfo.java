@@ -5,16 +5,15 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
 import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 
-public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
-    private Map<ColorName, Color> colors = new HashMap<ColorName, Color>();
-    private Map<ColorName, Color> lightColors = new HashMap<ColorName, Color>();
-    private Color cursorColor;
+public final class AWTGfxInfo implements GfxInfo<Color> {
+    private final Map<ColorName, Color> colors;
+    private final Map<ColorName, Color> lightColors;
+    private Color cursorColor = Color.GREEN;
 
     private final int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
     private Font font;
@@ -22,40 +21,63 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
     private String fontName;
     private int fontSize;
     private int antiAliasingMode;
-    private CursorStyle cursorStyle;
-    private boolean cursorBlinks;
+    private CursorStyle cursorStyle = CursorStyle.Block;
+    private boolean cursorBlinks = true;
 
     private String boundaryChars = ":@-./_~?&=%+#";
 
     public AWTGfxInfo() {
        setFont(Font.MONOSPACED, 10);
 
-       colors.put(ColorName.BLACK, color(0, 0, 0));
-       colors.put(ColorName.BLUE, color(0, 0, 238));
-       colors.put(ColorName.CYAN, color(0, 205, 205));
-       colors.put(ColorName.DEFAULT, color(229, 229, 229));
-       colors.put(ColorName.DEFAULT_BACKGROUND, color(0, 0, 0));
-       colors.put(ColorName.GREEN, color(0, 205, 0));
-       colors.put(ColorName.MAGENTA, color(205, 0, 205));
-       colors.put(ColorName.RED, color(205, 0, 0));
-       colors.put(ColorName.WHITE, color(229, 229, 229));
-       colors.put(ColorName.YELLOW, color(205, 205, 0));
-
-       lightColors.put(ColorName.BLACK, color(127, 127, 127));
-       lightColors.put(ColorName.BLUE, color(92, 92, 255));
-       lightColors.put(ColorName.CYAN, color(0, 255, 255));
-       lightColors.put(ColorName.DEFAULT, color(229, 229, 229));
-       lightColors.put(ColorName.DEFAULT_BACKGROUND, color(0, 0, 0));
-       lightColors.put(ColorName.GREEN, color(0, 255, 0));
-       lightColors.put(ColorName.MAGENTA, color(255, 0, 255));
-       lightColors.put(ColorName.RED, color(255, 0, 0));
-       lightColors.put(ColorName.WHITE, color(255, 255, 255));
-       lightColors.put(ColorName.YELLOW, color(255, 255, 0));
-
-       cursorColor = Color.GREEN;
-       cursorBlinks = true;
-       cursorStyle = CursorStyle.Block;
+       colors = createDefaultColors();
+       lightColors = createDefaultLightColors();
     }
+
+    public AWTGfxInfo(final AWTGfxInfo copy) {
+        colors = new HashMap<ColorName, Color>(copy.colors);
+        lightColors = new HashMap<ColorName, Color>(copy.lightColors);
+
+        cursorColor = copy.cursorColor;
+        font = copy.font;
+        boldFont = copy.boldFont;
+        fontName = copy.fontName;
+        fontSize = copy.fontSize;
+        antiAliasingMode = copy.antiAliasingMode;
+        cursorStyle = copy.cursorStyle;
+        cursorBlinks = copy.cursorBlinks;
+        boundaryChars = copy.boundaryChars;
+    }
+
+    private Map<ColorName, Color> createDefaultLightColors() {
+        final Map<ColorName, Color> result = new HashMap<ColorName, Color>();
+        result.put(ColorName.BLACK, color(127, 127, 127));
+        result.put(ColorName.BLUE, color(92, 92, 255));
+        result.put(ColorName.CYAN, color(0, 255, 255));
+        result.put(ColorName.DEFAULT, color(229, 229, 229));
+        result.put(ColorName.DEFAULT_BACKGROUND, color(0, 0, 0));
+        result.put(ColorName.GREEN, color(0, 255, 0));
+        result.put(ColorName.MAGENTA, color(255, 0, 255));
+        result.put(ColorName.RED, color(255, 0, 0));
+        result.put(ColorName.WHITE, color(255, 255, 255));
+        result.put(ColorName.YELLOW, color(255, 255, 0));
+        return result;
+    }
+
+    private Map<ColorName, Color> createDefaultColors() {
+        final Map<ColorName, Color> result = new HashMap<ColorName, Color>();
+        result.put(ColorName.BLACK, color(0, 0, 0));
+        result.put(ColorName.BLUE, color(0, 0, 238));
+        result.put(ColorName.CYAN, color(0, 205, 205));
+        result.put(ColorName.DEFAULT, color(229, 229, 229));
+        result.put(ColorName.DEFAULT_BACKGROUND, color(0, 0, 0));
+        result.put(ColorName.GREEN, color(0, 205, 0));
+        result.put(ColorName.MAGENTA, color(205, 0, 205));
+        result.put(ColorName.RED, color(205, 0, 0));
+        result.put(ColorName.WHITE, color(229, 229, 229));
+        result.put(ColorName.YELLOW, color(205, 205, 0));
+        return result;
+    }
+
 
     private static Color color(final int r, final int g, final int b) {
         return new Color(r, g, b);
@@ -112,32 +134,6 @@ public final class AWTGfxInfo implements GfxInfo<Color>, Cloneable {
 
     public int getFontSize() {
         return fontSize;
-    }
-
-    @Override
-    public Object clone() {
-        AWTGfxInfo clone;
-        try {
-            clone = (AWTGfxInfo) super.clone();
-        } catch (final CloneNotSupportedException e1) {
-            throw new RuntimeException(e1);
-        }
-
-        clone.lightColors = new HashMap<ColorName, Color>();
-        copyColorMap(lightColors, clone.lightColors);
-
-        clone.colors = new HashMap<ColorName, Color>();
-        copyColorMap(colors, clone.colors);
-
-        return clone;
-    }
-
-    private void copyColorMap(
-            final Map<ColorName, Color> source,
-            final Map<ColorName, Color> destination) {
-        for (final Entry<ColorName, Color> e : source.entrySet()) {
-            destination.put(e.getKey(), e.getValue());
-        }
     }
 
     public void setAntiAliasingMode(final int antiAliasingMode) {
