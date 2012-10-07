@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Properties;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -51,7 +53,8 @@ public class Translation {
             final InputStream stream = Translation.class.getResourceAsStream(languageFileName);
             if (stream != null) {
                 try {
-                    staticTranslation = new Translation(new InputStreamReader(stream, Charset.forName("UTF-8")));
+                    staticTranslation = new Translation(new InputStreamReader(stream,
+                            Charset.forName("UTF-8")));
                     IOUtils.closeQuietly(stream);
                 } catch (final IOException e) {
                     LOGGER.error("Could not read language file: " + language, e);
@@ -60,6 +63,26 @@ public class Translation {
                 LOGGER.error("Could not find language: " + language);
             }
         }
+    }
+
+    public static SortedMap<String, String> getAvailableLanguages() {
+        final String languageFileName = "/lang/languages.properties";
+        final Properties languages = new Properties();
+
+        try {
+            final InputStream stream = Translation.class.getResourceAsStream(languageFileName);
+            languages.load(stream);
+            IOUtils.closeQuietly(stream);
+        } catch (final IOException e) {
+            LOGGER.error("Could not read language list", e);
+        }
+
+        final SortedMap<String, String> result = new TreeMap<String, String>();
+        for (final Object name : languages.keySet()) {
+            result.put(name.toString(), languages.getProperty(name.toString()));
+        }
+
+        return result;
     }
 
     public static String t(final String key, final String string, final Object ... args) {

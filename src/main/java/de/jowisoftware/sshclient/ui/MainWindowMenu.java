@@ -14,6 +14,7 @@ import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.ui.about.AboutDialog;
 import de.jowisoftware.sshclient.ui.settings.ProfilesDialog;
+import de.jowisoftware.sshclient.ui.settings.global.SettingsDialog;
 
 
 public class MainWindowMenu {
@@ -65,6 +66,7 @@ public class MainWindowMenu {
 
         fileMenu.add(createConnectEntry());
         fileMenu.add(createSessionsEntry());
+        fileMenu.add(createSettingsEntry());
         fileMenu.add(createMasterPasswordEntry());
         fileMenu.add(createQuitMenuEntry());
 
@@ -126,6 +128,24 @@ public class MainWindowMenu {
         });
         return entry;
     }
+
+
+    private JMenuItem createSettingsEntry() {
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.settings", "Settings"));
+        entry.setMnemonic(m("mainwindow.menu.settings", 's'));
+
+        entry.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                final SettingsDialog dialog = new SettingsDialog(parent,
+                        application.settings);
+                dialog.showSettings();
+                dialog.dispose();
+            }
+        });
+        return entry;
+    }
+
 
     private JMenuItem createConnectEntry() {
         final JMenuItem entry = new JMenuItem(t("mainwindow.menu.connect", "Connect"));
