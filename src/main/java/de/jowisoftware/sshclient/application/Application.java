@@ -12,13 +12,14 @@ import com.jcraft.jsch.JSchException;
 
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.ReflectionEventHub;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class Application {
     private static final Logger LOGGER = Logger.getLogger(Application.class);
 
     public final JSch jsch;
 
-    public final ApplicationSettings settings;
+    public final ApplicationSettings<AWTProfile> settings;
     public final PasswordManager passwordManager;
     public final KeyManager keyManager;
 
@@ -28,7 +29,7 @@ public class Application {
     public final EventHub<ProfileEvent> profileEvents =
             ReflectionEventHub.forEventClass(ProfileEvent.class);
 
-    public Application(final JSch jsch, final ApplicationSettings settings,
+    public Application(final JSch jsch, final ApplicationSettings<AWTProfile> settings,
             final PasswordManager passwordManager, final KeyManager keyManager) {
         this.settings = settings;
         this.passwordManager = passwordManager;

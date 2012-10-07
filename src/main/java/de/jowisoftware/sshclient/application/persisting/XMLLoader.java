@@ -22,8 +22,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import de.jowisoftware.sshclient.application.AWTApplicationSettings.TabState;
 import de.jowisoftware.sshclient.application.ApplicationSettings;
-import de.jowisoftware.sshclient.application.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.application.BellType;
 import de.jowisoftware.sshclient.application.validation.ValidationResult;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
@@ -35,10 +35,10 @@ import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 
 public class XMLLoader {
     private static final Logger LOGGER = Logger.getLogger(XMLLoader.class);
-    private final ApplicationSettings settings;
+    private final ApplicationSettings<AWTProfile> settings;
     private XPath xpath;
 
-    public XMLLoader(final ApplicationSettings settings) {
+    public XMLLoader(final ApplicationSettings<AWTProfile> settings) {
         this.settings = settings;
     }
 

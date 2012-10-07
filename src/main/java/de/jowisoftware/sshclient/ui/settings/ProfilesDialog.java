@@ -60,10 +60,10 @@ public class ProfilesDialog extends JDialog {
     private String profileUnderConstructionName;
     private ProfilePanel settingsFrame;
 
-    private final ApplicationSettings settings;
+    private final ApplicationSettings<AWTProfile> settings;
     private boolean profileUnderConstructionIsTemplate;
 
-    public ProfilesDialog(final JFrame parent, final ApplicationSettings settings) {
+    public ProfilesDialog(final JFrame parent, final ApplicationSettings<AWTProfile> settings) {
         super(parent, t("profiles.title", "Profiles"));
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
@@ -250,7 +250,7 @@ public class ProfilesDialog extends JDialog {
 
     private void editTemplate() {
         profileUnderConstructionIsTemplate = true;
-        profileUnderConstruction = new AWTProfile(settings.getDefaultProfile());
+        profileUnderConstruction = new AWTProfile(settings.newDefaultProfile());
 
         settingsFrame = new ProfilePanel(profileUnderConstruction,
                 "(default)", false);
@@ -319,7 +319,7 @@ public class ProfilesDialog extends JDialog {
     }
 
     private void createProfile() {
-        final AWTProfile profile = new AWTProfile(settings.getDefaultProfile());
+        final AWTProfile profile = new AWTProfile(settings.newDefaultProfile());
         String name = t("profiles.new", "new profile");
 
         if (settings.getProfiles().containsKey(name)) {

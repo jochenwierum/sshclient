@@ -21,14 +21,15 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import de.jowisoftware.sshclient.application.AWTApplicationSettings.TabState;
 import de.jowisoftware.sshclient.application.ApplicationSettings;
-import de.jowisoftware.sshclient.application.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.application.BellType;
 import de.jowisoftware.sshclient.i18n.Translation;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class SettingsDialog extends JDialog {
     private static final long serialVersionUID = -5205216274422883565L;
-    private final ApplicationSettings settings;
+    private final ApplicationSettings<AWTProfile> settings;
     private JComboBox logTabStateCombobox;
     private JComboBox keyTabStateCombobox;
     private JComboBox languageCombobox;
@@ -50,7 +51,7 @@ public class SettingsDialog extends JDialog {
         }
     }
 
-    public SettingsDialog(final Window parent, final ApplicationSettings settings) {
+    public SettingsDialog(final Window parent, final ApplicationSettings<AWTProfile> settings) {
         super(parent, t("settings.title", "Settings"));
         this.settings = settings;
 

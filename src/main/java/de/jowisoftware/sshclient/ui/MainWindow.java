@@ -10,13 +10,16 @@ import java.io.File;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Logger;
 
+import de.jowisoftware.sshclient.application.AWTApplicationSettings.TabState;
 import de.jowisoftware.sshclient.application.Application;
-import de.jowisoftware.sshclient.application.ApplicationSettings.TabState;
+import de.jowisoftware.sshclient.application.arguments.ArgumentParser;
+import de.jowisoftware.sshclient.application.arguments.ArgumentParserCallback;
 import de.jowisoftware.sshclient.application.persisting.XMLPersister;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.log.LogPanel;
@@ -25,6 +28,7 @@ import de.jowisoftware.sshclient.ui.tabpanel.RedrawingTabPane;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.util.ApplicationUtils;
 import de.jowisoftware.sshclient.util.FontUtils;
+import de.jowisoftware.sshclient.util.SwingUtils;
 
 public class MainWindow extends JFrame {
     private static final long serialVersionUID = -2951599770927217249L;
@@ -203,5 +207,35 @@ public class MainWindow extends JFrame {
         if (profile != null) {
             connect(profile);
         }
+    }
+
+    public void processArguments(final String[] args) {
+        SwingUtils.runInSwingThread(new Runnable() {
+            @Override
+            public void run() {
+                new ArgumentParser<AWTProfile>(new ArgumentParserCallback<AWTProfile>() {
+                    @Override
+                    public void openConnection(final AWTProfile profile) {
+                        connect(profile);
+                    }
+
+                    @Override
+                    public void reportArgumentError(final String[] errors) {
+                        final StringBuilder builder = new StringBuilder();
+                        for (int i = 0; i < errors.length; ++i) {
+                            if (builder.length() > 0) {
+                                builder.append(", ");
+                            }
+                            builder.append(errors[i]);
+                        }
+
+                        SwingUtils.showMessage(MainWindow.this, "<html>"
+                                + t("errors.arguments", "Could not process argument:")
+                                + "<br />" + builder.toString() + "</html>",
+                                t("errors.arguments.title", "Error"),
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                }, application.settings).processArguments(args);
+            }});
     }
 }

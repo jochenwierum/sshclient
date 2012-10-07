@@ -22,18 +22,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+import de.jowisoftware.sshclient.application.AWTApplicationSettings.TabState;
 import de.jowisoftware.sshclient.application.ApplicationSettings;
-import de.jowisoftware.sshclient.application.ApplicationSettings.TabState;
 import de.jowisoftware.sshclient.encryption.PasswordStorage;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class XMLPersister {
-    private final ApplicationSettings settings;
+    private final ApplicationSettings<AWTProfile> settings;
     private Document doc;
 
-    public XMLPersister(final ApplicationSettings settings) {
+    public XMLPersister(final ApplicationSettings<AWTProfile> settings) {
         this.settings = settings;
     }
 
@@ -231,7 +231,7 @@ public class XMLPersister {
 
     private Element storeDefaultProfile() {
         final Element profileNode = doc.createElement("defaultProfile");
-        storeProfile(settings.getDefaultProfile(), profileNode);
+        storeProfile(settings.newDefaultProfile(), profileNode);
         return profileNode;
     }
 

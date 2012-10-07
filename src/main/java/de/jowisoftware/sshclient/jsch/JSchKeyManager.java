@@ -16,17 +16,18 @@ import de.jowisoftware.sshclient.application.UserAbortException;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.EventHubClient;
 import de.jowisoftware.sshclient.events.ReflectionEventHub;
+import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class JSchKeyManager implements KeyManager {
     private static final Logger LOGGER = Logger.getLogger(JSchKeyManager.class);
     private final JSch jsch;
-    private final ApplicationSettings settings;
+    private final ApplicationSettings<AWTProfile> settings;
     private final PasswordManager passwordManager;
 
     private final EventHub<KeyManagerEvents> events = ReflectionEventHub.forEventClass(KeyManagerEvents.class);
 
     public JSchKeyManager(final JSch jsch,
-            final ApplicationSettings settings,
+            final ApplicationSettings<AWTProfile> settings,
             final PasswordManager passwordManager) {
         this.jsch = jsch;
         this.settings = settings;

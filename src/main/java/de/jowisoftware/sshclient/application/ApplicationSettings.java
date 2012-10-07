@@ -1,106 +1,35 @@
 package de.jowisoftware.sshclient.application;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.encryption.CryptoException;
+import de.jowisoftware.sshclient.application.AWTApplicationSettings.TabState;
 import de.jowisoftware.sshclient.encryption.PasswordStorage;
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.terminal.Profile;
 
-public class ApplicationSettings {
-    public enum TabState {
-        OPENED, CLOSED, ALYWAYS_OPEN, ALWAYS_CLOSED
-    }
+public interface ApplicationSettings<T extends Profile<?>> {
+    Map<String, T> getProfiles();
 
-    private static final Logger LOGGER = Logger
-            .getLogger(ApplicationSettings.class);
+    List<File> getKeyFiles();
 
-    private AWTProfile defaultProfile = new AWTProfile();
-    private final Map<String, AWTProfile> profiles = new HashMap<String, AWTProfile>();
-    private final List<File> keyFiles = new ArrayList<File>();
+    TabState getLogTabState();
+    void setLogTabState(final TabState state);
 
-    private final PasswordStorage passwordStorage;
-    private boolean unlockKeysOnStartup = false;
+    void setKeyTabState(final TabState state);
+    TabState getKeyTabState();
 
-    private TabState logTabState = TabState.CLOSED;
-    private TabState keyTabState = TabState.CLOSED;
-    private String language = "en_US";
-    private BellType bellType = BellType.Visual;
+    String getLanguage();
+    void setLanguage(final String language);
 
-    public ApplicationSettings() {
-        PasswordStorage newPasswordManager;
-        try {
-            newPasswordManager = new PasswordStorage();
-        } catch(final CryptoException e) {
-            newPasswordManager = null;
-            LOGGER.error("Could not initialize password manager backend; " +
-            		"ignoring it completely", e);
-        }
-        this.passwordStorage = newPasswordManager;
-    }
+    PasswordStorage getPasswordStorage();
 
-    public Map<String, AWTProfile> getProfiles() {
-        return profiles;
-    }
+    boolean getUnlockKeysOnStartup();
+    void setUnlockKeysOnStartup(final boolean unlockKeysOnStartup);
 
-    public List<File> getKeyFiles() {
-        return keyFiles;
-    }
+    BellType getBellType();
+    void setBellType(final BellType bellType);
 
-    public TabState getLogTabState() {
-        return logTabState;
-    }
-
-    public TabState getKeyTabState() {
-        return keyTabState;
-    }
-
-    public void setKeyTabState(final TabState state) {
-        keyTabState = state;
-    }
-
-    public void setLogTabState(final TabState state) {
-        logTabState = state;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(final String language) {
-        this.language = language;
-    }
-
-    public PasswordStorage getPasswordStorage() {
-        return passwordStorage;
-    }
-
-    public boolean getUnlockKeysOnStartup() {
-        return unlockKeysOnStartup;
-    }
-
-    public void setUnlockKeysOnStartup(final boolean unlockKeysOnStartup) {
-        this.unlockKeysOnStartup = unlockKeysOnStartup;
-    }
-
-    public BellType getBellType() {
-        return bellType;
-    }
-
-    public void setBellType(final BellType bellType) {
-        this.bellType = bellType;
-    }
-
-    public AWTProfile getDefaultProfile() {
-        return defaultProfile;
-    }
-
-    public void setDefaultProfile(final AWTProfile defaultProfile) {
-        this.defaultProfile = defaultProfile;
-    }
+    T newDefaultProfile();
+    void setDefaultProfile(final T defaultProfile);
 }
