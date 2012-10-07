@@ -354,6 +354,11 @@ public class XMLLoader {
 
         final int bellType = getInteger(settingsNode, "bellType/text()", 1);
         settings.setBellType(BellType.values()[bellType]);
+
+        final Element defaultProfileNode = getElement(settingsNode, "defaultProfile");
+        if (defaultProfileNode != null) {
+            settings.setDefaultProfile(loadProfile(defaultProfileNode));
+        }
     }
 
 

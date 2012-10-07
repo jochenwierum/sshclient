@@ -20,6 +20,7 @@ public class ApplicationSettings {
     private static final Logger LOGGER = Logger
             .getLogger(ApplicationSettings.class);
 
+    private AWTProfile defaultProfile = new AWTProfile();
     private final Map<String, AWTProfile> profiles = new HashMap<String, AWTProfile>();
     private final List<File> keyFiles = new ArrayList<File>();
 
@@ -93,5 +94,13 @@ public class ApplicationSettings {
 
     public void setBellType(final BellType bellType) {
         this.bellType = bellType;
+    }
+
+    public AWTProfile getDefaultProfile() {
+        return defaultProfile;
+    }
+
+    public void setDefaultProfile(final AWTProfile defaultProfile) {
+        this.defaultProfile = defaultProfile;
     }
 }

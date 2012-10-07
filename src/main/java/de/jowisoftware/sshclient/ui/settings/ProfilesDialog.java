@@ -52,6 +52,7 @@ public class ProfilesDialog extends JDialog {
     private final JButton addButton = createAddButton();
     private final JButton removeButton = createRemoveButton();
     private final JButton editButton = createEditButton();
+    private final JButton templateButton = createTemplateButton();
     private final JPanel buttonPanel = createEditButtonBar();
     private final JPanel editPanel = createEditPanel();
 
@@ -60,6 +61,7 @@ public class ProfilesDialog extends JDialog {
     private ProfilePanel settingsFrame;
 
     private final ApplicationSettings settings;
+    private boolean profileUnderConstructionIsTemplate;
 
     public ProfilesDialog(final JFrame parent, final ApplicationSettings settings) {
         super(parent, t("profiles.title", "Profiles"));
@@ -127,9 +129,13 @@ public class ProfilesDialog extends JDialog {
                         JOptionPane.showMessageDialog(ProfilesDialog.this, message);
                         return;
                     } else {
-                        settings.getProfiles().remove(profileUnderConstructionName);
-                        settings.getProfiles().put(settingsFrame.getProfileName(),
-                                profileUnderConstruction);
+                        if (!profileUnderConstructionIsTemplate) {
+                            settings.getProfiles().remove(profileUnderConstructionName);
+                            settings.getProfiles().put(settingsFrame.getProfileName(),
+                                    profileUnderConstruction);
+                        } else {
+                            settings.setDefaultProfile(profileUnderConstruction);
+                        }
                     }
                 }
 
@@ -162,6 +168,9 @@ public class ProfilesDialog extends JDialog {
 
         layout.addLayoutComponent(addButton, constraints);
         panel.add(addButton);
+
+        layout.addLayoutComponent(templateButton, constraints);
+        panel.add(templateButton);
 
         return panel;
     }
@@ -209,6 +218,19 @@ public class ProfilesDialog extends JDialog {
         return button;
     }
 
+    private JButton createTemplateButton() {
+        final JButton button = new JButton(t("settings.edittemplate", "Edit template"));
+        button.setMnemonic(m("settings.edittemplate", 't'));
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                editTemplate();
+            }
+        });
+        updateButtonDimension(button);
+        return button;
+    }
+
     private void updateButtonDimension(final JButton button) {
         final int width = (int) (button.getPreferredSize().width * 1.2);
         final int height = button.getMinimumSize().height;
@@ -217,10 +239,21 @@ public class ProfilesDialog extends JDialog {
 
     private void edit(final String selectedValue) {
         profileUnderConstructionName = selectedValue;
+        profileUnderConstructionIsTemplate = false;
         profileUnderConstruction = new AWTProfile(settings.getProfiles().get(selectedValue));
 
         settingsFrame = new ProfilePanel(profileUnderConstruction,
                 selectedValue, true);
+
+        updateWindowState(true);
+    }
+
+    private void editTemplate() {
+        profileUnderConstructionIsTemplate = true;
+        profileUnderConstruction = new AWTProfile(settings.getDefaultProfile());
+
+        settingsFrame = new ProfilePanel(profileUnderConstruction,
+                "(default)", false);
 
         updateWindowState(true);
     }
@@ -245,6 +278,7 @@ public class ProfilesDialog extends JDialog {
         removeButton.setEnabled(!editingProfile);
         editButton.setEnabled(!editingProfile);
         selectionList.setEnabled(!editingProfile);
+        templateButton.setEnabled(!editingProfile);
         closeButton.setEnabled(!editingProfile);
         saveButton.setEnabled(editingProfile);
         revertButton.setEnabled(editingProfile);
@@ -285,7 +319,7 @@ public class ProfilesDialog extends JDialog {
     }
 
     private void createProfile() {
-        final AWTProfile profile = new AWTProfile();
+        final AWTProfile profile = new AWTProfile(settings.getDefaultProfile());
         String name = t("profiles.new", "new profile");
 
         if (settings.getProfiles().containsKey(name)) {

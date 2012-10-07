@@ -224,7 +224,15 @@ public class XMLPersister {
         bellType.setTextContent(Integer.toString(settings.getBellType().ordinal()));
         element.appendChild(bellType);
 
+        element.appendChild(storeDefaultProfile());
+
         return element;
+    }
+
+    private Element storeDefaultProfile() {
+        final Element profileNode = doc.createElement("defaultProfile");
+        storeProfile(settings.getDefaultProfile(), profileNode);
+        return profileNode;
     }
 
     private void tabStateToAttributeValue(final TabState tabState,
