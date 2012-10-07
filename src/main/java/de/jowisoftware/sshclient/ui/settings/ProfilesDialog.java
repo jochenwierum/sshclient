@@ -219,8 +219,8 @@ public class ProfilesDialog extends JDialog {
     }
 
     private JButton createTemplateButton() {
-        final JButton button = new JButton(t("settings.edittemplate", "Edit template"));
-        button.setMnemonic(m("settings.edittemplate", 't'));
+        final JButton button = new JButton(t("profiles.edittemplate", "Edit template"));
+        button.setMnemonic(m("profiles.edittemplate", 't'));
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
