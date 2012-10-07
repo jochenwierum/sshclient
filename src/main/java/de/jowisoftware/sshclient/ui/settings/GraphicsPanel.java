@@ -50,21 +50,21 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
     }
 
     private void addFontControls(final int offset) {
-        add(new JLabel(t("profiles.colors.font", "font:")),
-                makeConstraints(1, offset + 1));
+        add(label("profiles.colors.font", "Font:", 'f', fontBox),
+                makeLabelConstraints(offset + 1));
 
         fontBox.setSelectedItem(gfxSettings.getFontName());
         add(fontBox, makeConstraints(2, offset + 1));
 
-        add(new JLabel(t("profiles.colors.font.size", "size:")),
-                makeConstraints(1, offset + 2));
+        add(label("profiles.colors.font.size", "Size:", 'i', fontSizeTextField),
+                makeLabelConstraints(offset + 2));
 
         fontSizeTextField.setText(Integer.toString(gfxSettings.getFontSize()));
         add(fontSizeTextField, makeConstraints(2, offset + 2));
 
         antiAliasingBox.setSelectedIndex(gfxSettings.getAntiAliasingMode());
-        add(new JLabel(t("profiles.color.antialiasing", "antialiasing:")),
-                makeConstraints(1, offset + 3));
+        add(label("profiles.color.antialiasing", "Antialiasing:", 'a', antiAliasingBox),
+                makeLabelConstraints(offset + 3));
         add(antiAliasingBox, makeConstraints(2, offset + 3));
     }
 
@@ -81,14 +81,15 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
     }
 
     private void addCursorColorChooser(final int offset) {
-        add(new JLabel(t("profiles.colors.cursor",
-                "cursor color:")), makeConstraints(1, offset + 1));
-        add(createCursorColorButton(), makeConstraints(2, offset + 1));
+        final JButton colorButton = createCursorColorButton();
+        add(label("profiles.colors.cursor", "Cursor color:",
+                'r', colorButton), makeLabelConstraints(offset + 1));
+        add(colorButton, makeConstraints(2, offset + 1));
     }
 
     private void addCursorStyle(final int offset) {
-        add(new JLabel(t("profiles.cursor.style", "Cursor Style:")),
-                makeConstraints(1, offset + 1));
+        add(label("profiles.cursor.style", "Cursor Style:", 'c', cursorStyleBox),
+                makeLabelConstraints(offset + 1));
         cursorStyleBox.setSelectedIndex(gfxSettings.getCursorStyle().ordinal());
         add(cursorStyleBox, makeConstraints(2, offset + 1));
 

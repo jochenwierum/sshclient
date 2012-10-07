@@ -28,7 +28,6 @@ class ColorPanel extends JPanel {
         addColors();
     }
 
-
     private void addTitles() {
         add(new JLabel());
         add(new JLabel(t("profiles.colors.normal", "normal colors")));

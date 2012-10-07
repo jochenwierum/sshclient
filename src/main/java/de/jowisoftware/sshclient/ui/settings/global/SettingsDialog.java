@@ -80,8 +80,8 @@ public class SettingsDialog extends JDialog {
     }
 
     private void addBellComponents(final JPanel panel) {
-        panel.add(label(t("settings.belltype", "Bell type:"), m("settings.belltype", 'b')));
         bellTypeCombobox = createBellTypeCombobox();
+        panel.add(label("settings.belltype", "Bell type:", 'b', bellTypeCombobox));
         panel.add(bellTypeCombobox);
     }
 
@@ -105,7 +105,7 @@ public class SettingsDialog extends JDialog {
     }
 
     private void addUnlockKeysComponents(final JPanel panel) {
-        panel.add(label(t("settings.unlockkeys", "Unlock SSH keys:")));
+        panel.add(label("settings.unlockkeys", "Unlock SSH keys:"));
         unlockKeysCheckbox = createUnlockKeysCheckbox();
         panel.add(unlockKeysCheckbox);
     }
@@ -118,9 +118,9 @@ public class SettingsDialog extends JDialog {
     }
 
     private void addLanguageComponents(final JPanel panel) {
-        panel.add(label(t("settings.laguage", "Language (requires restart):"),
-                m("settings.language", 'l')));
         languageCombobox = createLanguageCombobox();
+        panel.add(label("settings.laguage", "Language (requires restart):",
+                'l', languageCombobox));
         panel.add(languageCombobox);
     }
 
@@ -145,16 +145,16 @@ public class SettingsDialog extends JDialog {
     }
 
     private void addLogTabStateComponents(final JPanel panel) {
-        panel.add(label(t("settings.tabstate.logtab", "Log Tab:"),
-                m("settings.tabstate.logtab", 'g')));
         logTabStateCombobox = createTabStateCombobox(settings.getLogTabState());
+        panel.add(label("settings.tabstate.logtab", "Log Tab:",
+                'g', logTabStateCombobox));
         panel.add(logTabStateCombobox);
     }
 
     private void addKeyTabStateComponents(final JPanel panel) {
-        panel.add(label(t("settings.tabstate.keytab", "Keys Tab:"),
-                m("settings.tabstate.keytab", 'k')));
         keyTabStateCombobox = createTabStateCombobox(settings.getKeyTabState());
+        panel.add(label("settings.tabstate.keytab", "Keys Tab:",
+                'k', keyTabStateCombobox));
         panel.add(keyTabStateCombobox);
     }
 
@@ -177,15 +177,17 @@ public class SettingsDialog extends JDialog {
         return combobox;
     }
 
-    private JLabel label(final String text) {
-        final JLabel label = new JLabel(text);
+    private JLabel label(final String key, final String text) {
+        final JLabel label = new JLabel(t(key, text));
         label.setHorizontalAlignment(SwingConstants.RIGHT);
         return label;
     }
 
-    private JLabel label(final String text, final int mnemonic) {
-        final JLabel label = label(text);
+    private Component label(final String key, final String text, final char mnemonic,
+            final Component targetComponent) {
+        final JLabel label = label(key, text);
         label.setDisplayedMnemonic(mnemonic);
+        label.setLabelFor(targetComponent);
         return label;
     }
 

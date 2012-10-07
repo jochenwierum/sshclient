@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.ui.settings;
 
+import static de.jowisoftware.sshclient.i18n.Translation.m;
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 import java.awt.BorderLayout;
@@ -15,7 +16,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -37,17 +37,17 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
         this.profile = profile;
 
         closeTabBox.setSelectedIndex(profile.getCloseTabMode().ordinal());
-        add(new JLabel(t("profiles.advanced.close", "close tab:")),
-                makeConstraints(1, 1));
+        add(label("profiles.advanced.close", "Close tab:", 'c', closeTabBox),
+                makeLabelConstraints(1));
         add(closeTabBox, makeConstraints(2, 1));
 
-        add(new JLabel(t("profiles.advanced.environment", "environment:")),
-                makeConstraints(1, 2));
+        add(label("profiles.advanced.environment", "Environment:"),
+                makeLabelConstraints(2));
         add(createEnvironmentPanel(), makeConstraints(2, 2));
 
         boundaryTextField.setText(profile.getGfxSettings().getBoundaryChars());
-        add(new JLabel(t("profiles.advanced.wordcharacters", "word characters:")),
-                makeConstraints(1, 3));
+        add(label("profiles.advanced.wordcharacters", "Word characters:",
+                'w', boundaryTextField), makeLabelConstraints(3));
         add(boundaryTextField, makeConstraints(2, 3));
 
         fillToBottom(4);
@@ -93,7 +93,8 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
     }
 
     private JButton createAddEnvironmentButton(final JTextField key, final JTextField value) {
-        final JButton button = new JButton(t("profiles.advanced.add", "add"));
+        final JButton button = new JButton(t("profiles.advanced.add", "Add"));
+        button.setMnemonic(m("profiles.advanced.add", 'a'));
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -143,7 +144,8 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
     }
 
     private JButton createRemoveEnvironmentButton() {
-        final JButton button = new JButton(t("profiles.advanced.remove", "remove"));
+        final JButton button = new JButton(t("profiles.advanced.remove", "Remove"));
+        button.setMnemonic(m("profiles.advanced.remove", 'r'));
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {

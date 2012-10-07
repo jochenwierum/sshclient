@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.SortedMap;
 
 import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
@@ -30,48 +29,47 @@ class MainPanel extends AbstractOptionPanel {
     public MainPanel(final AWTProfile profile, final String profileName,
             final boolean profileNameSettable) {
         this.profile = profile;
-        setLayout(new GridLayout(11, 2));
+        setLayout(new GridLayout(11, 2, 5, 0));
 
-        add(new JLabel(t("profiles.general.profilename",
-                "profile name:")));
+        add(label("profiles.general.profilename",
+                "Profile name:", 'm', profileNameTextField));
         profileNameTextField.setText(profileName);
         profileNameTextField.setEnabled(profileNameSettable);
         add(profileNameTextField);
 
-        add(new JLabel(t("profiles.general.host", "host:")));
+        add(label("profiles.general.host", "Host:", 'h', hostTextField));
         hostTextField.setText(profile.getHost());
         add(hostTextField);
 
-        add(new JLabel(t("profiles.general.port", "port:")));
+        add(label("profiles.general.port", "Port:", 'p', portTextField));
         portTextField.setText(Integer.toString(profile.getPort()));
         add(portTextField);
 
-        add(new JLabel(t("profiles.general.user", "user:")));
+        add(label("profiles.general.user", "User:", 'u', userTextField));
         userTextField.setText(profile.getUser());
         add(userTextField);
 
-        add(new JLabel(""));
-        add(new JLabel(""));
+        add(blind());
+        add(blind());
 
-        add(new JLabel(t("profiles.general.command", "command:")));
+        add(label("profiles.general.command", "Command:", 'o', commandTextField));
         commandTextField.setText(profile.getCommand());
         add(commandTextField);
 
-        add(new JLabel(t("profiles.general.command.info", "(this options disables forwardings!)")));
-        add(new JLabel(""));
+        add(label("profiles.general.command.info", "(disables forwardings!)"));
+        add(blind());
 
-        add(new JLabel(""));
-        add(new JLabel(""));
+        add(blind());
+        add(blind());
 
-        add(new JLabel(t("profiles.general.encoding", "encoding:")));
+        add(label("profiles.general.encoding", "Encoding:", 'e', encodingBox));
         encodingBox.setSelectedItem(profile.getCharset().name());
         add(encodingBox);
 
-        add(new JLabel(""));
-        add(new JLabel(""));
+        add(blind());
+        add(blind());
 
-        add(new JLabel(
-                t("profiles.general.timeout", "timeout (ms):")));
+        add(label("profiles.general.timeout", "Timeout (ms):", 't', timeoutTextField));
         timeoutTextField.setText(Integer.toString(profile.getTimeout()));
         add(timeoutTextField);
     }

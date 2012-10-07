@@ -2,6 +2,7 @@ package de.jowisoftware.sshclient.ui.settings;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.JLabel;
 
@@ -26,6 +27,12 @@ abstract class AbstractGridBagOptionPanel extends AbstractOptionPanel {
         constraints.gridy = y;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.weightx = 1;
+        return constraints;
+    }
+
+    protected GridBagConstraints makeLabelConstraints(final int y) {
+        final GridBagConstraints constraints = makeConstraints(1, y);
+        constraints.insets = new Insets(0, 0, 0, 5);
         return constraints;
     }
 }

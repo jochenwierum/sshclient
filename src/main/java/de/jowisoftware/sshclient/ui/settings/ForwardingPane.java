@@ -8,7 +8,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
@@ -26,30 +25,31 @@ class ForwardingPane extends AbstractOptionPanel {
 
     public ForwardingPane(final AWTProfile profile) {
         this.profile = profile;
-        setLayout(new GridLayout(4, 2));
+        setLayout(new GridLayout(4, 2, 5, 0));
 
         agentForwarding.setSelected(profile.getAgentForwarding());
-        add(new JLabel(t("profiles.forwardings.agent", "Agent forwarding")));
+        add(label("profiles.forwardings.agent", "Agent forwarding"));
         add(agentForwarding);
 
         x11Forwarding.setSelected(profile.getX11Forwarding());
-        add(new JLabel(t("profiles.forwardings.x11", "X11 forwarding")));
+        add(label("profiles.forwardings.x11", "X11 forwarding", 'o', x11Forwarding));
         add(x11Forwarding);
 
         x11Host.setText(profile.getX11Host());
-        add(new JLabel(t("profiles.forwarding.x11host", "X11 host")));
+        add(label("profiles.forwarding.x11host", "X11 host", 'h', x11Host));
         add(x11Host);
 
         x11Display.setText(Integer.toString(profile.getX11Display()));
-        add(new JLabel(t("profiles.forwarding.x11display", "X11 display")));
+        add(label("profiles.forwarding.x11display", "X11 display", 'd', x11Display));
         add(x11Display);
     }
 
 
     private JCheckBox createAgentForwardingCheckBox() {
-        final JCheckBox checkBox = new JCheckBox(t("profiles.advanced.agentfowarding",
-                "forward ssh agent"));
-        checkBox.setMnemonic(m("profiles.advanced.agentfowarding", 'a'));
+        final JCheckBox checkBox = new JCheckBox(
+                t("profiles.forwardings.agentfowarding",
+                "Forward ssh agent"));
+        checkBox.setMnemonic(m("profiles.forwardings.agentfowarding", 'f'));
         checkBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(final ItemEvent e) {
@@ -60,9 +60,9 @@ class ForwardingPane extends AbstractOptionPanel {
     }
 
     private JCheckBox createXForwardingCheckBox() {
-        final JCheckBox checkBox = new JCheckBox(t("profiles.advanced.xfowarding",
-                "forward X-Server"));
-        checkBox.setMnemonic(m("profiles.advanced.xfowarding", 'x'));
+        final JCheckBox checkBox = new JCheckBox(t("profiles.forwardings.xfowarding",
+                "Forward X-Server"));
+        checkBox.setMnemonic(m("profiles.forwardings.xfowarding", 'x'));
         checkBox.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(final ItemEvent e) {
