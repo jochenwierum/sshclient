@@ -99,6 +99,7 @@ public class XMLPersister {
         profileNode.appendChild(createKeyValue("charset", profile.getCharset().name()));
         profileNode.appendChild(createKeyValue("closeTabMode",
                 profile.getCloseTabMode().toString()));
+        profileNode.appendChild(createKeyValue("command", profile.getCommand()));
         profileNode.appendChild(storeEnvironment(profile.getEnvironment()));
         profileNode.appendChild(storeGfxSettings(profile.getGfxSettings()));
         profileNode.appendChild(createForwardings(profile));

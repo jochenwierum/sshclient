@@ -16,6 +16,8 @@ import javax.swing.JPanel;
 
 import org.apache.log4j.Logger;
 
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelShell;
 
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
@@ -56,7 +58,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
     private final JPanel image;
     private final SSHConsoleKeyListener keyListener;
 
-    private ChannelShell channel;
+    private Channel channel;
     private DisplayType displayType = DisplayType.DYNAMIC;
 
     public SSHConsole(final AWTProfile profile) {
@@ -179,7 +181,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
         session.setOutputStream(outputStream);
     }
 
-    public void setChannel(final ChannelShell channel) {
+    public void setChannel(final Channel channel) {
         this.channel = channel;
     }
 
@@ -215,7 +217,13 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
         if (channel != null) {
             LOGGER.debug("Reporting new window size: " + cw + "/" + ch + " "
                     + pw + "/" + ph);
-            channel.setPtySize(cw, ch, pw, ph);
+
+            if (channel instanceof ChannelExec) {
+                ((ChannelExec) channel).setPtySize(cw, ch, pw, ph);
+            } else if(channel instanceof ChannelShell) {
+                ((ChannelShell) channel).setPtySize(cw, ch, pw, ph);
+            }
+
             try {
                 channel.sendSignal("WINCH");
             } catch(final Exception e2) {

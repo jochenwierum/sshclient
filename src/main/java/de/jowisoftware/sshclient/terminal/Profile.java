@@ -33,4 +33,8 @@ public interface Profile<C extends GfxInfo<?>> {
     void setCharsetName(String charsetName);
     String getCharsetName();
     Charset getCharset();
+
+    boolean hasCommand();
+    String getCommand();
+    void setCommand(String command);
 }

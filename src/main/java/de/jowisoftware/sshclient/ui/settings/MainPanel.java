@@ -25,11 +25,12 @@ class MainPanel extends AbstractOptionPanel {
     private final JComboBox encodingBox = createEncodingsBox();
     private final JTextField timeoutTextField = new JTextField();
     private final JTextField profileNameTextField = new JTextField();
+    private final JTextField commandTextField = new JTextField();
 
     public MainPanel(final AWTProfile profile, final String profileName,
             final boolean profileNameSettable) {
         this.profile = profile;
-        setLayout(new GridLayout(7, 2));
+        setLayout(new GridLayout(11, 2));
 
         add(new JLabel(t("profiles.general.profilename",
                 "profile name:")));
@@ -52,9 +53,22 @@ class MainPanel extends AbstractOptionPanel {
         add(new JLabel(""));
         add(new JLabel(""));
 
+        add(new JLabel(t("profiles.general.command", "command:")));
+        commandTextField.setText(profile.getCommand());
+        add(commandTextField);
+
+        add(new JLabel(t("profiles.general.command.info", "(this options disables forwardings!)")));
+        add(new JLabel(""));
+
+        add(new JLabel(""));
+        add(new JLabel(""));
+
         add(new JLabel(t("profiles.general.encoding", "encoding:")));
         encodingBox.setSelectedItem(profile.getCharset().name());
         add(encodingBox);
+
+        add(new JLabel(""));
+        add(new JLabel(""));
 
         add(new JLabel(
                 t("profiles.general.timeout", "timeout (ms):")));
@@ -83,6 +97,7 @@ class MainPanel extends AbstractOptionPanel {
         profile.setPort(StringUtils.getInteger(portTextField.getText(), -1));
         profile.setTimeout(StringUtils.getInteger(timeoutTextField.getText(),
                 -1));
+        profile.setCommand(commandTextField.getText());
     }
 
     public String getProfileName() {

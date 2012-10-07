@@ -17,6 +17,8 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     private String x11Host = "127.0.0.1";
     private int x11Display = 0;
 
+    private String command = "";
+
     private String charsetName = "UTF-8";
     private transient Charset charset;
 
@@ -46,6 +48,7 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
         charsetName = copy.charsetName;
         charset = copy.charset;
         closeTabMode = copy.closeTabMode;
+        command = copy.command;
     }
 
     @Override
@@ -169,5 +172,20 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
 
     public CloseTabMode getCloseTabMode() {
         return closeTabMode;
+    }
+
+    @Override
+    public boolean hasCommand() {
+        return !command.trim().isEmpty();
+    }
+
+    @Override
+    public String getCommand() {
+        return command.trim();
+    }
+
+    @Override
+    public void setCommand(final String command) {
+        this.command = command;
     }
 }

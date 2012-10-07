@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
@@ -28,7 +30,7 @@ public class JSchConnection {
     private final Profile<?> profile;
 
     private Session session;
-    private ChannelShell channel;
+    private Channel channel;
     private OutputStream outputStream;
 
     private final EventHub<InputStreamEvent> events =
@@ -57,7 +59,6 @@ public class JSchConnection {
 
     private void openChannel() throws JSchException {
         channel = createChannel();
-        setupChannelForwardings();
         connectChannel();
     }
 
@@ -78,9 +79,9 @@ public class JSchConnection {
         channel.connect();
     }
 
-    private void setupChannelForwardings() {
-        channel.setXForwarding(profile.getX11Forwarding());
-        channel.setAgentForwarding(profile.getAgentForwarding());
+    private void setupChannelForwardings(final ChannelShell shellChannel) {
+        shellChannel.setXForwarding(profile.getX11Forwarding());
+        shellChannel.setAgentForwarding(profile.getAgentForwarding());
     }
 
     private void setupStreams() throws IOException {
@@ -101,8 +102,27 @@ public class JSchConnection {
         return sshSession;
     }
 
-    private ChannelShell createChannel() throws JSchException {
+    private Channel createChannel() throws JSchException {
+        if (profile.hasCommand()) {
+            return createExecChannel();
+        } else {
+            return createShellChannel();
+        }
+    }
+
+    private Channel createExecChannel() throws JSchException {
+        final ChannelExec execChannel = (ChannelExec) session.openChannel("exec");
+        execChannel.setCommand(profile.getCommand());
+
+        execChannel.setEnv("TERM", "xterm");
+        execChannel.setPtyType("xterm");
+        execChannel.setPty(true);
+        return execChannel;
+    }
+
+    private Channel createShellChannel() throws JSchException {
         final ChannelShell shellChannel = (ChannelShell) session.openChannel("shell");
+        setupChannelForwardings(shellChannel);
 
         for (final Entry<String, String> env : profile.getEnvironment().entrySet()) {
             shellChannel.setEnv(env.getKey(), env.getValue());
@@ -136,7 +156,7 @@ public class JSchConnection {
         return outputStream;
     }
 
-    public ChannelShell getChannel() {
+    public Channel getChannel() {
         return channel;
     }
 }
