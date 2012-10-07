@@ -65,15 +65,14 @@ public class DnDTabbedPane extends JTabbedPane {
     private static int buttonsize = 30;// XXX: magic number of scroll button
                                        // size
 
-    @SuppressWarnings("hiding")
     private void autoScrollTest(final Point glassPt) {
         final Rectangle r = getTabAreaBounds();
-        final int tabPlacement = getTabPlacement();
-        if (tabPlacement == TOP || tabPlacement == BOTTOM) {
+        final int placement = getTabPlacement();
+        if (placement == TOP || placement == BOTTOM) {
             rBackward.setBounds(r.x, r.y, rwh, r.height);
             rForward.setBounds(r.x + r.width - rwh - buttonsize, r.y, rwh
                     + buttonsize, r.height);
-        } else if (tabPlacement == LEFT || tabPlacement == RIGHT) {
+        } else if (placement == LEFT || placement == RIGHT) {
             rBackward.setBounds(r.x, r.y, r.width, rwh);
             rForward.setBounds(r.x, r.y + r.height - rwh - buttonsize, r.width,
                     rwh + buttonsize);
@@ -91,9 +90,7 @@ public class DnDTabbedPane extends JTabbedPane {
         }
     }
 
-    @SuppressWarnings("unused")
     public DnDTabbedPane() {
-        super();
         final DragSourceListener dsl = new DragSourceListener() {
             @Override
             public void dragEnter(final DragSourceDragEvent e) {
@@ -399,16 +396,15 @@ public class DnDTabbedPane extends JTabbedPane {
         }
         final Rectangle compRect = (comp == null) ? new Rectangle() : comp
                 .getBounds();
-        @SuppressWarnings("hiding")
-        final int tabPlacement = getTabPlacement();
-        if (tabPlacement == TOP) {
+        final int placement = getTabPlacement();
+        if (placement == TOP) {
             tabbedRect.height = tabbedRect.height - compRect.height;
-        } else if (tabPlacement == BOTTOM) {
+        } else if (placement == BOTTOM) {
             tabbedRect.y = tabbedRect.y + compRect.y + compRect.height;
             tabbedRect.height = tabbedRect.height - compRect.height;
-        } else if (tabPlacement == LEFT) {
+        } else if (placement == LEFT) {
             tabbedRect.width = tabbedRect.width - compRect.width;
-        } else if (tabPlacement == RIGHT) {
+        } else if (placement == RIGHT) {
             tabbedRect.x = tabbedRect.x + compRect.x + compRect.width;
             tabbedRect.width = tabbedRect.width - compRect.width;
         }
