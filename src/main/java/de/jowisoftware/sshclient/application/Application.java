@@ -74,7 +74,7 @@ public class Application {
     private void loadDefaultKey() {
         final File privKey = new File(sshDir, "id_rsa");
         if (privKey.isFile()) {
-            keyManager.loadKey(privKey.getAbsolutePath(), null);
+            keyManager.loadKey(privKey.getAbsolutePath());
         }
     }
 

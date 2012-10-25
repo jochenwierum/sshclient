@@ -24,9 +24,6 @@ public interface ApplicationSettings<T extends Profile<?>> {
 
     PasswordStorage getPasswordStorage();
 
-    boolean getUnlockKeysOnStartup();
-    void setUnlockKeysOnStartup(final boolean unlockKeysOnStartup);
-
     BellType getBellType();
     void setBellType(final BellType bellType);
 

@@ -323,9 +323,6 @@ public class XMLLoader {
     }
 
     private void loadKeys(final Element keysNode) {
-        final boolean unlock = getBoolean(keysNode, "@unlock", false);
-        settings.setUnlockKeysOnStartup(unlock);
-
         try {
             final NodeList nodes = (NodeList) xpath.evaluate("key/text()", keysNode, XPathConstants.NODESET);
             for (int i = 0; i < nodes.getLength(); ++i) {

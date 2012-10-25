@@ -87,10 +87,10 @@ public class SimplePasswordManager implements PasswordManager {
             unlockStorage();
             return storage.restorePassword(passwordId);
         } catch (final CryptoException e) {
-            LOGGER.error("Could not restore password, ignoring it", e);
+            LOGGER.error("Could not restore password, keeping storage locked", e);
             return null;
         } catch (final UserAbortException e) {
-            LOGGER.info("User did cancel request to open password storage, ignoring it");
+            LOGGER.info("User did cancel request to open password storage, keeping storage locked");
             return null;
         }
     }

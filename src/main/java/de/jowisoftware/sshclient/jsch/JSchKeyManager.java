@@ -54,16 +54,11 @@ public class JSchKeyManager implements KeyManager {
             final String filePath = file.getAbsolutePath();
             LOGGER.info("Restoring private key: " + filePath);
 
-            String password = null;
-            if (settings.getUnlockKeysOnStartup()) {
-                password = getKeyPassword(filePath);
-            }
-
-            loadKey(filePath, password);
+            loadKey(filePath);
         }
     }
 
-    private String getKeyPassword(final String keyName) {
+    private String getKeyPassword(final String keyName) throws UserAbortException {
         KeyPair key;
         try {
             key = KeyPair.load(jsch, keyName);
@@ -79,16 +74,12 @@ public class JSchKeyManager implements KeyManager {
         }
     }
 
-    private String requestPassword(final String keyName, final KeyPair key) {
+    private String requestPassword(final String keyName, final KeyPair key) throws UserAbortException {
         String password;
         boolean firstTime = true;
 
         do {
-            try {
-                password = passwordManager.getPassword(keyName, !firstTime);
-            } catch (final UserAbortException e) {
-                return null;
-            }
+            password = passwordManager.getPassword(keyName, !firstTime);
             firstTime = false;
         } while(!key.decrypt(password));
 
@@ -96,16 +87,19 @@ public class JSchKeyManager implements KeyManager {
     }
 
     @Override
-    public void loadKey(final String absolutePath, final String password) {
+    public void loadKey(final String absolutePath) {
         if (isKeyAlreadyLoaded(absolutePath)) {
             return;
         }
 
         try {
+            final String password = getKeyPassword(absolutePath);
             jsch.addIdentity(absolutePath, password);
             events.fire().keysUpdated();
         } catch(final JSchException e) {
             LOGGER.error("Could not load key: " + absolutePath, e);
+        } catch (final UserAbortException e) {
+            LOGGER.info("Not loading key - user aborted password input: " + absolutePath);
         }
     }
 

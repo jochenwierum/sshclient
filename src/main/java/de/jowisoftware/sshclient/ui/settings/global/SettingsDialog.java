@@ -14,7 +14,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -34,7 +33,6 @@ public class SettingsDialog extends JDialog {
     private JComboBox keyTabStateCombobox;
     private JComboBox languageCombobox;
     private JComboBox bellTypeCombobox;
-    private JCheckBox unlockKeysCheckbox;
 
     private static class Language {
         private final String name;
@@ -68,12 +66,11 @@ public class SettingsDialog extends JDialog {
 
     private Component createMainContent() {
         final JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(5, 2, 8, 0));
+        panel.setLayout(new GridLayout(4, 2, 8, 0));
 
         addLanguageComponents(panel);
         addLogTabStateComponents(panel);
         addKeyTabStateComponents(panel);
-        addUnlockKeysComponents(panel);
         addBellComponents(panel);
 
         return panel;
@@ -102,19 +99,6 @@ public class SettingsDialog extends JDialog {
         final JComboBox combobox = new JComboBox(texts);
         combobox.setSelectedIndex(selectedIndex);
         return combobox;
-    }
-
-    private void addUnlockKeysComponents(final JPanel panel) {
-        panel.add(label("settings.unlockkeys", "Unlock SSH keys:"));
-        unlockKeysCheckbox = createUnlockKeysCheckbox();
-        panel.add(unlockKeysCheckbox);
-    }
-
-    private JCheckBox createUnlockKeysCheckbox() {
-        final JCheckBox checkbox = new JCheckBox(t("settings.unlockkeys.description",
-                "unlock SSH keys on startup"), settings.getUnlockKeysOnStartup());
-        checkbox.setMnemonic(m("settings.unlockkeys.description", 'u'));
-        return checkbox;
     }
 
     private void addLanguageComponents(final JPanel panel) {
@@ -249,7 +233,6 @@ public class SettingsDialog extends JDialog {
     private void save() {
         settings.setLanguage(((Language) languageCombobox.getSelectedItem()).key);
         settings.setBellType(BellType.values()[bellTypeCombobox.getSelectedIndex()]);
-        settings.setUnlockKeysOnStartup(unlockKeysCheckbox.isSelected());
 
         settings.setLogTabState(comboBoxToTabState(logTabStateCombobox));
         settings.setKeyTabState(comboBoxToTabState(keyTabStateCombobox));

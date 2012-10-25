@@ -1,9 +1,14 @@
 package de.jowisoftware.sshclient.ui;
 
-import com.jcraft.jsch.JSchException;
-import de.jowisoftware.sshclient.application.Application;
-import de.jowisoftware.sshclient.application.KeyManagerEvents;
-import org.apache.log4j.Logger;
+import static de.jowisoftware.sshclient.i18n.Translation.m;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
+
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Vector;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -11,21 +16,20 @@ import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 
-import static de.jowisoftware.sshclient.i18n.Translation.m;
-import static de.jowisoftware.sshclient.i18n.Translation.t;
+import org.apache.log4j.Logger;
+
+import com.jcraft.jsch.JSchException;
+
+import de.jowisoftware.sshclient.application.Application;
+import de.jowisoftware.sshclient.application.KeyManagerEvents;
 
 public class PrivateKeyTab extends JPanel implements KeyManagerEvents {
     private static final long serialVersionUID = -5696019301183886041L;
 
     private static final Logger LOGGER = Logger.getLogger(PrivateKeyTab.class);
 
-    private Application application;
+    private final Application application;
 
     private final DefaultListModel listModel = new DefaultListModel();
     private final JList list = new JList(listModel);
@@ -45,10 +49,12 @@ public class PrivateKeyTab extends JPanel implements KeyManagerEvents {
 
         final int count;
         try {
-            count = application.jsch.getIdentityNames().size();
+            @SuppressWarnings("unchecked")
+            final Vector<String> identityNames = application.jsch.getIdentityNames();
+            count = identityNames.size();
 
             for (int i = 0; i < count; ++i) {
-                listModel.addElement(application.jsch.getIdentityNames().get(i));
+                listModel.addElement(identityNames.get(i));
             }
         } catch (final JSchException e) {
             LOGGER.error("Error while fetching identities", e);
@@ -89,7 +95,7 @@ public class PrivateKeyTab extends JPanel implements KeyManagerEvents {
                 if (result == JFileChooser.APPROVE_OPTION) {
                     final File file = chooser.getSelectedFile();
                     LOGGER.info("Adding private key: " + file.getAbsolutePath());
-                    application.keyManager.loadKey(file.getAbsolutePath(), null);
+                    application.keyManager.loadKey(file.getAbsolutePath());
                 }
             }
         });

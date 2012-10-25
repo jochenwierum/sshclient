@@ -194,7 +194,6 @@ public class XMLPersister {
 
     private Element storeKeys() {
         final Element keyNode = doc.createElement("keys");
-        keyNode.setAttribute("unlock", Boolean.toString(settings.getUnlockKeysOnStartup()));
 
         for (final File keyFile : settings.getKeyFiles()) {
             final Element file = doc.createElement("key");

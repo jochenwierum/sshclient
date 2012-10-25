@@ -79,6 +79,7 @@ public class ConnectionFrame extends JPanel implements Redrawable {
                         session.getRenderer().invertFor(Constants.FLASH_TIMER);
                         parent.restartTimer();
                         break;
+                    case None:
                 }
             }
         });

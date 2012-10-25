@@ -25,7 +25,7 @@ public class AWTApplicationSettings implements ApplicationSettings<AWTProfile> {
     private final List<File> keyFiles = new ArrayList<File>();
 
     private final PasswordStorage passwordStorage;
-    private boolean unlockKeysOnStartup = false;
+    private final boolean unlockKeysOnStartup = false;
 
     private TabState logTabState = TabState.CLOSED;
     private TabState keyTabState = TabState.CLOSED;
@@ -87,16 +87,6 @@ public class AWTApplicationSettings implements ApplicationSettings<AWTProfile> {
     @Override
     public PasswordStorage getPasswordStorage() {
         return passwordStorage;
-    }
-
-    @Override
-    public boolean getUnlockKeysOnStartup() {
-        return unlockKeysOnStartup;
-    }
-
-    @Override
-    public void setUnlockKeysOnStartup(final boolean unlockKeysOnStartup) {
-        this.unlockKeysOnStartup = unlockKeysOnStartup;
     }
 
     @Override
