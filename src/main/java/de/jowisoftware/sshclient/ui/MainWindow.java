@@ -235,6 +235,11 @@ public class MainWindow extends JFrame {
                                 t("errors.arguments.title", "Error"),
                                 JOptionPane.ERROR_MESSAGE);
                     }
+
+                    @Override
+                    public void loadKey(final String path) {
+                        application.keyManager.loadKey(path);
+                    }
                 }, application.settings).processArguments(args);
             }});
     }

@@ -52,16 +52,11 @@ public class ArgumentParser<T extends Profile<?>> {
     private ArgumentResult processArgument(final String arg, final String secondArg) {
         try {
             if (arg.startsWith("-")) {
-                return parseDefaultArg(arg.substring(1));
+                return parseDefaultArg(arg.substring(1), secondArg);
             } else if (arg.startsWith("+")) {
-                final String sessionName = arg.substring(1);
-                final SessionConnectArgument<T> argument = new SessionConnectArgument<T>(sessionName);
-                callbacks.openConnection(argument.getProfile(settings));
-                return ArgumentResult.TAKE_ONE;
+                return parseSession(arg);
             } else {
-                final FreeStyleConnectArgument<T> argument = new FreeStyleConnectArgument<T>(arg);
-                callbacks.openConnection(argument.getProfile(settings));
-                return ArgumentResult.TAKE_ONE;
+                return parseFreeStyle(arg);
             }
         } catch(final RuntimeException e) {
             LOGGER.warn("Problem while parsing command line argument '" +
@@ -70,7 +65,25 @@ public class ArgumentParser<T extends Profile<?>> {
         return ArgumentResult.ERROR;
     }
 
-    private ArgumentResult parseDefaultArg(final String substring) {
-        return ArgumentResult.ERROR;
+    private ArgumentResult parseFreeStyle(final String arg) {
+        final FreeStyleConnectArgument<T> argument = new FreeStyleConnectArgument<T>(arg);
+        callbacks.openConnection(argument.getProfile(settings));
+        return ArgumentResult.TAKE_ONE;
+    }
+
+    private ArgumentResult parseSession(final String arg) {
+        final String sessionName = arg.substring(1);
+        final SessionConnectArgument<T> argument = new SessionConnectArgument<T>(sessionName);
+        callbacks.openConnection(argument.getProfile(settings));
+        return ArgumentResult.TAKE_ONE;
+    }
+
+    private ArgumentResult parseDefaultArg(final String argument, final String parameter) {
+        if (argument.toLowerCase().equals("key") && parameter != null) {
+            callbacks.loadKey(parameter);
+            return ArgumentResult.TAKE_TWO;
+        } else {
+            return ArgumentResult.ERROR;
+        }
     }
 }

@@ -95,4 +95,15 @@ public class ArgumentParserTest {
 
         parser.processArguments(new String[]{"user:password@hostname:123"});
     }
+
+    @Test public void
+    keysCanBeLoaded() {
+        context.checking(new Expectations(){{
+            oneOf(callback).loadKey("/path/to/key1");
+            oneOf(callback).loadKey("/path/to/key2");
+        }});
+
+        parser.processArguments(new String[]{"-key", "/path/to/key1",
+                "-key", "/path/to/key2"});
+    }
 }
