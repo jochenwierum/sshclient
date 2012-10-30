@@ -59,15 +59,22 @@ public class DefaultCursorPositionManagerTest {
         assertPosition(13, 1);
     }
 
-    @Test
-    public void testResizeTo30x24() {
+    @Test public void
+    resizingTo30x24KeepsPosition() {
         manager.setPositionSafelyInScreen(new Position(10, 11));
         manager.newSize(30, 24);
         assertPosition(11, 10);
     }
 
-    @Test
-    public void fullBufferTriggersRoll() {
+    @Test public void
+    resizingTo5x6TruncatesPosition() {
+        manager.setPositionSafelyInScreen(new Position(10, 11));
+        manager.newSize(5, 6);
+        assertPosition(6, 5);
+    }
+
+    @Test public void
+    fullBufferTriggersRoll() {
         context.checking(new Expectations() {{
             oneOf(feedback).lineShiftingNeeded(-1, 0, 24);
         }});
@@ -77,8 +84,8 @@ public class DefaultCursorPositionManagerTest {
     }
 
 
-    @Test
-    public void fullBufferTriggersRollFarJump() {
+    @Test public void
+    fullBufferTriggersRollFarJump() {
         manager.newSize(80, 28);
         context.checking(new Expectations() {{
             oneOf(feedback).lineShiftingNeeded(-3, 0, 28);
@@ -88,8 +95,8 @@ public class DefaultCursorPositionManagerTest {
         assertPosition(28, 5);
     }
 
-    @Test
-    public void testMoveCursorUpAndRoll() {
+    @Test public void
+    testMoveCursorUpAndRollTriggersLineshift() {
         manager.setMargins(2, 3);
         assertPosition(1, 1);
         manager.setPositionSafelyInScreen(new Position(2, 3));
@@ -106,8 +113,8 @@ public class DefaultCursorPositionManagerTest {
         assertPosition(2, 1);
     }
 
-    @Test
-    public void testMoveCursorUpAndRollWithoutMargins() {
+    @Test public void
+    moveCursorUpAndRollWithoutMarginsTriggersLineshift() {
         manager.setPositionSafelyInScreen(new Position(3, 1));
         context.checking(new Expectations() {{
             oneOf(feedback).lineShiftingNeeded(1, 0, 24);
@@ -117,8 +124,8 @@ public class DefaultCursorPositionManagerTest {
         assertPosition(1, 3);
     }
 
-    @Test
-    public void testMoveCursorUpAndRollWithoutRoll() {
+    @Test public void
+    testMoveCursorUpAndRollWithoutRoll() {
         manager.setPositionSafelyInScreen(new Position(2, 4));
         manager.moveUpAndRoll();
         assertPosition(3, 2);
@@ -127,8 +134,8 @@ public class DefaultCursorPositionManagerTest {
         assertPosition(1, 2);
     }
 
-    @Test
-    public void testMoveCursorDownWithoutRoll() {
+    @Test public void
+    moveCursorDownWithoutRoll() {
         manager.setPositionSafelyInScreen(new Position(2, 3));
         manager.moveDownAndRoll();
         assertPosition(4, 2);
@@ -149,8 +156,8 @@ public class DefaultCursorPositionManagerTest {
     }
 
 
-    @Test
-    public void moveCursorDownAndRollShiftingLinesIfNeeded() {
+    @Test public void
+    moveCursorDownAndRollShiftingLinesIfNeeded() {
         manager.setMargins(2, 3);
         manager.setPositionSafelyInScreen(new Position(2, 2));
 
@@ -165,8 +172,8 @@ public class DefaultCursorPositionManagerTest {
         assertPosition(3, 2);
     }
 
-    @Test
-    public void saveAndRestore() {
+    @Test public void
+    saveAndRestoreKeepsPosition() {
         manager.setPositionSafelyInScreen(new Position(22, 5));
         manager.save();
         assertPosition(5, 22);

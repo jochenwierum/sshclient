@@ -26,7 +26,7 @@ public class DefaultCursorPositionManager implements CursorPositionManager {
     @Override
     public void newSize(final int width, final int height) {
         rightBottomCorner = new Position(width, height);
-        setPositionSafelyInScreen(position);
+        position = position.moveInRange(rightBottomCorner.toRange());
     }
 
     @Override
