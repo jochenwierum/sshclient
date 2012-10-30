@@ -8,6 +8,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
@@ -109,13 +111,16 @@ public class PrivateKeyTab extends JPanel implements KeyManagerEvents {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                if (list.isSelectionEmpty()) {
-                    return;
+                final List<String> toRemove = new LinkedList<String>();
+                for (final int index : list.getSelectedIndices()) {
+                    toRemove.add((String) list.getModel().getElementAt(index));
                 }
 
-                final String name = (String) list.getSelectedValue();
-                LOGGER.info("Removing private key: " + name);
-                application.keyManager.removeIdentity(name);
+                for (final String name : toRemove) {
+                    LOGGER.info("Removing private key: " + name);
+                    application.keyManager.removeIdentity(name);
+                }
+
                 updateListModel();
             }
         });
