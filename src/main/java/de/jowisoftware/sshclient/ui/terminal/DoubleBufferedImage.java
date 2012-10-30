@@ -46,8 +46,10 @@ public class DoubleBufferedImage implements Renderer {
     private Position currentSelectionStart;
     private Position currentSelectionEnd;
 
-    private boolean isFocused;
+    private volatile boolean isFocused;
     private long invertUntil;
+
+    private volatile long blinkingOffset = 0;
 
     public DoubleBufferedImage(final AWTGfxInfo gfxInfo, final JPanel parent) {
         this.gfxInfo = gfxInfo;
@@ -102,7 +104,7 @@ public class DoubleBufferedImage implements Renderer {
     public synchronized void renderSnapshot(final Snapshot snapshot) {
         final Position selectionStart = this.currentSelectionStart;
         final Position selectionEnd = this.currentSelectionEnd;
-        final int baseRenderFlags = createGlobalRenderFlags();
+        final int baseRenderFlags = createGlobalRenderFlags(System.currentTimeMillis());
 
         if (images != null) {
             PerformanceLogger.start(PerformanceType.BACKGROUND_RENDER);
@@ -139,12 +141,12 @@ public class DoubleBufferedImage implements Renderer {
         graphics[1 - currentImage].fillRect(xPos, yPos, width - xPos, charHeight);
     }
 
-    private int createGlobalRenderFlags() {
+    private int createGlobalRenderFlags(final long time) {
         int flags = 0;
-        if ((renderInverted && !invertTimed()) || (!renderInverted && invertTimed())) {
+        if ((renderInverted && !invertTimed(time)) || (!renderInverted && invertTimed(time))) {
             flags |= RenderFlag.INVERTED.flag;
         }
-        if (blinkIsForeground()) {
+        if (blinkIsForeground(time)) {
             flags |= RenderFlag.BLINKING.flag;
         }
         if (isFocused) {
@@ -153,8 +155,8 @@ public class DoubleBufferedImage implements Renderer {
         return flags;
     }
 
-    private boolean blinkIsForeground() {
-        return (System.currentTimeMillis() / Constants.BLINK_TIMER) % 2 == 0;
+    private boolean blinkIsForeground(final long time) {
+        return ((time - blinkingOffset) / Constants.BLINK_TIMER) % 2 == 0;
     }
 
     private int createCharRenderFlags(
@@ -255,7 +257,12 @@ public class DoubleBufferedImage implements Renderer {
         invertUntil = System.currentTimeMillis() + invertMillis;
     }
 
-    private boolean invertTimed() {
-        return invertUntil > System.currentTimeMillis();
+    private boolean invertTimed(final long time) {
+        return invertUntil > time;
+    }
+
+    @Override
+    public void resetBlinking() {
+        blinkingOffset = System.currentTimeMillis() % (2 * Constants.BLINK_TIMER);
     }
 }

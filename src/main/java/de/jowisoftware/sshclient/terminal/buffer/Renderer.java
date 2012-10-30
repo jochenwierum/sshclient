@@ -16,4 +16,6 @@ public interface Renderer {
 
     void setFocused(boolean isFocused);
     void invertFor(int invertMillis);
+
+    void resetBlinking();
 }

@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.SSHSession;
+import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
 
 public class KeyboardProcessor implements KeyboardEvent {
@@ -30,7 +31,9 @@ public class KeyboardProcessor implements KeyboardEvent {
         if (session == null) {
             return;
         }
-        session.getRenderer().clearSelection();
+        final Renderer renderer = session.getRenderer();
+        renderer.resetBlinking();
+        renderer.clearSelection();
 
         if (handleSpecialChar(e)) {
             return;

@@ -39,14 +39,14 @@ public class KeyboardProcessorTest {
     }
 
     private void assertText(final String t, final KeyEvent... events) {
-        expectRendererSelectionReset(t.length());
+        allowRenderingInteraction(t.length());
         expectStringInChars(t);
         pressKeys(events);
     }
 
-    private void expectRendererSelectionReset(final int count) {
+    private void allowRenderingInteraction(final int count) {
         context.checking(new Expectations() {{
-            exactly(count).of(renderer).clearSelection();
+            allowing(renderer);
         }});
     }
 
@@ -74,7 +74,7 @@ public class KeyboardProcessorTest {
     }
 
     private void assertSequence(final KeyEvent e, final char... chars) {
-        expectRendererSelectionReset(3);
+        allowRenderingInteraction(3);
         expectString("x");
         expectChars(chars);
         expectString("x");
@@ -85,7 +85,7 @@ public class KeyboardProcessorTest {
     }
 
     private void assertSequence(final KeyEvent e, final String text) {
-        expectRendererSelectionReset(3);
+        allowRenderingInteraction(3);
         expectString("x");
         expectString(text);
         expectString("x");
