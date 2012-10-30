@@ -25,7 +25,6 @@ public class AWTApplicationSettings implements ApplicationSettings<AWTProfile> {
     private final List<File> keyFiles = new ArrayList<File>();
 
     private final PasswordStorage passwordStorage;
-    private final boolean unlockKeysOnStartup = false;
 
     private TabState logTabState = TabState.CLOSED;
     private TabState keyTabState = TabState.CLOSED;

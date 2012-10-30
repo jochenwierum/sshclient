@@ -1,12 +1,17 @@
 package de.jowisoftware.sshclient.encryption;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import org.hamcrest.BaseMatcher;
@@ -343,6 +348,7 @@ public class PasswordStorageTest {
             oneOf(cryptor).setPassword("wrong");
             oneOf(cryptor).decrypt(CHECK_STRING); will(returnValue("5"));
         }});
+
         storage.unlock("wrong");
     }
 
@@ -353,6 +359,36 @@ public class PasswordStorageTest {
             oneOf(cryptor).decrypt(CHECK_STRING); will(throwException(
                     new CryptoException("")));
         }});
+
         storage.unlock("wrong");
+    }
+
+    @Test public void
+    hasPasswords() throws CryptoException {
+        unlock();
+
+        prepareEncrypt("pass1", "pass1");
+        prepareEncrypt("pass1", "pass1");
+        storage.savePassword("a", "pass1");
+        storage.savePassword("b", "pass1");
+
+        assertTrue(storage.hasPassword("a"));
+        assertTrue(storage.hasPassword("b"));
+        assertFalse(storage.hasPassword("c"));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test public void
+    keyIdsCanBeListed() throws CryptoException {
+        unlock();
+
+        prepareEncrypt("pass1", "");
+        prepareEncrypt("pass1", "");
+        storage.savePassword("x", "pass1");
+        storage.savePassword("y", "pass1");
+
+        final String[] keys = storage.exportPasswordIds();
+        assertEquals(2, keys.length);
+        assertThat(Arrays.asList(keys), containsInAnyOrder(is("x"), is("y")));
     }
 }

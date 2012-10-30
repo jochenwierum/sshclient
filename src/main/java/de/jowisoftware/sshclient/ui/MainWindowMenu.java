@@ -67,7 +67,7 @@ public class MainWindowMenu {
         fileMenu.add(createConnectEntry());
         fileMenu.add(createSessionsEntry());
         fileMenu.add(createSettingsEntry());
-        fileMenu.add(createMasterPasswordEntry());
+        fileMenu.add(createPasswortManagerEntry());
         fileMenu.add(createQuitMenuEntry());
 
         return fileMenu;
@@ -159,13 +159,13 @@ public class MainWindowMenu {
         return entry;
     }
 
-    private JMenuItem createMasterPasswordEntry() {
-        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.masterpassword", "Change master password"));
-        entry.setMnemonic(m("mainwindow.menu.masterpassword", 'm'));
+    private JMenuItem createPasswortManagerEntry() {
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.passwords", "Manage passwords..."));
+        entry.setMnemonic(m("mainwindow.menu.passwords", 'p'));
         entry.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                application.passwordManager.changeMasterPassword();
+                new PasswordManagerGUI(parent, application.passwordManager).showDialog();
             }
         });
         return entry;

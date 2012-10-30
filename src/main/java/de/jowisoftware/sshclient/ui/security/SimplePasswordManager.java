@@ -2,6 +2,9 @@ package de.jowisoftware.sshclient.ui.security;
 
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.Logger;
@@ -160,5 +163,44 @@ public class SimplePasswordManager implements PasswordManager {
         } catch(final UserAbortException e) {
             // do nothing, simply do not change the password
         }
+    }
+
+    @Override
+    public void deletePassword(final String passwordId) {
+        try {
+            unlockStorage();
+            storage.deletePassword(passwordId);
+        } catch (final CryptoException e) {
+            LOGGER.error("Unable to delete password '" + passwordId + "'", e);
+            showMessage(t("security.exception.delete",
+                    "Unable to delete password '%s'.", passwordId));
+        } catch (final UserAbortException e) {
+            // User aborts delete process
+        }
+    }
+
+    @Override
+    public SortedMap<String, String> getPasswords(final boolean showPasswords) {
+        if (showPasswords) {
+            try {
+                unlockStorage();
+            } catch (final UserAbortException e) {
+                // keep storage locked
+            }
+        }
+
+        final SortedMap<String, String> result = new TreeMap<String, String>();
+        for (final String key : storage.exportPasswordIds()) {
+            String password = "";
+            if (showPasswords && storage.getState() == PasswordStorage.State.UNLOCKED) {
+                try {
+                    password = storage.restorePassword(key);
+                } catch (final CryptoException e) {
+                    password = "defect";
+                }
+            }
+            result.put(key, password);
+        }
+        return result;
     }
 }

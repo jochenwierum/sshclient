@@ -122,4 +122,8 @@ public class PasswordStorage {
     public boolean hasPassword(final String passwordId) {
         return passwords.containsKey(passwordId);
     }
+
+    public String[] exportPasswordIds() {
+        return passwords.keySet().toArray(new String[passwords.size()]);
+    }
 }
