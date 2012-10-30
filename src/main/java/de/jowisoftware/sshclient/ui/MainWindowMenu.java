@@ -113,7 +113,7 @@ public class MainWindowMenu {
     }
 
     private JMenuItem createSessionsEntry() {
-        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.profiles", "Profiles"));
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.profiles", "Profiles..."));
         entry.setMnemonic(m("mainwindow.menu.profiles", 'p'));
 
         entry.addActionListener(new ActionListener() {
@@ -131,7 +131,7 @@ public class MainWindowMenu {
 
 
     private JMenuItem createSettingsEntry() {
-        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.settings", "Settings"));
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.settings", "Settings..."));
         entry.setMnemonic(m("mainwindow.menu.settings", 's'));
 
         entry.addActionListener(new ActionListener() {
@@ -148,7 +148,7 @@ public class MainWindowMenu {
 
 
     private JMenuItem createConnectEntry() {
-        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.connect", "Connect"));
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.connect", "Connect..."));
         entry.setMnemonic(m("mainwindow.menu.connect", 'c'));
         entry.addActionListener(new ActionListener() {
             @Override
