@@ -10,13 +10,13 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
-abstract class AbstractOptionPanel extends JPanel {
+public abstract class AbstractOptionPanel extends JPanel {
     public AbstractOptionPanel() {
         setOpaque(false);
     }
 
     abstract public String getTitle();
-    void save() { /* empty by default */ }
+    public void save() { /* empty by default */ }
 
     protected JLabel blind() {
         return new JLabel();

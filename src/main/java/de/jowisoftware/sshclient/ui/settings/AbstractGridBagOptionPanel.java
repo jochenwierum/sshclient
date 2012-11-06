@@ -7,7 +7,7 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 
 @SuppressWarnings("serial")
-abstract class AbstractGridBagOptionPanel extends AbstractOptionPanel {
+public abstract class AbstractGridBagOptionPanel extends AbstractOptionPanel {
     public AbstractGridBagOptionPanel() {
         setLayout(new GridBagLayout());
     }

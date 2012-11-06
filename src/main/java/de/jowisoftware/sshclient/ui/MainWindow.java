@@ -24,7 +24,7 @@ import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.application.settings.persisting.XMLPersister;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.log.LogPanel;
-import de.jowisoftware.sshclient.ui.settings.ConnectDialog;
+import de.jowisoftware.sshclient.ui.settings.profile.ConnectDialog;
 import de.jowisoftware.sshclient.ui.tabpanel.RedrawingTabPane;
 import de.jowisoftware.sshclient.util.ApplicationUtils;
 import de.jowisoftware.sshclient.util.FontUtils;

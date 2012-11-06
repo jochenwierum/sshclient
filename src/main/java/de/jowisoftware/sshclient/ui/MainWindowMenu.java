@@ -13,8 +13,8 @@ import javax.swing.JMenuItem;
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.ui.about.AboutDialog;
-import de.jowisoftware.sshclient.ui.settings.ProfilesDialog;
 import de.jowisoftware.sshclient.ui.settings.global.SettingsDialog;
+import de.jowisoftware.sshclient.ui.settings.profile.ProfilesDialog;
 
 
 public class MainWindowMenu {

@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 
-abstract class AbstractColorButton extends JButton implements ActionListener {
+public abstract class AbstractColorButton extends JButton implements ActionListener {
     private static final long serialVersionUID = 5918403991063984914L;
     private static final int BUTTON_SIZE = 20;
 
@@ -47,5 +47,5 @@ abstract class AbstractColorButton extends JButton implements ActionListener {
         }
     }
 
-    abstract void saveColor(Color newColor, ActionEvent e);
+    protected abstract void saveColor(Color newColor, ActionEvent e);
 }
