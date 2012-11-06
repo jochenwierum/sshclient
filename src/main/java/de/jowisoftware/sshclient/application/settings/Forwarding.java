@@ -13,4 +13,10 @@ public class Forwarding {
         this.remotePort = remotePort;
         this.remoteHost = remoteHost;
     }
+
+    @Override
+    public String toString() {
+        return "Forwarding [" + sourceHost + ":" + sourcePort
+                + " to " + remoteHost + ":" + remotePort + "]";
+    }
 }
