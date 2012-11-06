@@ -10,7 +10,7 @@ import java.awt.event.ItemListener;
 import javax.swing.JCheckBox;
 import javax.swing.JTextField;
 
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.util.StringUtils;
 
 class ForwardingPane extends AbstractOptionPanel {

@@ -26,11 +26,11 @@ import de.jowisoftware.sshclient.application.validation.ValidationResult;
 import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.BellType;
 import de.jowisoftware.sshclient.settings.TabState;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
+import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
-import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 
 public class XMLLoader {

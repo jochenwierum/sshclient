@@ -10,7 +10,7 @@ import java.util.SortedMap;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.util.StringUtils;
 
 class MainPanel extends AbstractOptionPanel {

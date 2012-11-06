@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.ui.terminal;
+package de.jowisoftware.sshclient.settings.awt;
 
 import java.io.File;
 import java.util.ArrayList;

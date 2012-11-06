@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 
 class AdvancedPanel extends AbstractGridBagOptionPanel {

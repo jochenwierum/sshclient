@@ -25,9 +25,9 @@ import org.w3c.dom.Text;
 import de.jowisoftware.sshclient.encryption.PasswordStorage;
 import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.TabState;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
-import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxInfo;
 
 public class XMLPersister {
     private final ApplicationSettings<AWTProfile> settings;

@@ -18,7 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
-import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
+import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxInfo;
 import de.jowisoftware.sshclient.util.FontUtils;
 import de.jowisoftware.sshclient.util.KeyValue;
 import de.jowisoftware.sshclient.util.StringUtils;

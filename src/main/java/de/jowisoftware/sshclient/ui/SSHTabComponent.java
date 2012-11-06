@@ -5,7 +5,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 
 public class SSHTabComponent extends AbstractClosableTabcomponent {
     private static final long serialVersionUID = 3033441642594395407L;

@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import de.jowisoftware.sshclient.application.validation.HostNameValidator;
 import de.jowisoftware.sshclient.settings.Profile;
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 
 public class HostNameValidatorTest extends ValidationTest<Profile<?>> {
     @Before

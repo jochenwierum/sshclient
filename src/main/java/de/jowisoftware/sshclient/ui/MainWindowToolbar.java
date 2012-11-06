@@ -17,7 +17,7 @@ import javax.swing.JToolBar;
 
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.ProfileEvent;
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 
 public class MainWindowToolbar implements ProfileEvent {
     private final MainWindow parent;

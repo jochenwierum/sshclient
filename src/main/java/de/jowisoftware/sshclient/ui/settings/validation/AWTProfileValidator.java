@@ -13,7 +13,7 @@ import de.jowisoftware.sshclient.application.validation.ValidationResult;
 import de.jowisoftware.sshclient.application.validation.ValidatorCollection;
 import de.jowisoftware.sshclient.application.validation.X11DisplayValidator;
 import de.jowisoftware.sshclient.application.validation.X11HostValidator;
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 
 public final class AWTProfileValidator {
     private final ValidatorCollection<AWTProfile> collection =

@@ -17,13 +17,13 @@ import com.jcraft.jsch.JSchException;
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.terminal.JSchConnection;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 import de.jowisoftware.sshclient.ui.tabpanel.Redrawable;
 import de.jowisoftware.sshclient.ui.tabpanel.RedrawingTabPane;
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 import de.jowisoftware.sshclient.util.Constants;
 

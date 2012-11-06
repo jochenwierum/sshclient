@@ -3,8 +3,8 @@ package de.jowisoftware.sshclient.ui.settings.validation;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.settings.validation.ValidationTest;
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.util.FontUtils;
 
 public class AWTAntiAliasingValidatorTest extends ValidationTest<AWTProfile> {

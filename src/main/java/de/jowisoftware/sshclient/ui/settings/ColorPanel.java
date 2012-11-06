@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
-import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
+import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxInfo;
 
 class ColorPanel extends JPanel {
     private static final long serialVersionUID = 3678836067715154011L;

@@ -23,6 +23,7 @@ import com.jcraft.jsch.ChannelShell;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.debug.PerformanceType;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.SimpleSSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.ArrayListBackedTabStopManager;
@@ -31,6 +32,7 @@ import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.SynchronizedBuffer;
 import de.jowisoftware.sshclient.terminal.buffer.WordBoundaryLocator;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
+import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxCharSetup;
 import de.jowisoftware.sshclient.terminal.input.ByteProcessor;
 import de.jowisoftware.sshclient.terminal.input.CharacterProcessor;
 import de.jowisoftware.sshclient.terminal.input.CharsetByteProcessor;
@@ -38,8 +40,6 @@ import de.jowisoftware.sshclient.terminal.input.SequenceSupportingCharacterProce
 import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequenceRepository;
 import de.jowisoftware.sshclient.terminal.mouse.DefaultMouseCursorManager;
 import de.jowisoftware.sshclient.terminal.mouse.MouseCursorManager;
-import de.jowisoftware.sshclient.ui.terminal.AWTGfxCharSetup;
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 import de.jowisoftware.sshclient.util.SwingUtils;
 

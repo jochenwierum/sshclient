@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import de.jowisoftware.sshclient.application.validation.ValidationResult;
 import de.jowisoftware.sshclient.application.validation.Validator;
 import de.jowisoftware.sshclient.application.validation.ValidatorCollection;
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 
 @RunWith(JMock.class)
 public class ValidatorCollectionTest {

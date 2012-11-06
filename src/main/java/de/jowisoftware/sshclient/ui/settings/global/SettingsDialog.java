@@ -24,7 +24,7 @@ import de.jowisoftware.sshclient.i18n.Translation;
 import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.settings.BellType;
 import de.jowisoftware.sshclient.settings.TabState;
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 
 public class SettingsDialog extends JDialog {
     private static final long serialVersionUID = -5205216274422883565L;

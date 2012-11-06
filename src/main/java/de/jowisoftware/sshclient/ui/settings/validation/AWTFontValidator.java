@@ -3,7 +3,7 @@ package de.jowisoftware.sshclient.ui.settings.validation;
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 import de.jowisoftware.sshclient.application.validation.ValidationResult;
 import de.jowisoftware.sshclient.application.validation.Validator;
-import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
+import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.util.FontUtils;
 
 public class AWTFontValidator implements Validator<AWTProfile> {
