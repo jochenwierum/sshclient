@@ -14,6 +14,7 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
+import de.jowisoftware.sshclient.application.settings.Forwarding;
 import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.EventHubClient;
@@ -73,6 +74,26 @@ public class JSchConnection {
         if (profile.getX11Forwarding()) {
             session.setX11Host(profile.getX11Host());
             session.setX11Port(profile.getX11Display() + X11_BASE_PORT);
+        }
+
+        for (final Forwarding forwarding : profile.getLocalForwardings()) {
+            try {
+                session.setPortForwardingL(forwarding.sourceHost, forwarding.sourcePort,
+                        forwarding.remoteHost, forwarding.remotePort);
+            } catch (final JSchException e) {
+                LOGGER.error("Could not setup port forwarding " + forwarding +
+                        ", ignoring setup and continuing connection", e);
+            }
+        }
+
+        for (final Forwarding forwarding : profile.getRemoteForwardings()) {
+            try {
+                session.setPortForwardingR(forwarding.sourceHost, forwarding.sourcePort,
+                        forwarding.remoteHost, forwarding.remotePort);
+            } catch (final JSchException e) {
+                LOGGER.error("Could not setup port forwarding " + forwarding +
+                        ", ignoring setup and continuing connection", e);
+            }
         }
     }
 
