@@ -13,7 +13,7 @@ import javax.swing.Timer;
 
 import org.apache.commons.io.IOUtils;
 
-import de.jowisoftware.sshclient.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.ui.SSHConsole;
 

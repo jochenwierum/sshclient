@@ -10,13 +10,13 @@ import com.jcraft.jsch.KeyPair;
 
 import de.jowisoftware.sshclient.application.PasswordManager;
 import de.jowisoftware.sshclient.application.UserAbortException;
+import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.application.settings.KeyManager;
+import de.jowisoftware.sshclient.application.settings.KeyManagerEvents;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.EventHubClient;
 import de.jowisoftware.sshclient.events.ReflectionEventHub;
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.settings.KeyManager;
-import de.jowisoftware.sshclient.settings.KeyManagerEvents;
-import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 
 public class JSchKeyManager implements KeyManager {
     private static final Logger LOGGER = Logger.getLogger(JSchKeyManager.class);

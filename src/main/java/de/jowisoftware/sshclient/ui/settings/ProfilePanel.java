@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import de.jowisoftware.sshclient.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 
 public class ProfilePanel extends JPanel {
     private static final long serialVersionUID = 663223636542133238L;

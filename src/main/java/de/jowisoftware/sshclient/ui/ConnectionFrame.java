@@ -15,9 +15,9 @@ import org.apache.log4j.Logger;
 import com.jcraft.jsch.JSchException;
 
 import de.jowisoftware.sshclient.application.Application;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
-import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.terminal.JSchConnection;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;

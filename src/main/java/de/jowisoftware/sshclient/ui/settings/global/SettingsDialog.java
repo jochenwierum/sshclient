@@ -20,11 +20,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.application.settings.BellType;
+import de.jowisoftware.sshclient.application.settings.TabState;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.i18n.Translation;
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.settings.BellType;
-import de.jowisoftware.sshclient.settings.TabState;
-import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 
 public class SettingsDialog extends JDialog {
     private static final long serialVersionUID = -5205216274422883565L;

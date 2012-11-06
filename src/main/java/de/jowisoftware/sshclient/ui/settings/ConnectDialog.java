@@ -18,8 +18,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import de.jowisoftware.sshclient.application.validation.ValidationResult;
-import de.jowisoftware.sshclient.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.application.settings.validation.ValidationResult;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 
 public class ConnectDialog extends JDialog implements WindowListener {

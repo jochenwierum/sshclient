@@ -1,19 +1,19 @@
 package de.jowisoftware.sshclient.ui.settings.validation;
 
-import de.jowisoftware.sshclient.application.validation.CharsetValidator;
-import de.jowisoftware.sshclient.application.validation.ColorValidator;
-import de.jowisoftware.sshclient.application.validation.CursorColorValidator;
-import de.jowisoftware.sshclient.application.validation.DefaultValidationResult;
-import de.jowisoftware.sshclient.application.validation.EnvironmentValidator;
-import de.jowisoftware.sshclient.application.validation.HostNameValidator;
-import de.jowisoftware.sshclient.application.validation.PortValidator;
-import de.jowisoftware.sshclient.application.validation.SelectionCharsValidator;
-import de.jowisoftware.sshclient.application.validation.UserValidator;
-import de.jowisoftware.sshclient.application.validation.ValidationResult;
-import de.jowisoftware.sshclient.application.validation.ValidatorCollection;
-import de.jowisoftware.sshclient.application.validation.X11DisplayValidator;
-import de.jowisoftware.sshclient.application.validation.X11HostValidator;
-import de.jowisoftware.sshclient.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.application.settings.validation.CharsetValidator;
+import de.jowisoftware.sshclient.application.settings.validation.ColorValidator;
+import de.jowisoftware.sshclient.application.settings.validation.CursorColorValidator;
+import de.jowisoftware.sshclient.application.settings.validation.DefaultValidationResult;
+import de.jowisoftware.sshclient.application.settings.validation.EnvironmentValidator;
+import de.jowisoftware.sshclient.application.settings.validation.HostNameValidator;
+import de.jowisoftware.sshclient.application.settings.validation.PortValidator;
+import de.jowisoftware.sshclient.application.settings.validation.SelectionCharsValidator;
+import de.jowisoftware.sshclient.application.settings.validation.UserValidator;
+import de.jowisoftware.sshclient.application.settings.validation.ValidationResult;
+import de.jowisoftware.sshclient.application.settings.validation.ValidatorCollection;
+import de.jowisoftware.sshclient.application.settings.validation.X11DisplayValidator;
+import de.jowisoftware.sshclient.application.settings.validation.X11HostValidator;
 
 public final class AWTProfileValidator {
     private final ValidatorCollection<AWTProfile> collection =

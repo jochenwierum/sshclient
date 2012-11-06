@@ -35,10 +35,10 @@ import javax.swing.ListModel;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.application.validation.ValidationResult;
+import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.application.settings.validation.ValidationResult;
 import de.jowisoftware.sshclient.encryption.CryptoException;
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 
 public class ProfilesDialog extends JDialog {

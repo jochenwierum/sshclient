@@ -14,13 +14,13 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
+import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.EventHubClient;
 import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.jsch.InputStreamEventHub;
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
-import de.jowisoftware.sshclient.settings.Profile;
 
 public class JSchConnection {
     private static final Logger LOGGER = Logger.getLogger(JSchConnection.class);

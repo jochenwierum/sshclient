@@ -10,11 +10,12 @@ import org.apache.log4j.Logger;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 
+import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.application.settings.KeyManager;
+import de.jowisoftware.sshclient.application.settings.ProfileEvent;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.ReflectionEventHub;
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.settings.KeyManager;
-import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 
 public class Application {
     private static final Logger LOGGER = Logger.getLogger(Application.class);

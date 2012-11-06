@@ -5,9 +5,9 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.application.validation.ValidationResult;
-import de.jowisoftware.sshclient.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.settings.validation.ValidationTest;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.application.settings.validation.ValidationResult;
+import de.jowisoftware.sshclient.application.settings.validation.ValidationTest;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTFontValidator;
 
 public class AWTFontValidatorTest extends ValidationTest<AWTProfile> {

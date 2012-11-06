@@ -20,10 +20,10 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelShell;
 
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.debug.PerformanceType;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
-import de.jowisoftware.sshclient.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.SimpleSSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.ArrayListBackedTabStopManager;

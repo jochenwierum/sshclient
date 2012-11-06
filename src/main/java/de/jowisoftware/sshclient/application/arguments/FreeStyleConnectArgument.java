@@ -3,8 +3,8 @@ package de.jowisoftware.sshclient.application.arguments;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.application.settings.Profile;
 
 public class FreeStyleConnectArgument<T extends Profile<?>> implements ConnectArgument<T> {
     private static final Pattern ARGUMENT_PATTERN =

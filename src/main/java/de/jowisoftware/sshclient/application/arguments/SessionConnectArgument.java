@@ -2,8 +2,8 @@ package de.jowisoftware.sshclient.application.arguments;
 
 import java.util.Map;
 
-import de.jowisoftware.sshclient.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.settings.Profile;
+import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.application.settings.Profile;
 
 public class SessionConnectArgument<T extends Profile<?>> implements ConnectArgument<T> {
     private final String sessionName;
