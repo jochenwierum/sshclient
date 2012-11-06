@@ -4,7 +4,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.jowisoftware.sshclient.terminal.Profile;
+import de.jowisoftware.sshclient.settings.Profile;
 
 public final class AWTProfile implements Profile<AWTGfxInfo> {
     private String user = System.getProperty("user.name");

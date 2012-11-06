@@ -35,9 +35,9 @@ import javax.swing.ListModel;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.application.ApplicationSettings;
 import de.jowisoftware.sshclient.application.validation.ValidationResult;
 import de.jowisoftware.sshclient.encryption.CryptoException;
+import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 

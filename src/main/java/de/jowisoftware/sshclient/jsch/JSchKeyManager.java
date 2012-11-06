@@ -8,14 +8,14 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
 
-import de.jowisoftware.sshclient.application.ApplicationSettings;
-import de.jowisoftware.sshclient.application.KeyManager;
-import de.jowisoftware.sshclient.application.KeyManagerEvents;
 import de.jowisoftware.sshclient.application.PasswordManager;
 import de.jowisoftware.sshclient.application.UserAbortException;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.EventHubClient;
 import de.jowisoftware.sshclient.events.ReflectionEventHub;
+import de.jowisoftware.sshclient.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.settings.KeyManager;
+import de.jowisoftware.sshclient.settings.KeyManagerEvents;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class JSchKeyManager implements KeyManager {

@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.application;
+package de.jowisoftware.sshclient.settings;
 
 public enum BellType {
     Sound,

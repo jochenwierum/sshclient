@@ -1,6 +1,6 @@
 package de.jowisoftware.sshclient.application.validation;
 
-import de.jowisoftware.sshclient.terminal.Profile;
+import de.jowisoftware.sshclient.settings.Profile;
 
 public class CharsetValidator implements Validator<Profile<?>> {
 

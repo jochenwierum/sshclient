@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.application.ApplicationSettings;
-import de.jowisoftware.sshclient.terminal.Profile;
+import de.jowisoftware.sshclient.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.settings.Profile;
 
 public class ArgumentParser<T extends Profile<?>> {
     private static final Logger LOGGER = Logger.getLogger(ArgumentParser.class);

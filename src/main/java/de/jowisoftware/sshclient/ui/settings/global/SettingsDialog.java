@@ -20,10 +20,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import de.jowisoftware.sshclient.application.AWTApplicationSettings.TabState;
-import de.jowisoftware.sshclient.application.ApplicationSettings;
-import de.jowisoftware.sshclient.application.BellType;
 import de.jowisoftware.sshclient.i18n.Translation;
+import de.jowisoftware.sshclient.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.settings.BellType;
+import de.jowisoftware.sshclient.settings.TabState;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class SettingsDialog extends JDialog {

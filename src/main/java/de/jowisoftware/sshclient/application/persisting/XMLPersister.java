@@ -22,9 +22,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
-import de.jowisoftware.sshclient.application.AWTApplicationSettings.TabState;
-import de.jowisoftware.sshclient.application.ApplicationSettings;
 import de.jowisoftware.sshclient.encryption.PasswordStorage;
+import de.jowisoftware.sshclient.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.settings.TabState;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.ui.terminal.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;

@@ -9,13 +9,11 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.SSHApp;
-
 public class ApplicationUtils {
-    private static final String UPDATE_URL = "http://jowisoftware.de/ssh/build.properties";
+    private static final Logger LOGGER = Logger.getLogger(ApplicationUtils.class);
 
-    private static final Logger LOGGER = Logger
-            .getLogger(ApplicationUtils.class);
+    private static final String UPDATE_URL = "http://jowisoftware.de/ssh/build.properties";
+    private static final String MAIN_CLASS = "de.jowisoftware.sshclient.SSHApp";
 
     private static boolean isLuja;
 
@@ -118,7 +116,7 @@ public class ApplicationUtils {
         final String date = manifest.getProperty("Build-Date");
         final String mainClass = manifest.getProperty("Main-Class");
 
-        final boolean isSSHManifest = mainClass != null && SSHApp.class.getName().equals(mainClass);
+        final boolean isSSHManifest = mainClass != null && MAIN_CLASS.equals(mainClass);
         final boolean containsVersionInformation = revision != null && branch != null && date != null;
 
         if (!filter || (isSSHManifest && containsVersionInformation)) {

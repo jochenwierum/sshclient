@@ -1,12 +1,10 @@
-package de.jowisoftware.sshclient.application;
+package de.jowisoftware.sshclient.settings;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import de.jowisoftware.sshclient.application.AWTApplicationSettings.TabState;
 import de.jowisoftware.sshclient.encryption.PasswordStorage;
-import de.jowisoftware.sshclient.terminal.Profile;
 
 public interface ApplicationSettings<T extends Profile<?>> {
     Map<String, T> getProfiles();

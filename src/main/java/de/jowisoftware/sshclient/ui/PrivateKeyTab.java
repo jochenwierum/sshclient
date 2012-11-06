@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 import com.jcraft.jsch.JSchException;
 
 import de.jowisoftware.sshclient.application.Application;
-import de.jowisoftware.sshclient.application.KeyManagerEvents;
+import de.jowisoftware.sshclient.settings.KeyManagerEvents;
 
 public class PrivateKeyTab extends JPanel implements KeyManagerEvents {
     private static final long serialVersionUID = -5696019301183886041L;

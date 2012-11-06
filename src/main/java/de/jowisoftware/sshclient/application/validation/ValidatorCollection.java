@@ -3,7 +3,7 @@ package de.jowisoftware.sshclient.application.validation;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.jowisoftware.sshclient.terminal.Profile;
+import de.jowisoftware.sshclient.settings.Profile;
 
 public class ValidatorCollection<T extends Profile<?>> implements Validator<T> {
     private final List<Validator<? super T>> validators = new ArrayList<Validator<? super T>>();

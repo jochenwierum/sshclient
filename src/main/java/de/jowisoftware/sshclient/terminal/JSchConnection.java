@@ -20,6 +20,7 @@ import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.jsch.InputStreamEventHub;
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
+import de.jowisoftware.sshclient.settings.Profile;
 
 public class JSchConnection {
     private static final Logger LOGGER = Logger.getLogger(JSchConnection.class);

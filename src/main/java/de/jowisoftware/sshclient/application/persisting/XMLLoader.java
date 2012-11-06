@@ -22,10 +22,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import de.jowisoftware.sshclient.application.AWTApplicationSettings.TabState;
-import de.jowisoftware.sshclient.application.ApplicationSettings;
-import de.jowisoftware.sshclient.application.BellType;
 import de.jowisoftware.sshclient.application.validation.ValidationResult;
+import de.jowisoftware.sshclient.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.settings.BellType;
+import de.jowisoftware.sshclient.settings.TabState;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;

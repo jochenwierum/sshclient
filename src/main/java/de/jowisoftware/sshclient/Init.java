@@ -8,14 +8,14 @@ import org.apache.log4j.Logger;
 
 import com.jcraft.jsch.JSch;
 
-import de.jowisoftware.sshclient.application.AWTApplicationSettings;
 import de.jowisoftware.sshclient.application.Application;
-import de.jowisoftware.sshclient.application.ApplicationSettings;
 import de.jowisoftware.sshclient.application.persisting.XMLLoader;
 import de.jowisoftware.sshclient.i18n.Translation;
 import de.jowisoftware.sshclient.jsch.JSchKeyManager;
+import de.jowisoftware.sshclient.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.ui.MainWindow;
 import de.jowisoftware.sshclient.ui.security.SimplePasswordManager;
+import de.jowisoftware.sshclient.ui.terminal.AWTApplicationSettings;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class Init {

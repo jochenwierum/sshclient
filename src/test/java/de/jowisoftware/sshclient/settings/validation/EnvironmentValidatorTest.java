@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.jowisoftware.sshclient.application.validation.EnvironmentValidator;
-import de.jowisoftware.sshclient.terminal.Profile;
+import de.jowisoftware.sshclient.settings.Profile;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class EnvironmentValidatorTest extends ValidationTest<Profile<?>> {

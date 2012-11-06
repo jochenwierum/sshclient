@@ -12,6 +12,8 @@ import com.jcraft.jsch.JSchException;
 
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.ReflectionEventHub;
+import de.jowisoftware.sshclient.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.settings.KeyManager;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;
 
 public class Application {

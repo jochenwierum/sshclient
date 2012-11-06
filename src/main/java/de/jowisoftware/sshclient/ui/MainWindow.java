@@ -16,13 +16,13 @@ import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Logger;
 
-import de.jowisoftware.sshclient.application.AWTApplicationSettings.TabState;
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.arguments.ArgumentParser;
 import de.jowisoftware.sshclient.application.arguments.ArgumentParserCallback;
 import de.jowisoftware.sshclient.application.persisting.XMLPersister;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.log.LogPanel;
+import de.jowisoftware.sshclient.settings.TabState;
 import de.jowisoftware.sshclient.ui.settings.ConnectDialog;
 import de.jowisoftware.sshclient.ui.tabpanel.RedrawingTabPane;
 import de.jowisoftware.sshclient.ui.terminal.AWTProfile;

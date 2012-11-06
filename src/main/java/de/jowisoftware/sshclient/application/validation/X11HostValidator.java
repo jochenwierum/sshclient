@@ -1,7 +1,7 @@
 package de.jowisoftware.sshclient.application.validation;
 
 import static de.jowisoftware.sshclient.i18n.Translation.t;
-import de.jowisoftware.sshclient.terminal.Profile;
+import de.jowisoftware.sshclient.settings.Profile;
 
 public class X11HostValidator implements Validator<Profile<?>> {
     private static final String FIELD = "x11host";

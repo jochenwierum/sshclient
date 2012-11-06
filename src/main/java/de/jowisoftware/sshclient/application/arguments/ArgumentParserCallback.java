@@ -1,6 +1,6 @@
 package de.jowisoftware.sshclient.application.arguments;
 
-import de.jowisoftware.sshclient.terminal.Profile;
+import de.jowisoftware.sshclient.settings.Profile;
 
 public interface ArgumentParserCallback<T extends Profile<?>> {
     void openConnection(T profile);
