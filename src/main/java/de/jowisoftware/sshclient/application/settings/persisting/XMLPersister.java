@@ -31,7 +31,6 @@ import de.jowisoftware.sshclient.encryption.PasswordStorage;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxInfo;
 
-// TODO: refactor store -> create
 public class XMLPersister {
     private final ApplicationSettings<AWTProfile> settings;
     private Document doc;
@@ -45,16 +44,16 @@ public class XMLPersister {
 
         final Element root = doc.createElement("config");
 
-        root.appendChild(storeGeneralSettings());
-        root.appendChild(storeKeys());
-        root.appendChild(storeProfiles());
-        root.appendChild(storePasswords());
+        root.appendChild(createSettingsNode());
+        root.appendChild(createKeysNode());
+        root.appendChild(createProfilesNode());
+        root.appendChild(createPasswordsNode());
         doc.appendChild(root);
 
         saveXMLToFile(file);
     }
 
-    private Node storePasswords() {
+    private Node createPasswordsNode() {
         final Element passwords = doc.createElement("passwords");
         final PasswordStorage manager = settings.getPasswordStorage();
 
@@ -80,21 +79,21 @@ public class XMLPersister {
         passwords.setAttribute("check", manager.getCheckString());
     }
 
-    private Node storeProfiles() {
+    private Node createProfilesNode() {
         final Element profiles = doc.createElement("profiles");
 
         for (final Entry<String, AWTProfile> profile :
                 settings.getProfiles().entrySet()) {
             final Element profileNode = doc.createElement("profile");
             profileNode.setAttribute("name", profile.getKey());
-            storeProfile(profile.getValue(), profileNode);
+            populateProfileNode(profile.getValue(), profileNode);
             profiles.appendChild(profileNode);
         }
 
         return profiles;
     }
 
-    private void storeProfile(final AWTProfile profile, final Element profileNode) {
+    private void populateProfileNode(final AWTProfile profile, final Element profileNode) {
         profileNode.appendChild(createKeyValue("host", profile.getHost()));
         profileNode.appendChild(createKeyValue("user", profile.getUser()));
         profileNode.appendChild(createKeyValue("port", profile.getPort()));
@@ -103,24 +102,24 @@ public class XMLPersister {
         profileNode.appendChild(createKeyValue("closeTabMode",
                 profile.getCloseTabMode().toString()));
         profileNode.appendChild(createKeyValue("command", profile.getCommand()));
-        profileNode.appendChild(storeEnvironment(profile.getEnvironment()));
-        profileNode.appendChild(storeGfxSettings(profile.getGfxSettings()));
-        profileNode.appendChild(createForwardings(profile));
+        profileNode.appendChild(createEnvironmentNode(profile.getEnvironment()));
+        profileNode.appendChild(createGfxNode(profile.getGfxSettings()));
+        profileNode.appendChild(createForwardingsNode(profile));
     }
 
-    private Node createForwardings(final AWTProfile profile) {
+    private Node createForwardingsNode(final AWTProfile profile) {
         final Element node = doc.createElement("forwardings");
         node.appendChild(createKeyValue("forwardX11", profile.getX11Forwarding()));
         node.appendChild(createKeyValue("forwardAgent", profile.getAgentForwarding()));
         node.appendChild(createKeyValue("x11Host", profile.getX11Host()));
         node.appendChild(createKeyValue("x11Display", profile.getX11Display()));
 
-        node.appendChild(createForwarding("localForwardings", profile.getLocalForwardings()));
-        node.appendChild(createForwarding("remoteForwardings", profile.getRemoteForwardings()));
+        node.appendChild(createForwardingNode("localForwardings", profile.getLocalForwardings()));
+        node.appendChild(createForwardingNode("remoteForwardings", profile.getRemoteForwardings()));
         return node;
     }
 
-    private Node createForwarding(final String name,
+    private Node createForwardingNode(final String name,
             final List<Forwarding> forwardings) {
         final Element node = doc.createElement(name);
 
@@ -136,7 +135,7 @@ public class XMLPersister {
         return node;
     }
 
-    private Node storeEnvironment(final Map<String, String> environment) {
+    private Node createEnvironmentNode(final Map<String, String> environment) {
         final Element node = doc.createElement("environment");
         for (final Entry<String, String> entry : environment.entrySet()) {
             final Element child = doc.createElement("variable");
@@ -147,17 +146,17 @@ public class XMLPersister {
         return node;
     }
 
-    private Node storeGfxSettings(final AWTGfxInfo gfxSettings) {
+    private Node createGfxNode(final AWTGfxInfo gfxSettings) {
         final Element node = doc.createElement("gfx");
         node.appendChild(createFont(gfxSettings.getFontName(), gfxSettings.getFontSize()));
         node.appendChild(createKeyValue("cursorColor", gfxSettings.getCursorColor()));
 
         final Element colors = doc.createElement("colors");
-        persistColors(gfxSettings.getColorMap(), colors);
+        addColorNodes(gfxSettings.getColorMap(), colors);
         node.appendChild(colors);
 
         final Element lightColors = doc.createElement("lightColors");
-        persistColors(gfxSettings.getLightColorMap(), lightColors);
+        addColorNodes(gfxSettings.getLightColorMap(), lightColors);
         node.appendChild(lightColors);
 
         final Element antiAliasing = doc.createElement("antiAliasing");
@@ -179,7 +178,7 @@ public class XMLPersister {
         return node;
     }
 
-    private void persistColors(final Map<ColorName, Color> colorMap,
+    private void addColorNodes(final Map<ColorName, Color> colorMap,
             final Element parent) {
         for(final Entry<ColorName, Color> e : colorMap.entrySet()) {
             final Element color = doc.createElement("color");
@@ -214,7 +213,7 @@ public class XMLPersister {
         return createKeyValue(key, Boolean.toString(value));
     }
 
-    private Element storeKeys() {
+    private Element createKeysNode() {
         final Element keyNode = doc.createElement("keys");
 
         for (final File keyFile : settings.getKeyFiles()) {
@@ -227,7 +226,7 @@ public class XMLPersister {
         return keyNode;
     }
 
-    private Element storeGeneralSettings() {
+    private Element createSettingsNode() {
         final Element element = doc.createElement("settings");
 
         final Element keyTabState = doc.createElement("keytab");
@@ -246,14 +245,14 @@ public class XMLPersister {
         bellType.setTextContent(Integer.toString(settings.getBellType().ordinal()));
         element.appendChild(bellType);
 
-        element.appendChild(storeDefaultProfile());
+        element.appendChild(createDefaultProfileNode());
 
         return element;
     }
 
-    private Element storeDefaultProfile() {
+    private Element createDefaultProfileNode() {
         final Element profileNode = doc.createElement("defaultProfile");
-        storeProfile(settings.newDefaultProfile(), profileNode);
+        populateProfileNode(settings.newDefaultProfile(), profileNode);
         return profileNode;
     }
 
