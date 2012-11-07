@@ -8,8 +8,7 @@ import de.jowisoftware.sshclient.application.settings.Profile;
 public class ForwardingsValidator implements Validator<Profile<?>> {
     @Override
     public void validate(final Profile<?> profile, final ValidationResult result) {
-        validateForwardings(profile.getLocalForwardings(), "localForwardings", result);
-        validateForwardings(profile.getRemoteForwardings(), "remoteForwardings", result);
+        validateForwardings(profile.getPortForwardings(), "portForwardings", result);
     }
 
     private void validateForwardings(final List<Forwarding> forwardings,

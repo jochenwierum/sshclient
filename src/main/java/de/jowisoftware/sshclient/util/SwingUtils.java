@@ -1,11 +1,11 @@
 package de.jowisoftware.sshclient.util;
 
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -70,7 +70,7 @@ public final class SwingUtils {
         }
     }
 
-    public static void showMessage(final JFrame parent, final String message,
+    public static void showMessage(final Window parent, final String message,
             final String title, final int messageType) {
 
         runInSwingThread(new Runnable() {

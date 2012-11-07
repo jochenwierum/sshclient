@@ -2,7 +2,7 @@ package de.jowisoftware.sshclient.ui.settings.profile;
 
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
-import java.awt.GridLayout;
+import java.awt.Window;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.SortedMap;
@@ -11,10 +11,10 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.ui.settings.AbstractOptionPanel;
+import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
 import de.jowisoftware.sshclient.util.StringUtils;
 
-class MainPanel extends AbstractOptionPanel {
+class MainPanel extends AbstractGridBagOptionPanel {
     private static final long serialVersionUID = -8272298107955330533L;
 
     private final AWTProfile profile;
@@ -28,51 +28,62 @@ class MainPanel extends AbstractOptionPanel {
     private final JTextField commandTextField = new JTextField();
 
     public MainPanel(final AWTProfile profile, final String profileName,
-            final boolean profileNameSettable) {
+            final boolean profileNameSettable, final Window parent) {
+        super(parent);
         this.profile = profile;
-        setLayout(new GridLayout(11, 2, 5, 0));
+        int y = 0;
 
         add(label("profiles.general.profilename",
-                "Profile name:", 'm', profileNameTextField));
+                "Profile name:", 'm', profileNameTextField), makeLabelConstraints(++y));
         profileNameTextField.setText(profileName);
         profileNameTextField.setEnabled(profileNameSettable);
-        add(profileNameTextField);
+        add(profileNameTextField, makeConstraints(2, y));
 
-        add(label("profiles.general.host", "Host:", 'h', hostTextField));
+        add(label("profiles.general.host", "Host:", 'h', hostTextField),
+                makeLabelConstraints(++y));
         hostTextField.setText(profile.getHost());
-        add(hostTextField);
+        add(hostTextField, makeConstraints(2, y));
 
-        add(label("profiles.general.port", "Port:", 'p', portTextField));
+        add(label("profiles.general.port", "Port:", 'p', portTextField),
+                makeLabelConstraints(++y));
         portTextField.setText(Integer.toString(profile.getPort()));
-        add(portTextField);
+        add(portTextField, makeConstraints(2, y));
 
-        add(label("profiles.general.user", "User:", 'u', userTextField));
+        add(label("profiles.general.user", "User:", 'u', userTextField),
+                makeLabelConstraints(++y));
         userTextField.setText(profile.getUser());
-        add(userTextField);
+        add(userTextField, makeConstraints(2, y));
 
-        add(blind());
-        add(blind());
+        add(blind(), makeLabelConstraints(++y));
+        add(blind(), makeConstraints(2, y));
 
-        add(label("profiles.general.command", "Command:", 'o', commandTextField));
+        add(label("profiles.general.command", "Command:", 'o', commandTextField),
+                makeLabelConstraints(++y));
         commandTextField.setText(profile.getCommand());
-        add(commandTextField);
+        add(commandTextField, makeConstraints(2, y));
 
-        add(label("profiles.general.command.info", "(disables forwardings!)"));
-        add(blind());
+        add(label("profiles.general.command.info", "(disables forwardings!)"),
+                makeLabelConstraints(++y));
+        add(blind(), makeConstraints(2, y));
 
-        add(blind());
-        add(blind());
+        add(blind(), makeLabelConstraints(++y));
+        add(blind(), makeConstraints(2, y));
 
-        add(label("profiles.general.encoding", "Encoding:", 'e', encodingBox));
+        add(label("profiles.general.encoding", "Encoding:", 'e', encodingBox),
+                makeLabelConstraints(++y));
         encodingBox.setSelectedItem(profile.getCharset().name());
-        add(encodingBox);
+        add(encodingBox, makeConstraints(2, y));
 
-        add(blind());
-        add(blind());
+        add(blind(),
+                makeLabelConstraints(++y));
+        add(blind(), makeConstraints(2, y));
 
-        add(label("profiles.general.timeout", "Timeout (ms):", 't', timeoutTextField));
+        add(label("profiles.general.timeout", "Timeout (ms):", 't', timeoutTextField),
+                makeLabelConstraints(++y));
         timeoutTextField.setText(Integer.toString(profile.getTimeout()));
-        add(timeoutTextField);
+        add(timeoutTextField, makeConstraints(2, y));
+
+        fillToBottom(++y);
     }
 
     private JComboBox createEncodingsBox() {

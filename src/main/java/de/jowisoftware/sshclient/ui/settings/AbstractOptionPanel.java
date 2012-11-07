@@ -4,6 +4,7 @@ import static de.jowisoftware.sshclient.i18n.Translation.m;
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 import java.awt.Component;
+import java.awt.Window;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -11,7 +12,10 @@ import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public abstract class AbstractOptionPanel extends JPanel {
-    public AbstractOptionPanel() {
+    protected final Window parentWindow;
+
+    public AbstractOptionPanel(final Window parent) {
+        this.parentWindow = parent;
         setOpaque(false);
     }
 

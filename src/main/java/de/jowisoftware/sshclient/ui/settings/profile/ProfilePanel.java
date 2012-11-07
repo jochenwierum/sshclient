@@ -1,11 +1,10 @@
 package de.jowisoftware.sshclient.ui.settings.profile;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -21,27 +20,21 @@ public class ProfilePanel extends JPanel {
     private final MainPanel mainPanel;
 
     public ProfilePanel(final AWTProfile profile, final String profileName,
-            final boolean profileNameIsSettable) {
+            final boolean profileNameIsSettable, final Window parent) {
         setLayout(new BorderLayout());
         add(tabbedPane, BorderLayout.CENTER);
 
-        mainPanel = new MainPanel(profile, profileName, profileNameIsSettable);
+        mainPanel = new MainPanel(profile, profileName, profileNameIsSettable, parent);
         addTabPane(mainPanel);
-        addTabPane(new GraphicsPanel(profile.getGfxSettings()));
-        addTabPane(new ForwardingPane(profile));
-        addTabPane(new AdvancedPanel(profile));
+        addTabPane(new GraphicsPanel(profile.getGfxSettings(), parent));
+        addTabPane(new ForwardingPane(profile, parent));
+        addTabPane(new AdvancedPanel(profile, parent));
     }
 
     private void addTabPane(final AbstractOptionPanel panel) {
-        final JPanel wrapper = new JPanel();
-        wrapper.setLayout(new BoxLayout(wrapper, BoxLayout.Y_AXIS));
-        wrapper.setOpaque(false);
-        wrapper.add(panel);
+        panel.setOpaque(false);
+        final JScrollPane scrollPane = new JScrollPane(panel);
 
-        panel.setMaximumSize(new Dimension(panel.getMaximumSize().width,
-                panel.getMinimumSize().height));
-
-        final JScrollPane scrollPane = new JScrollPane(wrapper);
         scrollPane.setOpaque(false);
         tabbedPane.addTab(panel.getTitle(), scrollPane);
 

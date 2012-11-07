@@ -212,14 +212,9 @@ public class XMLLoader {
         profile.setX11Display(getInteger(profileNode, "forwardings/x11Display/text()",
                 profile.getX11Display()));
 
-        final Element localForwardings = getElement(profileNode, "forwardings/localForwardings");
-        if (localForwardings != null) {
-            restoreForwardings(localForwardings, profile.getLocalForwardings());
-        }
-
-        final Element remoteForwardings = getElement(profileNode, "forwardings/remoteForwardings");
-        if (remoteForwardings != null) {
-            restoreForwardings(remoteForwardings, profile.getRemoteForwardings());
+        final Element portForwardings = getElement(profileNode, "forwardings/portForwardings");
+        if (portForwardings != null) {
+            restoreForwardings(portForwardings, profile.getPortForwardings());
         }
     }
 
@@ -241,13 +236,23 @@ public class XMLLoader {
     }
 
     private Forwarding getForwarding(final Element forwardingElement) {
+        final String directionString = getString(forwardingElement, "@direction", null);
         final Integer remotePort = getInteger(forwardingElement, "@remotePort", null);
         final Integer sourcePort = getInteger(forwardingElement, "@sourcePort", null);
         final String remoteHost = getString(forwardingElement, "@remoteHost", null);
         final String sourceHost = getString(forwardingElement, "@sourceHost", null);
 
-        if (remotePort != null && sourcePort != null && remoteHost != null && sourceHost != null) {
-            return new Forwarding(sourceHost, sourcePort, remoteHost, remotePort);
+        Forwarding.Direction direction = null;
+        for (final Forwarding.Direction possibleDirection : Forwarding.Direction.values()) {
+            if (possibleDirection.longName.equals(directionString)) {
+                direction = possibleDirection;
+            }
+        }
+
+        if (direction != null
+                && remotePort != null && sourcePort != null
+                && remoteHost != null && sourceHost != null) {
+            return new Forwarding(direction, sourceHost, sourcePort, remoteHost, remotePort);
         } else {
             return null;
         }

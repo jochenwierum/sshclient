@@ -22,8 +22,7 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     private String x11Host = "127.0.0.1";
     private int x11Display = 0;
 
-    private final List<Forwarding> localForwardings;
-    private final List<Forwarding> remoteForwardings;
+    private final List<Forwarding> portForwardings;
 
     private String command = "";
 
@@ -39,15 +38,13 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     public AWTProfile() {
         gfxInfo = new AWTGfxInfo();
         environmentMap = new HashMap<String, String>();
-        localForwardings = new ArrayList<Forwarding>();
-        remoteForwardings = new ArrayList<Forwarding>();
+        portForwardings = new ArrayList<Forwarding>();
     }
 
     public AWTProfile(final AWTProfile copy) {
         gfxInfo = new AWTGfxInfo(copy.gfxInfo);
         environmentMap = new HashMap<String, String>(copy.environmentMap);
-        localForwardings = new ArrayList<Forwarding>(copy.localForwardings);
-        remoteForwardings = new ArrayList<Forwarding>(copy.remoteForwardings);
+        portForwardings = new ArrayList<Forwarding>(copy.portForwardings);
 
         user = copy.user;
         host = copy.host;
@@ -202,12 +199,7 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     }
 
     @Override
-    public List<Forwarding> getLocalForwardings() {
-        return localForwardings;
-    }
-
-    @Override
-    public List<Forwarding> getRemoteForwardings() {
-        return remoteForwardings;
+    public List<Forwarding> getPortForwardings() {
+        return portForwardings;
     }
 }

@@ -76,20 +76,15 @@ public class JSchConnection {
             session.setX11Port(profile.getX11Display() + X11_BASE_PORT);
         }
 
-        for (final Forwarding forwarding : profile.getLocalForwardings()) {
+        for (final Forwarding forwarding : profile.getPortForwardings()) {
             try {
-                session.setPortForwardingL(forwarding.sourceHost, forwarding.sourcePort,
-                        forwarding.remoteHost, forwarding.remotePort);
-            } catch (final JSchException e) {
-                LOGGER.error("Could not setup port forwarding " + forwarding +
-                        ", ignoring setup and continuing connection", e);
-            }
-        }
-
-        for (final Forwarding forwarding : profile.getRemoteForwardings()) {
-            try {
-                session.setPortForwardingR(forwarding.sourceHost, forwarding.sourcePort,
-                        forwarding.remoteHost, forwarding.remotePort);
+                if (forwarding.direction == Forwarding.Direction.Local) {
+                    session.setPortForwardingL(forwarding.sourceHost, forwarding.sourcePort,
+                            forwarding.remoteHost, forwarding.remotePort);
+                } else if (forwarding.direction == Forwarding.Direction.Remote) {
+                    session.setPortForwardingR(forwarding.sourceHost, forwarding.sourcePort,
+                            forwarding.remoteHost, forwarding.remotePort);
+                }
             } catch (final JSchException e) {
                 LOGGER.error("Could not setup port forwarding " + forwarding +
                         ", ignoring setup and continuing connection", e);

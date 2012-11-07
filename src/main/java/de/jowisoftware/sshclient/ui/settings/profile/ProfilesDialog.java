@@ -243,7 +243,7 @@ public class ProfilesDialog extends JDialog {
         profileUnderConstruction = new AWTProfile(settings.getProfiles().get(selectedValue));
 
         settingsFrame = new ProfilePanel(profileUnderConstruction,
-                selectedValue, true);
+                selectedValue, true, this);
 
         updateWindowState(true);
     }
@@ -253,7 +253,7 @@ public class ProfilesDialog extends JDialog {
         profileUnderConstruction = new AWTProfile(settings.newDefaultProfile());
 
         settingsFrame = new ProfilePanel(profileUnderConstruction,
-                "(default)", false);
+                "(default)", false, this);
 
         updateWindowState(true);
     }

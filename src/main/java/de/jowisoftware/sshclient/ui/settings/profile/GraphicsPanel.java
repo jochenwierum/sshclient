@@ -5,6 +5,7 @@ import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -28,13 +29,15 @@ import de.jowisoftware.sshclient.util.StringUtils;
 class GraphicsPanel extends AbstractGridBagOptionPanel {
     private static final long serialVersionUID = -2187556102454714257L;
 
+    private final AWTGfxInfo gfxSettings;
+
     private final JComboBox fontBox = createFontSelectionBox();
     private final JTextField fontSizeTextField = new JTextField(2);
     private final JComboBox antiAliasingBox = createAntiAliasingBox();
     private final JComboBox cursorStyleBox = createCursorStyleBox();
-    private final AWTGfxInfo gfxSettings;
 
-    public GraphicsPanel(final AWTGfxInfo gfxSettings) {
+    public GraphicsPanel(final AWTGfxInfo gfxSettings, final Window parent) {
+        super(parent);
         this.gfxSettings = gfxSettings;
 
         addFontControls(0);

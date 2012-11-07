@@ -29,7 +29,7 @@ public class ConnectDialog extends JDialog implements WindowListener {
 
     public ConnectDialog(final Frame parent) {
         super(parent, t("connect.connect.title", "Direct connect"));
-        settingsFrame = new ProfilePanel(profile, "", false);
+        settingsFrame = new ProfilePanel(profile, "", false, this);
 
         addWindowListener(this);
         setLayout(new BorderLayout());

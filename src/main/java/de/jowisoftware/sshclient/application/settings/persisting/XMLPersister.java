@@ -114,8 +114,7 @@ public class XMLPersister {
         node.appendChild(createKeyValue("x11Host", profile.getX11Host()));
         node.appendChild(createKeyValue("x11Display", profile.getX11Display()));
 
-        node.appendChild(createForwardingNode("localForwardings", profile.getLocalForwardings()));
-        node.appendChild(createForwardingNode("remoteForwardings", profile.getRemoteForwardings()));
+        node.appendChild(createForwardingNode("portForwardings", profile.getPortForwardings()));
         return node;
     }
 
@@ -125,6 +124,7 @@ public class XMLPersister {
 
         for (final Forwarding forwarding : forwardings) {
             final Element forwardingNode = doc.createElement("forwarding");
+            forwardingNode.setAttribute("direction", forwarding.direction.longName);
             forwardingNode.setAttribute("sourceHost", forwarding.sourceHost);
             forwardingNode.setAttribute("sourcePort", Integer.toString(forwarding.sourcePort));
             forwardingNode.setAttribute("remoteHost", forwarding.remoteHost);
