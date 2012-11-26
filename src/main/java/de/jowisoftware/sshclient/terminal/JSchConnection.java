@@ -68,6 +68,7 @@ public class JSchConnection {
         session = createSession();
         setupSessionForwardings();
         connectedSession();
+        setupPortForwardings();
     }
 
     private void setupSessionForwardings() {
@@ -75,7 +76,9 @@ public class JSchConnection {
             session.setX11Host(profile.getX11Host());
             session.setX11Port(profile.getX11Display() + X11_BASE_PORT);
         }
+    }
 
+    private void setupPortForwardings() {
         for (final Forwarding forwarding : profile.getPortForwardings()) {
             try {
                 if (forwarding.direction == Forwarding.Direction.Local) {

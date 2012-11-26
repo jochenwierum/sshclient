@@ -60,6 +60,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
 
     private Channel channel;
     private DisplayType displayType = DisplayType.DYNAMIC;
+    private boolean frozen;
 
     public SSHConsole(final AWTProfile profile) {
         renderer = new DoubleBufferedImage(profile.getGfxSettings(), this);
@@ -187,6 +188,10 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
 
     @Override
     public void componentResized(final ComponentEvent e) {
+        if (frozen) {
+            return;
+        }
+
         session.pauseRendering();
         final int pw = image.getWidth();
         final int ph = image.getHeight();
@@ -270,6 +275,14 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
 
     public void keyPressed(final KeyEvent e) {
         keyListener.keyPressed(e);
+    }
+
+    public void freeze() {
+        frozen = true;
+    }
+
+    public void unfreeze() {
+        frozen = false;
     }
 
     @Override

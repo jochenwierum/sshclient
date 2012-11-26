@@ -18,6 +18,7 @@ import javax.swing.JToolBar;
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.settings.ProfileEvent;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.ui.tabpanel.SplitDirection;
 
 public class MainWindowToolbar implements ProfileEvent {
     private final MainWindow parent;
@@ -33,6 +34,8 @@ public class MainWindowToolbar implements ProfileEvent {
         toolBar.setFloatable(false);
         toolBar.add(comboBox);
         toolBar.add(createConnectButton());
+        toolBar.add(createHSplitButton());
+        toolBar.add(createVSplitButton());
         profilesUpdated();
     }
 
@@ -42,6 +45,30 @@ public class MainWindowToolbar implements ProfileEvent {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 connectToSelectedProfile();
+            }
+        });
+        return button;
+    }
+
+    private JButton createHSplitButton() {
+        final JButton button = createButton(t("mainwindow.toolbar.hsplit", "horizontal split"),
+                "view_left_right");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                parent.split(SplitDirection.HORIZONTAL);
+            }
+        });
+        return button;
+    }
+
+    private JButton createVSplitButton() {
+        final JButton button = createButton(t("mainwindow.toolbar.vsplit", "vertical split"),
+                "view_top_bottom");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                parent.split(SplitDirection.VERTICAL);
             }
         });
         return button;
@@ -58,6 +85,7 @@ public class MainWindowToolbar implements ProfileEvent {
         final URL icon = getClass().getResource("/gfx/" + image + ".png");
         final JButton button = new JButton();
         button.setIcon(new ImageIcon(icon, text));
+        button.setToolTipText(text);
         return button;
     }
 

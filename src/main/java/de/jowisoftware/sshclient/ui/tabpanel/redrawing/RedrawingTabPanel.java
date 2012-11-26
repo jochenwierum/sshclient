@@ -1,18 +1,18 @@
-package de.jowisoftware.sshclient.ui.tabpanel;
+package de.jowisoftware.sshclient.ui.tabpanel.redrawing;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
+import de.jowisoftware.sshclient.ui.tabpanel.Tab;
+import de.jowisoftware.sshclient.ui.tabpanel.TabPanel;
 import de.jowisoftware.sshclient.util.Constants;
 
-public class RedrawingTabPane extends DnDTabbedPane {
-    private static final long serialVersionUID = 4839537888220784886L;
+public class RedrawingTabPanel extends TabPanel {
     private final Timer redrawTimer;
 
-    public RedrawingTabPane() {
+    public RedrawingTabPanel() {
         redrawTimer = createTimer();
     }
 
@@ -20,9 +20,10 @@ public class RedrawingTabPane extends DnDTabbedPane {
         final Timer renderTimer = new Timer(Constants.RERENDER_TIMER_MS, new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                final Component component = getSelectedComponent();
-                if (component instanceof Redrawable) {
-                    ((Redrawable) component).redraw();
+                for (final Tab tab : getFocusedTabs()) {
+                    if (tab instanceof RedrawableTab) {
+                        ((RedrawableTab) tab).redraw();
+                    }
                 }
             }
         });

@@ -8,11 +8,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Logger;
 
@@ -23,9 +20,12 @@ import de.jowisoftware.sshclient.application.settings.TabState;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.application.settings.persisting.XMLPersister;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
-import de.jowisoftware.sshclient.log.LogPanel;
+import de.jowisoftware.sshclient.log.LogTab;
 import de.jowisoftware.sshclient.ui.settings.profile.ConnectDialog;
-import de.jowisoftware.sshclient.ui.tabpanel.RedrawingTabPane;
+import de.jowisoftware.sshclient.ui.tabpanel.SplitDirection;
+import de.jowisoftware.sshclient.ui.tabpanel.Tab;
+import de.jowisoftware.sshclient.ui.tabpanel.TabPanelListener;
+import de.jowisoftware.sshclient.ui.tabpanel.redrawing.RedrawingTabPanel;
 import de.jowisoftware.sshclient.util.ApplicationUtils;
 import de.jowisoftware.sshclient.util.FontUtils;
 import de.jowisoftware.sshclient.util.SwingUtils;
@@ -39,9 +39,9 @@ public class MainWindow extends JFrame {
     private final MainWindowMenu menu;
     private final MainWindowToolbar toolBar;
 
-    private final RedrawingTabPane pane = createTabbedPane();
-    private final JComponent logPanel = new LogPanel();
-    private final PrivateKeyTab keyPanel;
+    private final RedrawingTabPanel tabPanel = createTabPane();
+    private final LogTab logTab = new LogTab(tabPanel);
+    private final PrivateKeyTab keyTab;
 
     public MainWindow(final Application application) {
         super("SSH");
@@ -53,7 +53,7 @@ public class MainWindow extends JFrame {
 
         menu = new MainWindowMenu(application, this);
         toolBar = new MainWindowToolbar(application, this);
-        keyPanel = new PrivateKeyTab(application, this);
+        keyTab = new PrivateKeyTab(application, this, tabPanel);
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         initWindowElements();
@@ -61,18 +61,18 @@ public class MainWindow extends JFrame {
 
     @Override
     public void dispose() {
-        // TODO: if state is connecting, we get a problem here
+        // This code assumes that connecting happens in the Swing EDT
+        // otherwise, calling close() in middle of establishing a
+        // connection could be a problem
 
         persistTabStates();
 
-        pane.stopRedraw();
-        while(pane.getTabCount() > 0) {
-            final Component component = pane.getComponentAt(0);
-            if (component instanceof ConnectionFrame) {
-                final ConnectionFrame tab = (ConnectionFrame) component;
-                tab.close();
+        tabPanel.stopRedraw();
+        for (final Tab tab : tabPanel.getTabs()) {
+            if (tab instanceof SSHTab) {
+                ((SSHTab) tab).getContent().close();
             }
-            pane.removeTabAt(0);
+            tabPanel.closeTab(tab);
         }
 
         try {
@@ -86,20 +86,21 @@ public class MainWindow extends JFrame {
     }
 
     private void persistTabStates() {
-        if (pane.indexOfComponent(keyPanel) >= 0
-                && application.settings.getKeyTabState() == TabState.CLOSED) {
-            application.settings.setKeyTabState(TabState.OPENED);
-        } else if (pane.indexOfComponent(keyPanel) == -1
-                && application.settings.getKeyTabState() == TabState.OPENED) {
-            application.settings.setKeyTabState(TabState.CLOSED);
+        final boolean logTabOpen = tabPanel.containsTab(logTab);
+        final boolean keyTabOpen = tabPanel.containsTab(keyTab);
+        final TabState initialLogState = application.settings.getLogTabState();
+        final TabState initialKeyState = application.settings.getKeyTabState();
+
+        if (logTabOpen && initialLogState == TabState.CLOSED) {
+            application.settings.setLogTabState(TabState.OPENED);
+        } else if (!logTabOpen && initialLogState == TabState.OPENED) {
+            application.settings.setLogTabState(TabState.CLOSED);
         }
 
-        if (pane.indexOfComponent(logPanel) >= 0
-                && application.settings.getLogTabState() == TabState.CLOSED) {
-            application.settings.setLogTabState(TabState.OPENED);
-        } else if (pane.indexOfComponent(logPanel) == -1
-                && application.settings.getLogTabState() == TabState.OPENED) {
-            application.settings.setLogTabState(TabState.CLOSED);
+        if (keyTabOpen && initialKeyState == TabState.CLOSED) {
+            application.settings.setKeyTabState(TabState.OPENED);
+        } else if (!keyTabOpen && initialKeyState == TabState.OPENED) {
+            application.settings.setKeyTabState(TabState.CLOSED);
         }
     }
 
@@ -108,7 +109,7 @@ public class MainWindow extends JFrame {
 
         setLayout(new BorderLayout());
 
-        add(pane, BorderLayout.CENTER);
+        add(tabPanel.getComponent(), BorderLayout.CENTER);
         add(toolBar.getToolBar(), BorderLayout.NORTH);
 
         initTabs();
@@ -117,31 +118,33 @@ public class MainWindow extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    private RedrawingTabPane createTabbedPane() {
-        final RedrawingTabPane tabbedPane = new RedrawingTabPane();
-        tabbedPane.addKeyListener(new KeyAdapter() {
+    private RedrawingTabPanel createTabPane() {
+        final RedrawingTabPanel tabbedPane = new RedrawingTabPanel();
+        tabbedPane.addListener(createTabPaneMenuListener());
+
+        tabbedPane.setKeyListener(new KeyAdapter() {
             @Override
-            public void keyTyped(final KeyEvent e) {
-                final Component selectedComponent = tabbedPane.getSelectedComponent();
-                if (selectedComponent instanceof ConnectionFrame) {
-                    ((ConnectionFrame) selectedComponent).takeFocusWithKey(e);
+            public void keyPressed(final KeyEvent e) {
+                final Tab tab = tabbedPane.getActiveTab();
+                if (tab instanceof SSHTab) {
+                    ((SSHTab) tab).getContent().takeFocusWithKey(e);
                 }
             }
         });
 
-        tabbedPane.addChangeListener(createTabPaneMenuListener());
-
         return tabbedPane;
     }
 
-    private ChangeListener createTabPaneMenuListener() {
-        return new ChangeListener() {
+    private TabPanelListener createTabPaneMenuListener() {
+        return new TabPanelListener() {
             @Override
-            public void stateChanged(final ChangeEvent e) {
-                final Component selectedComponent = pane.getSelectedComponent();
+            public void selectionChanged(final Tab newSelection) {
                 SessionMenu sessionMenu = null;
-                if (selectedComponent instanceof ConnectionFrame) {
-                    sessionMenu = ((ConnectionFrame) selectedComponent).getSessionMenu();
+                if (newSelection != null) {
+                    final Component selectedComponent = newSelection.getContent();
+                    if (selectedComponent instanceof ConnectionPanel) {
+                        sessionMenu = ((ConnectionPanel) selectedComponent).getSessionMenu();
+                    }
                 }
 
                 if (sessionMenu != null) {
@@ -166,38 +169,30 @@ public class MainWindow extends JFrame {
     }
 
     public void setKeyTabVisibility(final boolean isVisible) {
-        setPanelVisibility(isVisible, keyPanel, t("mainwindow.tabs.keys", "keys"));
+        setPanelVisibility(isVisible, keyTab);
     }
 
     public void setLogTabVisibility(final boolean isVisible) {
-        setPanelVisibility(isVisible, logPanel, t("mainwindow.tabs.logs", "logs"));
+        setPanelVisibility(isVisible, logTab);
     }
 
-    private void setPanelVisibility(final boolean isVisible,
-            final JComponent panel, final String title) {
-        final int tabPos = pane.indexOfComponent(panel);
-
+    private void setPanelVisibility(final boolean isVisible, final Tab tab) {
+        final boolean containsTab = tabPanel.containsTab(tab);
         if (isVisible) {
-            if (tabPos == -1) {
-                pane.addTab(title, panel);
-                pane.setTabComponentAt(pane.getTabCount() - 1,
-                        new ClosableTabComponent(title, pane).create());
+            if (!containsTab) {
+                tabPanel.add(tab);
             }
-            pane.setSelectedComponent(panel);
-        } else if (isVisible && tabPos >= 0) {
-            pane.remove(panel);
+        } else if (!isVisible && containsTab) {
+            tabPanel.closeTab(tab);
         }
     }
 
     public void connect(final AWTProfile profile) {
         final AWTProfile safeProfile = new AWTProfile(profile);
-        final ConnectionFrame sshFrame = new ConnectionFrame(application, safeProfile, pane);
-        pane.addTab(safeProfile.getDefaultTitle(), sshFrame);
-        pane.setTabComponentAt(pane.getTabCount() - 1,
-                sshFrame.createTabComponent());
-        pane.setSelectedComponent(sshFrame);
-        sshFrame.connect();
-        sshFrame.takeFocus();
+        final SSHTab sshTab = new SSHTab(safeProfile, application, tabPanel);
+        tabPanel.add(sshTab);
+        sshTab.getContent().connect();
+        sshTab.getContent().takeFocus();
     }
 
     public void connectToCustomProfile() {
@@ -242,5 +237,9 @@ public class MainWindow extends JFrame {
                     }
                 }, application.settings).processArguments(args);
             }});
+    }
+
+    public void split(final SplitDirection splitDirection) {
+        tabPanel.split(splitDirection);
     }
 }
