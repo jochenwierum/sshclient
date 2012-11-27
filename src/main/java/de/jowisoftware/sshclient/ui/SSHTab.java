@@ -7,14 +7,21 @@ import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabListener;
 import de.jowisoftware.sshclient.ui.tabpanel.redrawing.RedrawableTab;
 import de.jowisoftware.sshclient.ui.tabpanel.redrawing.RedrawingTabPanel;
 
-public class SSHTab implements RedrawableTab, ClosableTabListener {
+public class SSHTab implements RedrawableTab {
     private final SSHTabTitleComponent title;
     private final ConnectionPanel content;
 
     public SSHTab(final AWTProfile profile, final Application application, final RedrawingTabPanel parent) {
         this.title = new SSHTabTitleComponent(profile, this);
         this.content = new ConnectionPanel(application, profile, parent, this);
-        title.addListener(this);
+
+        title.addListener(new ClosableTabListener() {
+            @Override
+            public void closeTab(final Tab tab) {
+                content.close();
+                parent.closeTab(SSHTab.this);
+            }
+        });
     }
 
     @Override
@@ -41,10 +48,5 @@ public class SSHTab implements RedrawableTab, ClosableTabListener {
     @Override
     public void redraw() {
         content.redraw();
-    }
-
-    @Override
-    public void closeTab(final Tab tab) {
-        content.close();
     }
 }
