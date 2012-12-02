@@ -46,7 +46,7 @@ public class AboutDialog extends JDialog {
     }
 
     private void setupWindow(final JFrame parent) {
-        setTitle("About...");
+        setTitle(t("about", "About"));
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
         setSize(new Dimension(660, 500));

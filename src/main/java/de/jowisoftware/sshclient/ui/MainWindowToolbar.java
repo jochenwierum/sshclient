@@ -141,9 +141,9 @@ public class MainWindowToolbar implements ProfileEvent {
 
                 if (error) {
                     JOptionPane.showMessageDialog(parent,
-                    t("error.webPage",
-                            "Could not open webpage: %s",
-                                    uri.toString()));
+                            t("error.webPage", "Could not open webpage: %s",
+                                    uri.toString()), t("error", "Error"),
+                            JOptionPane.ERROR_MESSAGE, null);
                 }
             }
         });

@@ -132,6 +132,8 @@ public class UpdateLabel extends JLabel implements UpdateCheckResult {
                 + t("update.revision", "Revision") + ": " + version.revision + "</i><br /><br />"
                 + updateHelpText + "</center></html>";
 
-        JOptionPane.showMessageDialog(this, labelText);
+        JOptionPane.showMessageDialog(this.getRootPane(), labelText,
+                t("about", "About"),
+                JOptionPane.INFORMATION_MESSAGE, null);
     }
 }
