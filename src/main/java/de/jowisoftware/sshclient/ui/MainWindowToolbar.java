@@ -2,9 +2,12 @@ package de.jowisoftware.sshclient.ui;
 
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map.Entry;
 
@@ -13,14 +16,23 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+import javax.swing.JSeparator;
 import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
+
+import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.settings.ProfileEvent;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.ui.about.AboutDialog;
 import de.jowisoftware.sshclient.ui.tabpanel.SplitDirection;
 
 public class MainWindowToolbar implements ProfileEvent {
+    private static final Logger LOGGER = Logger
+            .getLogger(MainWindowToolbar.class);
+
     private final MainWindow parent;
     private final JComboBox comboBox = createComboBox();
     private final JToolBar toolBar = new JToolBar("ssh");
@@ -32,15 +44,39 @@ public class MainWindowToolbar implements ProfileEvent {
         application.profileEvents.register(this);
 
         toolBar.setFloatable(false);
+        toolBar.add(createDirectConnectButton());
         toolBar.add(comboBox);
         toolBar.add(createConnectButton());
+        toolBar.addSeparator();
         toolBar.add(createHSplitButton());
         toolBar.add(createVSplitButton());
+        toolBar.add(createSeparator());
+        toolBar.add(createWebpage());
+        toolBar.add(createAbout());
+
         profilesUpdated();
     }
 
+    private JSeparator createSeparator() {
+        return new JSeparator(SwingConstants.VERTICAL);
+    }
+
+    private JButton createDirectConnectButton() {
+        final JButton button = createButton(
+                t("mainwindow.toolbar.directconnect", "direct connect"),
+                "connect_creating");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                parent.connectToCustomProfile();
+            }
+        });
+        return button;
+    }
+
     private JButton createConnectButton() {
-        final JButton button = createButton(t("mainwindow.toolbar.connect", "connect"), "connect_established");
+        final JButton button = createButton(t("mainwindow.toolbar.connect",
+                "connect"), "connect_established");
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -51,7 +87,8 @@ public class MainWindowToolbar implements ProfileEvent {
     }
 
     private JButton createHSplitButton() {
-        final JButton button = createButton(t("mainwindow.toolbar.hsplit", "horizontal split"),
+        final JButton button = createButton(t("mainwindow.toolbar.hsplit",
+                "horizontal split"),
                 "view_left_right");
         button.addActionListener(new ActionListener() {
             @Override
@@ -63,12 +100,63 @@ public class MainWindowToolbar implements ProfileEvent {
     }
 
     private JButton createVSplitButton() {
-        final JButton button = createButton(t("mainwindow.toolbar.vsplit", "vertical split"),
+        final JButton button = createButton(t("mainwindow.toolbar.vsplit",
+                "vertical split"),
                 "view_top_bottom");
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 parent.split(SplitDirection.VERTICAL);
+            }
+        });
+        return button;
+    }
+
+    private JButton createWebpage() {
+        final JButton button = createButton(t("mainwindow.toolbar.webpage",
+                "Open project's webpage"), "trac");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                URI uri;
+                try {
+                    uri = new URI("http://jowisoftware.de/trac/ssh");
+                } catch (final URISyntaxException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+                boolean error = false;
+
+                if (Desktop.isDesktopSupported()) {
+                    try {
+                        Desktop.getDesktop().browse(
+                                uri);
+                    } catch (final Exception ex) {
+                        LOGGER.warn("Could not open webpage", ex);
+                        error = true;
+                    }
+                } else {
+                    error = true;
+                }
+
+                if (error) {
+                    JOptionPane.showMessageDialog(parent,
+                    t("error.webPage",
+                            "Could not open webpage: %s",
+                                    uri.toString()));
+                }
+            }
+        });
+        return button;
+    }
+
+    private JButton createAbout() {
+        final JButton button = createButton(t("mainwindow.toolbar.about",
+                "About"), "info");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                new AboutDialog(parent).setVisible(true);
             }
         });
         return button;
