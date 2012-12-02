@@ -25,6 +25,7 @@ import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 import de.jowisoftware.sshclient.ui.tabpanel.redrawing.RedrawingTabPanel;
 import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 import de.jowisoftware.sshclient.util.Constants;
+import de.jowisoftware.sshclient.util.SwingUtils;
 
 public class ConnectionPanel extends JPanel {
     private static final long serialVersionUID = 7873084199411017370L;
@@ -133,13 +134,19 @@ public class ConnectionPanel extends JPanel {
                 final boolean closeTab = closeMode == CloseTabMode.ALWAYS ||
                         (successfullyClosed && closeMode != CloseTabMode.NEVER);
 
-                if (closeTab) {
-                    parent.closeTab(tab);
-                } else {
-                    tab.getTitleContent().updateLabel(
-                            t("closedtab", "[closed] %s",
-                            tab.getTitleContent().getLabel()));
-                }
+                        SwingUtils.runInSwingThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (closeTab) {
+                                    parent.closeTab(tab);
+                                } else {
+                                    tab.getTitleContent().updateLabel(
+                                            t("closedtab", "[closed] %s",
+                                                    tab.getTitleContent()
+                                                            .getLabel()));
+                                }
+                            }
+                        });
                 connection.close();
             }
         });
