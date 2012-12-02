@@ -3,9 +3,15 @@ package de.jowisoftware.sshclient.log;
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 import java.awt.EventQueue;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -27,7 +33,36 @@ public final class LogTab implements Tab, Observer {
 
         public Content() {
             super(new JList());
-            ((JList) getViewport().getView()).setModel(listModel);
+            final JList list = (JList) getViewport().getView();
+            list.setModel(listModel);
+            final Action action = createCopyAction(list);
+            list.getActionMap().put("copy", action);
+        }
+
+        private Action createCopyAction(final JList list) {
+            return new AbstractAction() {
+                private static final long serialVersionUID = 2681501502636412512L;
+
+                @Override
+                public void actionPerformed(final ActionEvent e) {
+                    final Clipboard clipboard = Toolkit.getDefaultToolkit()
+                            .getSystemClipboard();
+                    final StringBuffer content = new StringBuffer();
+
+                    for (final Object entry : list.getSelectedValues())
+                    {
+                        String line = (String) entry;
+                        line = line.replaceAll("&nbsp;", " ");
+                        line = line.replaceAll("<br />", "\n");
+                        line = line.replaceAll("\\s*<[^>]+>\\s*", "");
+                        content.append(line).append("\n");
+                    }
+
+                    clipboard.setContents(
+                            new StringSelection(content.toString()),
+                            null);
+                }
+            };
         }
 
         public void addMessage(final String message) {
