@@ -7,7 +7,8 @@ public class PanelAppender extends AppenderSkeleton {
     @Override
     protected void append(final LoggingEvent event) {
         final String message = this.layout.format(event);
-        LogObserver.getInstance().triggerLog(message);
+        LogObserver.getInstance().triggerLog(
+                new LogMessageContainer(message, event.getThrowableStrRep()));
     }
 
     @Override

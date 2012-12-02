@@ -9,8 +9,8 @@ public class LogObserver extends Observable {
         return INSTANCE;
     }
 
-    public void triggerLog(final String message) {
+    public void triggerLog(final LogMessageContainer logMessageContainer) {
         this.setChanged();
-        this.notifyObservers(message);
+        this.notifyObservers(logMessageContainer);
     }
 }

@@ -10,6 +10,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
 import de.jowisoftware.sshclient.ui.tabpanel.Tab;
@@ -17,8 +18,8 @@ import de.jowisoftware.sshclient.ui.tabpanel.TabPanel;
 import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabListener;
 import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabTitleComponent;
 
-public final class LogTab implements Tab {
-    private static class Content extends JScrollPane implements Observer {
+public final class LogTab implements Tab, Observer {
+    private static class Content extends JScrollPane {
         private static final long serialVersionUID = -5153117403605046800L;
 
         private static final int MAX_LENGTH = 2048;
@@ -27,30 +28,21 @@ public final class LogTab implements Tab {
         public Content() {
             super(new JList());
             ((JList) getViewport().getView()).setModel(listModel);
-            LogObserver.getInstance().addObserver(this);
         }
 
-        @Override
-        public void update(final Observable o, final Object arg) {
-            final String message = (String) arg;
-            final String formattedMessage = createFormattedMessage(message);
+        public void addMessage(final String message) {
+            listModel.addElement(message);
+            if (listModel.getSize() > MAX_LENGTH) {
+                listModel.remove(0);
+            }
 
-            EventQueue.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    listModel.addElement(formattedMessage);
-                    if (listModel.getSize() > MAX_LENGTH) {
-                        listModel.remove(0);
-                    }
-
-                    // TODO: scroll to bottom
-                    validate();
-                }
-            });
+            validate();
+            scrollToBottom();
         }
 
-        private String createFormattedMessage(final String message) {
-            return message.replace("\n", " ").trim();
+        private void scrollToBottom() {
+            final JScrollBar vertical = getVerticalScrollBar();
+            vertical.setValue(vertical.getMaximum());
         }
     }
 
@@ -65,10 +57,12 @@ public final class LogTab implements Tab {
                 parent.closeTab(LogTab.this);
             }
         });
+
+        LogObserver.getInstance().addObserver(this);
     }
 
     public void dispose() {
-        LogObserver.getInstance().deleteObserver(content);
+        LogObserver.getInstance().deleteObserver(this);
     }
 
     @Override
@@ -83,4 +77,16 @@ public final class LogTab implements Tab {
 
     @Override public void freeze() { }
     @Override public void unfreeze() { }
+
+    @Override
+    public void update(final Observable o, final Object arg) {
+        final LogMessageContainer message = (LogMessageContainer) arg;
+
+        EventQueue.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                content.addMessage(message.toHTML());
+            }
+        });
+    }
 }
