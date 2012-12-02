@@ -44,9 +44,9 @@ public class MainWindowToolbar implements ProfileEvent {
         application.profileEvents.register(this);
 
         toolBar.setFloatable(false);
-        toolBar.add(createDirectConnectButton());
         toolBar.add(comboBox);
         toolBar.add(createConnectButton());
+        toolBar.add(createDirectConnectButton());
         toolBar.addSeparator();
         toolBar.add(createHSplitButton());
         toolBar.add(createVSplitButton());
