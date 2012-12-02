@@ -37,8 +37,11 @@ public class SynchronizedBuffer implements Buffer {
                 new DefaultCursorPositionManager(positionManagerCallback,
                         width, height);
 
-        return new SynchronizedBuffer(storage, tabstops,
+        final SynchronizedBuffer buffer = new SynchronizedBuffer(storage, tabstops,
                 positionManager);
+        buffer.width = width;
+        buffer.height = height;
+        return buffer;
     }
 
     private static CursorPositionManagerFeedback createPositionManagerCallback(
