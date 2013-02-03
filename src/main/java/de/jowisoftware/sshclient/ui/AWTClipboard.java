@@ -43,9 +43,7 @@ public class AWTClipboard implements ClipboardManager, ClipboardOwner  {
             try {
                 final String text = (String) contents.getTransferData(DataFlavor.stringFlavor);
                 session.sendToServer(text);
-            } catch (final UnsupportedFlavorException e) {
-                LOGGER.warn("Could not paste clipboard", e);
-            } catch (final IOException e) {
+            } catch (final UnsupportedFlavorException | IOException e) {
                 LOGGER.warn("Could not paste clipboard", e);
             }
         }

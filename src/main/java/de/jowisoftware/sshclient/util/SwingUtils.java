@@ -62,9 +62,7 @@ public final class SwingUtils {
         } else {
             try {
                 SwingUtilities.invokeAndWait(runnable);
-            } catch (final InvocationTargetException e) {
-                throw new RuntimeException(e);
-            } catch (final InterruptedException e) {
+            } catch (final InvocationTargetException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }

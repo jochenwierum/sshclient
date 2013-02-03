@@ -22,7 +22,7 @@ class MainPanel extends AbstractGridBagOptionPanel {
     private final JTextField hostTextField = new JTextField();
     private final JTextField portTextField = new JTextField();
     private final JTextField userTextField = new JTextField();
-    private final JComboBox encodingBox = createEncodingsBox();
+    private final JComboBox<String> encodingBox = createEncodingsBox();
     private final JTextField timeoutTextField = new JTextField();
     private final JTextField profileNameTextField = new JTextField();
     private final JTextField commandTextField = new JTextField();
@@ -86,7 +86,7 @@ class MainPanel extends AbstractGridBagOptionPanel {
         fillToBottom(++y);
     }
 
-    private JComboBox createEncodingsBox() {
+    private JComboBox<String> createEncodingsBox() {
         final SortedMap<String, Charset> charSets = Charset.availableCharsets();
         final String names[] = new String[charSets.size()];
 
@@ -96,7 +96,7 @@ class MainPanel extends AbstractGridBagOptionPanel {
         }
 
         Arrays.sort(names);
-        return new JComboBox(names);
+        return new JComboBox<String>(names);
     }
 
     @Override

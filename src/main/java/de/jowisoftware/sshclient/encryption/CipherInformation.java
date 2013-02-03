@@ -15,32 +15,27 @@ class CipherInformation {
     public CipherInformation() {}
 
     public CipherInformation(final byte[] data) throws CryptoException {
-        final ByteArrayInputStream bis = new ByteArrayInputStream(data);
-        final DataInputStream dis = new DataInputStream(bis);
-
-        try {
+        try (final ByteArrayInputStream bis = new ByteArrayInputStream(data);
+                final DataInputStream dis = new DataInputStream(bis)) {
             keyLength = dis.readInt();
             salt = readByteArrayFromStream(dis);
             iv = readByteArrayFromStream(dis);
             ciphertext = readByteArrayFromStream(dis);
-
-            dis.close();
         } catch(final IOException e) {
             throw new CryptoException("Error while encoding data", e);
         }
     }
 
     public byte[] toByteArray() throws CryptoException {
-        try {
+        try (
             final ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            final DataOutputStream dos = new DataOutputStream(bos);
+                final DataOutputStream dos = new DataOutputStream(bos)) {
 
             dos.writeInt(keyLength);
             writeByteArrayIntoStream(salt, dos);
             writeByteArrayIntoStream(iv, dos);
             writeByteArrayIntoStream(ciphertext, dos);
 
-            dos.close();
             return bos.toByteArray();
         } catch(final IOException e) {
             throw new CryptoException("Error while decoding data", e);

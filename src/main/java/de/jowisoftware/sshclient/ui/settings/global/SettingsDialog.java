@@ -29,10 +29,10 @@ import de.jowisoftware.sshclient.i18n.Translation;
 public class SettingsDialog extends JDialog {
     private static final long serialVersionUID = -5205216274422883565L;
     private final ApplicationSettings<AWTProfile> settings;
-    private JComboBox logTabStateCombobox;
-    private JComboBox keyTabStateCombobox;
-    private JComboBox languageCombobox;
-    private JComboBox bellTypeCombobox;
+    private JComboBox<String> logTabStateCombobox;
+    private JComboBox<String> keyTabStateCombobox;
+    private JComboBox<Language> languageCombobox;
+    private JComboBox<String> bellTypeCombobox;
 
     private static class Language {
         private final String name;
@@ -82,7 +82,7 @@ public class SettingsDialog extends JDialog {
         panel.add(bellTypeCombobox);
     }
 
-    private JComboBox createBellTypeCombobox() {
+    private JComboBox<String> createBellTypeCombobox() {
         final BellType values[] = BellType.values();
         final String texts[] = new String[values.length];
         int selectedIndex = 0;
@@ -96,7 +96,7 @@ public class SettingsDialog extends JDialog {
             }
         }
 
-        final JComboBox combobox = new JComboBox(texts);
+        final JComboBox<String> combobox = new JComboBox<>(texts);
         combobox.setSelectedIndex(selectedIndex);
         return combobox;
     }
@@ -108,7 +108,7 @@ public class SettingsDialog extends JDialog {
         panel.add(languageCombobox);
     }
 
-    private JComboBox createLanguageCombobox() {
+    private JComboBox<Language> createLanguageCombobox() {
         final LinkedList<Language> languages = new LinkedList<Language>();
         int selectedIndex = 0;
         int i = 0;
@@ -123,7 +123,8 @@ public class SettingsDialog extends JDialog {
             i++;
         }
 
-        final JComboBox combobox = new JComboBox(languages.toArray(new Language[languages.size()]));
+        final JComboBox<Language> combobox = new JComboBox<>(
+                languages.toArray(new Language[languages.size()]));
         combobox.setSelectedIndex(selectedIndex);
         return combobox;
     }
@@ -142,7 +143,8 @@ public class SettingsDialog extends JDialog {
         panel.add(keyTabStateCombobox);
     }
 
-    private JComboBox createTabStateCombobox(final TabState selectedState) {
+    private JComboBox<String> createTabStateCombobox(
+            final TabState selectedState) {
         final String values[] = new String[3];
         final int selected;
 
@@ -156,7 +158,7 @@ public class SettingsDialog extends JDialog {
             default: selected = 0; break;
         }
 
-        final JComboBox combobox = new JComboBox(values);
+        final JComboBox<String> combobox = new JComboBox<>(values);
         combobox.setSelectedIndex(selected);
         return combobox;
     }
@@ -238,7 +240,7 @@ public class SettingsDialog extends JDialog {
         settings.setKeyTabState(comboBoxToTabState(keyTabStateCombobox));
     }
 
-    private TabState comboBoxToTabState(final JComboBox tabStateCombobox) {
+    private TabState comboBoxToTabState(final JComboBox<String> tabStateCombobox) {
         switch(tabStateCombobox.getSelectedIndex()) {
         case 1: return TabState.ALYWAYS_OPEN;
         case 2: return TabState.ALWAYS_CLOSED;

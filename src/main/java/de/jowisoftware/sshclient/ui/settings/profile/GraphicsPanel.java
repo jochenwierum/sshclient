@@ -31,10 +31,10 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
 
     private final AWTGfxInfo gfxSettings;
 
-    private final JComboBox fontBox = createFontSelectionBox();
+    private final JComboBox<String> fontBox = createFontSelectionBox();
     private final JTextField fontSizeTextField = new JTextField(2);
-    private final JComboBox antiAliasingBox = createAntiAliasingBox();
-    private final JComboBox cursorStyleBox = createCursorStyleBox();
+    private final JComboBox<String> antiAliasingBox = createAntiAliasingBox();
+    private final JComboBox<String> cursorStyleBox = createCursorStyleBox();
 
     public GraphicsPanel(final AWTGfxInfo gfxSettings, final Window parent) {
         super(parent);
@@ -73,10 +73,10 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
         add(antiAliasingBox, makeConstraints(2, offset + 3));
     }
 
-    private JComboBox createFontSelectionBox() {
+    private JComboBox<String> createFontSelectionBox() {
         final String names[] = FontUtils.getCachedMonospacedFonts();
         Arrays.sort(names);
-        return new JComboBox(names);
+        return new JComboBox<String>(names);
     }
 
     private void addColorChooserMatrix(final int offset) {
@@ -114,7 +114,7 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
         };
     }
 
-    private JComboBox createCursorStyleBox() {
+    private JComboBox<String> createCursorStyleBox() {
         final CursorStyle[] styles = CursorStyle.values();
         final String names[] = new String[styles.length];
 
@@ -124,7 +124,7 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
                     style.name().toLowerCase());
         }
 
-        return new JComboBox(names);
+        return new JComboBox<String>(names);
     }
 
     private JCheckBox createBlinkingCheckBox() {
@@ -141,7 +141,7 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
         return checkBox;
     }
 
-    private JComboBox createAntiAliasingBox() {
+    private JComboBox<String> createAntiAliasingBox() {
         final List<KeyValue<String, Object>> hints = FontUtils.getRenderingHintMap();
         final String names[] = new String[hints.size()];
 
@@ -150,7 +150,7 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
             names[i++] = t("profiles.color.antialiasing." + hint.key, hint.key);
         }
 
-        return new JComboBox(names);
+        return new JComboBox<String>(names);
     }
 
     @Override

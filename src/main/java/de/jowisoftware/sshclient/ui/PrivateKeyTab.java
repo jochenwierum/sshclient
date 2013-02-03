@@ -36,8 +36,8 @@ public class PrivateKeyTab implements KeyManagerEvents, Tab {
     private static class Content extends JPanel {
         private static final long serialVersionUID = -7617579828457943846L;
 
-        private final DefaultListModel listModel = new DefaultListModel();
-        private final JList list = new JList(listModel);
+        private final DefaultListModel<String> listModel = new DefaultListModel<>();
+        private final JList<String> list = new JList<>(listModel);
 
         private final Application application;
 
@@ -118,7 +118,7 @@ public class PrivateKeyTab implements KeyManagerEvents, Tab {
                 public void actionPerformed(final ActionEvent e) {
                     final List<String> toRemove = new LinkedList<String>();
                     for (final int index : list.getSelectedIndices()) {
-                        toRemove.add((String) list.getModel().getElementAt(index));
+                        toRemove.add(list.getModel().getElementAt(index));
                     }
 
                     for (final String name : toRemove) {

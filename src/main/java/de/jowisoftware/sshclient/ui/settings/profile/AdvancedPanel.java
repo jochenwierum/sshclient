@@ -32,9 +32,10 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
 
     private final AWTProfile profile;
 
-    private final JList environmentList = new JList(new DefaultListModel());
+    private final JList<String> environmentList = new JList<>(
+            new DefaultListModel<String>());
     private final JTextField boundaryTextField = new JTextField();
-    private final JComboBox closeTabBox = createCloseTabBox();
+    private final JComboBox<String> closeTabBox = createCloseTabBox();
 
     public AdvancedPanel(final AWTProfile profile, final Window parent) {
         super(parent);
@@ -107,7 +108,8 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
     }
 
     private void updateEnvironmentList() {
-        final DefaultListModel model = ((DefaultListModel) environmentList.getModel());
+        final DefaultListModel<String> model = ((DefaultListModel<String>) environmentList
+                .getModel());
 
         final Map<String, String> envMap = profile.getEnvironment();
         final String[] keyList = getEnvironmentKeys();
@@ -126,7 +128,7 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
     }
 
 
-    private JComboBox createCloseTabBox() {
+    private JComboBox<String> createCloseTabBox() {
         final CloseTabMode modes[] = CloseTabMode.values();
         final String names[] = new String[modes.length];
 
@@ -136,7 +138,7 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
                     mode.niceName);
         }
 
-        return new JComboBox(names);
+        return new JComboBox<String>(names);
     }
 
     private JButton createDeleteEnvironmentButton() {

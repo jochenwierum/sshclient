@@ -34,7 +34,7 @@ public class MainWindowToolbar implements ProfileEvent {
             .getLogger(MainWindowToolbar.class);
 
     private final MainWindow parent;
-    private final JComboBox comboBox = createComboBox();
+    private final JComboBox<String> comboBox = createComboBox();
     private final JToolBar toolBar = new JToolBar("ssh");
     private final Application application;
 
@@ -162,8 +162,8 @@ public class MainWindowToolbar implements ProfileEvent {
         return button;
     }
 
-    private JComboBox createComboBox() {
-        final JComboBox comboBox = new JComboBox();
+    private JComboBox<String> createComboBox() {
+        final JComboBox<String> comboBox = new JComboBox<>();
         comboBox.setPreferredSize(new Dimension(200, comboBox.getPreferredSize().height));
         comboBox.setMaximumSize(comboBox.getPreferredSize());
         return comboBox;
@@ -201,7 +201,8 @@ public class MainWindowToolbar implements ProfileEvent {
             profileNames[i++] = p.getKey();
         }
 
-        final ComboBoxModel model = new DefaultComboBoxModel(profileNames);
+        final ComboBoxModel<String> model = new DefaultComboBoxModel<String>(
+                profileNames);
         comboBox.setSelectedItem(oldValue);
         comboBox.setModel(model);
     }

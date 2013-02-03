@@ -14,20 +14,15 @@ public class PasswordStorageLock {
     public void unlock() throws CryptoException {
         try {
             tryUnlock();
-        } catch(final NumberFormatException e) {
-            processUnlockException(e);
-        } catch(final CryptoException e) {
-            processUnlockException(e);
+        } catch (final NumberFormatException | CryptoException e) {
+            throw new WrongPasswordException(
+                    "could not unlock password storage - illegal password?", e);
         }
     }
 
     public void setCheckString(final String checkString) {
         this.checkString = checkString;
         locked = true;
-    }
-
-    private void processUnlockException(final Exception e) throws CryptoException {
-        throw new WrongPasswordException("could not unlock password storage - illegal password?", e);
     }
 
     private void tryUnlock() throws CryptoException {

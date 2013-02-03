@@ -11,7 +11,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -271,8 +270,6 @@ public class XMLPersister {
             final DOMSource source = new DOMSource(doc);
             final StreamResult result = new StreamResult(file);
             transformer.transform(source, result);
-        } catch (final TransformerConfigurationException e) {
-            throw new RuntimeException(e);
         } catch (final TransformerException e) {
             throw new RuntimeException(e);
         }

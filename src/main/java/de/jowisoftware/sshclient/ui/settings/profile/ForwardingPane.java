@@ -40,7 +40,8 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
     private final JCheckBox x11Forwarding = createXForwardingCheckBox();
     private final JTextField x11Host = new JTextField();
     private final JTextField x11Display = new JTextField();
-    private final JList forwardingsList = new JList(new DefaultListModel());
+    private final JList<Forwarding> forwardingsList = new JList<>(
+            new DefaultListModel<Forwarding>());
 
     public ForwardingPane(final AWTProfile profile, final Window parent) {
         super(parent);
@@ -126,7 +127,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
         deleteButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                final Forwarding forwarding = (Forwarding) forwardingsList.getSelectedValue();
+                final Forwarding forwarding = forwardingsList.getSelectedValue();
                 if (forwarding != null) {
                     profile.getPortForwardings().remove(forwarding);
                     updateForwardingsList();
@@ -190,7 +191,8 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
 
 
     private void updateForwardingsList() {
-        final DefaultListModel model = (DefaultListModel) forwardingsList.getModel();
+        final DefaultListModel<Forwarding> model = (DefaultListModel<Forwarding>)
+                forwardingsList.getModel();
 
         model.clear();
         for (final Forwarding forwarding : profile.getPortForwardings()) {

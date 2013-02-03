@@ -45,7 +45,8 @@ public class ProfilesDialog extends JDialog {
     private static final Logger LOGGER = Logger.getLogger(ProfilesDialog.class);
     private static final long serialVersionUID = 4811060219661889812L;
 
-    private final JList selectionList = new JList(new DefaultListModel());
+    private final JList<String> selectionList = new JList<>(
+            new DefaultListModel<String>());
     private final JButton closeButton = createCloseButton();
     private final JButton saveButton = createSaveButton();
     private final JButton revertButton = createRevertButton();
@@ -195,7 +196,7 @@ public class ProfilesDialog extends JDialog {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 if (selectionList.getSelectedIndex() != -1) {
-                    delete((String) selectionList.getSelectedValue());
+                    delete(selectionList.getSelectedValue());
                 }
             }
         });
@@ -210,7 +211,7 @@ public class ProfilesDialog extends JDialog {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 if (selectionList.getSelectedIndex() != -1) {
-                    edit((String) selectionList.getSelectedValue());
+                    edit(selectionList.getSelectedValue());
                 }
             }
         });
@@ -350,9 +351,9 @@ public class ProfilesDialog extends JDialog {
             public void mouseClicked(final MouseEvent e) {
                 if(e.getClickCount() == 2 && selectionList.isEnabled()){
                     final int index = selectionList.locationToIndex(e.getPoint());
-                    final ListModel model = selectionList.getModel();
+                    final ListModel<String> model = selectionList.getModel();
                     selectionList.ensureIndexIsVisible(index);
-                    edit((String) model.getElementAt(index));
+                    edit(model.getElementAt(index));
                 }
             }
         };
@@ -361,7 +362,8 @@ public class ProfilesDialog extends JDialog {
     private void updateSelectionList() {
         final List<String> names = new ArrayList<String>(settings.getProfiles().keySet());
         Collections.sort(names);
-        final DefaultListModel model = ((DefaultListModel) selectionList.getModel());
+        final DefaultListModel<String> model = ((DefaultListModel<String>) selectionList
+                .getModel());
         model.clear();
 
         for (final String name : names) {

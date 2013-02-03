@@ -29,17 +29,18 @@ public final class LogTab implements Tab, Observer {
         private static final long serialVersionUID = -5153117403605046800L;
 
         private static final int MAX_LENGTH = 2048;
-        private final DefaultListModel listModel = new DefaultListModel();
+        private final DefaultListModel<String> listModel = new DefaultListModel<>();
 
         public Content() {
-            super(new JList());
-            final JList list = (JList) getViewport().getView();
+            super(new JList<String>());
+            @SuppressWarnings("unchecked")
+            final JList<String> list = (JList<String>) getViewport().getView();
             list.setModel(listModel);
             final Action action = createCopyAction(list);
             list.getActionMap().put("copy", action);
         }
 
-        private Action createCopyAction(final JList list) {
+        private Action createCopyAction(final JList<String> list) {
             return new AbstractAction() {
                 private static final long serialVersionUID = 2681501502636412512L;
 
@@ -49,9 +50,8 @@ public final class LogTab implements Tab, Observer {
                             .getSystemClipboard();
                     final StringBuffer content = new StringBuffer();
 
-                    for (final Object entry : list.getSelectedValues())
+                    for (String line : list.getSelectedValuesList())
                     {
-                        String line = (String) entry;
                         line = line.replaceAll("&nbsp;", " ");
                         line = line.replaceAll("<br />", "\n");
                         line = line.replaceAll("\\s*<[^>]+>\\s*", "");
