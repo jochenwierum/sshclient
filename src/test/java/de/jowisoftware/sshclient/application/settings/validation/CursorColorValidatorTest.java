@@ -2,14 +2,13 @@ package de.jowisoftware.sshclient.application.settings.validation;
 
 import java.awt.Color;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.application.settings.validation.CursorColorValidator;
 
-public class CursorColorValidatorTest extends ValidationTest<AWTProfile> {
-    @Before
+public class CursorColorValidatorTest extends AbstractValidationTest<AWTProfile> {
+    @BeforeMethod
     public void setUp() {
         validator = new CursorColorValidator<AWTProfile>();
     }

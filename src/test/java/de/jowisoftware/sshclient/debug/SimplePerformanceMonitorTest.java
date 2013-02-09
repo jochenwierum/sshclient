@@ -1,24 +1,21 @@
 package de.jowisoftware.sshclient.debug;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
-@RunWith(JMock.class)
-public class SimplePerformanceMonitorTest {
-    private final Mockery context = new JUnit4Mockery();
+import de.jowisoftware.sshclient.JMockTest;
+
+public class SimplePerformanceMonitorTest extends JMockTest {
     private TimeSource timesource;
     private SimplePerformanceMonitor monitor;
 
-    @Before
+    @BeforeMethod
     public void setupMocks() {
         timesource = context.mock(TimeSource.class);
         monitor = new SimplePerformanceMonitor(timesource);
@@ -36,22 +33,22 @@ public class SimplePerformanceMonitorTest {
         assertThat(Long.valueOf(time), is(equalTo(Long.valueOf(expected))));
     }
 
-    @Test
-    public void measureOneTaskWith200ms() {
-        expectDate(200);
-        monitor.start(PerformanceType.REQUEST_TO_RENDER);
-
-        expectDate(400);
-        assertEndOfEventAt(PerformanceType.REQUEST_TO_RENDER, 200);
+    @DataProvider(name = "taskData")
+    public Object[][] taskData() {
+        return new Object[][] {
+                {200, 400, 200},
+                {0, 500, 500}
+        };
     }
 
-    @Test
-    public void measureOneTaskWith500ms() {
-        expectDate(0);
+    @Test(dataProvider = "taskData")
+    public void measureOneTask(final int start, final int end,
+            final int diff) {
+        expectDate(start);
         monitor.start(PerformanceType.REQUEST_TO_RENDER);
 
-        expectDate(500);
-        assertEndOfEventAt(PerformanceType.REQUEST_TO_RENDER, 500);
+        expectDate(end);
+        assertEndOfEventAt(PerformanceType.REQUEST_TO_RENDER, diff);
     }
 
     @Test

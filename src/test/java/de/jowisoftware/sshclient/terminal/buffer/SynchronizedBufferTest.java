@@ -1,27 +1,24 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 import org.jmock.Expectations;
-import org.jmock.Mockery;
 import org.jmock.States;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
 
+import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 
-@RunWith(JMock.class)
-public class SynchronizedBufferTest {
-    private final Mockery context = new JUnit4Mockery();
+public class SynchronizedBufferTest extends JMockTest {
     private SynchronizedBuffer buffer;
     private FlippableBufferStorage storage;
     private TabStopManager tabstops;
     private CursorPositionManager positionManager;
 
-    @Before
+    // @BeforeMethod(dependsOnMethods = "setUpJMock")
+    @BeforeMethod
     public void setUp() {
         storage = context.mock(FlippableBufferStorage.class, "storage");
         tabstops = context.mock(TabStopManager.class, "tabstops");
@@ -33,8 +30,6 @@ public class SynchronizedBufferTest {
         context.checking(new Expectations() {{
             allowing(storage).newSize(width, height);
             allowing(positionManager).newSize(width, height);
-            //allowing(storage).size();
-            //will(returnValue(new Position(width, height)));
         }});
         buffer.newSize(width, height);
     }
@@ -86,34 +81,26 @@ public class SynchronizedBufferTest {
         }});
     }
 
-    @Test
-    public void addCharAt00ChangesPositionAndAddsChar() {
-        final GfxChar character = context.mock(GfxChar.class);
-        allowSize(80, 24);
-        allowPosition(1, 1);
-        allowWordWrap(true);
-
-        context.checking(new Expectations() {{
-            oneOf(character).getCharCount(); will(returnValue(1));
-        }});
-
-        assertCharWillBeSet(1, 1, character);
-        assertCursorWillBeMovedToNextPosition();
-        buffer.addCharacter(character);
+    @DataProvider(name = "addCharacterDataProvider")
+    public Object[][] addCharacterDataProvider() {
+        return new Object[][] {
+                { 1, 1 },
+                { 4, 2 }
+        };
     }
 
-    @Test
-    public void addCharAt42ChangesPositionAndAddsChar() {
+    @Test(dataProvider = "addCharacterDataProvider")
+    public void addCharAt00ChangesPositionAndAddsChar(final int x, final int y) {
         final GfxChar character = context.mock(GfxChar.class);
         allowSize(80, 24);
-        allowPosition(4, 2);
+        allowPosition(x, y);
         allowWordWrap(true);
 
         context.checking(new Expectations() {{
             oneOf(character).getCharCount(); will(returnValue(1));
         }});
 
-        assertCharWillBeSet(4, 2, character);
+        assertCharWillBeSet(x, y, character);
         assertCursorWillBeMovedToNextPosition();
         buffer.addCharacter(character);
     }
@@ -132,22 +119,21 @@ public class SynchronizedBufferTest {
         buffer.moveCursorDown(true);
     }
 
-    @Test
-    public void resizeTo30x24ResizesChildren() {
-        context.checking(new Expectations() {{
-            oneOf(storage).newSize(30, 24);
-            oneOf(positionManager).newSize(30, 24);
-        }});
-        buffer.newSize(30, 24);
+    @DataProvider(name = "resizeProvider")
+    public Object[][] resizeProvider() {
+        return new Object[][] {
+                { 30, 24 },
+                { 50, 44 }
+        };
     }
 
-    @Test
-    public void resizeTo50x44ResizesChildren() {
+    @Test(dataProvider = "resizeProvider")
+    public void resizeResizesChildren(final int w, final int h) {
         context.checking(new Expectations() {{
-            oneOf(storage).newSize(50, 44);
-            oneOf(positionManager).newSize(50, 44);
+                oneOf(storage).newSize(w, h);
+                oneOf(positionManager).newSize(w, h);
         }});
-        buffer.newSize(50, 44);
+        buffer.newSize(w, h);
     }
 
     @Test
@@ -209,17 +195,16 @@ public class SynchronizedBufferTest {
         buffer.moveCursorUp();
     }
 
-    @Test
-    public void setMargin2to3IsForwarded() {
-        checkMarginForward(2, 3);
+    @DataProvider(name = "marginForwardProvider")
+    public Object[][] marginForwardProvider() {
+        return new Object[][] {
+                { 2, 3 },
+                { 5, 9 }
+        };
     }
 
-    @Test
-    public void setMargin5to9IsForwarded() {
-        checkMarginForward(5, 9);
-    }
-
-    public void checkMarginForward(final int x, final int y) {
+    @Test(dataProvider = "marginForwardProvider")
+    public void setMarginIsForwarded(final int x, final int y) {
         final States marginSet = context.states("marginSet");
         context.checking(new Expectations() {{
             oneOf(positionManager).setMargins(x, y);
@@ -241,17 +226,18 @@ public class SynchronizedBufferTest {
         buffer.moveCursorDown(false);
     }
 
-    @Test
-    public void moveCursorDownResetsColumnAtLine7() {
-        checkMoveCursorDown(new Position(3, 7));
+    @DataProvider(name = "moveCursorProvider")
+    public Object[][] moveCursorProvider() {
+        return new Object[][] {
+                { 3, 7 },
+                { 6, 5 }
+        };
     }
 
-    @Test
-    public void moveCursorDownResetsColumnAtLine3() {
-        checkMoveCursorDown(new Position(6, 3));
-    }
+    @Test(dataProvider = "moveCursorProvider")
+    public void moveCursorDownResetsColumn(final int x, final int y) {
+        final Position pos = new Position(3, 7);
 
-    public void checkMoveCursorDown(final Position pos) {
         context.checking(new Expectations() {{
             oneOf(positionManager).moveDownAndRoll();
             oneOf(positionManager).currentPositionInScreen();
@@ -271,20 +257,17 @@ public class SynchronizedBufferTest {
         buffer.moveCursorDown(false);
     }
 
-    @Test
-    public void erase2to25() {
-        final Range range = new Range(new Position(2, 25));
-
-        context.checking(new Expectations(){{
-            oneOf(storage).erase(range.offset(-1, -1));
-        }});
-
-        buffer.erase(range);
+    @DataProvider(name = "eraseProvider")
+    public Object[][] eraseDataProvider() {
+        return new Object[][] {
+                { 2, 25 },
+                { 7, 5 }
+        };
     }
 
-    @Test
-    public void erase7to5() {
-        final Range range = new Range(new Position(7, 5));
+    @Test(dataProvider = "eraseProvider")
+    public void eraseForwardsRange(final int x, final int y) {
+        final Range range = new Range(new Position(x, y));
 
         context.checking(new Expectations(){{
             oneOf(storage).erase(range.offset(-1, -1));
@@ -535,20 +518,20 @@ public class SynchronizedBufferTest {
         testShift(5, 1, -6);
     }
 
-    @Test
-    public void horizontalTabulatorMovesCuros1() {
-        allowSize(80, 24);
-        final Position pos = new Position(2, 3);
-        final Position pos2 = new Position(5, 7);
-
-        assertTabulatorTransition(pos, pos2);
+    @DataProvider(name = "horizontalMovementProvider")
+    public Object[][] horizontalMovementProvider() {
+        return new Object[][] {
+                { 2, 3, 5, 7 },
+                { 9, 5, 8, 4 }
+        };
     }
 
-    @Test
-    public void horizontalTabulatorMovesCuros2() {
+    @Test(dataProvider = "horizontalMovementProvider") public void
+    horizontalTabulatorMovesCuros1(final int oldX, final int oldY,
+            final int newX, final int newY) {
         allowSize(80, 24);
-        final Position pos = new Position(9, 5);
-        final Position pos2 = new Position(8, 4);
+        final Position pos = new Position(oldX, oldY);
+        final Position pos2 = new Position(newX, newY);
 
         assertTabulatorTransition(pos, pos2);
     }

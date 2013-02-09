@@ -1,24 +1,20 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-@RunWith(JMock.class)
-public class DefaultCursorPositionManagerTest {
-    private final Mockery context = new JUnit4Mockery();
+import de.jowisoftware.sshclient.JMockTest;
+
+public class DefaultCursorPositionManagerTest extends JMockTest {
     private CursorPositionManagerFeedback feedback;
     private CursorPositionManager manager;
 
-    @Before
+    @BeforeMethod
     public void setUp() {
         feedback = context.mock(CursorPositionManagerFeedback.class, "feedback");
         manager = new DefaultCursorPositionManager(feedback, 80, 24);

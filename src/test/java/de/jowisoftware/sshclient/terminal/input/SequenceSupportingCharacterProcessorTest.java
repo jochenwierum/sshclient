@@ -3,14 +3,11 @@ package de.jowisoftware.sshclient.terminal.input;
 import java.util.Arrays;
 
 import org.jmock.Expectations;
-import org.jmock.Mockery;
 import org.jmock.Sequence;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
+import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
@@ -22,9 +19,7 @@ import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.NonASCIIControlSequence;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.SequenceRepository;
 
-@RunWith(JMock.class)
-public class SequenceSupportingCharacterProcessorTest {
-    private final Mockery context = new JUnit4Mockery();
+public class SequenceSupportingCharacterProcessorTest extends JMockTest {
     private Buffer buffer;
     private GfxCharSetup setup;
     private NonASCIIControlSequence sequence1;
@@ -35,7 +30,7 @@ public class SequenceSupportingCharacterProcessorTest {
     private SSHSession sessionInfo;
     private SequenceRepository repository;
 
-    @Before
+    @BeforeMethod(dependsOnMethods = "setUpJMock")
     public void setUp() {
         buffer = context.mock(Buffer.class);
         setup = context.mock(GfxCharSetup.class);

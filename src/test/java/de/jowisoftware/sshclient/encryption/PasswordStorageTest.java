@@ -1,15 +1,15 @@
 package de.jowisoftware.sshclient.encryption;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -18,27 +18,22 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.jmock.Expectations;
-import org.jmock.Mockery;
 import org.jmock.Sequence;
 import org.jmock.States;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
+import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.encryption.PasswordStorage.State;
 
-@RunWith(JMock.class)
-public class PasswordStorageTest {
+public class PasswordStorageTest extends JMockTest {
     private static final String CHECK_STRING = "check";
     private static final String PASSWORD = "secret";
 
-    private final Mockery context = new JUnit4Mockery();
     private EnDeCryptor cryptor;
     private PasswordStorage storage;
 
-    @Before
+    @BeforeMethod(dependsOnMethods = "setUpJMock")
     public void setUp() throws CryptoException {
         cryptor = context.mock(EnDeCryptor.class);
 
@@ -140,7 +135,7 @@ public class PasswordStorageTest {
         assertThat(storage.restorePassword("profile2"), is(equalTo("password2")));
     }
 
-    @Test(expected=StorageLockedException.class) public void
+    @Test(expectedExceptions = StorageLockedException.class) public void
     saveRequiresUnlocking() throws CryptoException {
         storage.savePassword("x", "y");
     }
@@ -152,7 +147,7 @@ public class PasswordStorageTest {
         assertThat(storage.getState(), is(equalTo(State.LOCKED)));
     }
 
-    @Test(expected=StorageLockedException.class) public void
+    @Test(expectedExceptions = StorageLockedException.class) public void
     restoresRequiresUnlocking() throws CryptoException {
         unlock();
         prepareEncrypt("y", "enc-y");
@@ -188,7 +183,7 @@ public class PasswordStorageTest {
         assertThat(storage.restorePassword("x"), is(nullValue()));
     }
 
-    @Test(expected=StorageLockedException.class) public void
+    @Test(expectedExceptions = StorageLockedException.class) public void
     deletePasswordsWithUnlockedStorageThrowsException() throws CryptoException {
         storage.deletePassword("x");
     }
@@ -216,7 +211,7 @@ public class PasswordStorageTest {
         assertThat(manager2.restorePassword("y"), is(equalTo("pw123")));
     }
 
-    @Test(expected=StorageLockedException.class) public void
+    @Test(expectedExceptions = StorageLockedException.class) public void
     changingPasswordWhenUnlockedThrowsException() throws CryptoException {
         storage.changePassword("new password");
     }
@@ -342,7 +337,7 @@ public class PasswordStorageTest {
         assertThat(checkString, is(nullValue()));
     }
 
-    @Test(expected=WrongPasswordException.class) public void
+    @Test(expectedExceptions = WrongPasswordException.class) public void
     wrongValidPasswordThrowsException() throws CryptoException {
         context.checking(new Expectations() {{
             oneOf(cryptor).setPassword("wrong");
@@ -352,7 +347,7 @@ public class PasswordStorageTest {
         storage.unlock("wrong");
     }
 
-    @Test(expected=WrongPasswordException.class) public void
+    @Test(expectedExceptions = WrongPasswordException.class) public void
     wrongInvalidPasswordThrowsException() throws CryptoException {
         context.checking(new Expectations() {{
             oneOf(cryptor).setPassword("wrong");

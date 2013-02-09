@@ -1,18 +1,18 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import org.jmock.Expectations;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 
 public class TabstopSequenceTest extends AbstractSequenceTest {
     public NonASCIIControlSequence sequence;
 
-    @Before
+    @BeforeMethod
     public void setUp() {
         sequence = new TabstopSequence();
     }

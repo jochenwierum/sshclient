@@ -1,14 +1,14 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class ArrayListBackedTabStopManagerTest {
     private TabStopManager manager;
 
-    @Before
+    @BeforeMethod
     public void setUp() {
         manager = new ArrayListBackedTabStopManager(80);
     }

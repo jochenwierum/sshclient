@@ -1,13 +1,8 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit4.JMock;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.Test;
 
-import de.jowisoftware.sshclient.terminal.input.controlsequences.DefaultSequenceRepository;
-
-@RunWith(JMock.class)
 public class ANSISequenceShiftTest extends AbstractSequenceTest {
     private void testLeftShiftXChars(final int charCount,
             final String ... args) {

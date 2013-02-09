@@ -1,13 +1,12 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.isA;
-import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.hasItem;
 
 import java.util.List;
 
-import org.hamcrest.Matcher;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class DefaultSequenceRepositoryTest {
     @Test
@@ -16,18 +15,16 @@ public class DefaultSequenceRepositoryTest {
                 isA(ANSISequence.class));
     }
 
-    // TODO: fix this warnings!
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     @Test
     public void defaultRepositoryContiansAllCommandSequences() {
         final List<NonASCIIControlSequence> sequences = new DefaultSequenceRepository().getNonASCIISequences();
-        assertThat(sequences, (Matcher) hasItem(isA(CursorControlSequence.class)));
-        assertThat(sequences, (Matcher) hasItem(isA(CursorControlSequence.class)));
-        assertThat(sequences, (Matcher) hasItem(isA(KeyboardControlSequence.class)));
-        assertThat(sequences, (Matcher) hasItem(isA(OperatingSystemCommandSequence.class)));
-        assertThat(sequences, (Matcher) hasItem(isA(DebugControlSequence.class)));
-        assertThat(sequences, (Matcher) hasItem(isA(CharsetControlSequence.class)));
-        assertThat(sequences, (Matcher) hasItem(isA(ColorCommandSequence.class)));
-        assertThat(sequences, (Matcher) hasItem(isA(TabstopSequence.class)));
+        assertThat(sequences, hasItem(isA(CursorControlSequence.class)));
+        assertThat(sequences, hasItem(isA(CursorControlSequence.class)));
+        assertThat(sequences, hasItem(isA(KeyboardControlSequence.class)));
+        assertThat(sequences, hasItem(isA(OperatingSystemCommandSequence.class)));
+        assertThat(sequences, hasItem(isA(DebugControlSequence.class)));
+        assertThat(sequences, hasItem(isA(CharsetControlSequence.class)));
+        assertThat(sequences, hasItem(isA(ColorCommandSequence.class)));
+        assertThat(sequences, hasItem(isA(TabstopSequence.class)));
     }
 }

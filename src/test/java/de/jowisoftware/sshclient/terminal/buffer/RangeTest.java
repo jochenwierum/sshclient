@@ -1,9 +1,9 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class RangeTest {
     @Test

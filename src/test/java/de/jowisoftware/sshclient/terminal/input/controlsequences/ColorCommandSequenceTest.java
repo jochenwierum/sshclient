@@ -1,20 +1,17 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit4.JMock;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-@RunWith(JMock.class)
 public class ColorCommandSequenceTest extends AbstractSequenceTest {
     private NonASCIIControlSequence sequence;
 
-    @Before
+    @BeforeMethod
     public void setUp() {
         sequence = new ColorCommandSequence();
     }

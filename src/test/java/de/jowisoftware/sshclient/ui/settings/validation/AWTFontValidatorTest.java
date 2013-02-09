@@ -1,17 +1,16 @@
 package de.jowisoftware.sshclient.ui.settings.validation;
 
-import static org.junit.Assert.assertFalse;
+import static org.testng.Assert.assertFalse;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.application.settings.validation.AbstractValidationTest;
 import de.jowisoftware.sshclient.application.settings.validation.ValidationResult;
-import de.jowisoftware.sshclient.application.settings.validation.ValidationTest;
-import de.jowisoftware.sshclient.ui.settings.validation.AWTFontValidator;
 
-public class AWTFontValidatorTest extends ValidationTest<AWTProfile> {
-    @Before
+public class AWTFontValidatorTest extends AbstractValidationTest<AWTProfile> {
+    @BeforeMethod
     public void setUp() {
         validator = new AWTFontValidator();
     }

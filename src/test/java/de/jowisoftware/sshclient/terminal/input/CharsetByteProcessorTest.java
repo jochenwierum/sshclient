@@ -3,19 +3,15 @@ package de.jowisoftware.sshclient.terminal.input;
 import java.nio.charset.Charset;
 
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-@RunWith(JMock.class)
-public class CharsetByteProcessorTest {
-    private final Mockery context = new JUnit4Mockery();
+import de.jowisoftware.sshclient.JMockTest;
+
+public class CharsetByteProcessorTest extends JMockTest {
     private CharacterProcessor callback;
 
-    @Before
+    @BeforeMethod
     public void setUpMock() {
         callback = context.mock(CharacterProcessor.class);
     }

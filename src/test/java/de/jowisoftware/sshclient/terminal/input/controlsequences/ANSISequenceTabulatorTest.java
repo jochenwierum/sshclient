@@ -1,7 +1,7 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 import org.jmock.Expectations;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 

@@ -7,27 +7,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
+import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.application.settings.Profile;
 
-@RunWith(JMock.class)
-public class ArgumentParserTest {
-    private JUnit4Mockery context;
+public class ArgumentParserTest extends JMockTest {
     @SuppressWarnings("rawtypes")
     private ArgumentParserCallback callback;
     private ApplicationSettings<?> settings;
     private ArgumentParser<?> parser;
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Before
+    @BeforeMethod
     public void setUp() {
-        context = new JUnit4Mockery();
         callback = context.mock(ArgumentParserCallback.class);
         settings = context.mock(ApplicationSettings.class);
         parser = new ArgumentParser(callback, settings);

@@ -20,11 +20,11 @@
 		<system>Trac</system>
 		<url>https://jowisoftware.de:4443/trac/ssh</url>
 	</issueManagement>
-	
-    <ciManagement>
-        <system>Jenkins</system>
-        <url>http://tomcat.twoprogrammers.de/jenkins</url>
-    </ciManagement>
+
+	<ciManagement>
+		<system>Jenkins</system>
+		<url>http://tomcat.twoprogrammers.de/jenkins</url>
+	</ciManagement>
 
 	<scm>
 		<connection>scm:git:git://github.com/jochenwierum/sshclient.git</connection>
@@ -53,36 +53,36 @@
 			<artifactId>jsch</artifactId>
 			<version>0.1.49</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.16</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>1.3.2</version>
 		</dependency>
-		
+
 		<dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.5</version>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.5</version>
 		</dependency>
-		
+
 		<!-- Test Dependencies -->
 		<dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-            <version>1.2.1</version>
-            <scope>test</scope>
-        </dependency>
-        
-        <dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>org.jmock</groupId>
-			<artifactId>jmock-junit4</artifactId>
+			<artifactId>jmock</artifactId>
 			<version>2.5.1</version>
 			<scope>test</scope>
 			<exclusions>
@@ -94,20 +94,22 @@
 					<artifactId>hamcrest-core</artifactId>
 					<groupId>org.hamcrest</groupId>
 				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<version>6.8</version>
+			<scope>test</scope>
+			<exclusions>
 				<exclusion>
-					<artifactId>junit-dep</artifactId>
+					<artifactId>junit</artifactId>
 					<groupId>junit</groupId>
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit-dep</artifactId>
-            <version>4.10</version>
-            <scope>test</scope>
-        </dependency>
-		
+
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>annotations</artifactId>
@@ -134,6 +136,11 @@
 				</configuration>
 			</plugin>
 
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.13</version>
+            </plugin>
+
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>2.4.1</version>
@@ -153,14 +160,14 @@
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
-                    <archive>
+					<archive>
 						<manifest>
 							<mainClass>de.jowisoftware.sshclient.SSHApp</mainClass>
 						</manifest>
 						<manifestEntries>
-                            <Build-Date>${timestamp}</Build-Date>
-                            <SCM-Revision>${buildNumber}</SCM-Revision>
-                            <SCM-Branch>${scmBranch}</SCM-Branch> 
+							<Build-Date>${timestamp}</Build-Date>
+							<SCM-Revision>${buildNumber}</SCM-Revision>
+							<SCM-Branch>${scmBranch}</SCM-Branch>
 						</manifestEntries>
 					</archive>
 					<descriptorRefs>
@@ -176,7 +183,7 @@
 					</execution>
 				</executions>
 			</plugin>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -186,12 +193,12 @@
 						<manifestEntries>
 							<SCM-Revision>${buildNumber}</SCM-Revision>
 							<SCM-Branch>${scmBranch}</SCM-Branch>
-                            <Build-Date>${timestamp}</Build-Date> 
+							<Build-Date>${timestamp}</Build-Date>
 						</manifestEntries>
 					</archive>
 				</configuration>
 			</plugin>
-		
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>buildnumber-maven-plugin</artifactId>
@@ -205,13 +212,26 @@
 					</execution>
 				</executions>
 				<configuration>
-                    <timestampFormat>
-                            {0,date,yyyy-MM-dd}
-                    </timestampFormat>
+					<timestampFormat>
+						{0,date,yyyy-MM-dd}
+					</timestampFormat>
 					<doCheck>false</doCheck>
 					<doUpdate>true</doUpdate>
 				</configuration>
-            </plugin>
+				<dependencies>
+				<dependency>
+					<groupId>org.codehaus.plexus</groupId>
+					<artifactId>plexus-container-default</artifactId>
+					<version>1.0-alpha-9-stable-1</version>
+					<exclusions>
+						<exclusion>
+							<groupId>org.hamcrest</groupId>
+							<artifactId>hamcrest-core</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+				</dependencies>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -229,36 +249,36 @@
 				</resources>
 			</build>
 		</profile>
-		
-        <profile>
-            <id>debug</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/main/resources.debug</directory>
-                    </resource>
-                </resources>
-            </build>
-        </profile>
-		
+
 		<profile>
-            <id>analyze</id>
-            <build>
-                <resources>
-                    <resource>
-                        <directory>src/main/resources</directory>
-                    </resource>
-                    <resource>
-                        <directory>src/main/resources.debug</directory>
-                    </resource>
-                </resources>
-		
+			<id>debug</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/resources</directory>
+					</resource>
+					<resource>
+						<directory>src/main/resources.debug</directory>
+					</resource>
+				</resources>
+			</build>
+		</profile>
+
+		<profile>
+			<id>analyze</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>src/main/resources</directory>
+					</resource>
+					<resource>
+						<directory>src/main/resources.debug</directory>
+					</resource>
+				</resources>
+
 				<plugins>
 					<plugin>
 						<groupId>org.jacoco</groupId>
@@ -281,7 +301,7 @@
 						</executions>
 					</plugin>
 				</plugins>
-            </build>
-        </profile>
-    </profiles>
+			</build>
+		</profile>
+	</profiles>
 </project>

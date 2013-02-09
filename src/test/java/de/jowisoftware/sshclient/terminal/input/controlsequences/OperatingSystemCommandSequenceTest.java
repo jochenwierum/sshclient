@@ -1,19 +1,16 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit4.JMock;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
-@RunWith(JMock.class)
 public class OperatingSystemCommandSequenceTest extends AbstractSequenceTest {
     private OperatingSystemCommandSequence sequence;
 
-    @Before
+    @BeforeMethod
     public void setUp() {
         sequence = new OperatingSystemCommandSequence();
     }

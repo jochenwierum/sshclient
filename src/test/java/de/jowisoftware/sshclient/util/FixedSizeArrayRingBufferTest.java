@@ -4,13 +4,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 public class FixedSizeArrayRingBufferTest {
     public RingBuffer<Integer> buffer;
 
-    @Before
+    @BeforeMethod
     public void setUp() {
         buffer = new FixedSizeArrayRingBuffer<Integer>(10);
     }

@@ -5,28 +5,24 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
+import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 
 // TODO: the whole test class and keyboard processor is a mess
 // try to reduce complexity here, get rid of AWT and make the tests more expressive
-@RunWith(JMock.class)
-public class KeyboardProcessorTest {
-    private final Mockery context = new JUnit4Mockery();
+@Test(groups = "gui")
+public class KeyboardProcessorTest extends JMockTest {
     private final static char ESC = (char) 27;
 
     private KeyboardProcessor processor;
     private Renderer renderer;
     private SSHSession session;
 
-    @Before
+    @BeforeMethod
     public void setUp() {
         session = context.mock(SSHSession.class);
         renderer = context.mock(Renderer.class);

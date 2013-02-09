@@ -1,21 +1,12 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
 import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JMock;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.Test;
 
+import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.application.settings.validation.ValidationResult;
-import de.jowisoftware.sshclient.application.settings.validation.Validator;
-import de.jowisoftware.sshclient.application.settings.validation.ValidatorCollection;
 
-@RunWith(JMock.class)
-public class ValidatorCollectionTest {
-    private final Mockery context = new JUnit4Mockery();
-
+public class ValidatorCollectionTest extends JMockTest {
     @SuppressWarnings("unchecked")
     @Test
     public void callsAllItemsInCollection() {

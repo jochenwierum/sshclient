@@ -1,6 +1,6 @@
 package de.jowisoftware.sshclient.i18n;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Properties;
 
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 public class TranslationTest {
     public Reader toStreamReader(final Properties prop) {

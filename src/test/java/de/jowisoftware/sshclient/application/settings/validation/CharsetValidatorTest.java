@@ -1,14 +1,13 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
 import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.application.settings.validation.CharsetValidator;
 
-public class CharsetValidatorTest extends ValidationTest<Profile<?>> {
-    @Before
+public class CharsetValidatorTest extends AbstractValidationTest<Profile<?>> {
+    @BeforeMethod
     public void setUp() {
         validator = new CharsetValidator();
     }

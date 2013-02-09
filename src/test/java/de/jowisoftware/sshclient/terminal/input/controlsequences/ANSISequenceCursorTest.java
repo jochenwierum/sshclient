@@ -1,16 +1,13 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit4.JMock;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.Test;
 
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 
-@RunWith(JMock.class)
 public class ANSISequenceCursorTest extends AbstractSequenceTest {
     @Test
     public void testFEqualsH() {

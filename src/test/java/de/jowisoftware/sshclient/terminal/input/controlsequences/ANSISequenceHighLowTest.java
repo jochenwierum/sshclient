@@ -1,15 +1,12 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 import org.jmock.Expectations;
-import org.jmock.integration.junit4.JMock;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.Test;
 
 import de.jowisoftware.sshclient.terminal.buffer.BufferSelection;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 
-@RunWith(JMock.class)
 public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     @Test
     public void handleNumblock() {
