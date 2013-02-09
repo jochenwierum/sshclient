@@ -81,7 +81,7 @@ public class SynchronizedBufferTest extends JMockTest {
         }});
     }
 
-    @DataProvider(name = "addCharacterDataProvider")
+    @DataProvider
     public Object[][] addCharacterDataProvider() {
         return new Object[][] {
                 { 1, 1 },
@@ -119,7 +119,7 @@ public class SynchronizedBufferTest extends JMockTest {
         buffer.moveCursorDown(true);
     }
 
-    @DataProvider(name = "resizeProvider")
+    @DataProvider
     public Object[][] resizeProvider() {
         return new Object[][] {
                 { 30, 24 },
@@ -195,7 +195,7 @@ public class SynchronizedBufferTest extends JMockTest {
         buffer.moveCursorUp();
     }
 
-    @DataProvider(name = "marginForwardProvider")
+    @DataProvider
     public Object[][] marginForwardProvider() {
         return new Object[][] {
                 { 2, 3 },
@@ -226,7 +226,7 @@ public class SynchronizedBufferTest extends JMockTest {
         buffer.moveCursorDown(false);
     }
 
-    @DataProvider(name = "moveCursorProvider")
+    @DataProvider
     public Object[][] moveCursorProvider() {
         return new Object[][] {
                 { 3, 7 },
@@ -257,7 +257,7 @@ public class SynchronizedBufferTest extends JMockTest {
         buffer.moveCursorDown(false);
     }
 
-    @DataProvider(name = "eraseProvider")
+    @DataProvider
     public Object[][] eraseDataProvider() {
         return new Object[][] {
                 { 2, 25 },
@@ -265,7 +265,7 @@ public class SynchronizedBufferTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "eraseProvider")
+    @Test(dataProvider = "eraseDataProvider")
     public void eraseForwardsRange(final int x, final int y) {
         final Range range = new Range(new Position(x, y));
 
@@ -518,15 +518,15 @@ public class SynchronizedBufferTest extends JMockTest {
         testShift(5, 1, -6);
     }
 
-    @DataProvider(name = "horizontalMovementProvider")
-    public Object[][] horizontalMovementProvider() {
+    @DataProvider
+    public Object[][] horizontalMovementDataProvider() {
         return new Object[][] {
                 { 2, 3, 5, 7 },
                 { 9, 5, 8, 4 }
         };
     }
 
-    @Test(dataProvider = "horizontalMovementProvider") public void
+    @Test(dataProvider = "horizontalMovementDataProvider") public void
     horizontalTabulatorMovesCuros1(final int oldX, final int oldY,
             final int newX, final int newY) {
         allowSize(80, 24);

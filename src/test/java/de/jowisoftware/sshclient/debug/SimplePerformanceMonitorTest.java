@@ -33,7 +33,7 @@ public class SimplePerformanceMonitorTest extends JMockTest {
         assertThat(Long.valueOf(time), is(equalTo(Long.valueOf(expected))));
     }
 
-    @DataProvider(name = "taskData")
+    @DataProvider
     public Object[][] taskData() {
         return new Object[][] {
                 {200, 400, 200},
