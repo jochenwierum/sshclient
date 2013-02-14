@@ -22,6 +22,7 @@ import de.jowisoftware.sshclient.jsch.AsyncInputStreamReaderThread;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.jsch.InputStreamEventHub;
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
+import de.jowisoftware.sshclient.proxy.SocksServer;
 
 public class JSchConnection {
     private static final Logger LOGGER = Logger.getLogger(JSchConnection.class);
@@ -37,6 +38,7 @@ public class JSchConnection {
 
     private final EventHub<InputStreamEvent> events =
             new InputStreamEventHub();
+    private SocksServer socksConnection;
 
     public JSchConnection(final JSch jsch, final Profile<?> profile,
             final SSHUserInfo userInfo) {
@@ -69,6 +71,7 @@ public class JSchConnection {
         setupSessionForwardings();
         connectedSession();
         setupPortForwardings();
+        setupProxyServer();
     }
 
     private void setupSessionForwardings() {
@@ -92,6 +95,14 @@ public class JSchConnection {
                 LOGGER.error("Could not setup port forwarding " + forwarding +
                         ", ignoring setup and continuing connection", e);
             }
+        }
+    }
+
+    private void setupProxyServer() {
+        if (profile.getSocksPort() != null) {
+            socksConnection = new SocksServer(session,
+                    profile.getSocksPort());
+            socksConnection.start();
         }
     }
 
@@ -156,6 +167,14 @@ public class JSchConnection {
     }
 
     public void close() {
+        if (socksConnection != null) {
+            socksConnection.stopThread();
+            try {
+                socksConnection.join();
+            } catch (final InterruptedException e) {
+            }
+        }
+
         if (outputStream != null) {
             IOUtils.closeQuietly(outputStream);
             outputStream = null;

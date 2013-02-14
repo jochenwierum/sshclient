@@ -23,6 +23,7 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     private int x11Display = 0;
 
     private final List<Forwarding> portForwardings;
+    private Integer socksPort = null;
 
     private String command = "";
 
@@ -58,6 +59,7 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
         charset = copy.charset;
         closeTabMode = copy.closeTabMode;
         command = copy.command;
+        socksPort = copy.socksPort;
     }
 
     @Override
@@ -201,5 +203,15 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     @Override
     public List<Forwarding> getPortForwardings() {
         return portForwardings;
+    }
+
+    @Override
+    public Integer getSocksPort() {
+        return socksPort;
+    }
+
+    @Override
+    public void setSocksPort(final Integer socksPort) {
+        this.socksPort = socksPort;
     }
 }

@@ -211,6 +211,8 @@ public class XMLLoader {
                 profile.getX11Host()));
         profile.setX11Display(getInteger(profileNode, "forwardings/x11Display/text()",
                 profile.getX11Display()));
+        profile.setSocksPort(getInteger(profileNode,
+                "forwardings/proxyPort/text()", profile.getSocksPort()));
 
         final Element portForwardings = getElement(profileNode, "forwardings/portForwardings");
         if (portForwardings != null) {

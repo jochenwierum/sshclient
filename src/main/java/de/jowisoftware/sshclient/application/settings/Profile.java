@@ -26,7 +26,10 @@ public interface Profile<C extends GfxInfo<?>> {
     int getX11Display();
     void setX11Host(String x11Host);
     void setX11Display(int x11Display);
+
     List<Forwarding> getPortForwardings();
+    Integer getSocksPort();
+    void setSocksPort(Integer socksPort);
 
     C getGfxSettings();
 

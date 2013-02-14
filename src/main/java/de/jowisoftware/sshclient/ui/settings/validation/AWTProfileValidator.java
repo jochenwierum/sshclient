@@ -9,6 +9,7 @@ import de.jowisoftware.sshclient.application.settings.validation.EnvironmentVali
 import de.jowisoftware.sshclient.application.settings.validation.HostNameValidator;
 import de.jowisoftware.sshclient.application.settings.validation.PortValidator;
 import de.jowisoftware.sshclient.application.settings.validation.SelectionCharsValidator;
+import de.jowisoftware.sshclient.application.settings.validation.SocksPortValidator;
 import de.jowisoftware.sshclient.application.settings.validation.UserValidator;
 import de.jowisoftware.sshclient.application.settings.validation.ValidationResult;
 import de.jowisoftware.sshclient.application.settings.validation.ValidatorCollection;
@@ -25,6 +26,7 @@ public final class AWTProfileValidator {
 
         collection.addValidator(new HostNameValidator());
         collection.addValidator(new PortValidator());
+        collection.addValidator(new SocksPortValidator());
         collection.addValidator(new UserValidator());
         collection.addValidator(new CharsetValidator());
         collection.addValidator(new ColorValidator<AWTProfile>());

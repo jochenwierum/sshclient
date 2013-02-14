@@ -40,6 +40,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
     private final JCheckBox x11Forwarding = createXForwardingCheckBox();
     private final JTextField x11Host = new JTextField();
     private final JTextField x11Display = new JTextField();
+    private final JTextField socksPort = new JTextField();
     private final JList<Forwarding> forwardingsList = new JList<>(
             new DefaultListModel<Forwarding>());
 
@@ -73,6 +74,13 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
         add(createPortForwardingsPanel(), constraints);
+
+        if (profile.getSocksPort() != null) {
+            socksPort.setText(profile.getSocksPort().toString());
+        }
+        add(label("profiles.forwardings.socksport", "SOCKS 4/5 Port:", 'o',
+                socksPort), makeLabelConstraints(6));
+        add(socksPort, makeConstraints(2, 6));
     }
 
     private JPanel createPortForwardingsPanel() {
@@ -233,6 +241,16 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
     public void save() {
         profile.setX11Host(x11Host.getText());
         profile.setX11Display(StringUtils.getInteger(x11Display.getText(), 0));
+
+        if (socksPort.getText().isEmpty()) {
+            profile.setSocksPort(null);
+        } else {
+            try {
+                profile.setSocksPort(Integer.parseInt(socksPort.getText()));
+            } catch(final NumberFormatException e) {
+                profile.setSocksPort(null);
+            }
+        }
     }
 
 

@@ -112,6 +112,9 @@ public class XMLPersister {
         node.appendChild(createKeyValue("forwardAgent", profile.getAgentForwarding()));
         node.appendChild(createKeyValue("x11Host", profile.getX11Host()));
         node.appendChild(createKeyValue("x11Display", profile.getX11Display()));
+        node.appendChild(createKeyValue("proxyPort",
+                profile.getSocksPort() == null ? "" :
+                        profile.getSocksPort().toString()));
 
         node.appendChild(createForwardingNode("portForwardings", profile.getPortForwardings()));
         return node;

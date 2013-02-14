@@ -134,20 +134,23 @@ public class ConnectionPanel extends JPanel {
                 final boolean closeTab = closeMode == CloseTabMode.ALWAYS ||
                         (successfullyClosed && closeMode != CloseTabMode.NEVER);
 
-                        SwingUtils.runInSwingThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (closeTab) {
-                                    parent.closeTab(tab);
-                                } else {
-                                    tab.getTitleContent().updateLabel(
-                                            t("closedtab", "[closed] %s",
-                                                    tab.getTitleContent()
-                                                            .getLabel()));
-                                }
-                            }
-                        });
+                        markTabAsClosed(closeTab);
                 connection.close();
+            }
+        });
+    }
+
+    private void markTabAsClosed(final boolean closeTab) {
+        SwingUtils.runInSwingThread(new Runnable() {
+            @Override
+            public void run() {
+                if (closeTab) {
+                    parent.closeTab(tab);
+                } else {
+                    tab.getTitleContent().updateLabel(
+                            t("closedtab", "[closed] %s",
+                                    tab.getTitleContent().getLabel()));
+                }
             }
         });
     }
