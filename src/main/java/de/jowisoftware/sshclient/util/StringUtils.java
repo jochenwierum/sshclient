@@ -68,7 +68,7 @@ public final class StringUtils {
         return builder.toString();
     }
 
-    public static int getInteger(final String string, final int defaultValue) {
+    public static int getInteger(final String string, final Integer defaultValue) {
         try {
             return Integer.parseInt(string);
         } catch(final Exception e) {
