@@ -17,6 +17,10 @@ public interface Profile<C extends GfxInfo<?>> {
     int getPort();
     void setTimeout(final int timeout);
     int getTimeout();
+    void setKeepAliveInterval(int interval);
+    int getKeepAliveInterval();
+    void setKeepAliveCount(int count);
+    int getKeepAliveCount();
 
     boolean getX11Forwarding();
     void setX11Forwarding(boolean forward);

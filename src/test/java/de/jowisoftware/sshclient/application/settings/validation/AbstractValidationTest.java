@@ -1,8 +1,7 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
@@ -34,11 +33,11 @@ public abstract class AbstractValidationTest<T extends Profile<?>> {
 
     public void assertError(final String field, final String message) {
         final ValidationResult errors = doValidation();
-        assertTrue(errors.hadErrors());
-        assertEquals(message, errors.getErrors().get(field));
+        assertThat(errors.hadErrors(), is(true));
+        assertThat(errors.getErrors().get(field), is(message));
     }
 
     public void assertNoError() {
-        assertFalse(doValidation().hadErrors());
+        assertThat(doValidation().hadErrors(), is(false));
     }
 }

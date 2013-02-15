@@ -97,6 +97,10 @@ public class XMLPersister {
         profileNode.appendChild(createKeyValue("user", profile.getUser()));
         profileNode.appendChild(createKeyValue("port", profile.getPort()));
         profileNode.appendChild(createKeyValue("timeout", profile.getTimeout()));
+        profileNode.appendChild(createKeyValue("keepAliveCount",
+                profile.getKeepAliveCount()));
+        profileNode.appendChild(createKeyValue("keepAliveInterval",
+                profile.getKeepAliveInterval()));
         profileNode.appendChild(createKeyValue("charset", profile.getCharset().name()));
         profileNode.appendChild(createKeyValue("closeTabMode",
                 profile.getCloseTabMode().toString()));

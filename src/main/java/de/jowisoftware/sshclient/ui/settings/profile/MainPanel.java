@@ -26,6 +26,8 @@ class MainPanel extends AbstractGridBagOptionPanel {
     private final JTextField timeoutTextField = new JTextField();
     private final JTextField profileNameTextField = new JTextField();
     private final JTextField commandTextField = new JTextField();
+    private final JTextField keepAliveInterval = new JTextField();
+    private final JTextField keepAliveCount = new JTextField();
 
     public MainPanel(final AWTProfile profile, final String profileName,
             final boolean profileNameSettable, final Window parent) {
@@ -83,6 +85,19 @@ class MainPanel extends AbstractGridBagOptionPanel {
         timeoutTextField.setText(Integer.toString(profile.getTimeout()));
         add(timeoutTextField, makeConstraints(2, y));
 
+        add(label("profiles.general.keepalivecount",
+                "Max. unanswerted keep alives:",
+                'k', keepAliveCount), makeLabelConstraints(++y));
+        keepAliveCount.setText(Integer.toString(profile.getKeepAliveCount()));
+        add(keepAliveCount, makeConstraints(2, y));
+
+        add(label("profiles.general.keepaliveinterval",
+                "Keep alive interval (ms):",
+                'i', keepAliveInterval), makeLabelConstraints(++y));
+        keepAliveInterval.setText(Integer.toString(profile
+                .getKeepAliveInterval()));
+        add(keepAliveInterval, makeConstraints(2, y));
+
         fillToBottom(++y);
     }
 
@@ -108,6 +123,10 @@ class MainPanel extends AbstractGridBagOptionPanel {
         profile.setTimeout(StringUtils.getInteger(timeoutTextField.getText(),
                 -1));
         profile.setCommand(commandTextField.getText());
+        profile.setKeepAliveCount(StringUtils.getInteger(keepAliveCount.getText(),
+                -1));
+        profile.setKeepAliveInterval(StringUtils.getInteger(keepAliveInterval.getText(),
+                -1));
     }
 
     public String getProfileName() {

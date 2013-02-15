@@ -123,6 +123,8 @@ public class JSchConnection {
     }
 
     private void connectedSession() throws JSchException {
+        session.setServerAliveInterval(profile.getKeepAliveInterval());
+        session.setServerAliveCountMax(profile.getKeepAliveCount());
         session.connect(profile.getTimeout());
     }
 

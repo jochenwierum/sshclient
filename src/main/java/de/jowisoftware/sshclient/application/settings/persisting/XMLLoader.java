@@ -163,6 +163,10 @@ public class XMLLoader {
         profile.setUser(getString(profileNode, "user/text()", null));
         profile.setPort(getInteger(profileNode, "port/text()", -1));
         profile.setTimeout(getInteger(profileNode, "timeout/text()", -1));
+        profile.setKeepAliveCount(getInteger(profileNode,
+                "keepAliveCount/text()", profile.getKeepAliveCount()));
+        profile.setKeepAliveInterval(getInteger(profileNode,
+                "keepAliveInterval/text()", profile.getKeepAliveInterval()));
         profile.setCommand(getString(profileNode, "command/text()", ""));
 
         restoreForwardings(profile, profileNode);

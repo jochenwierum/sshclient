@@ -16,6 +16,8 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     private String host = "localhost";
     private int port = 22;
     private int timeout = 10000;
+    private int keepAliveInterval = 10000;
+    private int keepAliveCount = 5;
 
     private boolean agentForwarding;
     private boolean xForwarding;
@@ -51,6 +53,8 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
         host = copy.host;
         port = copy.port;
         timeout = copy.timeout;
+        keepAliveCount = copy.keepAliveCount;
+        keepAliveInterval = copy.keepAliveInterval;
         agentForwarding = copy.agentForwarding;
         xForwarding = copy.xForwarding;
         x11Host = copy.x11Host;
@@ -213,5 +217,25 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     @Override
     public void setSocksPort(final Integer socksPort) {
         this.socksPort = socksPort;
+    }
+
+    @Override
+    public void setKeepAliveInterval(final int interval) {
+        this.keepAliveInterval = interval;
+    }
+
+    @Override
+    public int getKeepAliveInterval() {
+        return keepAliveInterval;
+    }
+
+    @Override
+    public void setKeepAliveCount(final int count) {
+        this.keepAliveCount = count;
+    }
+
+    @Override
+    public int getKeepAliveCount() {
+        return keepAliveCount;
     }
 }
