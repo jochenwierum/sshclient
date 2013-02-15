@@ -203,7 +203,8 @@ public class MainWindowMenu {
 
 
     private JMenuItem createPerformanceEntry() {
-        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.performance", "performance"));
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.performance",
+                "Performance"));
         entry.setMnemonic(m("mainwindow.menu.performance", 'p'));
 
         entry.addActionListener(new ActionListener() {
@@ -217,7 +218,8 @@ public class MainWindowMenu {
     }
 
     private JMenuItem createAboutEntry() {
-        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.about", "about"));
+        final JMenuItem entry = new JMenuItem(t("mainwindow.menu.about",
+                "About"));
         entry.setMnemonic(m("mainwindow.menu.about", 'a'));
 
         entry.addActionListener(new ActionListener() {
