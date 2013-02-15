@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 
 import org.jmock.Expectations;
 import org.testng.Assert;
@@ -159,7 +158,6 @@ public class Version5InitialisationTargetDispatcherTest extends JMockTest {
         for (int i = 0; i < input.length; ++i) {
             final byte[] result = dispatcher.process(input[i]);
 
-            System.out.println(Arrays.toString(result));
             if (i < input.length - 1) {
                 assertThat(result.length, is(0));
             } else {
