@@ -405,7 +405,7 @@ public class ProfilesDialog extends JDialog {
         final StringBuilder message = new StringBuilder();
 
         message.append(t("profiles.errors.message",
-                "this profile contains one or more errors:"));
+                "This profile contains one or more errors:"));
         for (final Entry<String, String> error : errors.entrySet()) {
             message.append("\n");
             message.append(error.getValue());
