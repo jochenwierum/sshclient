@@ -149,8 +149,8 @@ public class SettingsDialog extends JDialog {
         final int selected;
 
         values[0] = t("settings.states.restore", "restore last state");
-        values[1] = t("settings.states.restore", "opened on start");
-        values[2] = t("settings.states.restore", "closed on start");
+        values[1] = t("settings.states.opened", "opened on start");
+        values[2] = t("settings.states.closed", "closed on start");
 
         switch(selectedState) {
             case ALWAYS_CLOSED: selected = 2; break;
