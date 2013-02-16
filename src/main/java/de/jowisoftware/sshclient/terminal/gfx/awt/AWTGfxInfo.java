@@ -6,30 +6,29 @@ import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.javafx.binding.StringFormatter;
-import de.jowisoftware.sshclient.persistence.annotations.Persist;
-import de.jowisoftware.sshclient.persistence.annotations.TraversalType;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.Persist;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.TraversalType;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
 import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 
 public final class AWTGfxInfo implements GfxInfo<Color> {
-    @Persist(traversalType = TraversalType.MAP, targetClass = Color.class, targetClass2 = ColorName.class)
+    @Persist(traversalType = TraversalType.Map, targetClass = Color.class, targetClass2 = ColorName.class)
     private final Map<ColorName, Color> colors;
-    @Persist(traversalType = TraversalType.MAP, targetClass = Color.class, targetClass2 = ColorName.class)
+    @Persist(traversalType = TraversalType.Map, targetClass = Color.class, targetClass2 = ColorName.class)
     private final Map<ColorName, Color> lightColors;
 
-    @Persist("cursorColor") private Color cursorColor = Color.GREEN;
+    @Persist("cursor/color") private Color cursorColor = Color.GREEN;
 
     private final int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
 
-    private Font font;
-    private Font boldFont;
-    @Persist("font") private String fontName = Font.MONOSPACED;
-    @Persist("fontSize") private int fontSize = 10;
+    private transient Font font;
+    private transient Font boldFont;
+    @Persist("font/@name") private String fontName = Font.MONOSPACED;
+    @Persist("font/@size") private int fontSize = 10;
     @Persist("antiAliasingMode") private int antiAliasingMode;
-    @Persist("cursorStyle") private CursorStyle cursorStyle = CursorStyle.Block;
-    @Persist("cursorStyle/@blink") private boolean cursorBlinks = true;
+    @Persist("cursor/style") private CursorStyle cursorStyle = CursorStyle.Block;
+    @Persist("cursor/style/@blink") private boolean cursorBlinks = true;
 
     @Persist("boundaryChars") private String boundaryChars = ":@-./_~?&=%+#";
 

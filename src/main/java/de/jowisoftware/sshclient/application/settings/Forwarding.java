@@ -1,6 +1,6 @@
 package de.jowisoftware.sshclient.application.settings;
 
-import de.jowisoftware.sshclient.persistence.annotations.Persist;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.Persist;
 
 public class Forwarding {
     public static enum Direction {

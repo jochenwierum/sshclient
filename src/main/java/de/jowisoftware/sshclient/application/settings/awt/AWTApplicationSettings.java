@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.Persist;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.TraversalType;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
@@ -18,16 +20,24 @@ public class AWTApplicationSettings implements ApplicationSettings<AWTProfile> {
     private static final Logger LOGGER = Logger
             .getLogger(AWTApplicationSettings.class);
 
+    @Persist(traversalType = TraversalType.Recursive)
     private AWTProfile defaultProfile = new AWTProfile();
-    private final Map<String, AWTProfile> profiles = new HashMap<String, AWTProfile>();
-    private final List<File> keyFiles = new ArrayList<File>();
 
+    @Persist(value = "profiles", traversalType = TraversalType.Map,
+            traverseListAndMapChildrenRecursively = true, targetClass = AWTProfile.class, targetClass2 = String.class)
+    private final Map<String, AWTProfile> profiles = new HashMap<>();
+
+    @Persist(value = "keys", traversalType = TraversalType.List, targetClass = File.class)
+    private final List<File> keyFiles = new ArrayList<>();
+
+    @Persist(value = "passwords", traversalType = TraversalType.Recursive)
     private final PasswordStorage passwordStorage;
 
-    private TabState logTabState = TabState.CLOSED;
-    private TabState keyTabState = TabState.CLOSED;
-    private String language = "en_US";
-    private BellType bellType = BellType.Visual;
+    @Persist("logtab/@state") private TabState logTabState = TabState.Closed;
+    @Persist("keytab/@state") private TabState keyTabState = TabState.Closed;
+
+    @Persist private String language = "en_US";
+    @Persist private BellType bellType = BellType.Visual;
 
     public AWTApplicationSettings() {
         PasswordStorage newPasswordManager;

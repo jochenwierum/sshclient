@@ -4,6 +4,7 @@ import java.io.File;
 
 import javax.swing.UIManager;
 
+import de.jowisoftware.sshclient.application.settings.persistence.Persister;
 import org.apache.log4j.Logger;
 
 import com.jcraft.jsch.JSch;
@@ -12,7 +13,6 @@ import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.application.settings.awt.AWTApplicationSettings;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.application.settings.persisting.XMLLoader;
 import de.jowisoftware.sshclient.i18n.Translation;
 import de.jowisoftware.sshclient.jsch.JSchKeyManager;
 import de.jowisoftware.sshclient.ui.MainWindow;
@@ -75,7 +75,7 @@ public class Init {
     private void loadSettings(final Application application) {
         final File settingsFile = new File(application.sshDir, "settings.xml");
         if (settingsFile.isFile()) {
-            new XMLLoader(application.settings).load(settingsFile);
+            new Persister(settingsFile).restore(application.settings);
             application.profileEvents.fire().profilesUpdated();
         }
     }

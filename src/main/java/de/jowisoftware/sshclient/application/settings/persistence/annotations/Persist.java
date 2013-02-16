@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.persistence.annotations;
+package de.jowisoftware.sshclient.application.settings.persistence.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Persist {
     String value() default "";
-    TraversalType traversalType() default TraversalType.SIMPLE;
+    TraversalType traversalType() default TraversalType.Simple;
     Class<?> targetClass() default Object.class;
     Class<?> targetClass2() default Object.class;
     boolean traverseListAndMapChildrenRecursively() default false;

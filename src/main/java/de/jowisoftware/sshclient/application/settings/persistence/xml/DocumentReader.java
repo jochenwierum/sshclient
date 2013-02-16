@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.persistence.xml;
+package de.jowisoftware.sshclient.application.settings.persistence.xml;
 
 public interface DocumentReader {
     XMLDocumentReader.ListReader readList(String path, String name);

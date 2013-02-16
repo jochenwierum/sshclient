@@ -1,17 +1,27 @@
 package de.jowisoftware.sshclient.encryption;
 
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.Persist;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.PersistPostLoad;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.PersistPreSave;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.TraversalType;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class PasswordStorage {
     public enum State {
-        UNINITIALIZED, LOCKED, UNLOCKED
+        Uninitialized, Locked, Unlocked
     }
 
     private final EnDeCryptor cryptor;
     private final PasswordStorageLock lock;
-    private final Map<String, String> passwords = new HashMap<String, String>();
+
+    @Persist(value = "passwords", traversalType = TraversalType.Map, targetClass = String.class, targetClass2 = String.class)
+    private final Map<String, String> passwords = new HashMap<>();
+
+    @Persist("@check")
+    private String checkString;
 
     PasswordStorage(final EnDeCryptor cryptor) {
         this.cryptor = cryptor;
@@ -20,6 +30,22 @@ public class PasswordStorage {
 
     public PasswordStorage() throws CryptoException {
         this(new JavaStandardEnDeCryptor());
+    }
+
+    @PersistPostLoad
+    public void prepareLoad() {
+        if (checkString != null && checkString.isEmpty()) {
+            checkString = null;
+        }
+        lock.setCheckString(checkString);
+    }
+
+    @PersistPreSave
+    public void prepareSave() {
+        checkString = lock.getCheckString();
+        if (checkString == null) {
+            checkString = "";
+        }
     }
 
     public void unlock(final String password) throws CryptoException {
@@ -53,17 +79,9 @@ public class PasswordStorage {
         lock.lock();
     }
 
-    public Map<String, String> exportPasswords() {
-        return new HashMap<String, String>(passwords);
-    }
-
     public void deletePassword(final String passwordId) throws CryptoException {
         checkLock();
         passwords.remove(passwordId);
-    }
-
-    public void importPasswords(final Map<String, String> additionalPasswords) {
-        passwords.putAll(additionalPasswords);
     }
 
     public void changePassword(final String newPassword) throws CryptoException {
@@ -80,6 +98,7 @@ public class PasswordStorage {
             throws CryptoException {
         cryptor.setPassword(newPassword);
         lock.createCheckString();
+        checkString = lock.getCheckString();
         lock.unlock();
     }
 
@@ -93,7 +112,7 @@ public class PasswordStorage {
     }
 
     private Map<String, String> decryptAllPasswords() throws CryptoException {
-        final Map<String, String> temp = new HashMap<String, String>();
+        final Map<String, String> temp = new HashMap<>();
 
         for (final Entry<String, String> entry : passwords.entrySet()) {
             temp.put(entry.getKey(), cryptor.decrypt(entry.getValue()));
@@ -111,11 +130,11 @@ public class PasswordStorage {
 
     public State getState() {
         if (lock.getCheckString() == null) {
-            return State.UNINITIALIZED;
+            return State.Uninitialized;
         } else if (lock.isLocked()) {
-            return State.LOCKED;
+            return State.Locked;
         } else {
-            return State.UNLOCKED;
+            return State.Unlocked;
         }
     }
 
@@ -125,5 +144,9 @@ public class PasswordStorage {
 
     public String[] exportPasswordIds() {
         return passwords.keySet().toArray(new String[passwords.size()]);
+    }
+
+    public Map<String, String> getPasswordMap() {
+        return passwords;
     }
 }

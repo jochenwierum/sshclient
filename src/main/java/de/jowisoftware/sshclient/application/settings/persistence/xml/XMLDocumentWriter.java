@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.persistence.xml;
+package de.jowisoftware.sshclient.application.settings.persistence.xml;
 
 import org.w3c.dom.*;
 
@@ -11,7 +11,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.StringWriter;
+import java.io.*;
 
 public class XMLDocumentWriter implements DocumentWriter {
     public class ListWriter {
@@ -151,6 +151,25 @@ public class XMLDocumentWriter implements DocumentWriter {
         }
 
         return current;
+    }
+
+    public void writeFile(final File settingsFile) {
+        try (FileWriter writer = new FileWriter(settingsFile)) {
+            DOMSource domSource = new DOMSource(doc);
+            StreamResult result = new StreamResult(writer);
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+
+            transformer.transform(domSource, result);
+        } catch(TransformerException|IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String toXML() {

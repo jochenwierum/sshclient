@@ -11,14 +11,12 @@ import java.io.File;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import org.apache.log4j.Logger;
-
+import de.jowisoftware.sshclient.application.settings.persistence.Persister;
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.arguments.ArgumentParser;
 import de.jowisoftware.sshclient.application.arguments.ArgumentParserCallback;
 import de.jowisoftware.sshclient.application.settings.TabState;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.application.settings.persisting.XMLPersister;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.log.LogTab;
 import de.jowisoftware.sshclient.ui.settings.profile.ConnectDialog;
@@ -32,7 +30,6 @@ import de.jowisoftware.sshclient.util.SwingUtils;
 
 public class MainWindow extends JFrame {
     private static final long serialVersionUID = -2951599770927217249L;
-    private static final Logger LOGGER = Logger.getLogger(MainWindow.class);
 
     private final Application application;
 
@@ -75,12 +72,8 @@ public class MainWindow extends JFrame {
             tabPanel.closeTab(tab);
         }
 
-        try {
-            new XMLPersister(application.settings).save(
-                    new File(application.sshDir, "settings.xml"));
-        } catch(final RuntimeException e) {
-            LOGGER.error("Could not save settings", e);
-        }
+        new Persister(new File(application.sshDir, "settings.xml"))
+                .persist(application.settings);
         super.dispose();
         PerformanceLogger.INSTANCE.quit();
     }
@@ -91,16 +84,16 @@ public class MainWindow extends JFrame {
         final TabState initialLogState = application.settings.getLogTabState();
         final TabState initialKeyState = application.settings.getKeyTabState();
 
-        if (logTabOpen && initialLogState == TabState.CLOSED) {
-            application.settings.setLogTabState(TabState.OPENED);
-        } else if (!logTabOpen && initialLogState == TabState.OPENED) {
-            application.settings.setLogTabState(TabState.CLOSED);
+        if (logTabOpen && initialLogState == TabState.Closed) {
+            application.settings.setLogTabState(TabState.Open);
+        } else if (!logTabOpen && initialLogState == TabState.Open) {
+            application.settings.setLogTabState(TabState.Closed);
         }
 
-        if (keyTabOpen && initialKeyState == TabState.CLOSED) {
-            application.settings.setKeyTabState(TabState.OPENED);
-        } else if (!keyTabOpen && initialKeyState == TabState.OPENED) {
-            application.settings.setKeyTabState(TabState.CLOSED);
+        if (keyTabOpen && initialKeyState == TabState.Closed) {
+            application.settings.setKeyTabState(TabState.Open);
+        } else if (!keyTabOpen && initialKeyState == TabState.Open) {
+            application.settings.setKeyTabState(TabState.Closed);
         }
     }
 
@@ -157,13 +150,13 @@ public class MainWindow extends JFrame {
     }
 
     private void initTabs() {
-        if (application.settings.getKeyTabState() == TabState.ALYWAYS_OPEN
-                || application.settings.getKeyTabState() == TabState.OPENED) {
+        if (application.settings.getKeyTabState() == TabState.AlwaysOpen
+                || application.settings.getKeyTabState() == TabState.Open) {
             setKeyTabVisibility(true);
         }
 
-        if (application.settings.getLogTabState() == TabState.ALYWAYS_OPEN
-                || application.settings.getLogTabState() == TabState.OPENED) {
+        if (application.settings.getLogTabState() == TabState.AlwaysOpen
+                || application.settings.getLogTabState() == TabState.Open) {
             setLogTabVisibility(true);
         }
     }

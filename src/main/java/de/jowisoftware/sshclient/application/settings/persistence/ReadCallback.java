@@ -1,17 +1,20 @@
-package de.jowisoftware.sshclient.persistence;
+package de.jowisoftware.sshclient.application.settings.persistence;
 
-import de.jowisoftware.sshclient.persistence.annotations.Persist;
-import de.jowisoftware.sshclient.persistence.annotations.PersistCallback;
-import de.jowisoftware.sshclient.persistence.annotations.PersistenceAnnotationTraverser;
-import de.jowisoftware.sshclient.persistence.xml.DocumentReader;
-import de.jowisoftware.sshclient.persistence.xml.XMLDocumentReader;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.Persist;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.PersistCallback;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.PersistenceAnnotationTraverser;
+import de.jowisoftware.sshclient.application.settings.persistence.xml.DocumentReader;
+import de.jowisoftware.sshclient.application.settings.persistence.xml.XMLDocumentReader;
+import org.apache.log4j.Logger;
 
 import java.awt.Color;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
 public class ReadCallback implements PersistCallback {
+    private static final Logger LOGGER = Logger.getLogger(ReadCallback.class);
     private final DocumentReader reader;
 
     public ReadCallback(final DocumentReader reader) {
@@ -45,9 +48,8 @@ public class ReadCallback implements PersistCallback {
                 
                 itemReader = listReader.nextNode();
             }
-            
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            LOGGER.error("Could not restore map " + field.getName() + " in " + object.getClass().getName(), e);
         }
     }
 
@@ -60,6 +62,7 @@ public class ReadCallback implements PersistCallback {
                 throw new RuntimeException(e);
             }
             PersistenceAnnotationTraverser.traverseObject(targetObject, new ReadCallback(itemReader));
+            PersistenceAnnotationTraverser.notifyLoad(targetObject);
             return targetObject;
         } else {
             return createValue(annotation.targetClass(), itemReader.read(""));
@@ -71,8 +74,9 @@ public class ReadCallback implements PersistCallback {
         try {
             final Object subObject = field.get(object);
             PersistenceAnnotationTraverser.traverseObject(subObject, new ReadCallback(reader.readSubNode(name)));
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            PersistenceAnnotationTraverser.notifyLoad(subObject);
+        } catch (Exception e) {
+            LOGGER.error("Could not restore field " + field.getName() + " in " + object.getClass().getName(), e);
         }
     }
 
@@ -91,8 +95,8 @@ public class ReadCallback implements PersistCallback {
 
                 itemReader = listReader.nextNode();
             }
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            LOGGER.error("Could not restore map " + field.getName() + " in " + object.getClass().getName(), e);
         }
     }
 
@@ -107,6 +111,8 @@ public class ReadCallback implements PersistCallback {
             return Boolean.valueOf(value);
         } else if (type.equals(Color.class)) {
             return new Color(Integer.parseInt(value, 16));
+        } else if (type.equals(File.class)) {
+            return new File(value);
         } else if (Enum.class.isAssignableFrom(type)) {
             @SuppressWarnings("unchecked")
             final Class<Enum> enumType = (Class<Enum>) type;

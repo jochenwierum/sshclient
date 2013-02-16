@@ -8,8 +8,8 @@ import java.util.Map;
 
 import de.jowisoftware.sshclient.application.settings.Forwarding;
 import de.jowisoftware.sshclient.application.settings.Profile;
-import de.jowisoftware.sshclient.persistence.annotations.Persist;
-import de.jowisoftware.sshclient.persistence.annotations.TraversalType;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.Persist;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.TraversalType;
 import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 
@@ -21,12 +21,12 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     @Persist private int keepAliveInterval = 10000;
     @Persist private int keepAliveCount = 5;
 
-    @Persist("forwardings/forwardAgent") private boolean agentForwarding;
-    @Persist("forwardings/forwardX11") private boolean xForwarding;
-    @Persist("forwardings/x11Host") private String x11Host = "127.0.0.1";
-    @Persist("forwardings/x11Display") private int x11Display = 0;
+    @Persist("forwardings/agent") private boolean agentForwarding;
+    @Persist("forwardings/x11/@enable") private boolean xForwarding;
+    @Persist("forwardings/x11/host") private String x11Host = "127.0.0.1";
+    @Persist("forwardings/x11/display") private int x11Display = 0;
 
-    @Persist(value = "forwardings/portforwardings", traversalType = TraversalType.LIST, traverseListAndMapChildrenRecursively = true, targetClass = Forwarding.class)
+    @Persist(value = "forwardings/portforwardings", traversalType = TraversalType.List, traverseListAndMapChildrenRecursively = true, targetClass = Forwarding.class)
     private final List<Forwarding> portForwardings;
     @Persist("forwardings/proxyPort") private Integer socksPort = null;
 
@@ -35,10 +35,10 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     @Persist("charset") private String charsetName = "UTF-8";
     private transient Charset charset;
 
-    @Persist(traversalType = TraversalType.RECURSIVE)
+    @Persist(traversalType = TraversalType.Recursive)
     private final AWTGfxInfo gfxInfo;
 
-    @Persist(value = "environment", traversalType = TraversalType.MAP, targetClass = String.class, targetClass2 = String.class)
+    @Persist(value = "environment", traversalType = TraversalType.Map, targetClass = String.class, targetClass2 = String.class)
     private final HashMap<String, String> environmentMap;
 
     @Persist CloseTabMode closeTabMode = CloseTabMode.NO_ERROR;

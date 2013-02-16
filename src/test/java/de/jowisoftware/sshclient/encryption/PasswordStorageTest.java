@@ -84,7 +84,7 @@ public class PasswordStorageTest extends JMockTest {
     @Test public void
     unlockWithCorrectPassword() throws CryptoException {
         unlock();
-        assertThat(storage.getState(), is(equalTo(State.UNLOCKED)));
+        assertThat(storage.getState(), is(equalTo(State.Unlocked)));
     }
 
     @Test public void
@@ -99,7 +99,7 @@ public class PasswordStorageTest extends JMockTest {
             fail("Expected exception");
         } catch(final CryptoException e) { /* ignored, part of the test */ }
 
-        assertThat(storage.getState(), is(equalTo(State.LOCKED)));
+        assertThat(storage.getState(), is(equalTo(State.Locked)));
     }
 
     @Test public void
@@ -114,7 +114,7 @@ public class PasswordStorageTest extends JMockTest {
             fail("Expected exception");
         } catch(final CryptoException e) { /* ignored, part of the test */ }
 
-        assertThat(storage.getState(), is(equalTo(State.LOCKED)));
+        assertThat(storage.getState(), is(equalTo(State.Locked)));
     }
 
     @Test public void
@@ -144,7 +144,7 @@ public class PasswordStorageTest extends JMockTest {
     managerIsLockable() throws CryptoException {
         unlock();
         storage.lock();
-        assertThat(storage.getState(), is(equalTo(State.LOCKED)));
+        assertThat(storage.getState(), is(equalTo(State.Locked)));
     }
 
     @Test(expectedExceptions = StorageLockedException.class) public void
@@ -167,7 +167,7 @@ public class PasswordStorageTest extends JMockTest {
         storage.savePassword("x", "y");
         storage.savePassword("y", "pw123");
 
-        final Map<String, String> passwords = storage.exportPasswords();
+        final Map<String, String> passwords = storage.getPasswordMap();
         assertThat(passwords.size(), is(equalTo(2)));
         assertThat(passwords.get("x"), is(not(equalTo("y"))));
     }
@@ -198,12 +198,12 @@ public class PasswordStorageTest extends JMockTest {
         storage.savePassword("x", "y");
         storage.savePassword("y", "pw123");
 
-        final Map<String, String> passwords = storage.exportPasswords();
+        final Map<String, String> passwords = storage.getPasswordMap();
 
         final PasswordStorage manager2 = new PasswordStorage(cryptor);
         manager2.setCheckString(CHECK_STRING);
         unlock(manager2, cryptor);
-        manager2.importPasswords(passwords);
+        manager2.getPasswordMap().putAll(passwords);
 
         prepareDecrypt("enc-y", "y");
         prepareDecrypt("enc-pw123", "pw123");
@@ -230,10 +230,10 @@ public class PasswordStorageTest extends JMockTest {
             oneOf(cryptor).decrypt("bla"); will(returnValue("23"));
         }});
 
-        assertThat(manager2.getState(), is(equalTo(State.UNINITIALIZED)));
+        assertThat(manager2.getState(), is(equalTo(State.Uninitialized)));
         manager2.changePassword("new password");
         assertThat(manager2.getCheckString(), is(equalTo("bla")));
-        assertThat(manager2.getState(), is(equalTo(State.UNLOCKED)));
+        assertThat(manager2.getState(), is(equalTo(State.Unlocked)));
     }
 
     @Test public void
@@ -275,7 +275,7 @@ public class PasswordStorageTest extends JMockTest {
 
         storage.changePassword("new password");
 
-        final Map<String, String> passwords = storage.exportPasswords();
+        final Map<String, String> passwords = storage.getPasswordMap();
         assertThat(passwords.get("x"), is(equalTo("new-pw1")));
         assertThat(passwords.get("y"), is(equalTo("new-pw2")));
         assertThat(storage.getCheckString(), is(equalTo("new-check")));
@@ -327,7 +327,7 @@ public class PasswordStorageTest extends JMockTest {
             fail("Exception was not forwarded");
         } catch(final CryptoException e) {}
 
-        final Map<String, String> passwords = storage.exportPasswords();
+        final Map<String, String> passwords = storage.getPasswordMap();
         assertThat(passwords.get("x"), is(equalTo("enc-pw1")));
     }
 

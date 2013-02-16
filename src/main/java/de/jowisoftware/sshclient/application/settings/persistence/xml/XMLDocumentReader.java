@@ -1,16 +1,15 @@
-package de.jowisoftware.sshclient.persistence.xml;
+package de.jowisoftware.sshclient.application.settings.persistence.xml;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class XMLDocumentReader implements DocumentReader {
     public class ListReader {
@@ -21,19 +20,24 @@ public class XMLDocumentReader implements DocumentReader {
             if (list == null) {
                 nodeList = null;
             } else {
-                nodeList = list.getElementsByTagName(name);
+                nodeList = list.getChildNodes();
             }
         }
 
         public DocumentReader nextNode() {
-            if (nodeList == null || pos == nodeList.getLength()) {
+            if (nodeList == null) {
                 return null;
             }
 
-            Element element = (Element) nodeList.item(pos);
-            ++pos;
+            do {
+                ++pos;
+            } while(pos < nodeList.getLength() && nodeList.item(pos).getNodeType() != Node.ELEMENT_NODE);
 
-            return new ForwardingDocumentReader(element);
+            if (pos >= nodeList.getLength()) {
+                return null;
+            }
+
+            return new ForwardingDocumentReader((Element) nodeList.item(pos));
         }
     }
 
@@ -63,9 +67,8 @@ public class XMLDocumentReader implements DocumentReader {
     private final Document doc;
     private final Element root;
 
-    public XMLDocumentReader(String xml)
-            throws SAXException, IOException {
-        try (InputStream is = new ByteArrayInputStream(xml.getBytes("UTF-8"))) {
+    public XMLDocumentReader(File settingsFile) throws SAXException, IOException {
+        try (InputStream is = new FileInputStream(settingsFile)) {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             doc = builder.parse(is);

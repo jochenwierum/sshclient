@@ -38,9 +38,7 @@ public class ProfilePanel extends JPanel {
         scrollPane.setOpaque(false);
         tabbedPane.addTab(panel.getTitle(), scrollPane);
 
-        if (panel instanceof AbstractOptionPanel) {
-            saveables.add(panel);
-        }
+        saveables.add(panel);
     }
 
     public void applyUnboundValues() {

@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.persistence.annotations;
+package de.jowisoftware.sshclient.application.settings.persistence.annotations;
 
 import java.lang.reflect.Field;
 
