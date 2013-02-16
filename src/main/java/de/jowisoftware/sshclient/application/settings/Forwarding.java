@@ -1,5 +1,7 @@
 package de.jowisoftware.sshclient.application.settings;
 
+import de.jowisoftware.sshclient.persistence.annotations.Persist;
+
 public class Forwarding {
     public static enum Direction {
         Local("L", "local"), Remote("R", "remote");
@@ -13,11 +15,20 @@ public class Forwarding {
         }
     }
 
-    public final Direction direction;
-    public final String sourceHost;
-    public final String remoteHost;
-    public final int sourcePort;
-    public final int remotePort;
+    @Persist("@direction")
+    private Direction direction;
+
+    @Persist("@sourceHost")
+    private String sourceHost;
+
+    @Persist("@remoteHost")
+    private String remoteHost;
+
+    @Persist("@sourcePort")
+    private int sourcePort;
+
+    @Persist("@remotePort")
+    private int remotePort;
 
     public Forwarding(
             final Direction direction,
@@ -28,6 +39,29 @@ public class Forwarding {
         this.remotePort = remotePort;
         this.remoteHost = remoteHost;
         this.direction = direction;
+    }
+
+    public Forwarding() {
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public String getSourceHost() {
+        return sourceHost;
+    }
+
+    public String getRemoteHost() {
+        return remoteHost;
+    }
+
+    public int getSourcePort() {
+        return sourcePort;
+    }
+
+    public int getRemotePort() {
+        return remotePort;
     }
 
     @Override

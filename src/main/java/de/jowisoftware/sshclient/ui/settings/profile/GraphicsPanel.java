@@ -161,9 +161,8 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
     @Override
     public void save() {
         gfxSettings.setAntiAliasingMode(antiAliasingBox.getSelectedIndex());
-        gfxSettings.setFont(
-                (String) fontBox.getSelectedItem(),
-                StringUtils.getInteger(fontSizeTextField.getText(), 10));
+        gfxSettings.setFontName(fontBox.getItemAt(fontBox.getSelectedIndex()));
+        gfxSettings.setFontSize(StringUtils.getInteger(fontSizeTextField.getText(), 10));
         gfxSettings.setCursorStyle(CursorStyle.values()[cursorStyleBox.getSelectedIndex()]);
     }
 

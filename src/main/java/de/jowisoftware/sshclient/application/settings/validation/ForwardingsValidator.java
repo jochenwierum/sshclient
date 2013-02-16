@@ -17,10 +17,10 @@ public class ForwardingsValidator implements Validator<Profile<?>> {
         for (int i = 0; i < forwardings.size(); ++i) {
             final Forwarding forwarding = forwardings.get(i);
 
-            if (forwarding.remotePort <= 0) {
+            if (forwarding.getRemotePort() <= 0) {
                 result.addError(prefix + "." + i, "error.port.remotePort");
             }
-            if (forwarding.sourcePort <= 0) {
+            if (forwarding.getSourcePort() <= 0) {
                 result.addError(prefix + "." + i, "error.port.localPort");
             }
         }

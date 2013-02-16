@@ -6,36 +6,41 @@ import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sun.javafx.binding.StringFormatter;
+import de.jowisoftware.sshclient.persistence.annotations.Persist;
+import de.jowisoftware.sshclient.persistence.annotations.TraversalType;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
 import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 
 public final class AWTGfxInfo implements GfxInfo<Color> {
+    @Persist(traversalType = TraversalType.MAP, targetClass = Color.class, targetClass2 = ColorName.class)
     private final Map<ColorName, Color> colors;
+    @Persist(traversalType = TraversalType.MAP, targetClass = Color.class, targetClass2 = ColorName.class)
     private final Map<ColorName, Color> lightColors;
-    private Color cursorColor = Color.GREEN;
+
+    @Persist("cursorColor") private Color cursorColor = Color.GREEN;
 
     private final int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+
     private Font font;
     private Font boldFont;
-    private String fontName;
-    private int fontSize;
-    private int antiAliasingMode;
-    private CursorStyle cursorStyle = CursorStyle.Block;
-    private boolean cursorBlinks = true;
+    @Persist("font") private String fontName = Font.MONOSPACED;
+    @Persist("fontSize") private int fontSize = 10;
+    @Persist("antiAliasingMode") private int antiAliasingMode;
+    @Persist("cursorStyle") private CursorStyle cursorStyle = CursorStyle.Block;
+    @Persist("cursorStyle/@blink") private boolean cursorBlinks = true;
 
-    private String boundaryChars = ":@-./_~?&=%+#";
+    @Persist("boundaryChars") private String boundaryChars = ":@-./_~?&=%+#";
 
     public AWTGfxInfo() {
-       setFont(Font.MONOSPACED, 10);
-
        colors = createDefaultColors();
        lightColors = createDefaultLightColors();
     }
 
     public AWTGfxInfo(final AWTGfxInfo copy) {
-        colors = new HashMap<ColorName, Color>(copy.colors);
-        lightColors = new HashMap<ColorName, Color>(copy.lightColors);
+        colors = new HashMap<>(copy.colors);
+        lightColors = new HashMap<>(copy.lightColors);
 
         cursorColor = copy.cursorColor;
         font = copy.font;
@@ -49,7 +54,7 @@ public final class AWTGfxInfo implements GfxInfo<Color> {
     }
 
     private Map<ColorName, Color> createDefaultLightColors() {
-        final Map<ColorName, Color> result = new HashMap<ColorName, Color>();
+        final Map<ColorName, Color> result = new HashMap<>();
         result.put(ColorName.BLACK, color(127, 127, 127));
         result.put(ColorName.BLUE, color(92, 92, 255));
         result.put(ColorName.CYAN, color(0, 255, 255));
@@ -64,7 +69,7 @@ public final class AWTGfxInfo implements GfxInfo<Color> {
     }
 
     private Map<ColorName, Color> createDefaultColors() {
-        final Map<ColorName, Color> result = new HashMap<ColorName, Color>();
+        final Map<ColorName, Color> result = new HashMap<>();
         result.put(ColorName.BLACK, color(0, 0, 0));
         result.put(ColorName.BLUE, color(0, 0, 238));
         result.put(ColorName.CYAN, color(0, 205, 205));
@@ -93,10 +98,12 @@ public final class AWTGfxInfo implements GfxInfo<Color> {
     }
 
     public Font getFont() {
+        assureFontIsInitialized();
         return font;
     }
 
     public Font getBoldFont() {
+        assureFontIsInitialized();
         return boldFont;
     }
 
@@ -120,12 +127,22 @@ public final class AWTGfxInfo implements GfxInfo<Color> {
         this.cursorColor = color;
     }
 
-    public void setFont(final String fontName, final int fontSize) {
+    private void assureFontIsInitialized() {
         final int realFontSize = (int)Math.round(fontSize * screenRes / 72.0);
-        this.fontSize = fontSize;
-        this.fontName = fontName;
         this.font = new Font(fontName, Font.PLAIN, realFontSize);
         this.boldFont = font.deriveFont(Font.BOLD);
+    }
+
+    public void setFontName(final String name) {
+        font = null;
+        boldFont = null;
+        this.fontName = name;
+    }
+
+    public void setFontSize(final int size) {
+        font = null;
+        boldFont = null;
+        this.fontSize = size;
     }
 
     public String getFontName() {

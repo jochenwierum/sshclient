@@ -22,12 +22,15 @@ public class AWTFontValidatorTest extends AbstractValidationTest<AWTProfile> {
 
     @Test
     public void testOk() {
-        profile.getGfxSettings().setFont("Monospaced", 8);
+        profile.getGfxSettings().setFontName("Monospaced");
+        profile.getGfxSettings().setFontSize(8);
         assertNoError();
 
-        profile.getGfxSettings().setFont("Courier New", 12);
+        profile.getGfxSettings().setFontName("Courier New");
+        profile.getGfxSettings().setFontSize(12);
         final ValidationResult result1 = doValidation();
-        profile.getGfxSettings().setFont("Courier", 12);
+        profile.getGfxSettings().setFontName("Courier");
+        profile.getGfxSettings().setFontSize(12);
         final ValidationResult result2 = doValidation();
 
         // not all OS'ses have both fonts
@@ -37,10 +40,12 @@ public class AWTFontValidatorTest extends AbstractValidationTest<AWTProfile> {
     @Test
     public void testWrongFont() {
         final String message = "selected font is no monospace font";
-        profile.getGfxSettings().setFont("Times New Roman", 12);
+        profile.getGfxSettings().setFontName("Times New Roman");
+        profile.getGfxSettings().setFontSize(12);
         assertError("gfx.font", message);
 
-        profile.getGfxSettings().setFont("Arial", 12);
+        profile.getGfxSettings().setFontName("Arial");
+        profile.getGfxSettings().setFontSize(12);
         assertError("gfx.font", message);
     }
 

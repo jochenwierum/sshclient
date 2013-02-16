@@ -130,11 +130,11 @@ public class XMLPersister {
 
         for (final Forwarding forwarding : forwardings) {
             final Element forwardingNode = doc.createElement("forwarding");
-            forwardingNode.setAttribute("direction", forwarding.direction.longName);
-            forwardingNode.setAttribute("sourceHost", forwarding.sourceHost);
-            forwardingNode.setAttribute("sourcePort", Integer.toString(forwarding.sourcePort));
-            forwardingNode.setAttribute("remoteHost", forwarding.remoteHost);
-            forwardingNode.setAttribute("remotePort", Integer.toString(forwarding.remotePort));
+            forwardingNode.setAttribute("direction", forwarding.getDirection().longName);
+            forwardingNode.setAttribute("sourceHost", forwarding.getSourceHost());
+            forwardingNode.setAttribute("sourcePort", Integer.toString(forwarding.getSourcePort()));
+            forwardingNode.setAttribute("remoteHost", forwarding.getRemoteHost());
+            forwardingNode.setAttribute("remotePort", Integer.toString(forwarding.getRemotePort()));
             node.appendChild(forwardingNode);
         }
 

@@ -318,7 +318,8 @@ public class XMLLoader {
         final String fontName = getString(fontNode, "@name", Font.MONOSPACED);
         final Integer fontSize = getInteger(fontNode, "@size", 10);
 
-        gfxSettings.setFont(fontName, fontSize);
+        gfxSettings.setFontName(fontName);
+        gfxSettings.setFontSize(fontSize);
     }
 
     private Map<ColorName, Color> getColors(

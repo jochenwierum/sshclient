@@ -84,12 +84,12 @@ public class JSchConnection {
     private void setupPortForwardings() {
         for (final Forwarding forwarding : profile.getPortForwardings()) {
             try {
-                if (forwarding.direction == Forwarding.Direction.Local) {
-                    session.setPortForwardingL(forwarding.sourceHost, forwarding.sourcePort,
-                            forwarding.remoteHost, forwarding.remotePort);
-                } else if (forwarding.direction == Forwarding.Direction.Remote) {
-                    session.setPortForwardingR(forwarding.sourceHost, forwarding.sourcePort,
-                            forwarding.remoteHost, forwarding.remotePort);
+                if (forwarding.getDirection() == Forwarding.Direction.Local) {
+                    session.setPortForwardingL(forwarding.getSourceHost(), forwarding.getSourcePort(),
+                            forwarding.getRemoteHost(), forwarding.getRemotePort());
+                } else if (forwarding.getDirection() == Forwarding.Direction.Remote) {
+                    session.setPortForwardingR(forwarding.getSourceHost(), forwarding.getSourcePort(),
+                            forwarding.getRemoteHost(), forwarding.getRemotePort());
                 }
             } catch (final JSchException e) {
                 LOGGER.error("Could not setup port forwarding " + forwarding +
