@@ -241,7 +241,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
     public void save() {
         profile.setX11Host(x11Host.getText());
         profile.setX11Display(StringUtils.getInteger(x11Display.getText(), 0));
-        profile.setPort(StringUtils.getInteger(socksPort.getText(), null));
+        profile.setSocksPort(StringUtils.getInteger(socksPort.getText(), null));
     }
 
 
