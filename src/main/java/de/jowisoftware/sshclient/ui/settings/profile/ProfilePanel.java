@@ -16,7 +16,7 @@ public class ProfilePanel extends JPanel {
     private static final long serialVersionUID = 663223636542133238L;
 
     private final JTabbedPane tabbedPane = new JTabbedPane();
-    private final List<AbstractOptionPanel> saveables = new ArrayList<AbstractOptionPanel>();
+    private final List<AbstractOptionPanel> saveables = new ArrayList<>();
     private final MainPanel mainPanel;
 
     public ProfilePanel(final AWTProfile profile, final String profileName,

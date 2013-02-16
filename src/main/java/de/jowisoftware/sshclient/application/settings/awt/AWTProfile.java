@@ -40,14 +40,14 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
 
     public AWTProfile() {
         gfxInfo = new AWTGfxInfo();
-        environmentMap = new HashMap<String, String>();
-        portForwardings = new ArrayList<Forwarding>();
+        environmentMap = new HashMap<>();
+        portForwardings = new ArrayList<>();
     }
 
     public AWTProfile(final AWTProfile copy) {
         gfxInfo = new AWTGfxInfo(copy.gfxInfo);
-        environmentMap = new HashMap<String, String>(copy.environmentMap);
-        portForwardings = new ArrayList<Forwarding>(copy.portForwardings);
+        environmentMap = new HashMap<>(copy.environmentMap);
+        portForwardings = new ArrayList<>(copy.portForwardings);
 
         user = copy.user;
         host = copy.host;

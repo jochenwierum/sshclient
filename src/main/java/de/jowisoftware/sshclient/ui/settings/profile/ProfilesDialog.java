@@ -360,7 +360,7 @@ public class ProfilesDialog extends JDialog {
     }
 
     private void updateSelectionList() {
-        final List<String> names = new ArrayList<String>(settings.getProfiles().keySet());
+        final List<String> names = new ArrayList<>(settings.getProfiles().keySet());
         Collections.sort(names);
         final DefaultListModel<String> model = ((DefaultListModel<String>) selectionList
                 .getModel());
