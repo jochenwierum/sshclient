@@ -12,7 +12,7 @@ public enum ColorName {
     CYAN("cyan", 36, 46),
     WHITE("white", 37, 47);
 
-    private String name;
+    private final String name;
     private int fgCode;
     private int bgCode;
 
@@ -30,11 +30,11 @@ public enum ColorName {
         return name;
     }
 
-    public int foregroundColorCode() {
+    private int foregroundColorCode() {
         return fgCode;
     }
 
-    public int backgroundColorCode() {
+    private int backgroundColorCode() {
         return bgCode;
     }
 

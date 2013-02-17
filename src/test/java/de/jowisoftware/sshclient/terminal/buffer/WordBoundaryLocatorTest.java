@@ -5,17 +5,21 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import org.jmock.Expectations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 
-public class WordBoundaryLocatorTest extends JMockTest {
+public class WordBoundaryLocatorTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
     private BoundaryLocator locator;
     private Buffer buffer;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         buffer = context.mock(Buffer.class);
         locator = new WordBoundaryLocator(buffer);

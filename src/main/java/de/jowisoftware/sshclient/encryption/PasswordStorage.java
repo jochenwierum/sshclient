@@ -11,13 +11,13 @@ import java.util.Map.Entry;
 
 public class PasswordStorage {
     public enum State {
-        Uninitialized, Locked, Unlocked
+        UNINITIALIZED, LOCKED, UNLOCKED
     }
 
     private final EnDeCryptor cryptor;
     private final PasswordStorageLock lock;
 
-    @Persist(value = "passwords", traversalType = TraversalType.Map, targetClass = String.class, targetClass2 = String.class)
+    @Persist(value = "passwords", traversalType = TraversalType.MAP, targetClass = String.class, targetClass2 = String.class)
     private final Map<String, String> passwords = new HashMap<>();
 
     @Persist("@check")
@@ -130,11 +130,11 @@ public class PasswordStorage {
 
     public State getState() {
         if (lock.getCheckString() == null) {
-            return State.Uninitialized;
+            return State.UNINITIALIZED;
         } else if (lock.isLocked()) {
-            return State.Locked;
+            return State.LOCKED;
         } else {
-            return State.Unlocked;
+            return State.UNLOCKED;
         }
     }
 

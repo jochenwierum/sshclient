@@ -119,6 +119,6 @@ public class FixedSizeArrayRingBuffer<E> implements RingBuffer<E> {
 
     @Override
     public RingBuffer<E> getSnapshot() {
-        return new FixedSizeArrayRingBuffer<E>(this);
+        return new FixedSizeArrayRingBuffer<>(this);
     }
 }

@@ -1,22 +1,26 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertTrue;
 
 import org.jmock.Expectations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 
-public class CursorControlSequenceTest extends JMockTest {
+public class CursorControlSequenceTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
     private CursorControlSequence seq;
     private Buffer buffer;
     private SSHSession sessionInfo;
 
-    @BeforeMethod(dependsOnMethods = "setUpJMock")
+    @Before
     public void setUp() throws Exception {
         buffer = context.mock(Buffer.class);
         seq = new CursorControlSequence();

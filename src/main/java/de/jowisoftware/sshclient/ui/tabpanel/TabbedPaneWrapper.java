@@ -11,7 +11,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 public class TabbedPaneWrapper {
-    private final List<Tab> tabs = new ArrayList<Tab>();
+    private final List<Tab> tabs = new ArrayList<>();
     private final JTabbedPane pane;
     private SplittableContainerWrapper parentPanel;
 
@@ -137,6 +137,6 @@ public class TabbedPaneWrapper {
     }
 
     public Collection<Tab> getTabs() {
-        return new ArrayList<Tab>(tabs);
+        return new ArrayList<>(tabs);
     }
 }

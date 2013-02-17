@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.isA;
 
 import java.util.List;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class DefaultSequenceRepositoryTest {
     @Test

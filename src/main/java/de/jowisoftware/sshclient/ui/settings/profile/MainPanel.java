@@ -111,7 +111,7 @@ class MainPanel extends AbstractGridBagOptionPanel {
         }
 
         Arrays.sort(names);
-        return new JComboBox<String>(names);
+        return new JComboBox<>(names);
     }
 
     @Override

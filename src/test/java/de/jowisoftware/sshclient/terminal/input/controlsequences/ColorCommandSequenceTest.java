@@ -5,13 +5,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import org.jmock.Expectations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ColorCommandSequenceTest extends AbstractSequenceTest {
     private NonASCIIControlSequence sequence;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         sequence = new ColorCommandSequence();
     }

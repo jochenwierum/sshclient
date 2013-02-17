@@ -25,7 +25,7 @@ public class ArgumentParser<T extends Profile<?>> {
     }
 
     public void processArguments(final String[] args) {
-        final List<String> errors = new LinkedList<String>();
+        final List<String> errors = new LinkedList<>();
 
         for (int i = 0; i < args.length; ++i) {
             String secondArg = null;
@@ -66,14 +66,14 @@ public class ArgumentParser<T extends Profile<?>> {
     }
 
     private ArgumentResult parseFreeStyle(final String arg) {
-        final FreeStyleConnectArgument<T> argument = new FreeStyleConnectArgument<T>(arg);
+        final FreeStyleConnectArgument<T> argument = new FreeStyleConnectArgument<>(arg);
         callbacks.openConnection(argument.getProfile(settings));
         return ArgumentResult.TAKE_ONE;
     }
 
     private ArgumentResult parseSession(final String arg) {
         final String sessionName = arg.substring(1);
-        final SessionConnectArgument<T> argument = new SessionConnectArgument<T>(sessionName);
+        final SessionConnectArgument<T> argument = new SessionConnectArgument<>(sessionName);
         callbacks.openConnection(argument.getProfile(settings));
         return ArgumentResult.TAKE_ONE;
     }

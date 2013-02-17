@@ -1,8 +1,7 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 import org.jmock.Expectations;
-import org.testng.annotations.Test;
-
+import org.junit.Test;
 
 public class ANSISequenceRequestTest extends AbstractSequenceTest {
     private void prepareDeviceAttributes() {

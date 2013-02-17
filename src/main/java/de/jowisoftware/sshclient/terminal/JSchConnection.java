@@ -26,7 +26,7 @@ import de.jowisoftware.sshclient.proxy.SocksServer;
 
 public class JSchConnection {
     private static final Logger LOGGER = Logger.getLogger(JSchConnection.class);
-    private final int X11_BASE_PORT = 6000;
+    private static final int X11_BASE_PORT = 6000;
 
     private final JSch jsch;
     private final SSHUserInfo userInfo;
@@ -84,10 +84,10 @@ public class JSchConnection {
     private void setupPortForwardings() {
         for (final Forwarding forwarding : profile.getPortForwardings()) {
             try {
-                if (forwarding.getDirection() == Forwarding.Direction.Local) {
+                if (forwarding.getDirection() == Forwarding.Direction.LOCAL) {
                     session.setPortForwardingL(forwarding.getSourceHost(), forwarding.getSourcePort(),
                             forwarding.getRemoteHost(), forwarding.getRemotePort());
-                } else if (forwarding.getDirection() == Forwarding.Direction.Remote) {
+                } else if (forwarding.getDirection() == Forwarding.Direction.REMOTE) {
                     session.setPortForwardingR(forwarding.getSourceHost(), forwarding.getSourcePort(),
                             forwarding.getRemoteHost(), forwarding.getRemotePort());
                 }
@@ -174,6 +174,7 @@ public class JSchConnection {
             try {
                 socksConnection.join();
             } catch (final InterruptedException e) {
+                // just continue closing the streams
             }
         }
 

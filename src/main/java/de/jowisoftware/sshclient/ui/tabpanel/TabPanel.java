@@ -17,7 +17,7 @@ public class TabPanel {
     private final RootContainerWrapper root;
     private TabbedPaneWrapper lastFocusedTabPane;
     private Tab lastFocusedTab;
-    private final List<TabPanelListener> listeners = new ArrayList<TabPanelListener>();
+    private final List<TabPanelListener> listeners = new ArrayList<>();
 
     private KeyListener keyListener;
 
@@ -148,7 +148,7 @@ public class TabPanel {
     }
 
     public Tab[] getFocusedTabs() {
-        final List<Tab> focusedTabs = new ArrayList<Tab>();
+        final List<Tab> focusedTabs = new ArrayList<>();
         for (final TabbedPaneWrapper tabbedPane : root.findTabPanes()) {
             final Tab tab = tabbedPane.getFocusedTab();
             if (tab != null) {
@@ -159,7 +159,7 @@ public class TabPanel {
     }
 
     public Tab[] getTabs() {
-        final List<Tab> tabs = new ArrayList<Tab>();
+        final List<Tab> tabs = new ArrayList<>();
         for (final TabbedPaneWrapper tabbedPane : root.findTabPanes()) {
             tabs.addAll(tabbedPane.getTabs());
         }

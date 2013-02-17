@@ -3,7 +3,7 @@ package de.jowisoftware.sshclient.debug;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 
-public class BoxPlot {
+class BoxPlot {
     private long min;
     private long max;
     private Rectangle area;

@@ -9,13 +9,13 @@ import de.jowisoftware.sshclient.terminal.input.controlsequences.NonASCIIControl
 
 public class CharacterProcessorState {
     static enum State {
-        BEGIN_SEQUENCE, ANSI_SEQUENCE, UNKNOWN_SEQUENCE;
+        BEGIN_SEQUENCE, ANSI_SEQUENCE, UNKNOWN_SEQUENCE
     }
 
     public final List<NonASCIIControlSequence> availableSequences =
-        new LinkedList<NonASCIIControlSequence>();
+        new LinkedList<>();
 
-    public StringBuilder cachedChars = new StringBuilder();
+    public final StringBuilder cachedChars = new StringBuilder();
     public State state = State.BEGIN_SEQUENCE;
 
     public CharacterProcessorState(final Collection<NonASCIIControlSequence> sequences) {

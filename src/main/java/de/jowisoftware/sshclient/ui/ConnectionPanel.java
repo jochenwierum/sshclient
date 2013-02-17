@@ -73,14 +73,14 @@ public class ConnectionPanel extends JPanel {
             @Override
             public void bell() {
                 switch(application.settings.getBellType()) {
-                    case Sound:
+                    case SOUND:
                         Toolkit.getDefaultToolkit().beep();
                         break;
-                    case Visual:
+                    case VISUAL:
                         session.getRenderer().invertFor(Constants.FLASH_TIMER);
                         parent.restartTimer();
                         break;
-                    case None:
+                    case NONE:
                 }
             }
         });
@@ -99,7 +99,6 @@ public class ConnectionPanel extends JPanel {
                         "Could not establish connection"), e));
                 LOGGER.error("Could not connect", e);
             }
-            return;
         }
     }
 

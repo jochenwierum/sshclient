@@ -6,10 +6,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -20,20 +17,24 @@ import org.hamcrest.Matcher;
 import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.jmock.States;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.encryption.PasswordStorage.State;
 
-public class PasswordStorageTest extends JMockTest {
+public class PasswordStorageTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
     private static final String CHECK_STRING = "check";
     private static final String PASSWORD = "secret";
 
     private EnDeCryptor cryptor;
     private PasswordStorage storage;
 
-    @BeforeMethod(dependsOnMethods = "setUpJMock")
+    @Before
     public void setUp() throws CryptoException {
         cryptor = context.mock(EnDeCryptor.class);
 
@@ -84,7 +85,7 @@ public class PasswordStorageTest extends JMockTest {
     @Test public void
     unlockWithCorrectPassword() throws CryptoException {
         unlock();
-        assertThat(storage.getState(), is(equalTo(State.Unlocked)));
+        assertThat(storage.getState(), is(equalTo(State.UNLOCKED)));
     }
 
     @Test public void
@@ -99,7 +100,7 @@ public class PasswordStorageTest extends JMockTest {
             fail("Expected exception");
         } catch(final CryptoException e) { /* ignored, part of the test */ }
 
-        assertThat(storage.getState(), is(equalTo(State.Locked)));
+        assertThat(storage.getState(), is(equalTo(State.LOCKED)));
     }
 
     @Test public void
@@ -114,7 +115,7 @@ public class PasswordStorageTest extends JMockTest {
             fail("Expected exception");
         } catch(final CryptoException e) { /* ignored, part of the test */ }
 
-        assertThat(storage.getState(), is(equalTo(State.Locked)));
+        assertThat(storage.getState(), is(equalTo(State.LOCKED)));
     }
 
     @Test public void
@@ -135,7 +136,7 @@ public class PasswordStorageTest extends JMockTest {
         assertThat(storage.restorePassword("profile2"), is(equalTo("password2")));
     }
 
-    @Test(expectedExceptions = StorageLockedException.class) public void
+    @Test(expected = StorageLockedException.class) public void
     saveRequiresUnlocking() throws CryptoException {
         storage.savePassword("x", "y");
     }
@@ -144,10 +145,10 @@ public class PasswordStorageTest extends JMockTest {
     managerIsLockable() throws CryptoException {
         unlock();
         storage.lock();
-        assertThat(storage.getState(), is(equalTo(State.Locked)));
+        assertThat(storage.getState(), is(equalTo(State.LOCKED)));
     }
 
-    @Test(expectedExceptions = StorageLockedException.class) public void
+    @Test(expected = StorageLockedException.class) public void
     restoresRequiresUnlocking() throws CryptoException {
         unlock();
         prepareEncrypt("y", "enc-y");
@@ -183,7 +184,7 @@ public class PasswordStorageTest extends JMockTest {
         assertThat(storage.restorePassword("x"), is(nullValue()));
     }
 
-    @Test(expectedExceptions = StorageLockedException.class) public void
+    @Test(expected = StorageLockedException.class) public void
     deletePasswordsWithUnlockedStorageThrowsException() throws CryptoException {
         storage.deletePassword("x");
     }
@@ -211,7 +212,7 @@ public class PasswordStorageTest extends JMockTest {
         assertThat(manager2.restorePassword("y"), is(equalTo("pw123")));
     }
 
-    @Test(expectedExceptions = StorageLockedException.class) public void
+    @Test(expected = StorageLockedException.class) public void
     changingPasswordWhenUnlockedThrowsException() throws CryptoException {
         storage.changePassword("new password");
     }
@@ -230,10 +231,10 @@ public class PasswordStorageTest extends JMockTest {
             oneOf(cryptor).decrypt("bla"); will(returnValue("23"));
         }});
 
-        assertThat(manager2.getState(), is(equalTo(State.Uninitialized)));
+        assertThat(manager2.getState(), is(equalTo(State.UNINITIALIZED)));
         manager2.changePassword("new password");
         assertThat(manager2.getCheckString(), is(equalTo("bla")));
-        assertThat(manager2.getState(), is(equalTo(State.Unlocked)));
+        assertThat(manager2.getState(), is(equalTo(State.UNLOCKED)));
     }
 
     @Test public void
@@ -337,7 +338,7 @@ public class PasswordStorageTest extends JMockTest {
         assertThat(checkString, is(nullValue()));
     }
 
-    @Test(expectedExceptions = WrongPasswordException.class) public void
+    @Test(expected = WrongPasswordException.class) public void
     wrongValidPasswordThrowsException() throws CryptoException {
         context.checking(new Expectations() {{
             oneOf(cryptor).setPassword("wrong");
@@ -347,7 +348,7 @@ public class PasswordStorageTest extends JMockTest {
         storage.unlock("wrong");
     }
 
-    @Test(expectedExceptions = WrongPasswordException.class) public void
+    @Test(expected = WrongPasswordException.class) public void
     wrongInvalidPasswordThrowsException() throws CryptoException {
         context.checking(new Expectations() {{
             oneOf(cryptor).setPassword("wrong");
@@ -367,9 +368,9 @@ public class PasswordStorageTest extends JMockTest {
         storage.savePassword("a", "pass1");
         storage.savePassword("b", "pass1");
 
-        assertTrue(storage.hasPassword("a"));
-        assertTrue(storage.hasPassword("b"));
-        assertFalse(storage.hasPassword("c"));
+        assertThat(storage.hasPassword("a"), is(true));
+        assertThat(storage.hasPassword("b"), is(true));
+        assertThat(storage.hasPassword("c"), is(false));
     }
 
     @SuppressWarnings("unchecked")
@@ -383,7 +384,7 @@ public class PasswordStorageTest extends JMockTest {
         storage.savePassword("y", "pass1");
 
         final String[] keys = storage.exportPasswordIds();
-        assertEquals(2, keys.length);
+        assertThat(keys.length, is(2));
         assertThat(Arrays.asList(keys), containsInAnyOrder(is("x"), is("y")));
     }
 }

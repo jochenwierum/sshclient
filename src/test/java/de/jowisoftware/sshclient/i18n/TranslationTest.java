@@ -1,6 +1,7 @@
 package de.jowisoftware.sshclient.i18n;
 
-import static org.testng.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,7 +10,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Properties;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class TranslationTest {
     public Reader toStreamReader(final Properties prop) {
@@ -28,10 +29,10 @@ public class TranslationTest {
         final Translation t = new Translation(toStreamReader(properties));
 
         String string = "a test";
-        assertEquals(string, t.translate("x", string));
+        assertThat(t.translate("x", string), is(string));
 
         string = "another test";
-        assertEquals(string, t.translate("y", string));
+        assertThat(t.translate("y", string), is(string));
     }
 
     @Test
@@ -44,11 +45,11 @@ public class TranslationTest {
 
         String toTranslate = "new file";
         String expected = "neu";
-        assertEquals(expected, t.translate("x.new_file", toTranslate));
+        assertThat(t.translate("x.new_file", toTranslate), is(expected));
 
         toTranslate = "Quit";
         expected = "beenden";
-        assertEquals(expected, t.translate("x.quit", toTranslate));
+        assertThat(t.translate("x.quit", toTranslate), is(expected));
     }
 
     @Test
@@ -63,18 +64,19 @@ public class TranslationTest {
         final Translation t = new Translation(toStreamReader(properties));
 
         String expected = "Es gibt 10 Tische";
-        assertEquals(expected, t.translate("tables", string1, 10));
+        assertThat(t.translate("tables", string1, 10), is(expected));
 
         expected = "Konnte text.xml nicht schreiben: File not found";
-        assertEquals(expected, t.translate("error", string2, "text.xml", "File not found"));
+        assertThat(t.translate("error", string2, "text.xml", "File not found"),
+                is(expected));
 
         expected = "21 + 21 = fourtytwo";
-        assertEquals(expected, t.translate("x", string3, 21, 21, "fourtytwo"));
+        assertThat(t.translate("x", string3, 21, 21, "fourtytwo"), is(expected));
     }
 
     @Test
     public void testNoLanguage() {
         final Translation t = new Translation();
-        assertEquals("1 2", t.translate("key", "1 2"));
+        assertThat(t.translate("key", "1 2"), is("1 2"));
     }
 }

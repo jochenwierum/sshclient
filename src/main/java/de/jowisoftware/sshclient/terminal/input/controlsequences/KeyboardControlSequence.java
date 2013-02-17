@@ -23,12 +23,15 @@ public class KeyboardControlSequence implements NonASCIIControlSequence {
     @Override
     public void handleSequence(final String sequence,
             final SSHSession sessionInfo) {
-        if (sequence.equals("=")) {
-            sessionInfo.getKeyboardFeedback().fire().newNumblockAppMode(true);
-        } else if (sequence.equals(">")) {
-            sessionInfo.getKeyboardFeedback().fire().newNumblockAppMode(false);
-        } else {
-            LOGGER.error("Unknown control sequence: <ESC>" + sequence);
+        switch (sequence) {
+            case "=":
+                sessionInfo.getKeyboardFeedback().fire().newNumblockAppMode(true);
+                break;
+            case ">":
+                sessionInfo.getKeyboardFeedback().fire().newNumblockAppMode(false);
+                break;
+            default:
+                LOGGER.error("Unknown control sequence: <ESC>" + sequence);
         }
     }
 }

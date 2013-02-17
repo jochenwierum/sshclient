@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Persist {
     String value() default "";
-    TraversalType traversalType() default TraversalType.Simple;
+    TraversalType traversalType() default TraversalType.SIMPLE;
     Class<?> targetClass() default Object.class;
     Class<?> targetClass2() default Object.class;
     boolean traverseListAndMapChildrenRecursively() default false;

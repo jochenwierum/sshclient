@@ -87,7 +87,7 @@ public class ConnectDialog extends JDialog implements WindowListener {
         setVisible(true);
     }
 
-    public void close(final boolean successfully) {
+    protected void close(final boolean successfully) {
         if (!successfully) {
             profile = null;
             setVisible(false);
@@ -101,7 +101,6 @@ public class ConnectDialog extends JDialog implements WindowListener {
             JOptionPane.showMessageDialog(this, message);
         } else {
             setVisible(false);
-            return;
         }
     }
 

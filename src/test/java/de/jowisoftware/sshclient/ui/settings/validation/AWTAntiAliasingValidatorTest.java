@@ -1,14 +1,18 @@
 package de.jowisoftware.sshclient.ui.settings.validation;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import junitparams.JUnitParamsRunner;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.application.settings.validation.AbstractValidationTest;
 import de.jowisoftware.sshclient.util.FontUtils;
 
+@RunWith(JUnitParamsRunner.class)
 public class AWTAntiAliasingValidatorTest extends AbstractValidationTest<AWTProfile> {
-    @BeforeMethod
+    @Before
     public void setUp() {
         validator = new AWTAntiAliasingValidator();
     }

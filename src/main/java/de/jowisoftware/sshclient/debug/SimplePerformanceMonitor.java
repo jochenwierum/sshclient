@@ -7,8 +7,7 @@ public class SimplePerformanceMonitor  {
     public static final int NEVER_STARTED = -1;
 
     private final TimeSource timeSource;
-    private final Map<PerformanceType, Long> startTimes =
-            new HashMap<PerformanceType, Long>();
+    private final Map<PerformanceType, Long> startTimes = new HashMap<>();
 
     public SimplePerformanceMonitor() {
         this(new SystemTimeSource());

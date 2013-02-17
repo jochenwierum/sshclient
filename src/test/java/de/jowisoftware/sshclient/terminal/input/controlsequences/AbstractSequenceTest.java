@@ -1,9 +1,10 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 import org.jmock.Expectations;
-import org.testng.annotations.BeforeMethod;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
 
-import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
@@ -12,7 +13,10 @@ import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
 import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 
-public abstract class AbstractSequenceTest extends JMockTest {
+public abstract class AbstractSequenceTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
     protected Buffer buffer;
     protected SSHSession sessionInfo;
     protected GfxCharSetup charSetup;
@@ -20,7 +24,7 @@ public abstract class AbstractSequenceTest extends JMockTest {
     protected VisualEvent visualFeedback;
     protected TabStopManager tabstopManager;
 
-    @BeforeMethod
+    @Before
     public void setUpMocks() throws Exception {
         buffer = context.mock(Buffer.class);
         sessionInfo = context.mock(SSHSession.class);

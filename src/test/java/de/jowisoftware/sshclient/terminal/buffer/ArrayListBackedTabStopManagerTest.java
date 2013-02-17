@@ -1,14 +1,15 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import static org.testng.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ArrayListBackedTabStopManagerTest {
     private TabStopManager manager;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         manager = new ArrayListBackedTabStopManager(80);
     }
@@ -17,8 +18,8 @@ public class ArrayListBackedTabStopManagerTest {
             final int expectedX) {
         final Position currentPosition = new Position(currentX, currentY);
         final Position expectedPosition = new Position(expectedX, currentY);
-        assertEquals(expectedPosition,
-                manager.getNextHorizontalTabPosition(currentPosition));
+        assertThat(manager.getNextHorizontalTabPosition(currentPosition),
+                is(expectedPosition));
     }
 
     @Test

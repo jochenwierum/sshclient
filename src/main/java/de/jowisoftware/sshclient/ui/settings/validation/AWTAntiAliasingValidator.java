@@ -7,7 +7,7 @@ import de.jowisoftware.sshclient.application.settings.validation.Validator;
 import de.jowisoftware.sshclient.util.FontUtils;
 
 public class AWTAntiAliasingValidator implements Validator<AWTProfile> {
-    public static final String FIELD = "gfx.antiAliasingMode";
+    private static final String FIELD = "gfx.antiAliasingMode";
 
     @Override
     public void validate(final AWTProfile profile, final ValidationResult result) {

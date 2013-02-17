@@ -22,7 +22,7 @@ import de.jowisoftware.sshclient.application.settings.validation.X11HostValidato
 
 public final class AWTProfileValidator {
     private final ValidatorCollection<AWTProfile> collection =
-            new ValidatorCollection<AWTProfile>();
+            new ValidatorCollection<>();
     private final AWTProfile profile;
 
     public AWTProfileValidator(final AWTProfile profile) {

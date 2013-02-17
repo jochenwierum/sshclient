@@ -13,7 +13,7 @@ public class DefaultSequenceRepository implements SequenceRepository {
         private static final Logger LOGGER = Logger.getLogger(DefaultSequenceRepository.class);
 
         private final char c;
-        public WarnSequenceHandler(final char c) {
+        private WarnSequenceHandler(final char c) {
             this.c = c;
         }
 
@@ -34,7 +34,7 @@ public class DefaultSequenceRepository implements SequenceRepository {
     }
 
     private final List<NonASCIIControlSequence> knownSequences =
-        new LinkedList<NonASCIIControlSequence>();
+        new LinkedList<>();
 
     public DefaultSequenceRepository() {
         knownSequences.add(new CursorControlSequence());
@@ -48,7 +48,7 @@ public class DefaultSequenceRepository implements SequenceRepository {
 
     @Override
     public List<NonASCIIControlSequence> getNonASCIISequences() {
-        return new LinkedList<NonASCIIControlSequence>(knownSequences);
+        return new LinkedList<>(knownSequences);
     }
 
     @Override

@@ -17,13 +17,12 @@ import de.jowisoftware.sshclient.util.SwingUtils;
 public class UpdateLabel extends JLabel implements UpdateCheckResult {
     private static final long serialVersionUID = -7448353164521009788L;
 
-    private final UpdateCheckThread updateThread;
     private boolean deactivated = false;
 
     public UpdateLabel() {
         setText("Checking for update...");
 
-        updateThread = new UpdateCheckThread(this);
+        Thread updateThread = new UpdateCheckThread(this);
         updateThread.start();
     }
 

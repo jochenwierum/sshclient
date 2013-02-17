@@ -1,16 +1,21 @@
 package de.jowisoftware.sshclient.proxy;
 
 import static org.hamcrest.Matchers.isA;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 
 import org.jmock.Expectations;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.JMockTest;
+@RunWith(JUnitParamsRunner.class)
+public class Version5InitialisationDispatcherTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
 
-public class Version5InitialisationDispatcherTest extends JMockTest {
-    @DataProvider
     public Object[][] validAuthentificationsDataProvider() {
         return new Object[][] {
                 {new byte[]{0}},
@@ -19,7 +24,8 @@ public class Version5InitialisationDispatcherTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "validAuthentificationsDataProvider")
+    @Test
+    @Parameters(method = "validAuthentificationsDataProvider")
     public void validAuthentificationsAreAccepted(final byte[] methods) {
         final ConfigurableSocksByteProcessor processor = context.mock(ConfigurableSocksByteProcessor.class);
 
@@ -38,15 +44,14 @@ public class Version5InitialisationDispatcherTest extends JMockTest {
             final byte method = methods[i];
 
             if (i == methods.length - 1) {
-                assertEquals(dispatcher.process(method), new byte[] { 5,
+                assertArrayEquals(dispatcher.process(method), new byte[] { 5,
                         0 });
             } else {
-                assertEquals(dispatcher.process(method), new byte[0]);
+                assertArrayEquals(dispatcher.process(method), new byte[0]);
             }
         }
     }
 
-    @DataProvider
     public Object[][] invalidAuthentificationsDataProvider() {
         return new Object[][] {
                 { new byte[] { 1, 2, 3 } },
@@ -56,9 +61,8 @@ public class Version5InitialisationDispatcherTest extends JMockTest {
         };
     }
 
-    @Test(expectedExceptions = { IllegalStateException.class,
-            IllegalArgumentException.class },
-            dataProvider = "invalidAuthentificationsDataProvider")
+    @Test(expected = RuntimeException.class)
+    @Parameters(method = "invalidAuthentificationsDataProvider")
     public void invalidAuthentificationsAreAccepted(final byte[] methods) {
         final Version5InitialisationDispatcher dispatcher = new Version5InitialisationDispatcher(
                 null);

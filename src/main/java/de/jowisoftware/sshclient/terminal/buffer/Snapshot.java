@@ -3,8 +3,8 @@ package de.jowisoftware.sshclient.terminal.buffer;
 import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 
 public class Snapshot {
-    public Position cursorPosition;
-    public GfxChar[][] content;
+    public final Position cursorPosition;
+    public final GfxChar[][] content;
 
     public Snapshot(final GfxChar[][] buffer, final Position cursorPosition) {
         this.content = buffer;

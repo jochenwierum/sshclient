@@ -202,9 +202,7 @@ public class Version5InitialisationTargetDispatcher implements SocksDispatcher {
             result[4] = (byte) address.length;
         }
 
-        for (int i = 0; i < address.length; ++i) {
-            result[i + offset] = address[i];
-        }
+        System.arraycopy(address, 0, result, offset, address.length);
 
         result[result.length - 2] = (byte) ((port & 0xff00) >> 8);
         result[result.length - 1] = (byte) (port & 0xff);

@@ -115,14 +115,14 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
         final String[] keyList = getEnvironmentKeys();
 
         model.clear();
-        for (int i = 0; i < keyList.length; ++i) {
-            model.addElement(keyList[i] + " = " + envMap.get(keyList[i]));
+        for (String key : keyList) {
+            model.addElement(key + " = " + envMap.get(key));
         }
     }
 
     private String[] getEnvironmentKeys() {
         final Map<String, String> envMap = profile.getEnvironment();
-        final String[] keyList = envMap.keySet().toArray(new String[0]);
+        final String[] keyList = envMap.keySet().toArray(new String[envMap.size()]);
         Arrays.sort(keyList);
         return keyList;
     }
@@ -138,7 +138,7 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
                     mode.niceName);
         }
 
-        return new JComboBox<String>(names);
+        return new JComboBox<>(names);
     }
 
     private JButton createDeleteEnvironmentButton() {

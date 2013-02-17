@@ -1,16 +1,17 @@
 package de.jowisoftware.sshclient.ui.settings.validation;
 
-import static org.testng.Assert.assertFalse;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.application.settings.validation.AbstractValidationTest;
 import de.jowisoftware.sshclient.application.settings.validation.ValidationResult;
 
 public class AWTFontValidatorTest extends AbstractValidationTest<AWTProfile> {
-    @BeforeMethod
+    @Before
     public void setUp() {
         validator = new AWTFontValidator();
     }
@@ -34,7 +35,7 @@ public class AWTFontValidatorTest extends AbstractValidationTest<AWTProfile> {
         final ValidationResult result2 = doValidation();
 
         // not all OS'ses have both fonts
-        assertFalse(result1.hadErrors() && result2.hadErrors());
+        assertThat(result1.hadErrors() && result2.hadErrors(), is(false));
     }
 
     @Test

@@ -1,7 +1,7 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 import org.jmock.Expectations;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import de.jowisoftware.sshclient.terminal.buffer.BufferSelection;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
@@ -75,7 +75,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     @Test
     public void handleAlternateScreenBuffer() {
         context.checking(new Expectations() {{
-            oneOf(buffer).switchBuffer(BufferSelection.ALTERNATIVE);
+            oneOf(buffer).switchBuffer(BufferSelection.ALTERNATE);
         }});
 
         DefaultSequenceRepository.executeAnsiSequence('h', sessionInfo, "?1047");
@@ -85,7 +85,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     public void handleNormalScreenBufferFromAlternativeScreenBuffer() {
         final Position size = new Position(80, 24);
         context.checking(new Expectations() {{
-            oneOf(buffer).getSelectedBuffer(); will(returnValue(BufferSelection.ALTERNATIVE));
+            oneOf(buffer).getSelectedBuffer(); will(returnValue(BufferSelection.ALTERNATE));
             oneOf(buffer).getSize(); will(returnValue(size));
             oneOf(buffer).erase(size.toRange());
             oneOf(buffer).switchBuffer(BufferSelection.PRIMARY);
@@ -137,7 +137,7 @@ public class ANSISequenceHighLowTest extends AbstractSequenceTest {
         final Position size = new Position(80, 24);
         context.checking(new Expectations() {{
             oneOf(sessionInfo).saveState();
-            oneOf(buffer).switchBuffer(BufferSelection.ALTERNATIVE);
+            oneOf(buffer).switchBuffer(BufferSelection.ALTERNATE);
             oneOf(buffer).getSize(); will(returnValue(size));
             oneOf(buffer).erase(size.toRange());
         }});

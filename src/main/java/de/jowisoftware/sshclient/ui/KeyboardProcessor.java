@@ -62,38 +62,38 @@ public class KeyboardProcessor implements KeyboardEvent {
 
     private boolean processNumblock(final KeyEvent e) {
         final boolean isOnNumpad = e.getKeyLocation() == KeyEvent.KEY_LOCATION_NUMPAD;
-        boolean processed = false;
+        boolean processed = true;
 
         switch (e.getKeyCode()) {
         case KeyEvent.VK_NUMPAD0:
-            processed = sendNumpadNumber((byte) '0', (byte) 'p');
+            sendNumpadNumber((byte) '0', (byte) 'p');
             break;
         case KeyEvent.VK_NUMPAD1:
-            processed = sendNumpadNumber((byte) '1', (byte) 'q');
+            sendNumpadNumber((byte) '1', (byte) 'q');
             break;
         case KeyEvent.VK_NUMPAD2:
-            processed = sendNumpadNumber((byte) '2', (byte) 'r');
+            sendNumpadNumber((byte) '2', (byte) 'r');
             break;
         case KeyEvent.VK_NUMPAD3:
-            processed = sendNumpadNumber((byte) '3', (byte) 's');
+            sendNumpadNumber((byte) '3', (byte) 's');
             break;
         case KeyEvent.VK_NUMPAD4:
-            processed = sendNumpadNumber((byte) '4', (byte) 't');
+            sendNumpadNumber((byte) '4', (byte) 't');
             break;
         case KeyEvent.VK_NUMPAD5:
-            processed = sendNumpadNumber((byte) '5', (byte) 'u');
+            sendNumpadNumber((byte) '5', (byte) 'u');
             break;
         case KeyEvent.VK_NUMPAD6:
-            processed = sendNumpadNumber((byte) '6', (byte) 'v');
+            sendNumpadNumber((byte) '6', (byte) 'v');
             break;
         case KeyEvent.VK_NUMPAD7:
-            processed = sendNumpadNumber((byte) '7', (byte) 'w');
+            sendNumpadNumber((byte) '7', (byte) 'w');
             break;
         case KeyEvent.VK_NUMPAD8:
-            processed = sendNumpadNumber((byte) '8', (byte) 'x');
+            sendNumpadNumber((byte) '8', (byte) 'x');
             break;
         case KeyEvent.VK_NUMPAD9:
-            processed = sendNumpadNumber((byte) '9', (byte) 'y');
+            sendNumpadNumber((byte) '9', (byte) 'y');
             break;
         case KeyEvent.VK_PLUS:
             processed = sendNumpadKey((byte) '+', (byte) 'M', isOnNumpad);
@@ -106,11 +106,12 @@ public class KeyboardProcessor implements KeyboardEvent {
             break;
         case KeyEvent.VK_DIVIDE:
             send((byte) '/');
-            processed = true;
             break;
         case KeyEvent.VK_COMMA:
             processed = sendNumpadKey((byte) ',', (byte) 'n', isOnNumpad);
             break;
+        default:
+            processed = false;
         }
         return processed;
     }
@@ -127,13 +128,12 @@ public class KeyboardProcessor implements KeyboardEvent {
         return true;
     }
 
-    private boolean sendNumpadNumber(final byte normalChar, final byte appModeChar) {
+    private void sendNumpadNumber(final byte normalChar, final byte appModeChar) {
         if (numpadInAppMode) {
             send(ESC, (byte) 'O', appModeChar);
         } else {
             send(normalChar);
         }
-        return true;
     }
 
     private boolean processMiscKeys(final KeyEvent e) {

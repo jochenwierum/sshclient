@@ -101,7 +101,6 @@ class JavaStandardEnDeCryptor implements EnDeCryptor {
         spec = new PBEKeySpec(password.toCharArray(),
                 salt, ITERATION_COUNT, keyLength);
         final SecretKey tmp = factory.generateSecret(spec);
-        final SecretKey secret = new SecretKeySpec(tmp.getEncoded(), ENCRYPTION_TYPE);
-        return secret;
+        return new SecretKeySpec(tmp.getEncoded(), ENCRYPTION_TYPE);
     }
 }

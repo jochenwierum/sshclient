@@ -1,7 +1,7 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
@@ -12,7 +12,7 @@ public class SelectionCharsValidatorTest extends AbstractValidationTest<Profile<
         return new AWTProfile();
     }
 
-    @BeforeMethod
+    @Before
     public void createValidator() {
         validator = new SelectionCharsValidator();
     }

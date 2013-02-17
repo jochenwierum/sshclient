@@ -27,15 +27,15 @@ public class ANSISequenceHighLow implements ANSISequence {
     }
 
     private void processArgs(final SSHSession sessionInfo, final String[] args) {
-        for (int i = 0; i < args.length; ++i) {
+        for (String arg : args) {
             // 4: insert mode
-            LOGGER.warn("High/low flag not implemented: " + args[i]);
+            LOGGER.warn("High/low flag not implemented: " + arg);
         }
     }
 
     private void processSpecialArgs(final SSHSession sessionInfo,
             final String[] args) {
-        for (int i = 0; i < args.length; ++i) {
+        for (String arg : args) {
             /*
              * 4: smooth-scroll
              * 5: Reverse Video (DECSCNM) (swap default fore- and background)
@@ -44,26 +44,36 @@ public class ANSISequenceHighLow implements ANSISequence {
              * 1000: Send mouse clicks
              */
 
-            if (args[i].equals("1")) {
-                processAppMode(sessionInfo);
-            } else if (args[i].equals("3")) {
-                processDisplayType(sessionInfo);
-            } else if (args[i].equals("5")) {
-                processReverseVideo(sessionInfo);
-            } else if (args[i].equals("6")) {
-                processOriginMode(sessionInfo);
-            } else if (args[i].equals("7")) {
-                processAutoWrap(sessionInfo);
-            } else if (args[i].equals("25")) {
-                processShowCursor(sessionInfo);
-            } else if (args[i].equals("1047")) {
-                processAlternateScreen(sessionInfo);
-            } else if (args[i].equals("1048")) {
-                processCursorStorage(sessionInfo);
-            } else if (args[i].equals("1049")) {
-                processCursorStorageWithCursorSave(sessionInfo);
-            } else {
-                LOGGER.warn("High/low flag not implemented: ?" + args[i]);
+            switch (arg) {
+                case "1":
+                    processAppMode(sessionInfo);
+                    break;
+                case "3":
+                    processDisplayType(sessionInfo);
+                    break;
+                case "5":
+                    processReverseVideo(sessionInfo);
+                    break;
+                case "6":
+                    processOriginMode(sessionInfo);
+                    break;
+                case "7":
+                    processAutoWrap(sessionInfo);
+                    break;
+                case "25":
+                    processShowCursor(sessionInfo);
+                    break;
+                case "1047":
+                    processAlternateScreen(sessionInfo);
+                    break;
+                case "1048":
+                    processCursorStorage(sessionInfo);
+                    break;
+                case "1049":
+                    processCursorStorageWithCursorSave(sessionInfo);
+                    break;
+                default:
+                    LOGGER.warn("High/low flag not implemented: ?" + arg);
             }
         }
     }
@@ -87,7 +97,7 @@ public class ANSISequenceHighLow implements ANSISequence {
     private void processCursorStorageWithCursorSave(final SSHSession sessionInfo) {
         final Buffer buffer = sessionInfo.getBuffer();
         if (isHigh) {
-            buffer.switchBuffer(BufferSelection.ALTERNATIVE);
+            buffer.switchBuffer(BufferSelection.ALTERNATE);
             sessionInfo.saveState();
             buffer.erase(buffer.getSize().toRange());
         } else {
@@ -107,9 +117,9 @@ public class ANSISequenceHighLow implements ANSISequence {
     private void processAlternateScreen(final SSHSession sessionInfo) {
         final Buffer buffer = sessionInfo.getBuffer();
         if (isHigh) {
-            buffer.switchBuffer(BufferSelection.ALTERNATIVE);
+            buffer.switchBuffer(BufferSelection.ALTERNATE);
         } else {
-            if (buffer.getSelectedBuffer() == BufferSelection.ALTERNATIVE) {
+            if (buffer.getSelectedBuffer() == BufferSelection.ALTERNATE) {
                 buffer.erase(buffer.getSize().toRange());
             }
             buffer.switchBuffer(BufferSelection.PRIMARY);

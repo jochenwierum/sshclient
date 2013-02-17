@@ -10,7 +10,7 @@ public class ArrayListBackedTabStopManager implements TabStopManager {
     private static final Logger LOGGER = Logger
             .getLogger(ArrayListBackedTabStopManager.class);
 
-    private final List<Integer> tabstopList = new ArrayList<Integer>();
+    private final List<Integer> tabstopList = new ArrayList<>();
     private int width = 0;
 
     public ArrayListBackedTabStopManager(final int width) {
@@ -81,6 +81,6 @@ public class ArrayListBackedTabStopManager implements TabStopManager {
     @Override
     public void removeTab(final int i) {
         LOGGER.debug("Removing tab position at column " + i);
-        tabstopList.remove((Object) i);
+        tabstopList.remove(Integer.valueOf(i));
     }
 }

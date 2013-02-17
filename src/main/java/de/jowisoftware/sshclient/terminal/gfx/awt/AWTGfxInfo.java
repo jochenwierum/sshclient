@@ -13,9 +13,9 @@ import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
 import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 
 public final class AWTGfxInfo implements GfxInfo<Color> {
-    @Persist(traversalType = TraversalType.Map, targetClass = Color.class, targetClass2 = ColorName.class)
+    @Persist(traversalType = TraversalType.MAP, targetClass = Color.class, targetClass2 = ColorName.class)
     private final Map<ColorName, Color> colors;
-    @Persist(traversalType = TraversalType.Map, targetClass = Color.class, targetClass2 = ColorName.class)
+    @Persist(traversalType = TraversalType.MAP, targetClass = Color.class, targetClass2 = ColorName.class)
     private final Map<ColorName, Color> lightColors;
 
     @Persist("cursor/color") private Color cursorColor = Color.GREEN;

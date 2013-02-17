@@ -1,9 +1,9 @@
 package de.jowisoftware.sshclient.events;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class LinkedListEventHubTest {
     public static interface EventHubTestEvent {
@@ -45,8 +45,8 @@ public class LinkedListEventHubTest {
         hub.fire().test1();
         hub.fire().test2("param");
 
-        assertTrue(probe.wasTest1Called());
-        assertEquals("param", probe.getTest2Value());
+        assertThat(probe.wasTest1Called(), is(true));
+        assertThat(probe.getTest2Value(), is("param"));
     }
 
     @Test
@@ -60,7 +60,7 @@ public class LinkedListEventHubTest {
         hub.register(probe2);
         hub.fire().test1();
 
-        assertTrue(probe1.wasTest1Called());
-        assertTrue(probe2.wasTest1Called());
+        assertThat(probe1.wasTest1Called(), is(true));
+        assertThat(probe2.wasTest1Called(), is(true));
     }
 }

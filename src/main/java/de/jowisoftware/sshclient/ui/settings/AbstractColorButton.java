@@ -26,7 +26,7 @@ public abstract class AbstractColorButton extends JButton implements ActionListe
         setPreferredSize(size);
 
         addActionListener(this);
-    };
+    }
 
     @Override
     protected void paintComponent(final Graphics g) {

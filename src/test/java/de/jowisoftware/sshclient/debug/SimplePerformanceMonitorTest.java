@@ -3,19 +3,22 @@ package de.jowisoftware.sshclient.debug;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import junitparams.Parameters;
 
 import org.jmock.Expectations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-import de.jowisoftware.sshclient.JMockTest;
+public class SimplePerformanceMonitorTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
 
-public class SimplePerformanceMonitorTest extends JMockTest {
     private TimeSource timesource;
     private SimplePerformanceMonitor monitor;
 
-    @BeforeMethod
+    @Before
     public void setupMocks() {
         timesource = context.mock(TimeSource.class);
         monitor = new SimplePerformanceMonitor(timesource);
@@ -33,7 +36,6 @@ public class SimplePerformanceMonitorTest extends JMockTest {
         assertThat(Long.valueOf(time), is(equalTo(Long.valueOf(expected))));
     }
 
-    @DataProvider
     public Object[][] taskData() {
         return new Object[][] {
                 {200, 400, 200},
@@ -41,7 +43,7 @@ public class SimplePerformanceMonitorTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "taskData")
+    @Parameters(method = "taskData")
     public void measureOneTask(final int start, final int end,
             final int diff) {
         expectDate(start);

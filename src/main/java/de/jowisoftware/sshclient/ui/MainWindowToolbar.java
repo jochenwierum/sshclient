@@ -201,7 +201,7 @@ public class MainWindowToolbar implements ProfileEvent {
             profileNames[i++] = p.getKey();
         }
 
-        final ComboBoxModel<String> model = new DefaultComboBoxModel<String>(
+        final ComboBoxModel<String> model = new DefaultComboBoxModel<>(
                 profileNames);
         comboBox.setSelectedItem(oldValue);
         comboBox.setModel(model);

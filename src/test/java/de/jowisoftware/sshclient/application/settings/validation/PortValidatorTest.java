@@ -1,13 +1,13 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 
 public class PortValidatorTest extends AbstractValidationTest<Profile<?>> {
-    @BeforeMethod
+    @Before
     public void setUp() {
         validator = new PortValidator();
     }

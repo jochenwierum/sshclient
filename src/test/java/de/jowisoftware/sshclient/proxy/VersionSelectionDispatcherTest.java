@@ -3,14 +3,20 @@ package de.jowisoftware.sshclient.proxy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isA;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 
 import org.jmock.Expectations;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.JMockTest;
+@RunWith(JUnitParamsRunner.class)
+public class VersionSelectionDispatcherTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
 
-public class VersionSelectionDispatcherTest extends JMockTest {
     @Test public void
     version4SelectsVersion4InitialisationDispatcher() {
         final ConfigurableSocksByteProcessor processor = context
@@ -45,14 +51,14 @@ public class VersionSelectionDispatcherTest extends JMockTest {
         assertThat(dispatcher.process((byte) 5).length, is(0));
     }
 
-    @DataProvider
     public Object[][] illegalVersionDataProvider() {
         return new Object[][] {
                 { 9 }, { 3 }, { 6 }
         };
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "illegalVersionDataProvider")
+    @Test(expected = IllegalArgumentException.class)
+    @Parameters(method = "illegalVersionDataProvider")
     public void illegalVersionThrowsException(final int version) {
         final ConfigurableSocksByteProcessor processor = context
                 .mock(ConfigurableSocksByteProcessor.class);

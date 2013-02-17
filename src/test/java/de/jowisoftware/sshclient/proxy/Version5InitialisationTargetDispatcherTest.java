@@ -5,16 +5,21 @@ import static org.hamcrest.Matchers.is;
 
 import java.io.UnsupportedEncodingException;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
 import org.jmock.Expectations;
-import org.testng.Assert;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.JMockTest;
+@RunWith(JUnitParamsRunner.class)
+public class Version5InitialisationTargetDispatcherTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
 
-public class Version5InitialisationTargetDispatcherTest extends JMockTest {
-
-    @DataProvider
     public Object[][] illegalVersionsDataProvider() {
         return new Object[][] {
                 { 1 },
@@ -24,13 +29,13 @@ public class Version5InitialisationTargetDispatcherTest extends JMockTest {
         };
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "illegalVersionsDataProvider")
+    @Test(expected = IllegalArgumentException.class)
+    @Parameters(method = "illegalVersionsDataProvider")
     public void illegalVersionIsRejected(final int version) {
         new Version5InitialisationTargetDispatcher(null)
                 .process((byte) version);
     }
 
-    @DataProvider
     public Object[][] illegalCommandsDataProvider() {
         return new Object[][] {
                 { 2 },
@@ -39,7 +44,8 @@ public class Version5InitialisationTargetDispatcherTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "illegalCommandsDataProvider")
+    @Test
+    @Parameters(method = "illegalCommandsDataProvider")
     public void illegalCommandsAreRejected(final int direction) {
         final Version5InitialisationTargetDispatcher dispatcher =
                 new Version5InitialisationTargetDispatcher(null);
@@ -62,7 +68,6 @@ public class Version5InitialisationTargetDispatcherTest extends JMockTest {
         assertThat(dispatcher.process((byte) 0).length, is(0));
     }
 
-    @DataProvider
     public Object[][] invalidResevedByteValues() {
         return new Object[][] {
                 { 1 },
@@ -71,7 +76,8 @@ public class Version5InitialisationTargetDispatcherTest extends JMockTest {
         };
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "invalidResevedByteValues")
+    @Test(expected = IllegalArgumentException.class)
+    @Parameters(method = "invalidResevedByteValues")
     public void reservedBytesAreRejected(final int reserved) {
         final Version5InitialisationTargetDispatcher dispatcher = new Version5InitialisationTargetDispatcher(
                 null);
@@ -80,7 +86,6 @@ public class Version5InitialisationTargetDispatcherTest extends JMockTest {
         dispatcher.process((byte) reserved);
     }
 
-    @DataProvider
     public Object[][] validATypeDataProviders() {
         return new Object[][] {
                 { 1 },
@@ -89,7 +94,6 @@ public class Version5InitialisationTargetDispatcherTest extends JMockTest {
         };
     }
 
-    @DataProvider
     public Object[][] invalidATypeDataProviders() {
         return new Object[][] {
                 { 0 },
@@ -99,12 +103,14 @@ public class Version5InitialisationTargetDispatcherTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "validATypeDataProviders")
+    @Test
+    @Parameters(method = "validATypeDataProviders")
     public void validDestinationsAreNotRejected(final int atype) {
         callWithDestinationType(atype);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "invalidATypeDataProviders")
+    @Test(expected = IllegalArgumentException.class)
+    @Parameters(method = "invalidATypeDataProviders")
     public void invalidDestinationTypesAreRejected(final int atype) {
         callWithDestinationType(atype);
     }
@@ -118,7 +124,6 @@ public class Version5InitialisationTargetDispatcherTest extends JMockTest {
         assertThat(dispatcher.process((byte) atype).length, is(0));
     }
 
-    @DataProvider
     public Object[][] successfullCallsDataProvider()
             throws UnsupportedEncodingException {
         return new Object[][] {
@@ -136,7 +141,8 @@ public class Version5InitialisationTargetDispatcherTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "successfullCallsDataProvider")
+    @Test
+    @Parameters(method = "successfullCallsDataProvider")
     public void successfullCallsAreForwarded(final byte[] input,
             final String address, final int port) {
         final ConfigurableSocksByteProcessor processor =

@@ -5,8 +5,8 @@ public enum Attribute {
     BLINK(5, 25, 8), INVERSE(7, 27, 16), HIDDEN(8, 28, 32);
 
     public final int flag;
-    private int activateSequance;
-    private int deactivateSequence;
+    private final int activateSequance;
+    private final int deactivateSequence;
 
     private Attribute(final int activateSequence,
             final int deactivateSequence,

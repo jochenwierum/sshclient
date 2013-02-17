@@ -14,7 +14,7 @@ import javax.swing.SwingConstants;
 public abstract class AbstractOptionPanel extends JPanel {
     protected final Window parentWindow;
 
-    public AbstractOptionPanel(final Window parent) {
+    protected AbstractOptionPanel(final Window parent) {
         this.parentWindow = parent;
         setOpaque(false);
     }

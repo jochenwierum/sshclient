@@ -4,15 +4,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 public class FixedSizeArrayRingBufferTest {
-    public RingBuffer<Integer> buffer;
+    private RingBuffer<Integer> buffer;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
-        buffer = new FixedSizeArrayRingBuffer<Integer>(10);
+        buffer = new FixedSizeArrayRingBuffer<>(10);
     }
 
     private void fillBuffer(final int ... with) {
@@ -53,7 +53,7 @@ public class FixedSizeArrayRingBufferTest {
 
     @Test
     public void iteratorContains3Newest() {
-        buffer = new FixedSizeArrayRingBuffer<Integer>(3);
+        buffer = new FixedSizeArrayRingBuffer<>(3);
         fillBuffer(10, 2, 30, 4, 50);
         assertThat(buffer, contains(30, 4, 50));
     }

@@ -24,7 +24,7 @@ public class ClosableTabTitleComponent extends JPanel implements MouseListener {
     private JButton button;
 
     private final List<ClosableTabListener> listeners =
-            new ArrayList<ClosableTabListener>();
+            new ArrayList<>();
 
     public ClosableTabTitleComponent(final Tab tab, final JLabel label) {
         this.tab = tab;

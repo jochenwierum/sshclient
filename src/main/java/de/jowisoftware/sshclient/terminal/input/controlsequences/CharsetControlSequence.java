@@ -8,8 +8,8 @@ import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 
 public class CharsetControlSequence implements NonASCIIControlSequence {
-    public final static Pattern PATTERN = Pattern.compile("[NO]|[()][0AB]");
-    public final static Pattern PATTERN_PARTIAL = Pattern.compile("[()]");
+    private final static Pattern PATTERN = Pattern.compile("[NO]|[()][0AB]");
+    private final static Pattern PATTERN_PARTIAL = Pattern.compile("[()]");
 
     @Override
     public boolean isPartialStart(final String sequence) {

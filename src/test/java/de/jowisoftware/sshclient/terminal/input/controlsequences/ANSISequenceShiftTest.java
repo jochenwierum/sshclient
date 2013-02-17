@@ -1,7 +1,7 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 import org.jmock.Expectations;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class ANSISequenceShiftTest extends AbstractSequenceTest {
     private void testLeftShiftXChars(final int charCount,

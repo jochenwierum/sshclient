@@ -47,11 +47,11 @@ public class PersistenceAnnotationTraverser {
 
     private static void doCallback(final Object object, final PersistCallback callback, final Field field,
             final Persist annotation, final String name) {
-        if (annotation.traversalType().equals(TraversalType.List)) {
+        if (annotation.traversalType().equals(TraversalType.LIST)) {
             callback.foundList(field, object, annotation, name);
-        } else if (annotation.traversalType().equals(TraversalType.Map)) {
+        } else if (annotation.traversalType().equals(TraversalType.MAP)) {
             callback.foundMap(field, object, annotation, name);
-        } else if (annotation.traversalType().equals(TraversalType.Recursive)) {
+        } else if (annotation.traversalType().equals(TraversalType.RECURSIVE)) {
             callback.foundSubObject(field, object, annotation, name);
         } else {
             callback.foundField(field, object, annotation, name);

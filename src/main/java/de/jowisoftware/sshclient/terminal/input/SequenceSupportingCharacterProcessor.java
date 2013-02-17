@@ -27,8 +27,7 @@ public class SequenceSupportingCharacterProcessor implements CharacterProcessor 
     private static final char SHIFT_IN = (char) 15;
 
     private final SequenceRepository sequenceRepository;
-    private final Stack<CharacterProcessorState> states =
-        new Stack<CharacterProcessorState>();
+    private final Stack<CharacterProcessorState> states = new Stack<>();
 
     private final SSHSession sessionInfo;
     private Character surrogateChar;

@@ -17,8 +17,7 @@ public class PerformanceLogger {
     public static final PerformanceLogger INSTANCE = new PerformanceLogger();
 
     private final SimplePerformanceMonitor monitor = new SimplePerformanceMonitor();
-    private final Map<PerformanceType, RingBuffer<Long>> recentTimings =
-            new HashMap<PerformanceType, RingBuffer<Long>>();
+    private final Map<PerformanceType, RingBuffer<Long>> recentTimings = new HashMap<>();
 
     private PerformanceWindow window;
 

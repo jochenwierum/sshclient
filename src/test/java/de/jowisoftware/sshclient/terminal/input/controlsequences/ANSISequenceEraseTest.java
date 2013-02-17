@@ -1,13 +1,12 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 import org.jmock.Expectations;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Range;
 
 public class ANSISequenceEraseTest extends AbstractSequenceTest {
-
     private void testEraseCursorToButtom(final Position cursorPosition,
             final Position screenSize) {
         context.checking(new Expectations() {{

@@ -1,24 +1,31 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import static org.testng.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
 
 import org.jmock.Expectations;
 import org.jmock.States;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 
-public class SynchronizedBufferTest extends JMockTest {
+@RunWith(JUnitParamsRunner.class)
+public class SynchronizedBufferTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
     private SynchronizedBuffer buffer;
     private FlippableBufferStorage storage;
     private TabStopManager tabstops;
     private CursorPositionManager positionManager;
 
-    // @BeforeMethod(dependsOnMethods = "setUpJMock")
-    @BeforeMethod
+    @Before
     public void setUp() {
         storage = context.mock(FlippableBufferStorage.class, "storage");
         tabstops = context.mock(TabStopManager.class, "tabstops");
@@ -81,7 +88,6 @@ public class SynchronizedBufferTest extends JMockTest {
         }});
     }
 
-    @DataProvider
     public Object[][] addCharacterDataProvider() {
         return new Object[][] {
                 { 1, 1 },
@@ -89,18 +95,19 @@ public class SynchronizedBufferTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "addCharacterDataProvider")
-    public void addCharAt00ChangesPositionAndAddsChar(final int x, final int y) {
+    @Test
+    @Parameters(method = "addCharacterDataProvider")
+    public void addCharChangesPositionAndAddsChar(final int y, final int x) {
         final GfxChar character = context.mock(GfxChar.class);
         allowSize(80, 24);
-        allowPosition(x, y);
+        allowPosition(y, x);
         allowWordWrap(true);
 
         context.checking(new Expectations() {{
             oneOf(character).getCharCount(); will(returnValue(1));
         }});
 
-        assertCharWillBeSet(x, y, character);
+        assertCharWillBeSet(y, x, character);
         assertCursorWillBeMovedToNextPosition();
         buffer.addCharacter(character);
     }
@@ -119,7 +126,6 @@ public class SynchronizedBufferTest extends JMockTest {
         buffer.moveCursorDown(true);
     }
 
-    @DataProvider
     public Object[][] resizeProvider() {
         return new Object[][] {
                 { 30, 24 },
@@ -127,7 +133,8 @@ public class SynchronizedBufferTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "resizeProvider")
+    @Test
+    @Parameters(method = "resizeProvider")
     public void resizeResizesChildren(final int w, final int h) {
         context.checking(new Expectations() {{
                 oneOf(storage).newSize(w, h);
@@ -195,7 +202,6 @@ public class SynchronizedBufferTest extends JMockTest {
         buffer.moveCursorUp();
     }
 
-    @DataProvider
     public Object[][] marginForwardProvider() {
         return new Object[][] {
                 { 2, 3 },
@@ -203,7 +209,8 @@ public class SynchronizedBufferTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "marginForwardProvider")
+    @Test
+    @Parameters(method = "marginForwardProvider")
     public void setMarginIsForwarded(final int x, final int y) {
         final States marginSet = context.states("marginSet");
         context.checking(new Expectations() {{
@@ -226,7 +233,6 @@ public class SynchronizedBufferTest extends JMockTest {
         buffer.moveCursorDown(false);
     }
 
-    @DataProvider
     public Object[][] moveCursorProvider() {
         return new Object[][] {
                 { 3, 7 },
@@ -234,7 +240,8 @@ public class SynchronizedBufferTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "moveCursorProvider")
+    @Test
+    @Parameters(method = "moveCursorProvider")
     public void moveCursorDownResetsColumn(final int x, final int y) {
         final Position pos = new Position(3, 7);
 
@@ -257,7 +264,6 @@ public class SynchronizedBufferTest extends JMockTest {
         buffer.moveCursorDown(false);
     }
 
-    @DataProvider
     public Object[][] eraseDataProvider() {
         return new Object[][] {
                 { 2, 25 },
@@ -265,7 +271,8 @@ public class SynchronizedBufferTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "eraseDataProvider")
+    @Test
+    @Parameters(method = "eraseDataProvider")
     public void eraseForwardsRange(final int x, final int y) {
         final Range range = new Range(new Position(x, y));
 
@@ -466,7 +473,7 @@ public class SynchronizedBufferTest extends JMockTest {
                 will(returnValue(BufferSelection.PRIMARY));
         }});
 
-        assertEquals(BufferSelection.PRIMARY, buffer.getSelectedBuffer());
+        assertThat(buffer.getSelectedBuffer(), is(BufferSelection.PRIMARY));
 
         context.checking(new Expectations() {{
             oneOf(storage).flipTo(BufferSelection.PRIMARY);
@@ -478,15 +485,15 @@ public class SynchronizedBufferTest extends JMockTest {
     public void switchBufferToAlternativeBufferSwitchesBuffer() {
         context.checking(new Expectations() {{
             oneOf(storage).getSelectedStorage();
-                will(returnValue(BufferSelection.ALTERNATIVE));
+                will(returnValue(BufferSelection.ALTERNATE));
         }});
 
-        assertEquals(BufferSelection.ALTERNATIVE, buffer.getSelectedBuffer());
+        assertThat(buffer.getSelectedBuffer(), is(BufferSelection.ALTERNATE));
 
         context.checking(new Expectations() {{
-            oneOf(storage).flipTo(BufferSelection.ALTERNATIVE);
+            oneOf(storage).flipTo(BufferSelection.ALTERNATE);
         }});
-        buffer.switchBuffer(BufferSelection.ALTERNATIVE);
+        buffer.switchBuffer(BufferSelection.ALTERNATE);
     }
 
     @Test
@@ -518,7 +525,6 @@ public class SynchronizedBufferTest extends JMockTest {
         testShift(5, 1, -6);
     }
 
-    @DataProvider
     public Object[][] horizontalMovementDataProvider() {
         return new Object[][] {
                 { 2, 3, 5, 7 },
@@ -526,8 +532,9 @@ public class SynchronizedBufferTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "horizontalMovementDataProvider") public void
-    horizontalTabulatorMovesCuros1(final int oldX, final int oldY,
+    @Test
+    @Parameters(method = "horizontalMovementDataProvider")
+    public void horizontalTabulatorMovesCuros1(final int oldX, final int oldY,
             final int newX, final int newY) {
         allowSize(80, 24);
         final Position pos = new Position(oldX, oldY);

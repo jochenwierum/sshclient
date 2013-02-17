@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class EnDeCryptorTest {
     @Test

@@ -79,7 +79,7 @@ public class RootContainerWrapper implements SplittableContainerWrapper {
     }
 
     public TabbedPaneWrapper[] findTabPanes() {
-        final List<TabbedPaneWrapper> panes = new ArrayList<TabbedPaneWrapper>();
+        final List<TabbedPaneWrapper> panes = new ArrayList<>();
         root.findTabPanes(panes);
         return panes.toArray(new TabbedPaneWrapper[panes.size()]);
     }

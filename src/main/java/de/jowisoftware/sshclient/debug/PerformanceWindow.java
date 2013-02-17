@@ -43,8 +43,7 @@ public class PerformanceWindow extends JFrame implements ActionListener, WindowL
     private final BoxPlot plot = new BoxPlot();
 
     private long max;
-    private final Map<PerformanceType, Quantile> quantiles =
-            new HashMap<PerformanceType, Quantile>();
+    private final Map<PerformanceType, Quantile> quantiles = new HashMap<>();
 
     public PerformanceWindow(final Map<PerformanceType, RingBuffer<Long>> recentTimings) {
         super("Performance");

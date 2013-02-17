@@ -24,8 +24,7 @@ public class SimpleFlippableBufferStorage implements FlippableBufferStorage {
             final GfxChar initialClearChar, final int width, final int height,
             final int historySize) {
 
-        final RingBuffer<GfxChar[]> history = new FixedSizeArrayRingBuffer<GfxChar[]>(
-                historySize);
+        final RingBuffer<GfxChar[]> history = new FixedSizeArrayRingBuffer<>(historySize);
 
         final ArrayBackedBufferStorage primary =
                 new ArrayBackedBufferStorage(initialClearChar, width, height, history);
@@ -36,7 +35,7 @@ public class SimpleFlippableBufferStorage implements FlippableBufferStorage {
 
     @Override
     public void flipTo(final BufferSelection selection) {
-        if (selection == BufferSelection.ALTERNATIVE) {
+        if (selection == BufferSelection.ALTERNATE) {
             selectedBuffer = secondaryBuffer;
         } else {
             selectedBuffer = primaryBuffer;
@@ -49,7 +48,7 @@ public class SimpleFlippableBufferStorage implements FlippableBufferStorage {
         if (selectedBuffer == primaryBuffer) {
             return BufferSelection.PRIMARY;
         } else {
-            return BufferSelection.ALTERNATIVE;
+            return BufferSelection.ALTERNATE;
         }
     }
 

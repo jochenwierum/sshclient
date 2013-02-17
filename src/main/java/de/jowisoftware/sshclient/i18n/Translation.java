@@ -77,7 +77,7 @@ public class Translation {
             LOGGER.error("Could not read language list", e);
         }
 
-        final SortedMap<String, String> result = new TreeMap<String, String>();
+        final SortedMap<String, String> result = new TreeMap<>();
         for (final Object name : languages.keySet()) {
             result.put(name.toString(), languages.getProperty(name.toString()));
         }

@@ -25,7 +25,7 @@ public class ApplicationUtils {
         public final String date;
         private boolean isUpdatable;
 
-        public VersionInformation(final String revision, final String branch, final String date) {
+        private VersionInformation(final String revision, final String branch, final String date) {
             this.revision = revision;
             this.branch = branch;
             this.date = date;

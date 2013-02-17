@@ -84,16 +84,16 @@ public class MainWindow extends JFrame {
         final TabState initialLogState = application.settings.getLogTabState();
         final TabState initialKeyState = application.settings.getKeyTabState();
 
-        if (logTabOpen && initialLogState == TabState.Closed) {
-            application.settings.setLogTabState(TabState.Open);
-        } else if (!logTabOpen && initialLogState == TabState.Open) {
-            application.settings.setLogTabState(TabState.Closed);
+        if (logTabOpen && initialLogState == TabState.CLOSED) {
+            application.settings.setLogTabState(TabState.OPEN);
+        } else if (!logTabOpen && initialLogState == TabState.OPEN) {
+            application.settings.setLogTabState(TabState.CLOSED);
         }
 
-        if (keyTabOpen && initialKeyState == TabState.Closed) {
-            application.settings.setKeyTabState(TabState.Open);
-        } else if (!keyTabOpen && initialKeyState == TabState.Open) {
-            application.settings.setKeyTabState(TabState.Closed);
+        if (keyTabOpen && initialKeyState == TabState.CLOSED) {
+            application.settings.setKeyTabState(TabState.OPEN);
+        } else if (!keyTabOpen && initialKeyState == TabState.OPEN) {
+            application.settings.setKeyTabState(TabState.CLOSED);
         }
     }
 
@@ -150,13 +150,13 @@ public class MainWindow extends JFrame {
     }
 
     private void initTabs() {
-        if (application.settings.getKeyTabState() == TabState.AlwaysOpen
-                || application.settings.getKeyTabState() == TabState.Open) {
+        if (application.settings.getKeyTabState() == TabState.ALWAYS_OPEN
+                || application.settings.getKeyTabState() == TabState.OPEN) {
             setKeyTabVisibility(true);
         }
 
-        if (application.settings.getLogTabState() == TabState.AlwaysOpen
-                || application.settings.getLogTabState() == TabState.Open) {
+        if (application.settings.getLogTabState() == TabState.ALWAYS_OPEN
+                || application.settings.getLogTabState() == TabState.OPEN) {
             setLogTabVisibility(true);
         }
     }
@@ -175,7 +175,7 @@ public class MainWindow extends JFrame {
             if (!containsTab) {
                 tabPanel.add(tab);
             }
-        } else if (!isVisible && containsTab) {
+        } else if (containsTab) {
             tabPanel.closeTab(tab);
         }
     }
@@ -201,7 +201,7 @@ public class MainWindow extends JFrame {
         SwingUtils.runInSwingThread(new Runnable() {
             @Override
             public void run() {
-                new ArgumentParser<AWTProfile>(new ArgumentParserCallback<AWTProfile>() {
+                new ArgumentParser<>(new ArgumentParserCallback<AWTProfile>() {
                     @Override
                     public void openConnection(final AWTProfile profile) {
                         connect(profile);
@@ -210,11 +210,11 @@ public class MainWindow extends JFrame {
                     @Override
                     public void reportArgumentError(final String[] errors) {
                         final StringBuilder builder = new StringBuilder();
-                        for (int i = 0; i < errors.length; ++i) {
+                        for (String error : errors) {
                             if (builder.length() > 0) {
                                 builder.append(", ");
                             }
-                            builder.append(errors[i]);
+                            builder.append(error);
                         }
 
                         SwingUtils.showMessage(MainWindow.this, "<html>"

@@ -48,7 +48,7 @@ public final class LogTab implements Tab, Observer {
                 public void actionPerformed(final ActionEvent e) {
                     final Clipboard clipboard = Toolkit.getDefaultToolkit()
                             .getSystemClipboard();
-                    final StringBuffer content = new StringBuffer();
+                    final StringBuilder content = new StringBuilder();
 
                     for (String line : list.getSelectedValuesList())
                     {

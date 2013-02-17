@@ -20,24 +20,24 @@ public class AWTApplicationSettings implements ApplicationSettings<AWTProfile> {
     private static final Logger LOGGER = Logger
             .getLogger(AWTApplicationSettings.class);
 
-    @Persist(traversalType = TraversalType.Recursive)
+    @Persist(traversalType = TraversalType.RECURSIVE)
     private AWTProfile defaultProfile = new AWTProfile();
 
-    @Persist(value = "profiles", traversalType = TraversalType.Map,
+    @Persist(value = "profiles", traversalType = TraversalType.MAP,
             traverseListAndMapChildrenRecursively = true, targetClass = AWTProfile.class, targetClass2 = String.class)
     private final Map<String, AWTProfile> profiles = new HashMap<>();
 
-    @Persist(value = "keys", traversalType = TraversalType.List, targetClass = File.class)
+    @Persist(value = "keys", traversalType = TraversalType.LIST, targetClass = File.class)
     private final List<File> keyFiles = new ArrayList<>();
 
-    @Persist(value = "passwords", traversalType = TraversalType.Recursive)
+    @Persist(value = "passwords", traversalType = TraversalType.RECURSIVE)
     private final PasswordStorage passwordStorage;
 
-    @Persist("logtab/@state") private TabState logTabState = TabState.Closed;
-    @Persist("keytab/@state") private TabState keyTabState = TabState.Closed;
+    @Persist("logtab/@state") private TabState logTabState = TabState.CLOSED;
+    @Persist("keytab/@state") private TabState keyTabState = TabState.CLOSED;
 
     @Persist private String language = "en_US";
-    @Persist private BellType bellType = BellType.Visual;
+    @Persist private BellType bellType = BellType.VISUAL;
 
     public AWTApplicationSettings() {
         PasswordStorage newPasswordManager;

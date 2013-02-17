@@ -14,7 +14,6 @@ import de.jowisoftware.sshclient.terminal.buffer.BufferStorage;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.terminal.buffer.TabStopManager;
-import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
 import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
@@ -32,7 +31,6 @@ public class SimpleSSHSession implements SSHSession {
     private final GfxCharSetup charSetup;
     private final TabStopManager tabstopManager;
 
-    private DisplayType displayType;
     private OutputStream responseStream;
     private final Charset charset;
 
@@ -79,16 +77,6 @@ public class SimpleSSHSession implements SSHSession {
     @Override
     public GfxCharSetup getCharSetup() {
         return charSetup;
-    }
-
-    @Override
-    public DisplayType getDisplayType() {
-        return displayType;
-    }
-
-    @Override
-    public void setDisplayType(final DisplayType newDisplayType) {
-        displayType = newDisplayType;
     }
 
     public void setOutputStream(final OutputStream stream) {

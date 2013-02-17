@@ -2,18 +2,24 @@ package de.jowisoftware.sshclient.proxy;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.net.UnknownHostException;
 
+import junitparams.JUnitParamsRunner;
+import junitparams.Parameters;
+
 import org.jmock.Expectations;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.JMockTest;
+@RunWith(JUnitParamsRunner.class)
+public class Version4InitialisationDispatcherTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
 
-public class Version4InitialisationDispatcherTest extends JMockTest {
-    @DataProvider
     public Object[][] validConnectionEndPointsDataProvider() {
             return new Object[][] {
                 { (byte) 0, (byte) 80, (byte) 66, (byte) 102, (byte) 7,
@@ -23,7 +29,8 @@ public class Version4InitialisationDispatcherTest extends JMockTest {
             };
     }
 
-    @Test(dataProvider = "validConnectionEndPointsDataProvider")
+    @Test
+    @Parameters(method = "validConnectionEndPointsDataProvider")
     public void validDataSetsUpForwarding(final byte port1, final byte port2,
             final byte ip1, final byte ip2, final byte ip3, final byte ip4,
             final int port) throws UnknownHostException {
@@ -48,30 +55,30 @@ public class Version4InitialisationDispatcherTest extends JMockTest {
         assertThat(dispatcher.process(ip2).length, is(0));
         assertThat(dispatcher.process(ip3).length, is(0));
         assertThat(dispatcher.process(ip4).length, is(0));
-        assertEquals(dispatcher.process((byte) 0),
+        assertArrayEquals(dispatcher.process((byte) 0),
                 new byte[] { 0, 0x5a, port1, port2, ip1, ip2, ip3, ip4 });
     }
 
-    @DataProvider
     public Object[][] illegalRequestDataProvider() {
         return new Object[][] {
                 { 0 }, { 2 }, { 123 }
         };
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "illegalRequestDataProvider")
+    @Test(expected = IllegalArgumentException.class)
+    @Parameters(method = "illegalRequestDataProvider")
     public void listenRequestThrowsException(final int request) {
         new Version4InitialisationDispatcher(null).process((byte) request);
     }
 
-    @DataProvider
     public Object[][] illegalUserFieldsDataProvider() {
         return new Object[][] {
                 { 1 }, { 2 }, { 123 }
         };
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class, dataProvider = "illegalUserFieldsDataProvider")
+    @Test(expected = IllegalArgumentException.class)
+    @Parameters(method = "illegalUserFieldsDataProvider")
     public void illegalUserRequestThrowsException(final int request) {
         final Version4InitialisationDispatcher dispatcher =
                 new Version4InitialisationDispatcher(null);
@@ -85,7 +92,6 @@ public class Version4InitialisationDispatcherTest extends JMockTest {
         dispatcher.process((byte) request);
     }
 
-    @DataProvider
     public Object[][] domainNameDataProvider() {
         return new Object[][] {
                 { new byte[] { 1, 0, 22, 0, 0, 0, 1, 0, 'a', 'b', 'c', 0 },
@@ -94,7 +100,8 @@ public class Version4InitialisationDispatcherTest extends JMockTest {
         };
     }
 
-    @Test(dataProvider = "domainNameDataProvider")
+    @Test
+    @Parameters(method = "domainNameDataProvider")
     public void socks4aIsSupported(final byte[] input, final String host,
             final int port) {
         final ConfigurableSocksByteProcessor processor = context

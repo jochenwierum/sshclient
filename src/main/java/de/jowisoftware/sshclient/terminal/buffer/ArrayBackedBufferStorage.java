@@ -34,8 +34,8 @@ public class ArrayBackedBufferStorage implements BufferStorage {
     @Override
     public void newSize(final int width, final int height) {
         final GfxChar[][] newLines = new GfxChar[height][width];
-        for (int row = 0; row < newLines.length; ++row) {
-            Arrays.fill(newLines[row], clearChar);
+        for (GfxChar[] line : newLines) {
+            Arrays.fill(line, clearChar);
         }
         if (lines != null) {
             for (int i = 0; i < Math.min(lines.length, height); ++i) {
@@ -52,11 +52,8 @@ public class ArrayBackedBufferStorage implements BufferStorage {
             copyToHistory(history, -offset);
         }
 
-        final List<GfxChar[]> newLines = new ArrayList<GfxChar[]>();
-        for (final GfxChar[] line : lines) {
-            newLines.add(line);
-        }
-
+        final List<GfxChar[]> newLines = new ArrayList<>();
+        Collections.addAll(newLines, lines);
         Collections.rotate(newLines, offset);
 
         final int clearStart;

@@ -15,16 +15,16 @@ import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
 
 public class AWTGfxCharSetup implements GfxCharSetup {
     private static class CharSetupState implements Cloneable {
-        public int attributes;
-        public TerminalColor fgColor;
-        public TerminalColor bgColor;
-        public TerminalCharsetSelection selectedCharset = TerminalCharsetSelection.G0;
-        public GfxCharset charsetG0 = USASCIICharset.instance();
-        public GfxCharset charsetG1 = USASCIICharset.instance();
-        public boolean createBrightColors;
+        private int attributes;
+        private TerminalColor fgColor;
+        private TerminalColor bgColor;
+        private TerminalCharsetSelection selectedCharset = TerminalCharsetSelection.G0;
+        private GfxCharset charsetG0 = USASCIICharset.instance();
+        private GfxCharset charsetG1 = USASCIICharset.instance();
+        private boolean createBrightColors;
 
         @Override
-        public CharSetupState clone() {
+        public CharSetupState clone() throws CloneNotSupportedException {
             try {
                 return (CharSetupState) super.clone();
             } catch (final CloneNotSupportedException e) {
@@ -177,11 +177,19 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     @Override
     public void save() {
-        savedState = charState.clone();
+        try {
+            savedState = charState.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public void restore() {
-        charState = savedState.clone();
+        try {
+            charState = savedState.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -1,9 +1,9 @@
 package de.jowisoftware.sshclient.proxy;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class ErrorDispatcherTest {
-    @Test(expectedExceptions = IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void processThrowsError() {
         new ErrorDispatcher().process((byte) 0);
     }

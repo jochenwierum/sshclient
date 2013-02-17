@@ -22,7 +22,6 @@ public class SocksConnection extends Thread {
 
     private final Socket socket;
     private final Session session;
-    private Channel channel;
 
     public SocksConnection(final Socket clientSocket, final Session session) {
         this.socket = clientSocket;
@@ -69,11 +68,11 @@ public class SocksConnection extends Thread {
             if (processor.isFinished()) {
                 LOGGER.info("Establishing connection to " + processor.getHost()
                         + ":" + processor.getPort());
-                channel = session.openChannel("direct-tcpip");
+                Channel channel = session.openChannel("direct-tcpip");
                 ((ChannelDirectTCPIP) channel).setHost(processor.getHost());
                 ((ChannelDirectTCPIP) channel).setPort(processor.getPort());
-                ((ChannelDirectTCPIP) channel).setInputStream(inputStream);
-                ((ChannelDirectTCPIP) channel).setOutputStream(outputStream);
+                channel.setInputStream(inputStream);
+                channel.setOutputStream(outputStream);
                 channel.connect();
             } else {
                 inputByte = inputStream.read();

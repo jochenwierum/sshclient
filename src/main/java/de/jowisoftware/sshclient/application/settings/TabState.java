@@ -1,5 +1,5 @@
 package de.jowisoftware.sshclient.application.settings;
 
 public enum TabState {
-    Open, Closed, AlwaysOpen, AlwaysClosed
+    OPEN, CLOSED, ALWAYS_OPEN, ALWAYS_CLOSED
 }

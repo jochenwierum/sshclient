@@ -1,21 +1,25 @@
 package de.jowisoftware.sshclient.terminal.mouse;
 
 import org.jmock.Expectations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.terminal.buffer.BoundaryLocator;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.util.StringUtils;
 
-public class DefaultMouseCursorManagerTest extends JMockTest {
+public class DefaultMouseCursorManagerTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
     private Renderer renderer;
     private ClipboardManager clipboard;
     private BoundaryLocator boundaries;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         renderer = context.mock(Renderer.class);
         clipboard = context.mock(ClipboardManager.class);

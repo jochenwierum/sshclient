@@ -12,7 +12,7 @@ public class ReflectionEventHub<T> implements EventHub<T> {
     private final T proxy;
 
     private ReflectionEventHub(final Class<T> clazz) {
-        listeners = new LinkedList<T>();
+        listeners = new LinkedList<>();
 
         final InvocationHandler handler = createInvocationHandler();
         try {
@@ -23,7 +23,7 @@ public class ReflectionEventHub<T> implements EventHub<T> {
     }
 
     public static <T> EventHub<T> forEventClass(final Class<T> clazz) {
-        return new ReflectionEventHub<T>(clazz);
+        return new ReflectionEventHub<>(clazz);
     }
 
     @SuppressWarnings("unchecked")
@@ -34,11 +34,11 @@ public class ReflectionEventHub<T> implements EventHub<T> {
                 getClass().getClassLoader(), clazz);
         return (T) proxyClass.
                 getConstructor(new Class[] { InvocationHandler.class }).
-                newInstance(new Object[] { handler });
+                newInstance(handler);
     }
 
     private InvocationHandler createInvocationHandler() {
-        final InvocationHandler handler = new InvocationHandler() {
+        return new InvocationHandler() {
             @Override
             public Object invoke(final Object proxyObject,
                     final Method method, final Object[] args) throws Throwable {
@@ -48,7 +48,6 @@ public class ReflectionEventHub<T> implements EventHub<T> {
                 return null;
             }
         };
-        return handler;
     }
 
     @Override

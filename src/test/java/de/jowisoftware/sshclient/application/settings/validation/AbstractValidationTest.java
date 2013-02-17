@@ -3,8 +3,8 @@ package de.jowisoftware.sshclient.application.settings.validation;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
+import org.junit.Before;
+import org.junit.BeforeClass;
 
 import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.i18n.Translation;
@@ -18,7 +18,7 @@ public abstract class AbstractValidationTest<T extends Profile<?>> {
         Translation.initStaticTranslationWithLanguage(null);
     }
 
-    @BeforeMethod
+    @Before
     public void setUpProfile() {
         profile = newProfile();
     }
@@ -31,13 +31,13 @@ public abstract class AbstractValidationTest<T extends Profile<?>> {
         return result;
     }
 
-    public void assertError(final String field, final String message) {
+    protected void assertError(final String field, final String message) {
         final ValidationResult errors = doValidation();
         assertThat(errors.hadErrors(), is(true));
         assertThat(errors.getErrors().get(field), is(message));
     }
 
-    public void assertNoError() {
+    protected void assertNoError() {
         assertThat(doValidation().hadErrors(), is(false));
     }
 }

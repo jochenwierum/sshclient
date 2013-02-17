@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DefaultValidationResult implements ValidationResult {
-    private final Map<String, String> errors = new HashMap<String, String>();
+    private final Map<String, String> errors = new HashMap<>();
 
     @Override
     public boolean hadErrors() {

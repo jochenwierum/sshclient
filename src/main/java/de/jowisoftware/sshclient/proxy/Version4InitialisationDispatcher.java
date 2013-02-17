@@ -3,7 +3,7 @@ package de.jowisoftware.sshclient.proxy;
 import java.io.UnsupportedEncodingException;
 
 public class Version4InitialisationDispatcher implements SocksDispatcher {
-    private final int OUTGOING_CONNECTION = 1;
+    private static final int OUTGOING_CONNECTION = 1;
 
     private final byte ip[] = new byte[4];
     private final byte port[] = new byte[2];

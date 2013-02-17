@@ -116,7 +116,7 @@ public class PrivateKeyTab implements KeyManagerEvents, Tab {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(final ActionEvent e) {
-                    final List<String> toRemove = new LinkedList<String>();
+                    final List<String> toRemove = new LinkedList<>();
                     for (final int index : list.getSelectedIndices()) {
                         toRemove.add(list.getModel().getElementAt(index));
                     }

@@ -1,7 +1,7 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
 
-public interface CursorPositionManager {
+interface CursorPositionManager {
     public static final int NO_MARGIN_DEFINED = -1;
 
     void newSize(int width, int height);

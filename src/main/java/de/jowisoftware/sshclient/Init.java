@@ -49,9 +49,7 @@ public class Init {
         final SimplePasswordManager passwordManager = new SimplePasswordManager();
         final JSchKeyManager keyManager = new JSchKeyManager(jsch,
                 settings, passwordManager);
-        final Application application = new Application(jsch, settings,
-                passwordManager, keyManager);
-        return application;
+        return new Application(jsch, settings, passwordManager, keyManager);
     }
 
     private MainWindow createMainWindow(final Application application) {

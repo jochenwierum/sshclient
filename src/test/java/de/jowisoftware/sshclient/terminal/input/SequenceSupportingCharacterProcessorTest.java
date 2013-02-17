@@ -4,10 +4,11 @@ import java.util.Arrays;
 
 import org.jmock.Expectations;
 import org.jmock.Sequence;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
@@ -19,7 +20,10 @@ import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.NonASCIIControlSequence;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.SequenceRepository;
 
-public class SequenceSupportingCharacterProcessorTest extends JMockTest {
+public class SequenceSupportingCharacterProcessorTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
     private Buffer buffer;
     private GfxCharSetup setup;
     private NonASCIIControlSequence sequence1;
@@ -30,7 +34,7 @@ public class SequenceSupportingCharacterProcessorTest extends JMockTest {
     private SSHSession sessionInfo;
     private SequenceRepository repository;
 
-    @BeforeMethod(dependsOnMethods = "setUpJMock")
+    @Before
     public void setUp() {
         buffer = context.mock(Buffer.class);
         setup = context.mock(GfxCharSetup.class);

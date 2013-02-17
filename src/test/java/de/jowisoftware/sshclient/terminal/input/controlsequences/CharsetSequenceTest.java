@@ -1,10 +1,10 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.jmock.Expectations;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import de.jowisoftware.sshclient.terminal.charsets.TerminalCharset;
 import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;

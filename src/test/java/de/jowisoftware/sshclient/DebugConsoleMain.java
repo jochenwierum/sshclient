@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.WindowConstants;
 
 import org.apache.commons.io.IOUtils;
 
@@ -22,7 +23,7 @@ public class DebugConsoleMain {
         new DebugConsoleMain().run();
     }
 
-    public void run() throws Exception {
+    private void run() throws Exception {
         final InputStream stream = getClass().getClassLoader().getResourceAsStream("debug.txt");
         if (stream == null) {
             JOptionPane.showMessageDialog(null, "place debug.txt in src/test/resource (and re-run mvn package)");
@@ -53,7 +54,7 @@ public class DebugConsoleMain {
 
         frame.setSize(630, 480);
         frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         console.setOutputStream(System.out);
         console.setDisplayType(DisplayType.FIXED80X24);
@@ -87,14 +88,18 @@ public class DebugConsoleMain {
         while(m.find()) {
             final String g = m.group(2);
             final String rep;
-            if (g.equals("n")) {
-                rep = "\n";
-            } else if (g.equals("r")) {
-                rep = "\r";
-            } else if (g.equals("\\")) {
-                rep = "\\";
-            } else {
-                rep = Character.toString((char) Integer.parseInt(g.substring(1).toUpperCase(), 16));
+            switch(g) {
+                case "n":
+                    rep = "\n";
+                    break;
+                case "r":
+                    rep = "\r";
+                    break;
+                case "\\":
+                    rep = "\\";
+                    break;
+                default:
+                    rep = Character.toString((char) Integer.parseInt(g.substring(1).toUpperCase(), 16));
             }
             m.appendReplacement(builder, rep.replace("\\", "\\\\"));
         }

@@ -1,23 +1,24 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import static org.testng.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import org.jmock.Expectations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Before;
+import org.junit.Test;
 
 public class KeyboardControlSequenceTest extends AbstractSequenceTest {
     private KeyboardControlSequence sequence;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         sequence = new KeyboardControlSequence();
     }
 
     @Test
     public void testMatches() {
-        assertTrue(sequence.canHandleSequence("="));
-        assertTrue(sequence.canHandleSequence(">"));
+        assertThat(sequence.canHandleSequence("="), is(true));
+        assertThat(sequence.canHandleSequence(">"), is(true));
     }
 
     @Test

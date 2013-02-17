@@ -131,7 +131,7 @@ public class XMLDocumentWriter implements DocumentWriter {
         return createSubNode(path, root);
     }
 
-    public DocumentWriter createSubNode(String path, Element start) {
+    private DocumentWriter createSubNode(String path, Element start) {
         final Element node = createOrFindElementPath(path, start);
         return new ForwardingDocumentWriter(node);
     }
@@ -140,9 +140,7 @@ public class XMLDocumentWriter implements DocumentWriter {
         Element current = start;
         final String segments[] = path.split("/");
 
-        for (int i = 0; i < segments.length; ++i) {
-            final String segment = segments[i];
-
+        for (String segment : segments) {
             if (segment.startsWith("@")) {
                 throw new IllegalStateException("List must not be saved in Attributes");
             } else {
@@ -168,28 +166,6 @@ public class XMLDocumentWriter implements DocumentWriter {
 
             transformer.transform(domSource, result);
         } catch(TransformerException|IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public String toXML() {
-        try {
-            DOMSource domSource = new DOMSource(doc);
-            StringWriter writer = new StringWriter();
-            StreamResult result = new StreamResult(writer);
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer transformer = tf.newTransformer();
-
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-
-            transformer.transform(domSource, result);
-            writer.flush();
-            return writer.toString();
-        } catch(TransformerException e) {
             throw new RuntimeException(e);
         }
     }

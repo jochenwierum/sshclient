@@ -3,17 +3,20 @@ package de.jowisoftware.sshclient.terminal.buffer;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.testng.Assert.assertEquals;
 
 import org.jmock.Expectations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 import de.jowisoftware.sshclient.util.RingBuffer;
 
-public class ArrayBackedBufferStorageTest extends JMockTest {
+public class ArrayBackedBufferStorageTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
     private ArrayBackedBufferStorage storage;
     private GfxChar nullChar;
     private GfxChar char1;
@@ -23,7 +26,7 @@ public class ArrayBackedBufferStorageTest extends JMockTest {
     private RingBuffer<GfxChar[]> history;
 
     @SuppressWarnings("unchecked")
-    @BeforeMethod
+    @Before
     public void setUp() {
         nullChar = context.mock(GfxChar.class, "nullChar");
         char1 = context.mock(GfxChar.class, "char1");
@@ -39,7 +42,7 @@ public class ArrayBackedBufferStorageTest extends JMockTest {
     }
 
     private void assertChar(final int y, final int x, final GfxChar character) {
-        assertEquals(character, storage.getCharacterAt(y, x));
+        assertThat(storage.getCharacterAt(y, x), is(character));
     }
 
     @Test

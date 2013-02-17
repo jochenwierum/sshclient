@@ -18,7 +18,7 @@ public class DefaultSocksInitialisationProcessor implements
         }
     }
 
-    public DefaultSocksInitialisationProcessor() {
+    DefaultSocksInitialisationProcessor() {
         this(null);
     }
 

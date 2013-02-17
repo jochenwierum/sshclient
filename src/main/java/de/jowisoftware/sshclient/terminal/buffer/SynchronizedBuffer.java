@@ -3,7 +3,7 @@ package de.jowisoftware.sshclient.terminal.buffer;
 import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 
 public class SynchronizedBuffer implements Buffer {
-    private volatile FlippableBufferStorage storage;
+    private final FlippableBufferStorage storage;
 
     private final CursorPositionManager cursorPosition;
     private final TabStopManager tabstops;

@@ -10,7 +10,7 @@ import de.jowisoftware.sshclient.events.EventHub;
  * not use reflections for invokes
  */
 public class InputStreamEventHub implements EventHub<InputStreamEvent> {
-    private final List<InputStreamEvent> handlers = new LinkedList<InputStreamEvent>();
+    private final List<InputStreamEvent> handlers = new LinkedList<>();
 
     private final InputStreamEvent invoker = new InputStreamEvent() {
         @Override

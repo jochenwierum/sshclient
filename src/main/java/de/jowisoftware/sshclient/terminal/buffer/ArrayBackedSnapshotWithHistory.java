@@ -56,9 +56,7 @@ public class ArrayBackedSnapshotWithHistory implements SnapshotWithHistory  {
                 result[historyEnd - historyStart - 1 - i] = iterator.next();
             }
 
-            for (int i = 0; i < contentMax; ++i) {
-                result[historyEnd - historyStart + i] = buffer[i];
-            }
+            System.arraycopy(buffer, 0, result, historyEnd - historyStart, contentMax);
 
             return new Snapshot(result, cursorPosition.offset(0, historyEnd));
         }

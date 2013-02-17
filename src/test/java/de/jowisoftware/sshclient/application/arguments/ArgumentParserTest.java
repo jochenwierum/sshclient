@@ -7,21 +7,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jmock.Expectations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.application.settings.Profile;
 
-public class ArgumentParserTest extends JMockTest {
+public class ArgumentParserTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
     @SuppressWarnings("rawtypes")
     private ArgumentParserCallback callback;
     private ApplicationSettings<?> settings;
     private ArgumentParser<?> parser;
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    @BeforeMethod
+    @Before
     public void setUp() {
         callback = context.mock(ArgumentParserCallback.class);
         settings = context.mock(ApplicationSettings.class);
@@ -44,7 +48,7 @@ public class ArgumentParserTest extends JMockTest {
         final Profile<?> profile1 = context.mock(Profile.class, "profile1");
         final Profile<?> profile2 = context.mock(Profile.class, "profile2");
 
-        final Map<String, Profile<?>> profileMap = new HashMap<String, Profile<?>>();
+        final Map<String, Profile<?>> profileMap = new HashMap<>();
         profileMap.put("p1", profile1);
         profileMap.put("profile2", profile2);
 

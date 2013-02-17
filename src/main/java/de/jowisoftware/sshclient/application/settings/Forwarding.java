@@ -4,7 +4,7 @@ import de.jowisoftware.sshclient.application.settings.persistence.annotations.Pe
 
 public class Forwarding {
     public static enum Direction {
-        Local("L", "local"), Remote("R", "remote");
+        LOCAL("L", "local"), REMOTE("R", "remote");
 
         public final String shortName;
         public final String longName;

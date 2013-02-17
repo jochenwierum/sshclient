@@ -16,7 +16,7 @@ public class XMLDocumentReader implements DocumentReader {
         private final NodeList nodeList;
         private int pos = 0;
 
-        public ListReader(final Element list, final String name) {
+        private ListReader(final Element list, final String name) {
             if (list == null) {
                 nodeList = null;
             } else {
@@ -64,14 +64,13 @@ public class XMLDocumentReader implements DocumentReader {
         }
     }
 
-    private final Document doc;
     private final Element root;
 
     public XMLDocumentReader(File settingsFile) throws SAXException, IOException {
         try (InputStream is = new FileInputStream(settingsFile)) {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            doc = builder.parse(is);
+            Document doc = builder.parse(is);
             root = (Element) doc.getChildNodes().item(0);
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
@@ -133,9 +132,7 @@ public class XMLDocumentReader implements DocumentReader {
         }
 
         String[] segments = path.split("/");
-        for (int i = 0; i < segments.length; ++i) {
-            final String segment = segments[i];
-
+        for (String segment : segments) {
             if (segment.startsWith("@")) {
                 throw new IllegalStateException("Attributes are not allowed");
             }

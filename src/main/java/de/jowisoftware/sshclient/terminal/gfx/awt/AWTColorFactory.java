@@ -16,9 +16,9 @@ public class AWTColorFactory implements ColorFactory {
 
     private final AWTGfxInfo gfxInfo;
     private final Map<Integer, CustomColor> customColors =
-            new HashMap<Integer, CustomColor>();
+            new HashMap<>();
     private final Map<Integer, SystemColor> systemColors =
-            new HashMap<Integer, SystemColor>();
+            new HashMap<>();
 
     public AWTColorFactory(final AWTGfxInfo gfxInfo) {
         this.gfxInfo = gfxInfo;

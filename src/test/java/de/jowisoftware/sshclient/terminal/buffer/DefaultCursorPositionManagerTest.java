@@ -5,16 +5,19 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
 import org.jmock.Expectations;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
-import de.jowisoftware.sshclient.JMockTest;
+public class DefaultCursorPositionManagerTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
 
-public class DefaultCursorPositionManagerTest extends JMockTest {
     private CursorPositionManagerFeedback feedback;
     private CursorPositionManager manager;
 
-    @BeforeMethod
+    @Before
     public void setUp() {
         feedback = context.mock(CursorPositionManagerFeedback.class, "feedback");
         manager = new DefaultCursorPositionManager(feedback, 80, 24);

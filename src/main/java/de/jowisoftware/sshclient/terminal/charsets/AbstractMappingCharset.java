@@ -3,10 +3,10 @@ package de.jowisoftware.sshclient.terminal.charsets;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class AbstractMappingCharset implements GfxCharset {
-    private final Map<Integer, Character> charMap = new HashMap<Integer, Character>();
+abstract class AbstractMappingCharset implements GfxCharset {
+    private final Map<Integer, Character> charMap = new HashMap<>();
 
-    public AbstractMappingCharset() {
+    protected AbstractMappingCharset() {
         init(charMap);
     }
 

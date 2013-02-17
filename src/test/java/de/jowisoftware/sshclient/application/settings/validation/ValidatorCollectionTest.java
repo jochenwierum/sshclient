@@ -1,12 +1,16 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
 import org.jmock.Expectations;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
+import org.junit.Test;
 
-import de.jowisoftware.sshclient.JMockTest;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 
-public class ValidatorCollectionTest extends JMockTest {
+public class ValidatorCollectionTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
+
     @SuppressWarnings("unchecked")
     @Test
     public void callsAllItemsInCollection() {
@@ -16,7 +20,7 @@ public class ValidatorCollectionTest extends JMockTest {
         final ValidationResult result = context.mock(ValidationResult.class);
         final AWTProfile profile = new AWTProfile();
 
-        final ValidatorCollection<AWTProfile> collection = new ValidatorCollection<AWTProfile>();
+        final ValidatorCollection<AWTProfile> collection = new ValidatorCollection<>();
         collection.addValidator(v1);
         collection.addValidator(v2);
         collection.addValidator(v3);

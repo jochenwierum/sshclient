@@ -9,7 +9,7 @@ import de.jowisoftware.sshclient.terminal.buffer.Snapshot;
 import de.jowisoftware.sshclient.terminal.buffer.SnapshotWithHistory;
 import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 
-public class BufferMockHelper {
+class BufferMockHelper {
     private final Mockery context;
     private final GfxChar[][] result;
 

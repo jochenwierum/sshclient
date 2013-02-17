@@ -26,7 +26,7 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     @Persist("forwardings/x11/host") private String x11Host = "127.0.0.1";
     @Persist("forwardings/x11/display") private int x11Display = 0;
 
-    @Persist(value = "forwardings/portforwardings", traversalType = TraversalType.List, traverseListAndMapChildrenRecursively = true, targetClass = Forwarding.class)
+    @Persist(value = "forwardings/portforwardings", traversalType = TraversalType.LIST, traverseListAndMapChildrenRecursively = true, targetClass = Forwarding.class)
     private final List<Forwarding> portForwardings;
     @Persist("forwardings/proxyPort") private Integer socksPort = null;
 
@@ -35,13 +35,13 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     @Persist("charset") private String charsetName = "UTF-8";
     private transient Charset charset;
 
-    @Persist(traversalType = TraversalType.Recursive)
+    @Persist(traversalType = TraversalType.RECURSIVE)
     private final AWTGfxInfo gfxInfo;
 
-    @Persist(value = "environment", traversalType = TraversalType.Map, targetClass = String.class, targetClass2 = String.class)
+    @Persist(value = "environment", traversalType = TraversalType.MAP, targetClass = String.class, targetClass2 = String.class)
     private final HashMap<String, String> environmentMap;
 
-    @Persist CloseTabMode closeTabMode = CloseTabMode.NO_ERROR;
+    @Persist private CloseTabMode closeTabMode = CloseTabMode.NO_ERROR;
 
     public AWTProfile() {
         gfxInfo = new AWTGfxInfo();

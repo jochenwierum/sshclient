@@ -109,7 +109,7 @@ public class SettingsDialog extends JDialog {
     }
 
     private JComboBox<Language> createLanguageCombobox() {
-        final LinkedList<Language> languages = new LinkedList<Language>();
+        final LinkedList<Language> languages = new LinkedList<>();
         int selectedIndex = 0;
         int i = 0;
 
@@ -153,8 +153,8 @@ public class SettingsDialog extends JDialog {
         values[2] = t("settings.states.closed", "closed on start");
 
         switch(selectedState) {
-            case AlwaysClosed: selected = 2; break;
-            case AlwaysOpen: selected = 1; break;
+            case ALWAYS_CLOSED: selected = 2; break;
+            case ALWAYS_OPEN: selected = 1; break;
             default: selected = 0; break;
         }
 
@@ -242,9 +242,9 @@ public class SettingsDialog extends JDialog {
 
     private TabState comboBoxToTabState(final JComboBox<String> tabStateCombobox) {
         switch(tabStateCombobox.getSelectedIndex()) {
-        case 1: return TabState.AlwaysOpen;
-        case 2: return TabState.AlwaysClosed;
-        default: return TabState.Closed;
+        case 1: return TabState.ALWAYS_OPEN;
+        case 2: return TabState.ALWAYS_CLOSED;
+        default: return TabState.CLOSED;
         }
     }
 }

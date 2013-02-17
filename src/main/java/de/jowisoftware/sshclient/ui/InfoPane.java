@@ -12,7 +12,7 @@ public class InfoPane extends JPanel {
         init(message);
     }
 
-    public void init(final String text) {
+    private void init(final String text) {
         setAlignmentX(CENTER_ALIGNMENT);
         setAlignmentY(CENTER_ALIGNMENT);
 

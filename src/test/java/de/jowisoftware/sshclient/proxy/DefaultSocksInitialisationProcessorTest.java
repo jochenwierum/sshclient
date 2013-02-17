@@ -2,14 +2,17 @@ package de.jowisoftware.sshclient.proxy;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertArrayEquals;
 
 import org.jmock.Expectations;
-import org.testng.annotations.Test;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Rule;
+import org.junit.Test;
 
-import de.jowisoftware.sshclient.JMockTest;
+public class DefaultSocksInitialisationProcessorTest {
+    @Rule
+    public JUnitRuleMockery context = new JUnitRuleMockery();
 
-public class DefaultSocksInitialisationProcessorTest extends JMockTest {
     @Test
     public void dispatcherIsSelectable() {
         final SocksDispatcher dispatcher1 = context.mock(SocksDispatcher.class,
@@ -35,9 +38,9 @@ public class DefaultSocksInitialisationProcessorTest extends JMockTest {
         processor.setNextDispatcher(dispatcher2);
         final byte[] cResult = processor.process((byte) 67);
 
-        assertEquals(aResult, new byte[] { '1', '2' });
-        assertEquals(bResult, new byte[0]);
-        assertEquals(cResult, new byte[] { '3', '4' });
+        assertArrayEquals(aResult, new byte[] { '1', '2' });
+        assertArrayEquals(bResult, new byte[0]);
+        assertArrayEquals(cResult, new byte[] { '3', '4' });
     }
 
     @Test
@@ -58,7 +61,7 @@ public class DefaultSocksInitialisationProcessorTest extends JMockTest {
         assertThat(processor.getPort(), is(4321));
     }
 
-    @Test(expectedExceptions = IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void setupConnectionFinishesState() {
         final DefaultSocksInitialisationProcessor processor =
                 new DefaultSocksInitialisationProcessor();

@@ -7,7 +7,7 @@ import java.awt.Window;
 
 @SuppressWarnings("serial")
 public abstract class AbstractGridBagOptionPanel extends AbstractOptionPanel {
-    public AbstractGridBagOptionPanel(final Window parent) {
+    protected AbstractGridBagOptionPanel(final Window parent) {
         super(parent);
         setLayout(new GridBagLayout());
     }

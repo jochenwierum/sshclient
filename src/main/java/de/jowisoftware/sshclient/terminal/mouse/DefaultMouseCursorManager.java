@@ -10,7 +10,7 @@ import de.jowisoftware.sshclient.terminal.buffer.Snapshot;
 
 public class DefaultMouseCursorManager implements MouseCursorManager {
     private enum SelectionMode {
-        CHARWISE, WORDWISE, LINEWISE;
+        SELECTION_MODE, WORDWISE, LINEWIESE
     }
 
     private static final Logger LOGGER = Logger
@@ -23,7 +23,7 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
 
     private Position firstClickPosition;
     private Position lastSelectionEndPosition;
-    private SelectionMode selectionMode = SelectionMode.CHARWISE;
+    private SelectionMode selectionMode = SelectionMode.SELECTION_MODE;
 
     private Position startPosition;
     private Position endPosition;
@@ -55,7 +55,7 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
 
         if (!position.equals(lastSelectionEndPosition)) {
             LOGGER.trace("End selection: " + position);
-            if (position.equals(firstClickPosition) && selectionMode == SelectionMode.CHARWISE) {
+            if (position.equals(firstClickPosition) && selectionMode == SelectionMode.SELECTION_MODE) {
                 renderer.clearSelection();
                 startPosition = null;
                 endPosition = null;
@@ -71,13 +71,13 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
         final boolean swap = firstClickPosition.isAfter(newPosition);
 
         switch(selectionMode) {
-        case CHARWISE:
+        case SELECTION_MODE:
             updateCharwiseSelectionFields(firstClickPosition, newPosition, swap);
             break;
         case WORDWISE:
             updateWordwiseSelectionFields(firstClickPosition, newPosition, swap);
             break;
-        case LINEWISE:
+        case LINEWIESE:
             updateLinewiseSelectionFields(firstClickPosition, newPosition, swap);
             break;
         }
@@ -139,7 +139,7 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
         clipboard.copyPlaintext(selectedText);
     }
 
-    public String appendSelectionToBuilder(final Snapshot snapshot, final Position pos1,
+    private String appendSelectionToBuilder(final Snapshot snapshot, final Position pos1,
             final Position pos2, final Position size) {
         final StringBuilder builder = new StringBuilder();
         builder.append(getLineFromSnapshot(snapshot, pos1.y, pos1.x, size.x));

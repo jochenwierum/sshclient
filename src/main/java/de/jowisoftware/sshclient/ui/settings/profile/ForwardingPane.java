@@ -169,7 +169,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
                     return;
                 }
 
-                final Direction direction = (localForwarding.isSelected() ? Direction.Local : Direction.Remote);
+                final Direction direction = (localForwarding.isSelected() ? Direction.LOCAL : Direction.REMOTE);
                 final Forwarding forwarding = new Forwarding(direction,
                         sourceHost, sourcePort, remoteHost, remotePort);
 

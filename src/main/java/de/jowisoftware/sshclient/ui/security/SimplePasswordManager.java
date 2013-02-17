@@ -99,9 +99,9 @@ public class SimplePasswordManager implements PasswordManager {
     }
 
     private void unlockStorage() throws UserAbortException {
-        if (storage.getState() == State.Locked) {
+        if (storage.getState() == State.LOCKED) {
             openStorage(t("security.master.key", "Master"));
-        } else if(storage.getState() == State.Uninitialized) {
+        } else if(storage.getState() == State.UNINITIALIZED) {
             updateStoragePassword();
         }
     }
@@ -131,7 +131,7 @@ public class SimplePasswordManager implements PasswordManager {
     }
 
     private void openStorage(final String keyName) throws UserAbortException {
-        while(storage.getState() == State.Locked) {
+        while(storage.getState() == State.LOCKED) {
             try {
                 final String password = readPasswordFromUser(keyName, false).password;
                 storage.unlock(password);
@@ -156,7 +156,7 @@ public class SimplePasswordManager implements PasswordManager {
     @Override
     public void changeMasterPassword() {
         try {
-            if (storage.getState() == State.Locked) {
+            if (storage.getState() == State.LOCKED) {
                 openStorage(t("security.master.key.old", "Master (old)"));
             }
             updateStoragePassword();
@@ -189,10 +189,10 @@ public class SimplePasswordManager implements PasswordManager {
             }
         }
 
-        final SortedMap<String, String> result = new TreeMap<String, String>();
+        final SortedMap<String, String> result = new TreeMap<>();
         for (final String key : storage.exportPasswordIds()) {
             String password = "";
-            if (showPasswords && storage.getState() == PasswordStorage.State.Unlocked) {
+            if (showPasswords && storage.getState() == PasswordStorage.State.UNLOCKED) {
                 try {
                     password = storage.restorePassword(key);
                 } catch (final CryptoException e) {

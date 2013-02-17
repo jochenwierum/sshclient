@@ -4,7 +4,6 @@ import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.terminal.buffer.TabStopManager;
-import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
 import de.jowisoftware.sshclient.terminal.events.VisualEvent;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
@@ -20,9 +19,6 @@ public interface SSHSession {
     GfxCharSetup getCharSetup();
     TabStopManager getTabStopManager();
     Renderer getRenderer();
-
-    DisplayType getDisplayType();
-    void setDisplayType(DisplayType newDisplayType);
 
     void saveState();
     void restoreState();

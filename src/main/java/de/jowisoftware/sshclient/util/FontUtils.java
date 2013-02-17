@@ -12,8 +12,8 @@ import java.util.List;
 public final class FontUtils {
     private FontUtils() { /* util class */ }
 
-    private static final List<String> fontCache = new ArrayList<String>();
-    private static final List<KeyValue<String, Object>> renderingHints = new ArrayList<KeyValue<String, Object>>();
+    private static final List<String> fontCache = new ArrayList<>();
+    private static final List<KeyValue<String, Object>> renderingHints = new ArrayList<>();
 
     public static boolean isMonospacedFont(final Font font) {
         final BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
@@ -27,7 +27,7 @@ public final class FontUtils {
     }
 
     private static boolean isMonospacedFont(final Font font, final Graphics graphics) {
-        final FontMetrics metrics = graphics.getFontMetrics(font.deriveFont(12));
+        final FontMetrics metrics = graphics.getFontMetrics(font.deriveFont(12f));
 
         final int width = metrics.charWidth('a');
         for (char c = 'b'; c <= 'z'; ++c) {
@@ -85,16 +85,16 @@ public final class FontUtils {
         if (renderingHints.isEmpty()) {
             fillRenderingHints();
         }
-        return new ArrayList<KeyValue<String, Object>>(renderingHints);
+        return new ArrayList<>(renderingHints);
     }
 
     private static void fillRenderingHints() {
-        renderingHints.add(new KeyValue<String, Object>("automatic", RenderingHints.VALUE_TEXT_ANTIALIAS_GASP));
-        renderingHints.add(new KeyValue<String, Object>("off", RenderingHints.VALUE_TEXT_ANTIALIAS_OFF));
-        renderingHints.add(new KeyValue<String, Object>("on", RenderingHints.VALUE_TEXT_ANTIALIAS_ON));
-        renderingHints.add(new KeyValue<String, Object>("hrgb", RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB));
-        renderingHints.add(new KeyValue<String, Object>("hbgr", RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR));
-        renderingHints.add(new KeyValue<String, Object>("vrgb", RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VRGB));
-        renderingHints.add(new KeyValue<String, Object>("vbgr", RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VBGR));
+        renderingHints.add(new KeyValue<>("automatic", RenderingHints.VALUE_TEXT_ANTIALIAS_GASP));
+        renderingHints.add(new KeyValue<>("off", RenderingHints.VALUE_TEXT_ANTIALIAS_OFF));
+        renderingHints.add(new KeyValue<>("on", RenderingHints.VALUE_TEXT_ANTIALIAS_ON));
+        renderingHints.add(new KeyValue<>("hrgb", RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HRGB));
+        renderingHints.add(new KeyValue<>("hbgr", RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_HBGR));
+        renderingHints.add(new KeyValue<>("vrgb", RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VRGB));
+        renderingHints.add(new KeyValue<>("vbgr", RenderingHints.VALUE_TEXT_ANTIALIAS_LCD_VBGR));
     }
 }

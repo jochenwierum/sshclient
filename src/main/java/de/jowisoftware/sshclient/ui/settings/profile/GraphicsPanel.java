@@ -76,7 +76,7 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
     private JComboBox<String> createFontSelectionBox() {
         final String names[] = FontUtils.getCachedMonospacedFonts();
         Arrays.sort(names);
-        return new JComboBox<String>(names);
+        return new JComboBox<>(names);
     }
 
     private void addColorChooserMatrix(final int offset) {
@@ -124,7 +124,7 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
                     style.name().toLowerCase());
         }
 
-        return new JComboBox<String>(names);
+        return new JComboBox<>(names);
     }
 
     private JCheckBox createBlinkingCheckBox() {
@@ -150,7 +150,7 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
             names[i++] = t("profiles.color.antialiasing." + hint.key, hint.key);
         }
 
-        return new JComboBox<String>(names);
+        return new JComboBox<>(names);
     }
 
     @Override

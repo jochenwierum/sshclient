@@ -10,8 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 public final class SwingUtils {
-    private static final Map<Character, Integer> VKMappings
-        = new HashMap<Character, Integer>();
+    private static final Map<Character, Integer> VKMappings = new HashMap<>();
 
     static {
         VKMappings.put('a', KeyEvent.VK_A);

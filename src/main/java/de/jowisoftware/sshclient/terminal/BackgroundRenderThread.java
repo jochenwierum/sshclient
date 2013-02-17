@@ -62,6 +62,7 @@ final class BackgroundRenderThread extends Thread {
             try {
                 Thread.sleep(10);
             } catch (final InterruptedException e) {
+                // ignore interruption - continue loop
             }
         }
     }

@@ -1,17 +1,18 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import org.jmock.Expectations;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 
 public class ANSISequenceCursorTest extends AbstractSequenceTest {
     @Test
     public void testFEqualsH() {
-        assertEquals(new DefaultSequenceRepository().getANSISequence('H').getClass(),
+        assertEquals(new DefaultSequenceRepository().getANSISequence('H')
+                .getClass(),
                 new DefaultSequenceRepository().getANSISequence('f').getClass());
     }
 

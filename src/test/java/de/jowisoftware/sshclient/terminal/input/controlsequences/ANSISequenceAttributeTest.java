@@ -2,7 +2,7 @@ package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 import org.jmock.Expectations;
 import org.jmock.Sequence;
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import de.jowisoftware.sshclient.terminal.gfx.Attribute;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
