@@ -65,10 +65,10 @@ public class AWTGfxChar implements GfxChar {
     private void drawCursor(final Graphics g, final Rectangle rect, final int flags) {
         final Rectangle cursorRect;
         switch (gfxInfo.getCursorStyle()) {
-            case Block: cursorRect = rect; break;
-            case Underline: cursorRect = new Rectangle(
+            case BLOCK: cursorRect = rect; break;
+            case UNDERLINE: cursorRect = new Rectangle(
                     rect.x, rect.y + rect.height - 4, rect.width, 4); break;
-            case Horizontal: cursorRect = new Rectangle(
+            case HORIZONTAL: cursorRect = new Rectangle(
                     rect.x, rect.y, 3, rect.height); break;
             default: throw new RuntimeException("Unsupported cursor style");
         }

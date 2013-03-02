@@ -1,6 +1,8 @@
 package de.jowisoftware.sshclient.application.settings.persistence.xml;
 
-import org.w3c.dom.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -11,14 +13,17 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.*;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class XMLDocumentWriter implements DocumentWriter {
     public class ListWriter {
         private final Element node;
         private final String name;
 
-        private ListWriter(Element node, String name) {
+        private ListWriter(final Element node, final String name) {
             this.node = node;
             this.name = name;
         }
@@ -29,7 +34,7 @@ public class XMLDocumentWriter implements DocumentWriter {
             return new ForwardingDocumentWriter(newChild);
         }
     }
-    
+
     private class ForwardingDocumentWriter implements DocumentWriter {
         private final Element node;
 
@@ -68,13 +73,13 @@ public class XMLDocumentWriter implements DocumentWriter {
         return docBuilder.newDocument();
     }
 
-    private Element createRoot(Document document, String rootName) {
-        Element rootElement = document.createElement(rootName);
+    private Element createRoot(final Document document, final String rootName) {
+        final Element rootElement = document.createElement(rootName);
         doc.appendChild(rootElement);
         return rootElement;
     }
 
-    private Element findOrCreateNode(Element node, String childName) {
+    private Element findOrCreateNode(final Element node, final String childName) {
         final NodeList children = node.getChildNodes();
         for (int i = 0; i < children.getLength(); ++i) {
             if (children.item(i).getNodeName().equals(childName)) {
@@ -127,20 +132,20 @@ public class XMLDocumentWriter implements DocumentWriter {
     }
 
     @Override
-    public DocumentWriter writeSubNode(String path) {
+    public DocumentWriter writeSubNode(final String path) {
         return createSubNode(path, root);
     }
 
-    private DocumentWriter createSubNode(String path, Element start) {
+    private DocumentWriter createSubNode(final String path, final Element start) {
         final Element node = createOrFindElementPath(path, start);
         return new ForwardingDocumentWriter(node);
     }
 
-    private Element createOrFindElementPath(String path, Element start) {
+    private Element createOrFindElementPath(final String path, final Element start) {
         Element current = start;
         final String segments[] = path.split("/");
 
-        for (String segment : segments) {
+        for (final String segment : segments) {
             if (segment.startsWith("@")) {
                 throw new IllegalStateException("List must not be saved in Attributes");
             } else {
@@ -153,10 +158,10 @@ public class XMLDocumentWriter implements DocumentWriter {
 
     public void writeFile(final File settingsFile) {
         try (FileWriter writer = new FileWriter(settingsFile)) {
-            DOMSource domSource = new DOMSource(doc);
-            StreamResult result = new StreamResult(writer);
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer transformer = tf.newTransformer();
+            final DOMSource domSource = new DOMSource(doc);
+            final StreamResult result = new StreamResult(writer);
+            final TransformerFactory tf = TransformerFactory.newInstance();
+            final Transformer transformer = tf.newTransformer();
 
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");
@@ -168,5 +173,9 @@ public class XMLDocumentWriter implements DocumentWriter {
         } catch(TransformerException|IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void setVersion(final String version) {
+        root.setAttribute("version", version);
     }
 }

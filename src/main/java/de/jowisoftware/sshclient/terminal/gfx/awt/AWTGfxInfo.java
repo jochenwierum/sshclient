@@ -27,7 +27,7 @@ public final class AWTGfxInfo implements GfxInfo<Color> {
     @Persist("font/@name") private String fontName = Font.MONOSPACED;
     @Persist("font/@size") private int fontSize = 10;
     @Persist("antiAliasingMode") private int antiAliasingMode;
-    @Persist("cursor/style") private CursorStyle cursorStyle = CursorStyle.Block;
+    @Persist("cursor/style") private CursorStyle cursorStyle = CursorStyle.BLOCK;
     @Persist("cursor/style/@blink") private boolean cursorBlinks = true;
 
     @Persist("boundaryChars") private String boundaryChars = ":@-./_~?&=%+#";
