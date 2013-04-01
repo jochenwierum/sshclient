@@ -158,6 +158,7 @@ public class SequenceSupportingCharacterProcessor implements CharacterProcessor 
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean handleFullMatches() {
         final Iterator<NonASCIIControlSequence> it =
                 currentState().availableSequences.iterator();

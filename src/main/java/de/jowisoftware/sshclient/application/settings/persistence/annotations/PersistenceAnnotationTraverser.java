@@ -54,9 +54,9 @@ public final class PersistenceAnnotationTraverser {
         } else if (annotation.traversalType().equals(TraversalType.MAP)) {
             callback.foundMap(field, object, annotation, name);
         } else if (annotation.traversalType().equals(TraversalType.RECURSIVE)) {
-            callback.foundSubObject(field, object, annotation, name);
+            callback.foundSubObject(field, object, name);
         } else {
-            callback.foundField(field, object, annotation, name);
+            callback.foundField(field, object, name);
         }
     }
 }

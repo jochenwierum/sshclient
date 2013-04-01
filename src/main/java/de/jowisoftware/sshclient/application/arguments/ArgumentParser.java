@@ -65,15 +65,17 @@ public class ArgumentParser<T extends Profile<?>> {
         return ArgumentResult.ERROR;
     }
 
+    @SuppressWarnings("SameReturnValue")
     private ArgumentResult parseFreeStyle(final String arg) {
-        final FreeStyleConnectArgument<T> argument = new FreeStyleConnectArgument<>(arg);
+        final ConnectArgument<T> argument = new FreeStyleConnectArgument<>(arg);
         callbacks.openConnection(argument.getProfile(settings));
         return ArgumentResult.TAKE_ONE;
     }
 
+    @SuppressWarnings("SameReturnValue")
     private ArgumentResult parseSession(final String arg) {
         final String sessionName = arg.substring(1);
-        final SessionConnectArgument<T> argument = new SessionConnectArgument<>(sessionName);
+        final ConnectArgument<T> argument = new SessionConnectArgument<>(sessionName);
         callbacks.openConnection(argument.getProfile(settings));
         return ArgumentResult.TAKE_ONE;
     }

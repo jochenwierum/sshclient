@@ -14,6 +14,7 @@ import java.io.OutputStream;
 
 import javax.swing.JPanel;
 
+import de.jowisoftware.sshclient.terminal.buffer.*;
 import org.apache.log4j.Logger;
 
 import com.jcraft.jsch.Channel;
@@ -26,11 +27,6 @@ import de.jowisoftware.sshclient.debug.PerformanceType;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.SimpleSSHSession;
-import de.jowisoftware.sshclient.terminal.buffer.ArrayListBackedTabStopManager;
-import de.jowisoftware.sshclient.terminal.buffer.Buffer;
-import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.terminal.buffer.SynchronizedBuffer;
-import de.jowisoftware.sshclient.terminal.buffer.WordBoundaryLocator;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxCharSetup;
 import de.jowisoftware.sshclient.terminal.input.ByteProcessor;
@@ -49,7 +45,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
     private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
 
     private final SimpleSSHSession session;
-    private final DoubleBufferedImage renderer;
+    private final Renderer renderer;
     private final ByteProcessor outputProcessor;
     private final MouseCursorManager mouseCursorManager;
     private final AWTClipboard clipboard;
@@ -84,7 +80,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
         keyListener = new SSHConsoleKeyListener(session, history);
 
         keyboardProcessor.setSession(session);
-        image = createImagePane(keyboardProcessor, keyListener);
+        image = createImagePane(keyListener);
 
         setLayout(new BorderLayout());
         add(image, BorderLayout.CENTER);
@@ -93,8 +89,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
         session.startRenderer();
     }
 
-    private JPanel createImagePane(final KeyboardProcessor keyboardProcessor,
-            final SSHConsoleKeyListener keyListener2) {
+    private JPanel createImagePane(final SSHConsoleKeyListener keyListener2) {
         return new JPanel() {
             private static final long serialVersionUID = -2670879662532285317L;
 
@@ -116,7 +111,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
 
             @Override
             public void paintComponent(final Graphics g) {
-                final Image image = renderer.getImage();
+                final Image image = ((DoubleBufferedImage) renderer).getImage();
                 if (image != null) {
                     g.drawImage(image, 0, 0, this);
                     PerformanceLogger.end(PerformanceType.REQUEST_TO_RENDER);

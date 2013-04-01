@@ -21,7 +21,6 @@ public class ClosableTabTitleComponent extends JPanel implements MouseListener {
 
     private final Tab tab;
     protected final JLabel label;
-    private JButton button;
 
     private final List<ClosableTabListener> listeners =
             new ArrayList<>();
@@ -43,7 +42,7 @@ public class ClosableTabTitleComponent extends JPanel implements MouseListener {
 
     private JButton createCloseButton() {
         final int size = 12;
-        button = new JButton() {
+            final JButton button = new JButton() {
             private static final long serialVersionUID = 1808007762676130681L;
 
             @Override

@@ -22,11 +22,11 @@ public class ANSISequenceHighLow implements ANSISequence {
             args[0] = args[0].substring(1);
             processSpecialArgs(sessionInfo, args);
         } else {
-            processArgs(sessionInfo, args);
+            processArgs(args);
         }
     }
 
-    private void processArgs(final SSHSession sessionInfo, final String[] args) {
+    private void processArgs(final String[] args) {
         for (final String arg : args) {
             // 4: insert mode
             LOGGER.warn("High/low flag not implemented: " + arg);

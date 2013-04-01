@@ -18,7 +18,7 @@ public class Version5InitialisationTargetDispatcher implements SocksDispatcher {
             this.value = value;
         }
 
-        public static AddressType find(final byte value) {
+        private static AddressType find(final byte value) {
             for (final AddressType type : values()) {
                 if (type.value == value) {
                     return type;

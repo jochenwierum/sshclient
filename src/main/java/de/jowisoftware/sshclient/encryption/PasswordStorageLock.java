@@ -16,7 +16,7 @@ public class PasswordStorageLock {
             tryUnlock();
         } catch (final NumberFormatException | CryptoException e) {
             throw new WrongPasswordException(
-                    "could not unlock password storage - illegal password?", e);
+                    "could not unlock password storage - illegal password?");
         }
     }
 

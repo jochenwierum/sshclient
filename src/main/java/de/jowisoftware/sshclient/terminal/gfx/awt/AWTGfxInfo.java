@@ -132,30 +132,36 @@ public final class AWTGfxInfo implements GfxInfo<Color> {
         this.boldFont = font.deriveFont(Font.BOLD);
     }
 
+    @Override
     public void setFontName(final String name) {
         font = null;
         boldFont = null;
         this.fontName = name;
     }
 
+    @Override
     public void setFontSize(final int size) {
         font = null;
         boldFont = null;
         this.fontSize = size;
     }
 
+    @Override
     public String getFontName() {
         return fontName;
     }
 
+    @Override
     public int getFontSize() {
         return fontSize;
     }
 
+    @Override
     public void setAntiAliasingMode(final int antiAliasingMode) {
         this.antiAliasingMode = antiAliasingMode;
     }
 
+    @Override
     public int getAntiAliasingMode() {
         return antiAliasingMode;
     }
@@ -175,6 +181,7 @@ public final class AWTGfxInfo implements GfxInfo<Color> {
         return cursorStyle;
     }
 
+    @Override
     public void setCursorStyle(final CursorStyle cursorStyle) {
         this.cursorStyle = cursorStyle;
     }
@@ -184,6 +191,7 @@ public final class AWTGfxInfo implements GfxInfo<Color> {
         return cursorBlinks;
     }
 
+    @Override
     public void setCursorBlinks(final boolean cursorBlinks) {
         this.cursorBlinks = cursorBlinks;
     }

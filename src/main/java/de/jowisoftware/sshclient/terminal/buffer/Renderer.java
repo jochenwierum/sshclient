@@ -1,6 +1,5 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-
 public interface Renderer {
     void renderSnapshot(Snapshot snapshot);
 
@@ -9,6 +8,7 @@ public interface Renderer {
 
     void renderInverted(boolean inverted);
 
+    void setDimensions(int pw, int ph);
     Position translateMousePosition(int x, int y);
 
     void clearSelection();
@@ -18,4 +18,6 @@ public interface Renderer {
     void invertFor(int invertMillis);
 
     void resetBlinking();
+
+    void dispose();
 }

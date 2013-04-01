@@ -38,7 +38,7 @@ public class SettingsDialog extends JDialog {
         private final String name;
         public final String key;
 
-        public Language(final String name, final String key) {
+        private Language(final String name, final String key) {
             this.name = name;
             this.key = key;
         }

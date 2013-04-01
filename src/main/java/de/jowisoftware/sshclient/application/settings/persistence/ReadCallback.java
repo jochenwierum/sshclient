@@ -22,7 +22,7 @@ public class ReadCallback implements PersistCallback {
     }
 
     @Override
-    public void foundField(final Field field, final Object object, final Persist annotation, final String name) {
+    public void foundField(final Field field, final Object object, final String name) {
         try {
             final String value = reader.read(name);
             if (value != null) {
@@ -39,7 +39,7 @@ public class ReadCallback implements PersistCallback {
         try {
             @SuppressWarnings("unchecked")
             final List<Object> list = (List<Object>) field.get(object);
-            final XMLDocumentReader.ListReader listReader = reader.readList(name, "item");
+            final XMLDocumentReader.ListReader listReader = reader.readList(name);
 
             DocumentReader itemReader = listReader.nextNode();
             while (itemReader != null) {
@@ -70,7 +70,7 @@ public class ReadCallback implements PersistCallback {
     }
 
     @Override
-    public void foundSubObject(final Field field, final Object object, final Persist annotation, final String name) {
+    public void foundSubObject(final Field field, final Object object, final String name) {
         try {
             final Object subObject = field.get(object);
             PersistenceAnnotationTraverser.traverseObject(subObject, new ReadCallback(reader.readSubNode(name)));
@@ -85,7 +85,7 @@ public class ReadCallback implements PersistCallback {
         try {
             @SuppressWarnings("unchecked")
             final Map<Object, Object> map = (Map<Object, Object>) field.get(object);
-            final XMLDocumentReader.ListReader listReader = reader.readList(name, "item");
+            final XMLDocumentReader.ListReader listReader = reader.readList(name);
 
             DocumentReader itemReader = listReader.nextNode();
             while (itemReader != null) {

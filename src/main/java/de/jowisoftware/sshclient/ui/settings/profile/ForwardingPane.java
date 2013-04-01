@@ -26,15 +26,17 @@ import javax.swing.ListSelectionModel;
 
 import de.jowisoftware.sshclient.application.settings.Forwarding;
 import de.jowisoftware.sshclient.application.settings.Forwarding.Direction;
+import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
 import de.jowisoftware.sshclient.util.StringUtils;
 import de.jowisoftware.sshclient.util.SwingUtils;
 
+@SuppressWarnings("FieldCanBeLocal")
 class ForwardingPane extends AbstractGridBagOptionPanel {
     private static final long serialVersionUID = 8242920505051622953L;
 
-    private final AWTProfile profile;
+    private final Profile<?> profile;
 
     private final JCheckBox agentForwarding = createAgentForwardingCheckBox();
     private final JCheckBox x11Forwarding = createXForwardingCheckBox();
@@ -44,7 +46,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
     private final JList<Forwarding> forwardingsList = new JList<>(
             new DefaultListModel<Forwarding>());
 
-    public ForwardingPane(final AWTProfile profile, final Window parent) {
+    public ForwardingPane(final Profile<?> profile, final Window parent) {
         super(parent);
         this.profile = profile;
 

@@ -10,16 +10,8 @@ public class DefaultSocksInitialisationProcessor implements
     private String host;
     private int port;
 
-    DefaultSocksInitialisationProcessor(final SocksDispatcher defaultDispatcher) {
-        if (defaultDispatcher == null) {
-            this.currentDispatcher = new VersionSelectionDispatcher(this);
-        } else {
-            this.currentDispatcher = defaultDispatcher;
-        }
-    }
-
     DefaultSocksInitialisationProcessor() {
-        this(null);
+        this.currentDispatcher = new VersionSelectionDispatcher(this);
     }
 
     @Override

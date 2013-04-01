@@ -50,7 +50,7 @@ public class MainWindow extends JFrame {
 
         menu = new MainWindowMenu(application, this);
         toolBar = new MainWindowToolbar(application, this);
-        keyTab = new PrivateKeyTab(application, this, tabPanel);
+        keyTab = new PrivateKeyTab(application, tabPanel);
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         initWindowElements();
@@ -210,7 +210,7 @@ public class MainWindow extends JFrame {
                     @Override
                     public void reportArgumentError(final String[] errors) {
                         final StringBuilder builder = new StringBuilder();
-                        for (String error : errors) {
+                        for (final String error : errors) {
                             if (builder.length() > 0) {
                                 builder.append(", ");
                             }

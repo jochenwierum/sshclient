@@ -36,7 +36,6 @@ public class EmptyRingBuffer<E> implements RingBuffer<E> {
     @Override public E get(final int i) { return null; }
     @Override public void append(final E element) { }
     @Override public int size() { return 0; }
-    @Override public void clear() { }
 
     @Override
     public RingBuffer<E> getSnapshot() { return this; }

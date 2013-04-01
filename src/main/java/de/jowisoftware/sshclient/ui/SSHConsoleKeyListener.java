@@ -21,6 +21,7 @@ public class SSHConsoleKeyListener implements KeyListener {
         }
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean handleScrollEvent(final KeyEvent e) {
         if (e.isShiftDown()) {
             switch(e.getKeyCode()) {

@@ -84,13 +84,6 @@ public class FixedSizeArrayRingBuffer<E> implements RingBuffer<E> {
     }
 
     @Override
-    public void clear() {
-        start = 0;
-        next = 0;
-        full = false;
-    }
-
-    @Override
     public Iterable<E> reversed() {
         return new Iterable<E>() {
             @Override

@@ -14,4 +14,17 @@ public interface GfxInfo<C> {
 
     String getBoundaryChars();
     void setBoundaryChars(String boundaryChars);
+
+    void setAntiAliasingMode(int selectedIndex);
+    int getAntiAliasingMode();
+
+    void setFontName(String fontName);
+    String getFontName();
+
+    void setFontSize(int integer);
+    int getFontSize();
+
+    void setCursorStyle(CursorStyle cursorStyle);
+    void setCursorBlinks(boolean b);
+
 }

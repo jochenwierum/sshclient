@@ -4,14 +4,12 @@ import de.jowisoftware.sshclient.application.settings.persistence.annotations.Pe
 
 public class Forwarding {
     public static enum Direction {
-        LOCAL("L", "local"), REMOTE("R", "remote");
+        LOCAL("L"), REMOTE("R");
 
         public final String shortName;
-        public final String longName;
 
-        private Direction(final String shortName, final String longName) {
+        private Direction(final String shortName) {
             this.shortName = shortName;
-            this.longName = longName;
         }
     }
 
@@ -42,6 +40,7 @@ public class Forwarding {
     }
 
     public Forwarding() {
+        // this method is used via reflection to deserialize a forwarding
     }
 
     public Direction getDirection() {

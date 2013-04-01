@@ -73,7 +73,7 @@ public class PasswordManagerGUI extends JDialog {
             this.fireTableDataChanged();
         }
 
-        public void showPasswords() {
+        private void showPasswords() {
             showPasswords = true;
             update();
         }

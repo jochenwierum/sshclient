@@ -3,16 +3,17 @@ package de.jowisoftware.sshclient.terminal.gfx.awt;
 import java.awt.Color;
 
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
 
 public class SystemColor implements TerminalColor {
     private final ColorName colorName;
     private final boolean isBright;
-    private final AWTGfxInfo gfxInfo;
+    private final GfxInfo<Color> gfxInfo;
     public SystemColor inverseColor = this;
 
     public SystemColor(final ColorName colorName,
-            final boolean isBright, final AWTGfxInfo gfxInfo) {
+            final boolean isBright, final GfxInfo<Color> gfxInfo) {
         this.colorName = colorName;
         this.isBright = isBright;
         this.gfxInfo = gfxInfo;
@@ -21,16 +22,6 @@ public class SystemColor implements TerminalColor {
     @Override
     public Color getColor() {
         return gfxInfo.mapColor(colorName, isBright);
-    }
-
-    @Override
-    public boolean isColor(final ColorName color) {
-        return color == this.colorName;
-    }
-
-    @Override
-    public boolean isBright() {
-        return isBright;
     }
 
     @Override

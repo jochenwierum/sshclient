@@ -16,7 +16,7 @@ public class XMLDocumentReader implements DocumentReader {
         private final NodeList nodeList;
         private int pos = 0;
 
-        private ListReader(final Element list, final String name) {
+        private ListReader(final Element list) {
             if (list == null) {
                 nodeList = null;
             } else {
@@ -49,8 +49,8 @@ public class XMLDocumentReader implements DocumentReader {
         }
 
         @Override
-        public ListReader readList(final String path, final String name) {
-            return XMLDocumentReader.this.readList(path, name, node);
+        public ListReader readList(final String path) {
+            return XMLDocumentReader.this.readList(path, node);
         }
 
         @Override
@@ -78,13 +78,13 @@ public class XMLDocumentReader implements DocumentReader {
     }
 
     @Override
-    public ListReader readList(final String path, final String name) {
-        return readList(path, name, root);
+    public ListReader readList(final String path) {
+        return readList(path, root);
     }
 
-    private ListReader readList(final String path, final String name, final Element node) {
+    private ListReader readList(final String path, final Element node) {
         final Element list = findElement(path, node);
-        return new ListReader(list, name);
+        return new ListReader(list);
     }
 
     @Override

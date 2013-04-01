@@ -157,6 +157,7 @@ public class ConnectionPanel extends JPanel {
 
     private boolean authWasCanceled(final Exception e) {
         final String cancel_message = "Auth cancel";
+        //noinspection SimplifiableIfStatement
         if (!(e instanceof JSchException)) {
             return false;
         }

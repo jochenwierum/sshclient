@@ -19,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
+import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.settings.AbstractColorButton;
 import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
@@ -29,14 +30,14 @@ import de.jowisoftware.sshclient.util.StringUtils;
 class GraphicsPanel extends AbstractGridBagOptionPanel {
     private static final long serialVersionUID = -2187556102454714257L;
 
-    private final AWTGfxInfo gfxSettings;
+    private final GfxInfo<Color> gfxSettings;
 
     private final JComboBox<String> fontBox = createFontSelectionBox();
     private final JTextField fontSizeTextField = new JTextField(2);
     private final JComboBox<String> antiAliasingBox = createAntiAliasingBox();
     private final JComboBox<String> cursorStyleBox = createCursorStyleBox();
 
-    public GraphicsPanel(final AWTGfxInfo gfxSettings, final Window parent) {
+    public GraphicsPanel(final GfxInfo<Color> gfxSettings, final Window parent) {
         super(parent);
         this.gfxSettings = gfxSettings;
 

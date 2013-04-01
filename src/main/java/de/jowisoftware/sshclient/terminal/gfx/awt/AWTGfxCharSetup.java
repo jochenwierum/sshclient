@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.terminal.gfx.awt;
 
+import de.jowisoftware.sshclient.terminal.gfx.*;
 import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.charsets.DECCharset;
@@ -8,10 +9,6 @@ import de.jowisoftware.sshclient.terminal.charsets.TerminalCharset;
 import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
 import de.jowisoftware.sshclient.terminal.charsets.UKCharset;
 import de.jowisoftware.sshclient.terminal.charsets.USASCIICharset;
-import de.jowisoftware.sshclient.terminal.gfx.Attribute;
-import de.jowisoftware.sshclient.terminal.gfx.ColorName;
-import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
-import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
 
 public class AWTGfxCharSetup implements GfxCharSetup {
     private static class CharSetupState implements Cloneable {
@@ -36,7 +33,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
     private static final Logger LOGGER = Logger
             .getLogger(AWTGfxCharSetup.class);
 
-    private final AWTColorFactory colorFactory;
+    private final ColorFactory colorFactory;
     private final AWTGfxInfo gfxInfo;
     private CharSetupState charState = new CharSetupState();
     private CharSetupState savedState = new CharSetupState();
@@ -123,7 +120,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
 
     @Override
     public AWTGfxChar createChar(final char character) {
-        final GfxCharset charset = getCharset(charState.selectedCharset);
+        final GfxCharset charset = getCharset();
         final String characterString = Character.toString(
                 charset.convertCharacter(character));
         return new AWTGfxChar(characterString,
@@ -136,7 +133,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
                 gfxInfo, charState.fgColor, charState.bgColor, charState.attributes);
     }
 
-    private GfxCharset getCharset(final TerminalCharsetSelection selectedCharset2) {
+    private GfxCharset getCharset() {
         if (charState.selectedCharset.equals(TerminalCharsetSelection.G1)) {
             return charState.charsetG1;
         } else {

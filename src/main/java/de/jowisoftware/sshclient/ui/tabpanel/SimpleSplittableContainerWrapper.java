@@ -20,10 +20,6 @@ public class SimpleSplittableContainerWrapper implements SplittableContainerWrap
         component = initialComponent;
     }
 
-    protected void setComponent(final JComponent component) {
-        this.component = component;
-    }
-
     @Override
     public JComponent getComponent() {
         return component;

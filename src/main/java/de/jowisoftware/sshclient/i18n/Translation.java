@@ -19,6 +19,7 @@ public class Translation {
     private static final Object NEUTRAL_LANGUAGE = "en_US";
     private final Properties translations;
 
+    @SuppressWarnings("StaticNonFinalField")
     private static Translation staticTranslation = new Translation();
 
     Translation() {

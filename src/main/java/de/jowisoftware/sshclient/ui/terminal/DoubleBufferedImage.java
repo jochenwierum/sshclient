@@ -60,6 +60,7 @@ public class DoubleBufferedImage implements Renderer {
         setDimensions(1, 1);
     }
 
+    @Override
     public synchronized void dispose() {
         synchronized (imageLock) {
             images = null;
@@ -71,6 +72,7 @@ public class DoubleBufferedImage implements Renderer {
         }
     }
 
+    @Override
     public synchronized void setDimensions(final int width, final int height) {
         synchronized (imageLock) {
             this.width = width;

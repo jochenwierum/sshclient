@@ -46,10 +46,6 @@ public class Quantile {
         return values[getMaxIndex()];
     }
 
-    public long getMinValue() {
-        return values[0];
-    }
-
     public long getMaxValue() {
         return values[values.length - 1];
     }

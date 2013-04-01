@@ -3,6 +3,8 @@ package de.jowisoftware.sshclient.debug;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+
+import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
 import org.jmock.Expectations;
@@ -10,7 +12,9 @@ import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@RunWith(JUnitParamsRunner.class)
 public class SimplePerformanceMonitorTest {
     @Rule
     public JUnitRuleMockery context = new JUnitRuleMockery();
@@ -31,26 +35,27 @@ public class SimplePerformanceMonitorTest {
     }
 
     private void assertEndOfEventAt(final PerformanceType performanceType,
-            final int expected) {
+            final long expected) {
         final long time = monitor.end(performanceType);
-        assertThat(Long.valueOf(time), is(equalTo(Long.valueOf(expected))));
+        assertThat(time, is(equalTo(expected)));
     }
 
-    public Object[][] taskData() {
-        return new Object[][] {
+    @SuppressWarnings("UnusedDeclaration")
+    public int[][] taskData() {
+        return new int[][] {
                 {200, 400, 200},
                 {0, 500, 500}
         };
     }
 
+    @Test
     @Parameters(method = "taskData")
-    public void measureOneTask(final int start, final int end,
-            final int diff) {
-        expectDate(start);
+    public void measureOneTask(final int data[]) {
+        expectDate(data[0]);
         monitor.start(PerformanceType.REQUEST_TO_RENDER);
 
-        expectDate(end);
-        assertEndOfEventAt(PerformanceType.REQUEST_TO_RENDER, diff);
+        expectDate(data[1]);
+        assertEndOfEventAt(PerformanceType.REQUEST_TO_RENDER, data[2]);
     }
 
     @Test

@@ -26,11 +26,11 @@ public class LinkedListEventHubTest {
 
         }
 
-        public boolean wasTest1Called() {
+        private boolean wasTest1Called() {
             return test1Called;
         }
 
-        public String getTest2Value() {
+        private String getTest2Value() {
             return test2Value;
         }
     }

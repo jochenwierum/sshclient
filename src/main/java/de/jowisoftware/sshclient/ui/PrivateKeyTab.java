@@ -41,7 +41,7 @@ public class PrivateKeyTab implements KeyManagerEvents, Tab {
 
         private final Application application;
 
-        public Content(final Application application) {
+        private Content(final Application application) {
             this.application = application;
 
             setLayout(new BorderLayout());
@@ -150,8 +150,7 @@ public class PrivateKeyTab implements KeyManagerEvents, Tab {
     private final ClosableTabTitleComponent title;
     private final Content content;
 
-    public PrivateKeyTab(final Application application, final MainWindow mainWindow,
-            final TabPanel parent) {
+    public PrivateKeyTab(final Application application, final TabPanel parent) {
         this.title = new ClosableTabTitleComponent(this,
                 new JLabel(t("mainwindow.tabs.keys", "keys")));
         this.content = new Content(application);

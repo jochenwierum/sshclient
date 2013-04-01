@@ -38,12 +38,12 @@ public class KeyboardProcessorTest {
     }
 
     private void assertText(final String t, final KeyEvent... events) {
-        allowRenderingInteraction(t.length());
+        allowRenderingInteraction();
         expectStringInChars(t);
         pressKeys(events);
     }
 
-    private void allowRenderingInteraction(final int count) {
+    private void allowRenderingInteraction() {
         context.checking(new Expectations() {{
             allowing(renderer);
         }});
@@ -73,7 +73,7 @@ public class KeyboardProcessorTest {
     }
 
     private void assertSequence(final KeyEvent e, final char... chars) {
-        allowRenderingInteraction(3);
+        allowRenderingInteraction();
         expectString("x");
         expectChars(chars);
         expectString("x");
@@ -84,7 +84,7 @@ public class KeyboardProcessorTest {
     }
 
     private void assertSequence(final KeyEvent e, final String text) {
-        allowRenderingInteraction(3);
+        allowRenderingInteraction();
         expectString("x");
         expectString(text);
         expectString("x");

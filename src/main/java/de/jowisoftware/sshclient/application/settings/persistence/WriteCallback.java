@@ -19,7 +19,7 @@ public class WriteCallback implements PersistCallback {
     }
 
     @Override
-    public void foundField(final Field field, final Object object, final Persist annotation, final String name) {
+    public void foundField(final Field field, final Object object, final String name) {
         try {
             final Object valueObject = field.get(object);
             if (valueObject != null) {
@@ -50,7 +50,7 @@ public class WriteCallback implements PersistCallback {
     }
 
     @Override
-    public void foundSubObject(final Field field, final Object object, final Persist annotation, final String name) {
+    public void foundSubObject(final Field field, final Object object, final String name) {
         try {
             final Object valueObject = field.get(object);
             final DocumentWriter subWriter = writer.writeSubNode(name);

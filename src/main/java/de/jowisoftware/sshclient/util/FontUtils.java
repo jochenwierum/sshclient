@@ -15,6 +15,7 @@ public final class FontUtils {
     private static final List<String> fontCache = new ArrayList<>();
     private static final List<KeyValue<String, Object>> renderingHints = new ArrayList<>();
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isMonospacedFont(final Font font) {
         final BufferedImage bufferedImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         final Graphics graphics = bufferedImage.createGraphics();

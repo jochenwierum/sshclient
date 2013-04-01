@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.settings.AbstractColorButton;
 
@@ -20,9 +21,9 @@ class ColorPanel extends JPanel {
     private static final String COLORTYPE_DEFAULT = "color";
     private static final String COLORTYPE_LIGHT = "lightcolor";
 
-    private final AWTGfxInfo gfxInfo;
+    private final GfxInfo<Color> gfxInfo;
 
-    public ColorPanel(final AWTGfxInfo GfxInfo) {
+    public ColorPanel(final GfxInfo<Color> GfxInfo) {
         this.gfxInfo = GfxInfo;
         setLayout(new GridLayout(gfxInfo.getColorMap().size() + 1, 3, 3, 3));
         addTitles();
@@ -65,12 +66,11 @@ class ColorPanel extends JPanel {
         final String colorType = colorTypes[0];
         final String colorName = colorTypes[1];
 
-        final AWTGfxInfo gfxSettings = gfxInfo;
         if (COLORTYPE_DEFAULT.equals(colorType)) {
-            gfxSettings.getColorMap().put(
+            gfxInfo.getColorMap().put(
                     ColorName.valueOf(colorName), newColor);
         } else if (COLORTYPE_LIGHT.equals(colorType)) {
-            gfxSettings.getLightColorMap().put(
+            gfxInfo.getLightColorMap().put(
                     ColorName.valueOf(colorName), newColor);
         }
     }

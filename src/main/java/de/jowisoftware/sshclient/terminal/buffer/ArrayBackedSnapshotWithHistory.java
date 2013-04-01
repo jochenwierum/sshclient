@@ -32,11 +32,6 @@ public class ArrayBackedSnapshotWithHistory implements SnapshotWithHistory  {
     }
 
     @Override
-    public RingBuffer<GfxChar[]> getHistory() {
-        return history;
-    }
-
-    @Override
     public Snapshot createSimpleSnapshot(final int scrollBack) {
         if (scrollBack == 0) {
             return new Snapshot(buffer, cursorPosition);

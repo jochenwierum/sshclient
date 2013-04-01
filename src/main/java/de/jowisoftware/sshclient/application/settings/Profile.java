@@ -40,6 +40,7 @@ public interface Profile<C extends GfxInfo<?>> {
     Map<String, String> getEnvironment();
 
     void setCharsetName(String charsetName);
+    @SuppressWarnings("UnusedDeclaration")
     String getCharsetName();
     Charset getCharset();
 

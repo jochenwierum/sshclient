@@ -31,7 +31,7 @@ public final class LogTab implements Tab, Observer {
         private static final int MAX_LENGTH = 2048;
         private final DefaultListModel<String> listModel = new DefaultListModel<>();
 
-        public Content() {
+        private Content() {
             super(new JList<String>());
             @SuppressWarnings("unchecked")
             final JList<String> list = (JList<String>) getViewport().getView();
@@ -94,10 +94,6 @@ public final class LogTab implements Tab, Observer {
         });
 
         LogObserver.getInstance().addObserver(this);
-    }
-
-    public void dispose() {
-        LogObserver.getInstance().deleteObserver(this);
     }
 
     @Override

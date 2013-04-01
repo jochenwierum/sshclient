@@ -10,6 +10,7 @@ import java.util.SortedMap;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
+import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
 import de.jowisoftware.sshclient.util.StringUtils;
@@ -17,7 +18,7 @@ import de.jowisoftware.sshclient.util.StringUtils;
 class MainPanel extends AbstractGridBagOptionPanel {
     private static final long serialVersionUID = -8272298107955330533L;
 
-    private final AWTProfile profile;
+    private final Profile<?> profile;
 
     private final JTextField hostTextField = new JTextField();
     private final JTextField portTextField = new JTextField();
@@ -29,7 +30,7 @@ class MainPanel extends AbstractGridBagOptionPanel {
     private final JTextField keepAliveInterval = new JTextField();
     private final JTextField keepAliveCount = new JTextField();
 
-    public MainPanel(final AWTProfile profile, final String profileName,
+    public MainPanel(final Profile<?> profile, final String profileName,
             final boolean profileNameSettable, final Window parent) {
         super(parent);
         this.profile = profile;

@@ -18,16 +18,6 @@ public class CustomColor implements TerminalColor {
     }
 
     @Override
-    public boolean isColor(final ColorName colorName) {
-        return false;
-    }
-
-    @Override
-    public boolean isBright() {
-        return false;
-    }
-
-    @Override
     public TerminalColor invert() {
         return this;
     }

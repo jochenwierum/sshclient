@@ -5,7 +5,6 @@ public interface RingBuffer<E> extends Iterable<E> {
     public void append(E element);
     public int size();
     public E[] toArray(E[] array);
-    public void clear();
     public Iterable<E> reversed();
     public RingBuffer<E> getSnapshot();
 }

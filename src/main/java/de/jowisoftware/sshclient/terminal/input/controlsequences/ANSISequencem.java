@@ -97,6 +97,7 @@ public class ANSISequencem implements ANSISequence {
         sessionInfo.getBuffer().setClearChar(clearChar);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean processDefaultColors(final SSHSession sessionInfo, final int seq) {
         final GfxCharSetup charSetup = sessionInfo.getCharSetup();
         final ColorName color = ColorName.find(seq);
@@ -115,6 +116,7 @@ public class ANSISequencem implements ANSISequence {
         return true;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean processAttributes(final SSHSession sessionInfo,
             final int seq) {
         for (final Attribute attr : Attribute.values()) {

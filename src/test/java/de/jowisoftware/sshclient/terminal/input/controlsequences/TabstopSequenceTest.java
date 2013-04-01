@@ -10,7 +10,7 @@ import org.junit.Test;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 
 public class TabstopSequenceTest extends AbstractSequenceTest {
-    public NonASCIIControlSequence sequence;
+    private NonASCIIControlSequence sequence;
 
     @Before
     public void setUp() {

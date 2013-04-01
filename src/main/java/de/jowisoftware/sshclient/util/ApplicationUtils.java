@@ -9,12 +9,13 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
-public class ApplicationUtils {
+public final class ApplicationUtils {
     private static final Logger LOGGER = Logger.getLogger(ApplicationUtils.class);
 
     private static final String UPDATE_URL = "http://jowisoftware.de/ssh/build.properties";
     private static final String MAIN_CLASS = "de.jowisoftware.sshclient.SSHApp";
 
+    @SuppressWarnings("StaticNonFinalField")
     private static boolean isLuja;
 
     private ApplicationUtils() { /* Util classes will not be instanciated */ }
