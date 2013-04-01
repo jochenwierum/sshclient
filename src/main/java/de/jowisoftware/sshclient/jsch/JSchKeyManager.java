@@ -59,7 +59,7 @@ public class JSchKeyManager implements KeyManager {
     }
 
     private String getKeyPassword(final String keyName) throws UserAbortException {
-        KeyPair key;
+        final KeyPair key;
         try {
             key = KeyPair.load(jsch, keyName);
         } catch (final JSchException e) {

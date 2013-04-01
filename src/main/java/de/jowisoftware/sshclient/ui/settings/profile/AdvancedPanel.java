@@ -115,7 +115,7 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
         final String[] keyList = getEnvironmentKeys();
 
         model.clear();
-        for (String key : keyList) {
+        for (final String key : keyList) {
             model.addElement(key + " = " + envMap.get(key));
         }
     }

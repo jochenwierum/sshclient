@@ -8,7 +8,7 @@ public enum TerminalCharsetSelection {
     private static final Logger LOGGER = Logger
             .getLogger(TerminalCharsetSelection.class);
 
-    private char identifier;
+    private final char identifier;
     private TerminalCharsetSelection(final char identifier) {
         this.identifier = identifier;
     }

@@ -14,7 +14,7 @@ import java.util.Map;
 public class WriteCallback implements PersistCallback {
     private final DocumentWriter writer;
 
-    public WriteCallback(DocumentWriter writer) {
+    public WriteCallback(final DocumentWriter writer) {
         this.writer = writer;
     }
 
@@ -34,7 +34,7 @@ public class WriteCallback implements PersistCallback {
     public void foundList(final Field field, final Object object, final Persist annotation, final String name) {
         final XMLDocumentWriter.ListWriter subWriter = writer.writeList(name, "item");
         try {
-            for (Object listItem : (List<?>) field.get(object)) {
+            for (final Object listItem : (List<?>) field.get(object)) {
                 if (listItem != null) {
                     if (annotation.traverseListAndMapChildrenRecursively()) {
                         PersistenceAnnotationTraverser.notifySafe(listItem);
@@ -69,7 +69,7 @@ public class WriteCallback implements PersistCallback {
         try {
             @SuppressWarnings("unchecked")
             final Map<Object, Object> objectMap = (Map<Object, Object>) field.get(object);
-            for (Map.Entry<Object, Object> mapItem : objectMap.entrySet()) {
+            for (final Map.Entry<Object, Object> mapItem : objectMap.entrySet()) {
                 if (mapItem.getValue() != null) {
                     final DocumentWriter subWriter = listWriter.add();
                     subWriter.write("@id", createString(mapItem.getKey()));

@@ -50,9 +50,9 @@ public final class LogTab implements Tab, Observer {
                             .getSystemClipboard();
                     final StringBuilder content = new StringBuilder();
 
-                    for (String line : list.getSelectedValuesList())
+                    for (final String originalLine : list.getSelectedValuesList())
                     {
-                        line = line.replaceAll("&nbsp;", " ");
+                        String line = originalLine.replaceAll("&nbsp;", " ");
                         line = line.replaceAll("<br />", "\n");
                         line = line.replaceAll("\\s*<[^>]+>\\s*", "");
                         content.append(line).append("\n");

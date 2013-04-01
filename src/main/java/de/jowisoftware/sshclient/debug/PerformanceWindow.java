@@ -78,6 +78,7 @@ public class PerformanceWindow extends JFrame implements ActionListener, WindowL
                 final int textHeight = metrics.getHeight();
                 final int xOffset = textHeight + 4;
 
+                //noinspection SuspiciousNameCombination
                 g.fillRect(x, y, textHeight, textHeight);
                 drawString(g, metrics, type.niceName, x + xOffset,
                         y + metrics.getAscent(), 2 * BOX_WIDTH - xOffset);

@@ -99,6 +99,8 @@ public class SettingsUpdate {
     }
 
     private void moveFile(final File settingsFile, final File backupFile) {
-        settingsFile.renameTo(backupFile);
+        if(!settingsFile.renameTo(backupFile)) {
+            throw new RuntimeException("Could not move file " + settingsFile + " to " + backupFile);
+        }
     }
 }

@@ -68,7 +68,7 @@ public class SocksConnection extends Thread {
             if (processor.isFinished()) {
                 LOGGER.info("Establishing connection to " + processor.getHost()
                         + ":" + processor.getPort());
-                Channel channel = session.openChannel("direct-tcpip");
+                final Channel channel = session.openChannel("direct-tcpip");
                 ((ChannelDirectTCPIP) channel).setHost(processor.getHost());
                 ((ChannelDirectTCPIP) channel).setPort(processor.getPort());
                 channel.setInputStream(inputStream);

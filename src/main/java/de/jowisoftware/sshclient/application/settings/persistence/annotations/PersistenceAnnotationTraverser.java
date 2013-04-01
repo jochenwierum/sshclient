@@ -5,7 +5,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class PersistenceAnnotationTraverser {
+public final class PersistenceAnnotationTraverser {
+    private PersistenceAnnotationTraverser() { /* this utility class cannot be initialized */ }
+
     public static void notifySafe(final Object object) {
         notifyByAnnotation(object, PersistPreSave.class);
     }
@@ -15,7 +17,7 @@ public class PersistenceAnnotationTraverser {
     }
 
     private static void notifyByAnnotation(final Object object, final Class<? extends Annotation> annotationClass) {
-        for (Method method : object.getClass().getMethods()) {
+        for (final Method method : object.getClass().getMethods()) {
             if (method.isAnnotationPresent(annotationClass)) {
                 try {
                     method.invoke(object);
@@ -26,10 +28,10 @@ public class PersistenceAnnotationTraverser {
         }
     }
 
-    public static void traverseObject(final Object object, PersistCallback callback) {
-        for (Field field : object.getClass().getDeclaredFields()) {
+    public static void traverseObject(final Object object, final PersistCallback callback) {
+        for (final Field field : object.getClass().getDeclaredFields()) {
             if (field.isAnnotationPresent(Persist.class)) {
-                Persist annotation = field.getAnnotation(Persist.class);
+                final Persist annotation = field.getAnnotation(Persist.class);
                 field.setAccessible(true);
 
                 final String name;

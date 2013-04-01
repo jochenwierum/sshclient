@@ -26,7 +26,7 @@ public class ReadCallback implements PersistCallback {
         try {
             final String value = reader.read(name);
             if (value != null) {
-                Object valueObject = createValue(field.getType(), value);
+                final Object valueObject = createValue(field.getType(), value);
                 field.set(object, valueObject);
             }
         } catch (IllegalAccessException e) {
@@ -39,11 +39,11 @@ public class ReadCallback implements PersistCallback {
         try {
             @SuppressWarnings("unchecked")
             final List<Object> list = (List<Object>) field.get(object);
-            XMLDocumentReader.ListReader listReader = reader.readList(name, "item");
+            final XMLDocumentReader.ListReader listReader = reader.readList(name, "item");
 
             DocumentReader itemReader = listReader.nextNode();
             while (itemReader != null) {
-                Object listItem = restoreObject(itemReader, annotation);
+                final Object listItem = restoreObject(itemReader, annotation);
                 list.add(listItem);
                 
                 itemReader = listReader.nextNode();
@@ -85,12 +85,12 @@ public class ReadCallback implements PersistCallback {
         try {
             @SuppressWarnings("unchecked")
             final Map<Object, Object> map = (Map<Object, Object>) field.get(object);
-            XMLDocumentReader.ListReader listReader = reader.readList(name, "item");
+            final XMLDocumentReader.ListReader listReader = reader.readList(name, "item");
 
             DocumentReader itemReader = listReader.nextNode();
             while (itemReader != null) {
-                Object id = createValue(annotation.targetClass2(), itemReader.read("@id"));
-                Object value = restoreObject(itemReader, annotation);
+                final Object id = createValue(annotation.targetClass2(), itemReader.read("@id"));
+                final Object value = restoreObject(itemReader, annotation);
                 map.put(id, value);
 
                 itemReader = listReader.nextNode();

@@ -118,7 +118,7 @@ public class MainWindowToolbar implements ProfileEvent {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
-                URI uri;
+                final URI uri;
                 try {
                     uri = new URI("http://jowisoftware.de/trac/ssh");
                 } catch (final URISyntaxException ex) {

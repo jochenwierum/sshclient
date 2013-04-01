@@ -73,6 +73,7 @@ public final class SwingUtils {
         runInSwingThread(new Runnable() {
             @Override
             public void run() {
+                //noinspection MagicConstant
                 JOptionPane.showMessageDialog(parent, message, title,
                         messageType);
             }

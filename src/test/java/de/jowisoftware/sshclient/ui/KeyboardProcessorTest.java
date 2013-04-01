@@ -118,6 +118,7 @@ public class KeyboardProcessorTest {
 
     private KeyEvent makeEvent(final int code, final int location, final int modifier, final char text) {
         // FIXME: new Label() is a problem with headless testing!
+        //noinspection MagicConstant
         return new KeyEvent(new Label(), 0, 0, modifier, code, text, location);
     }
 

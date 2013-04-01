@@ -34,7 +34,7 @@ public class ArrayBackedBufferStorage implements BufferStorage {
     @Override
     public void newSize(final int width, final int height) {
         final GfxChar[][] newLines = new GfxChar[height][width];
-        for (GfxChar[] line : newLines) {
+        for (final GfxChar[] line : newLines) {
             Arrays.fill(line, clearChar);
         }
         if (lines != null) {

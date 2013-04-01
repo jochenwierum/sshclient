@@ -27,7 +27,7 @@ public class ANSISequenceHighLow implements ANSISequence {
     }
 
     private void processArgs(final SSHSession sessionInfo, final String[] args) {
-        for (String arg : args) {
+        for (final String arg : args) {
             // 4: insert mode
             LOGGER.warn("High/low flag not implemented: " + arg);
         }
@@ -35,7 +35,7 @@ public class ANSISequenceHighLow implements ANSISequence {
 
     private void processSpecialArgs(final SSHSession sessionInfo,
             final String[] args) {
-        for (String arg : args) {
+        for (final String arg : args) {
             /*
              * 4: smooth-scroll
              * 5: Reverse Video (DECSCNM) (swap default fore- and background)

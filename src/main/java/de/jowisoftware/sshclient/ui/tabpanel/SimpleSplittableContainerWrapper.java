@@ -32,6 +32,7 @@ public class SimpleSplittableContainerWrapper implements SplittableContainerWrap
     @Override
     public void split(final SplitDirection direction, final TabbedPaneWrapper topLeftComponent,
             final TabbedPaneWrapper bottomRightComponent) {
+        //noinspection MagicConstant
         splitPane = new JSplitPane(direction.getSplitPaneFlag());
         splitPane.setBorder(BorderFactory.createEmptyBorder());
 

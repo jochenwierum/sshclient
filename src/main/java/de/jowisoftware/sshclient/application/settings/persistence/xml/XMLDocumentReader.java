@@ -66,11 +66,11 @@ public class XMLDocumentReader implements DocumentReader {
 
     private final Element root;
 
-    public XMLDocumentReader(File settingsFile) throws SAXException, IOException {
+    public XMLDocumentReader(final File settingsFile) throws SAXException, IOException {
         try (InputStream is = new FileInputStream(settingsFile)) {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.parse(is);
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            final DocumentBuilder builder = factory.newDocumentBuilder();
+            final Document doc = builder.parse(is);
             root = (Element) doc.getChildNodes().item(0);
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
@@ -88,18 +88,18 @@ public class XMLDocumentReader implements DocumentReader {
     }
 
     @Override
-    public String read(String path) {
+    public String read(final String path) {
         return read(path, root);
     }
 
-    private String read(String path, Element start) {
+    private String read(final String path, final Element start) {
         Element current = start;
 
         if (current == null) {
             return null;
         }
 
-        String[] segments = path.split("/");
+        final String[] segments = path.split("/");
         for (int i = 0; i < segments.length; ++i) {
             final String segment = segments[i];
 
@@ -111,7 +111,7 @@ public class XMLDocumentReader implements DocumentReader {
                 if (segment.startsWith("@")) {
                     return current.getAttribute(segment.substring(1));
                 } else {
-                    NodeList children = current.getElementsByTagName(segment);
+                    final NodeList children = current.getElementsByTagName(segment);
                     if (children.getLength() == 0) {
                         return null;
                     } else {
@@ -124,20 +124,20 @@ public class XMLDocumentReader implements DocumentReader {
         return current.getTextContent();
     }
 
-    private Element findElement(String path, Element start) {
+    private Element findElement(final String path, final Element start) {
         Element current = start;
 
         if (current == null) {
             return null;
         }
 
-        String[] segments = path.split("/");
-        for (String segment : segments) {
+        final String[] segments = path.split("/");
+        for (final String segment : segments) {
             if (segment.startsWith("@")) {
                 throw new IllegalStateException("Attributes are not allowed");
             }
 
-            NodeList children = current.getElementsByTagName(segment);
+            final NodeList children = current.getElementsByTagName(segment);
             if (children.getLength() == 0) {
                 return null;
             } else {

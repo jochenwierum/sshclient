@@ -22,7 +22,7 @@ public class UpdateLabel extends JLabel implements UpdateCheckResult {
     public UpdateLabel() {
         setText("Checking for update...");
 
-        Thread updateThread = new UpdateCheckThread(this);
+        final Thread updateThread = new UpdateCheckThread(this);
         updateThread.start();
     }
 
