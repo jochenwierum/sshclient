@@ -186,4 +186,8 @@ public class SimpleSSHSession implements SSHSession {
         }
         backgroundRenderer.start();
     }
+
+    public void dispose() {
+        backgroundRenderer.dispose();
+    }
 }

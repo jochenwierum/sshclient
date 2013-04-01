@@ -153,6 +153,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
 
     public void dispose() {
         renderer.dispose();
+        session.dispose();
     }
 
     /**
@@ -236,13 +237,6 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
             }
         }
         session.resumeRendering();
-    }
-
-    public void updateSelection(final MouseEvent e) {
-        final Position charPosition =
-                session.translateMousePositionToCharacterPosition(e.getX(), e.getY());
-        mouseCursorManager.updateSelectionEnd(charPosition);
-        session.render();
     }
 
     public void setDisplayType(final DisplayType displayType) {

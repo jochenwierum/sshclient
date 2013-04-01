@@ -145,6 +145,7 @@ public class ConnectionPanel extends JPanel {
             public void run() {
                 if (closeTab) {
                     parent.closeTab(tab);
+                    close();
                 } else {
                     tab.getTitleContent().updateLabel(
                             t("closedtab", "[closed] %s",

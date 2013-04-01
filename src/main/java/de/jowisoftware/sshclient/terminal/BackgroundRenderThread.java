@@ -11,6 +11,8 @@ final class BackgroundRenderThread extends Thread {
 
     private volatile boolean run = true;
     private volatile boolean paused = false;
+    private volatile boolean disposing = false;
+
     private final Renderer renderer;
     private final Buffer buffer;
     private int renderOffset;
@@ -28,7 +30,7 @@ final class BackgroundRenderThread extends Thread {
 
     @Override
     public void run() {
-        while(true) {
+        while(!disposing) {
             synchronized(this) {
                 while(!run && !paused) {
                     try {
@@ -47,6 +49,7 @@ final class BackgroundRenderThread extends Thread {
                 LOGGER.error("background rendering failed", e);
             }
         }
+        LOGGER.info("background rendering thread ended: " + getName());
     }
 
     public void render() {
@@ -70,5 +73,15 @@ final class BackgroundRenderThread extends Thread {
     public void resumeRendering() {
         paused = false;
         render();
+    }
+
+    public void dispose() {
+        disposing = true;
+        resumeRendering();
+        try {
+            join();
+        } catch (InterruptedException e) {
+            LOGGER.error("Interrupted while waiting for background renderer to finish", e);
+        }
     }
 }
