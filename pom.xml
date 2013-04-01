@@ -16,6 +16,15 @@
 		<url>http://www.jowisoftware.de</url>
 	</organization>
 
+    <developers>
+        <developer>
+            <id>jochenwierum</id>
+            <name>Jochen Wierum</name>
+            <email>jochen@jowisoftware.de</email>
+            <organization>jowisoftware</organization>
+        </developer>
+    </developers>
+
 	<issueManagement>
 		<system>Trac</system>
 		<url>https://jowisoftware.de:4443/trac/ssh</url>
@@ -75,7 +84,7 @@
 		<!-- Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
-            <artifactId>junit-dep</artifactId>
+            <artifactId>junit</artifactId>
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
@@ -141,6 +150,7 @@
 					<showWarnings>true</showWarnings>
 					<showDeprecation>true</showDeprecation>
 					<compilerId>javac</compilerId>
+                    <compilerArgument>-Xlint:unchecked</compilerArgument>
 				</configuration>
 			</plugin>
 

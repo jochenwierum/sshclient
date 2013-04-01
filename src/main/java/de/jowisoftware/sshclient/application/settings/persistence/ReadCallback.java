@@ -116,7 +116,9 @@ public class ReadCallback implements PersistCallback {
         } else if (Enum.class.isAssignableFrom(type)) {
             @SuppressWarnings("unchecked")
             final Class<Enum> enumType = (Class<Enum>) type;
-            return Enum.valueOf(enumType, value);
+            @SuppressWarnings("unchecked")
+            Object result = Enum.valueOf(enumType, value);
+            return result;
         } else {
             throw new RuntimeException("Could not set type " + type.getSimpleName());
         }
