@@ -384,6 +384,7 @@ public class ProfilesDialog extends JDialog {
 
     private JButton createCloseButton() {
         final JButton button = new JButton(t("close", "Close"));
+        button.setName("close");
         button.setMnemonic(m("close", 'c'));
         button.addActionListener(new ActionListener() {
             @Override
