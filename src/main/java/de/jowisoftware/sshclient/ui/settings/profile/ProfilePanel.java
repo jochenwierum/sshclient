@@ -1,16 +1,15 @@
 package de.jowisoftware.sshclient.ui.settings.profile;
 
-import java.awt.BorderLayout;
-import java.awt.Window;
-import java.util.ArrayList;
-import java.util.List;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.ui.settings.AbstractOptionPanel;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-
-import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.ui.settings.AbstractOptionPanel;
+import java.awt.BorderLayout;
+import java.awt.Window;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProfilePanel extends JPanel {
     private static final long serialVersionUID = 663223636542133238L;
@@ -22,12 +21,13 @@ public class ProfilePanel extends JPanel {
     public ProfilePanel(final AWTProfile profile, final String profileName,
             final boolean profileNameIsSettable, final Window parent) {
         setLayout(new BorderLayout());
+        tabbedPane.setName("tabs");
         add(tabbedPane, BorderLayout.CENTER);
 
         mainPanel = new MainPanel(profile, profileName, profileNameIsSettable, parent);
         addTabPane(mainPanel);
         addTabPane(new GraphicsPanel(profile.getGfxSettings(), parent));
-        addTabPane(new ForwardingPane(profile, parent));
+        addTabPane(new ForwardingPanel(profile, parent));
         addTabPane(new AdvancedPanel(profile, parent));
     }
 

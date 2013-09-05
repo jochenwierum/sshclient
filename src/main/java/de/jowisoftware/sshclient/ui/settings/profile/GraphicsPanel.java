@@ -1,8 +1,18 @@
 package de.jowisoftware.sshclient.ui.settings.profile;
 
-import static de.jowisoftware.sshclient.i18n.Translation.m;
-import static de.jowisoftware.sshclient.i18n.Translation.t;
+import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
+import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
+import de.jowisoftware.sshclient.ui.settings.AbstractColorButton;
+import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
+import de.jowisoftware.sshclient.util.FontUtils;
+import de.jowisoftware.sshclient.util.KeyValue;
+import de.jowisoftware.sshclient.util.StringUtils;
 
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.Window;
@@ -12,20 +22,8 @@ import java.awt.event.ItemListener;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
-import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
-import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
-import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxInfo;
-import de.jowisoftware.sshclient.ui.settings.AbstractColorButton;
-import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
-import de.jowisoftware.sshclient.util.FontUtils;
-import de.jowisoftware.sshclient.util.KeyValue;
-import de.jowisoftware.sshclient.util.StringUtils;
+import static de.jowisoftware.sshclient.i18n.Translation.m;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 class GraphicsPanel extends AbstractGridBagOptionPanel {
     private static final long serialVersionUID = -2187556102454714257L;
@@ -59,15 +57,18 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
         add(label("profiles.colors.font", "Font:", 'f', fontBox),
                 makeLabelConstraints(offset + 1));
 
+        fontBox.setName("font");
         fontBox.setSelectedItem(gfxSettings.getFontName());
         add(fontBox, makeConstraints(2, offset + 1));
 
         add(label("profiles.colors.font.size", "Size:", 'i', fontSizeTextField),
                 makeLabelConstraints(offset + 2));
 
+        fontSizeTextField.setName("font size");
         fontSizeTextField.setText(Integer.toString(gfxSettings.getFontSize()));
         add(fontSizeTextField, makeConstraints(2, offset + 2));
 
+        antiAliasingBox.setName("anti aliasing");
         antiAliasingBox.setSelectedIndex(gfxSettings.getAntiAliasingMode());
         add(label("profiles.color.antialiasing", "Antialiasing:", 'a', antiAliasingBox),
                 makeLabelConstraints(offset + 3));
@@ -100,12 +101,13 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
         add(cursorStyleBox, makeConstraints(2, offset + 1));
 
         final JCheckBox checkbox = createBlinkingCheckBox();
+        checkbox.setName("cursor blinks");
         checkbox.setSelected(gfxSettings.cursorBlinks());
         add(checkbox, makeConstraints(2, offset + 2));
     }
 
     private JButton createCursorColorButton() {
-        return new AbstractColorButton(gfxSettings.getCursorColor()) {
+        final AbstractColorButton button = new AbstractColorButton(gfxSettings.getCursorColor()) {
             private static final long serialVersionUID = -4068617458848972294L;
 
             @Override
@@ -113,6 +115,8 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
                 gfxSettings.setCursorColor(newColor);
             }
         };
+        button.setName("cursor color");
+        return button;
     }
 
     private JComboBox<String> createCursorStyleBox() {
@@ -125,7 +129,9 @@ class GraphicsPanel extends AbstractGridBagOptionPanel {
                     style.name().toLowerCase());
         }
 
-        return new JComboBox<>(names);
+        final JComboBox<String> comboBox = new JComboBox<>(names);
+        comboBox.setName("cursor style");
+        return comboBox;
     }
 
     private JCheckBox createBlinkingCheckBox() {

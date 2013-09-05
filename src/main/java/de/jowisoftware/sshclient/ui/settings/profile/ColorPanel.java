@@ -1,19 +1,17 @@
 package de.jowisoftware.sshclient.ui.settings.profile;
 
-import static de.jowisoftware.sshclient.i18n.Translation.t;
-
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
+import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
+import de.jowisoftware.sshclient.ui.settings.AbstractColorButton;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 
-import de.jowisoftware.sshclient.terminal.gfx.ColorName;
-import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
-import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxInfo;
-import de.jowisoftware.sshclient.ui.settings.AbstractColorButton;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 class ColorPanel extends JPanel {
     private static final long serialVersionUID = 3678836067715154011L;
@@ -57,6 +55,8 @@ class ColorPanel extends JPanel {
                 saveColorInProfile(e.getActionCommand(), newColor);
             }
         };
+
+        button.setName("color " + colorName);
         button.setActionCommand(colorName);
         return button;
     }

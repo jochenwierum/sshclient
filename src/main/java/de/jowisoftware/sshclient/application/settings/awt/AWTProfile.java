@@ -1,17 +1,17 @@
 package de.jowisoftware.sshclient.application.settings.awt;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import de.jowisoftware.sshclient.application.settings.Forwarding;
 import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.application.settings.persistence.annotations.Persist;
 import de.jowisoftware.sshclient.application.settings.persistence.annotations.TraversalType;
 import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxInfo;
 import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
+
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class AWTProfile implements Profile<AWTGfxInfo> {
     @Persist private String user = System.getProperty("user.name");
@@ -129,6 +129,7 @@ public final class AWTProfile implements Profile<AWTGfxInfo> {
     @Override
     public void setCharsetName(final String charsetName) {
         this.charsetName = charsetName;
+        charset = null;
     }
 
     @Override

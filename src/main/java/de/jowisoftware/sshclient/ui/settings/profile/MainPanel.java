@@ -1,19 +1,17 @@
 package de.jowisoftware.sshclient.ui.settings.profile;
 
-import static de.jowisoftware.sshclient.i18n.Translation.t;
+import de.jowisoftware.sshclient.application.settings.Profile;
+import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
+import de.jowisoftware.sshclient.util.StringUtils;
 
+import javax.swing.JComboBox;
+import javax.swing.JTextField;
 import java.awt.Window;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.SortedMap;
 
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
-
-import de.jowisoftware.sshclient.application.settings.Profile;
-import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
-import de.jowisoftware.sshclient.util.StringUtils;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 class MainPanel extends AbstractGridBagOptionPanel {
     private static final long serialVersionUID = -8272298107955330533L;
@@ -38,22 +36,26 @@ class MainPanel extends AbstractGridBagOptionPanel {
 
         add(label("profiles.general.profilename",
                 "Profile name:", 'm', profileNameTextField), makeLabelConstraints(++y));
+        profileNameTextField.setName("profile name");
         profileNameTextField.setText(profileName);
         profileNameTextField.setEnabled(profileNameSettable);
         add(profileNameTextField, makeConstraints(2, y));
 
         add(label("profiles.general.host", "Host:", 'h', hostTextField),
                 makeLabelConstraints(++y));
+        hostTextField.setName("host name");
         hostTextField.setText(profile.getHost());
         add(hostTextField, makeConstraints(2, y));
 
         add(label("profiles.general.port", "Port:", 'p', portTextField),
                 makeLabelConstraints(++y));
+        portTextField.setName("port");
         portTextField.setText(Integer.toString(profile.getPort()));
         add(portTextField, makeConstraints(2, y));
 
         add(label("profiles.general.user", "User:", 'u', userTextField),
                 makeLabelConstraints(++y));
+        userTextField.setName("user name");
         userTextField.setText(profile.getUser());
         add(userTextField, makeConstraints(2, y));
 
@@ -62,6 +64,7 @@ class MainPanel extends AbstractGridBagOptionPanel {
 
         add(label("profiles.general.command", "Command:", 'o', commandTextField),
                 makeLabelConstraints(++y));
+        commandTextField.setName("command");
         commandTextField.setText(profile.getCommand());
         add(commandTextField, makeConstraints(2, y));
 
@@ -74,6 +77,7 @@ class MainPanel extends AbstractGridBagOptionPanel {
 
         add(label("profiles.general.encoding", "Encoding:", 'e', encodingBox),
                 makeLabelConstraints(++y));
+        encodingBox.setName("encoding");
         encodingBox.setSelectedItem(profile.getCharset().name());
         add(encodingBox, makeConstraints(2, y));
 
@@ -83,18 +87,21 @@ class MainPanel extends AbstractGridBagOptionPanel {
 
         add(label("profiles.general.timeout", "Timeout (ms):", 't', timeoutTextField),
                 makeLabelConstraints(++y));
+        timeoutTextField.setName("timeout");
         timeoutTextField.setText(Integer.toString(profile.getTimeout()));
         add(timeoutTextField, makeConstraints(2, y));
 
         add(label("profiles.general.keepalivecount",
                 "Max. unanswerted keep alives:",
                 'k', keepAliveCount), makeLabelConstraints(++y));
+        keepAliveCount.setName("keep alive count");
         keepAliveCount.setText(Integer.toString(profile.getKeepAliveCount()));
         add(keepAliveCount, makeConstraints(2, y));
 
         add(label("profiles.general.keepaliveinterval",
                 "Keep alive interval (ms):",
                 'i', keepAliveInterval), makeLabelConstraints(++y));
+        keepAliveInterval.setName("keep alive interval");
         keepAliveInterval.setText(Integer.toString(profile
                 .getKeepAliveInterval()));
         add(keepAliveInterval, makeConstraints(2, y));

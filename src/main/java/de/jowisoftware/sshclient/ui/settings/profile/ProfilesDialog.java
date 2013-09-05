@@ -1,8 +1,23 @@
 package de.jowisoftware.sshclient.ui.settings.profile;
 
-import static de.jowisoftware.sshclient.i18n.Translation.m;
-import static de.jowisoftware.sshclient.i18n.Translation.t;
+import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.application.settings.validation.ValidationResult;
+import de.jowisoftware.sshclient.encryption.CryptoException;
+import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
+import org.apache.log4j.Logger;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ListModel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -21,25 +36,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListModel;
-
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.application.settings.validation.ValidationResult;
-import de.jowisoftware.sshclient.encryption.CryptoException;
-import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
+import static de.jowisoftware.sshclient.i18n.Translation.m;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class ProfilesDialog extends JDialog {
     private static final Logger LOGGER = Logger.getLogger(ProfilesDialog.class);
@@ -110,6 +108,7 @@ public class ProfilesDialog extends JDialog {
     private JButton createSaveButton() {
         final JButton button = new JButton(t("profiles.save", "Save"));
         button.setMnemonic(m("profiles.save", 's'));
+        button.setName("save");
         button.setEnabled(false);
         button.addActionListener(createEditButtonListener(true));
         return button;
@@ -207,6 +206,7 @@ public class ProfilesDialog extends JDialog {
     private JButton createEditButton() {
         final JButton button = new JButton(t("edit", "Edit"));
         button.setMnemonic(m("edit", 'e'));
+        button.setName("edit");
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
@@ -337,6 +337,7 @@ public class ProfilesDialog extends JDialog {
 
     private JScrollPane prepareSelectionList() {
         final JScrollPane pane = new JScrollPane(selectionList);
+        selectionList.setName("profileSelectionList");
         selectionList.addMouseListener(createListMouseListener());
         updateSelectionList();
 

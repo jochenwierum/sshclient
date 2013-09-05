@@ -1,16 +1,11 @@
 package de.jowisoftware.sshclient.ui.settings.profile;
 
-import static de.jowisoftware.sshclient.i18n.Translation.m;
-import static de.jowisoftware.sshclient.i18n.Translation.t;
-
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridLayout;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import de.jowisoftware.sshclient.application.settings.Forwarding;
+import de.jowisoftware.sshclient.application.settings.Forwarding.Direction;
+import de.jowisoftware.sshclient.application.settings.Profile;
+import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
+import de.jowisoftware.sshclient.util.StringUtils;
+import de.jowisoftware.sshclient.util.SwingUtils;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
@@ -23,17 +18,20 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
-import de.jowisoftware.sshclient.application.settings.Forwarding;
-import de.jowisoftware.sshclient.application.settings.Forwarding.Direction;
-import de.jowisoftware.sshclient.application.settings.Profile;
-import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
-import de.jowisoftware.sshclient.util.StringUtils;
-import de.jowisoftware.sshclient.util.SwingUtils;
+import static de.jowisoftware.sshclient.i18n.Translation.m;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 @SuppressWarnings("FieldCanBeLocal")
-class ForwardingPane extends AbstractGridBagOptionPanel {
+class ForwardingPanel extends AbstractGridBagOptionPanel {
     private static final long serialVersionUID = 8242920505051622953L;
 
     private final Profile<?> profile;
@@ -46,7 +44,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
     private final JList<Forwarding> forwardingsList = new JList<>(
             new DefaultListModel<Forwarding>());
 
-    public ForwardingPane(final Profile<?> profile, final Window parent) {
+    public ForwardingPanel(final Profile<?> profile, final Window parent) {
         super(parent);
         this.profile = profile;
 
@@ -61,11 +59,13 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
         add(x11Forwarding, makeConstraints(2, 2));
 
         x11Host.setText(profile.getX11Host());
+        x11Host.setName("x11 host");
         add(label("profiles.forwarding.x11host", "X11 host", 'h', x11Host),
                 makeLabelConstraints(3));
         add(x11Host, makeConstraints(2, 3));
 
         x11Display.setText(Integer.toString(profile.getX11Display()));
+        x11Display.setName("x11 display");
         add(label("profiles.forwarding.x11display", "X11 display", 'i', x11Display),
                 makeLabelConstraints(4));
         add(x11Display, makeConstraints(2, 4));
@@ -82,6 +82,8 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
         }
         add(label("profiles.forwardings.socksport", "SOCKS 4/5 Port:", 'o',
                 socksPort), makeLabelConstraints(6));
+
+        socksPort.setName("socks port");
         add(socksPort, makeConstraints(2, 6));
     }
 
@@ -91,6 +93,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
 
         updateForwardingsList();
         forwardingsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        forwardingsList.setName("forwardings");
         panel.add(new JScrollPane(forwardingsList), BorderLayout.CENTER);
         panel.add(controls, BorderLayout.SOUTH);
 
@@ -109,18 +112,22 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
 
         final JTextField sourceHostText = new JTextField("localhost");
         controls.add(label("profiles.forwarding.sourceHost", "Source host:", 'o', sourceHostText));
+        sourceHostText.setName("source host");
         controls.add(sourceHostText);
 
         final JTextField remoteHostText = new JTextField("localhost");
         controls.add(label("profiles.forwarding.remoteHost", "Remote host:", 'm', remoteHostText));
+        remoteHostText.setName("remote host");
         controls.add(remoteHostText);
 
         final JTextField sourcePortText = new JTextField();
         controls.add(label("profiles.forwarding.sourcePort", "Source port:", 'u', sourcePortText));
+        sourcePortText.setName("source port");
         controls.add(sourcePortText);
 
         final JTextField remotePortText = new JTextField();
         controls.add(label("profiles.forwarding.remotePort", "Remote port:", 't', remotePortText));
+        remotePortText.setName("remote port");
         controls.add(remotePortText);
 
         controls.add(createAddForwardingButton(localForwarding,
@@ -145,6 +152,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
             }
         });
 
+        deleteButton.setName("delete forwarding");
         return deleteButton;
     }
 
@@ -179,6 +187,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
                 updateForwardingsList();
             }
         });
+        addButton.setName("add forwarding");
         return addButton;
     }
 
@@ -187,6 +196,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
         final JRadioButton remoteForwarding = new JRadioButton(t("profiles.forwarding.remote", "Remote"));
         remoteForwarding.setMnemonic(m("profiles.forwarding.remote", 'e'));
         buttons.add(remoteForwarding);
+        remoteForwarding.setName("remote");
         return remoteForwarding;
     }
 
@@ -196,6 +206,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
         localForwarding.setMnemonic(m("profiles.forwarding.local", 'l'));
         localForwarding.setSelected(true);
         buttons.add(localForwarding);
+        localForwarding.setName("local");
         return localForwarding;
     }
 
@@ -223,6 +234,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
                 profile.setAgentForwarding(e.getStateChange() == ItemEvent.SELECTED);
             }
         });
+        checkBox.setName("agent forwarding");
         return checkBox;
     }
 
@@ -236,6 +248,7 @@ class ForwardingPane extends AbstractGridBagOptionPanel {
                 profile.setX11Forwarding(e.getStateChange() == ItemEvent.SELECTED);
             }
         });
+        checkBox.setName("x11 forwarding");
         return checkBox;
     }
 
