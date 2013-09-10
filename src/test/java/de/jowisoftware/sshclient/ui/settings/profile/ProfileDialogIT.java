@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.fest.swing.core.KeyPressInfo.keyCode;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -176,7 +177,7 @@ public class ProfileDialogIT extends GuiIntegrationTest {
 
     private void fillGraphicsTab() throws Exception {
         dialogFixture.tabbedPane("tabs").selectTab(1);
-        dialogFixture.comboBox("font").selectItem("Courier New");
+        dialogFixture.comboBox("font").selectItem("Monospaced");
         dialogFixture.textBox("font size").setText("11");
         dialogFixture.comboBox("anti aliasing").selectItem(1);
 
@@ -208,9 +209,9 @@ public class ProfileDialogIT extends GuiIntegrationTest {
 
         final AWTGfxInfo gfxSettings = awtProfile.getGfxSettings();
 
-        chainedAssertThat(gfxSettings.getFontName(), is(equalTo("Courier New")));
+        chainedAssertThat(gfxSettings.getFontName(), is(equalTo("Monospaced")));
         chainedAssertThat(gfxSettings.getFontSize(), is(11));
-        chainedAssertThat(gfxSettings.getFont().getFontName(), is(equalTo("Courier New")));
+        chainedAssertThat(gfxSettings.getFont().getFontName(), containsString("Monospaced"));
         final int realFontSize = (int)Math.round(11 * Toolkit.getDefaultToolkit().getScreenResolution() / 72.0);
         chainedAssertThat(gfxSettings.getFont().getSize(), is(realFontSize));
         chainedAssertThat(gfxSettings.getAntiAliasingMode(), is(1));
