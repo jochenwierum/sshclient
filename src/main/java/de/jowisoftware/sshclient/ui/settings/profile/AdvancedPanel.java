@@ -1,17 +1,8 @@
 package de.jowisoftware.sshclient.ui.settings.profile;
 
-import static de.jowisoftware.sshclient.i18n.Translation.m;
-import static de.jowisoftware.sshclient.i18n.Translation.t;
-
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridLayout;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.regex.Pattern;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
+import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -22,10 +13,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridLayout;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.regex.Pattern;
 
-import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
-import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
+import static de.jowisoftware.sshclient.i18n.Translation.m;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 class AdvancedPanel extends AbstractGridBagOptionPanel {
     private static final long serialVersionUID = -8918842950853608446L;
@@ -58,6 +57,7 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
         boundaryTextField.setText(profile.getGfxSettings().getBoundaryChars());
         add(label("profiles.advanced.wordcharacters", "Word characters:",
                 'w', boundaryTextField), makeLabelConstraints(++y));
+        boundaryTextField.setName("boundary characters");
         add(boundaryTextField, makeConstraints(2, y));
     }
 
@@ -65,6 +65,7 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
         final JPanel panel = new JPanel(new BorderLayout());
 
         updateEnvironmentList();
+        environmentList.setName("environment");
         environmentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         panel.add(new JScrollPane(environmentList), BorderLayout.CENTER);
 
@@ -74,7 +75,9 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
         textfieldPanel.setLayout(new GridLayout(1, 2));
         final JTextField key = new JTextField();
         final JTextField value = new JTextField();
+        key.setName("environment key");
         textfieldPanel.add(key);
+        value.setName("environment value");
         textfieldPanel.add(value);
 
         final JButton deleteButton = createDeleteEnvironmentButton();
@@ -104,6 +107,8 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
                 }
             }
         });
+
+        button.setName("add environment");
         return button;
     }
 
@@ -138,7 +143,10 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
                     mode.niceName);
         }
 
-        return new JComboBox<>(names);
+
+        final JComboBox<String> comboBox = new JComboBox<>(names);
+        comboBox.setName("close on");
+        return comboBox;
     }
 
     private JButton createDeleteEnvironmentButton() {
@@ -157,6 +165,8 @@ class AdvancedPanel extends AbstractGridBagOptionPanel {
                 updateEnvironmentList();
             }
         });
+
+        button.setName("delete environment");
         return button;
     }
 

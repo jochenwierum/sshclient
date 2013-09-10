@@ -1,4 +1,4 @@
-package de.jowisoftware.sshclient.ui.settings.profile;
+package de.jowisoftware.sshclient;
 
 import org.fest.swing.core.GenericTypeMatcher;
 

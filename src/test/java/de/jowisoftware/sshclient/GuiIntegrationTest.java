@@ -1,8 +1,11 @@
 package de.jowisoftware.sshclient;
 
+import org.fest.swing.core.GenericTypeMatcher;
 import org.fest.swing.edt.FailOnThreadViolationRepaintManager;
 import org.fest.swing.edt.GuiActionRunner;
 import org.fest.swing.edt.GuiQuery;
+import org.fest.swing.finder.WindowFinder;
+import org.fest.swing.fixture.DialogFixture;
 import org.fest.swing.image.ScreenshotTaker;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
@@ -19,6 +22,9 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
 import javax.swing.JFrame;
+import javax.swing.text.JTextComponent;
+import java.awt.Component;
+import java.awt.Dialog;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -33,8 +39,9 @@ public abstract class GuiIntegrationTest {
         private static final File screenshotDir = new File("target/guitest-screenshots");
         private final ScreenshotTaker screenshotTaker;
 
-        public MavenGUITestRunner(Class<?> testClass) throws InitializationError {
+        public MavenGUITestRunner(final Class<?> testClass) throws InitializationError {
             super(testClass);
+
             screenshotDir.mkdirs();
             screenshotTaker = new ScreenshotTaker();
         }
@@ -97,11 +104,11 @@ public abstract class GuiIntegrationTest {
         }
     }
 
-    public <T> void chainedAssertThat(T actual, Matcher<? super T> matcher) {
+    public <T> void chainedAssertThat(final T actual, final Matcher<? super T> matcher) {
         chainedAssertThat("", actual, matcher);
     }
 
-    public <T> void chainedAssertThat(String reason, T actual, Matcher<? super T> matcher) {
+    public <T> void chainedAssertThat(final String reason, final T actual, final Matcher<? super T> matcher) {
         try {
             MatcherAssert.assertThat(reason, actual, matcher);
         } catch(AssertionError e) {
@@ -136,5 +143,22 @@ public abstract class GuiIntegrationTest {
                 + "de\\.jowisoftware\\.sshclient\\.GuiIntegrationTest)\\.assertThat.+?\\n",
                 Pattern.MULTILINE);
         return pattern.matcher(writer.toString()).replaceAll("");
+    }
+
+    protected DialogFixture visibleWindow(final String title, final DialogFixture dialogFixture) {
+        return WindowFinder.findDialog(new GenericTypeMatcher<Dialog>(Dialog.class) {
+            @Override
+            protected boolean isMatching(final Dialog component) {
+                return component.isVisible() && component.getTitle().equals(title);
+            }
+        }).using(dialogFixture.robot);
+    }
+
+    protected NthMatcher<JTextComponent> nThTextbox(final int n) {
+        return nTh(n, JTextComponent.class);
+    }
+
+    protected <T extends Component> NthMatcher<T> nTh(final int n, final Class<T> clazz) {
+        return new NthMatcher<>(clazz, n);
     }
 }
