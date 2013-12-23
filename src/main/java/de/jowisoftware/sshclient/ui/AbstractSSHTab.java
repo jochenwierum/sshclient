@@ -4,14 +4,13 @@ import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.ui.tabpanel.Tab;
 import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabListener;
-import de.jowisoftware.sshclient.ui.tabpanel.redrawing.RedrawableTab;
 import de.jowisoftware.sshclient.ui.tabpanel.redrawing.RedrawingTabPanel;
 
-public abstract class AbstractSSHTab<T extends AbstractSSHConnectionPanel> implements RedrawableTab {
+public abstract class AbstractSSHTab<T extends AbstractSSHConnectionPanel<?>> implements Tab {
     protected final SSHTabTitleComponent title;
     protected final T content;
 
-    public AbstractSSHTab(final AWTProfile profile, final Application application, final RedrawingTabPanel parent) {
+    protected AbstractSSHTab(final AWTProfile profile, final Application application, final RedrawingTabPanel parent) {
         this.title = new SSHTabTitleComponent(profile, this);
         this.content = makeContentPanel(profile, application, parent);
 
@@ -39,16 +38,10 @@ public abstract class AbstractSSHTab<T extends AbstractSSHConnectionPanel> imple
     @Override
     public void freeze() {
         content.freeze();
-
     }
 
     @Override
     public void unfreeze() {
         content.unfreeze();
-    }
-
-    @Override
-    public void redraw() {
-        content.redraw();
     }
 }

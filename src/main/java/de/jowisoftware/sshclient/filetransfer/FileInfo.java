@@ -7,22 +7,20 @@ public class FileInfo {
     private final SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
     private static final char suffixes[] = {' ', 'K', 'M', 'G', 'T', 'E', 'P'};
 
-    private String name;
-    private String size;
-    private String owner;
-    private String group;
-    private String permissions;
-    private String modified;
-    private String created;
+    private final String name;
+    private final String size;
+    private final String owner;
+    private final String group;
+    private final String permissions;
+    private final String modified;
 
     public FileInfo(final String name, final long size, final String owner, final String group, final String permissions,
-            final Date created, final Date modified) {
+            final Date modified) {
         this.name = name;
         this.size = niceSize(size);
         this.owner = owner;
         this.group = group;
         this.permissions = permissions;
-        this.created = df.format(created);
         this.modified = df.format(modified);
     }
 
@@ -59,10 +57,6 @@ public class FileInfo {
 
     public String getGroup() {
         return group;
-    }
-
-    public String getCreated() {
-        return created;
     }
 
     public String getModified() {

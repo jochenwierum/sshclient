@@ -65,8 +65,8 @@ public class MainWindow extends JFrame {
 
         tabPanel.stopRedraw();
         for (final Tab tab : tabPanel.getTabs()) {
-            if (tab instanceof SSHTab) {
-                ((SSHTab) tab).getContent().close();
+            if (tab instanceof AbstractSSHTab<?>) {
+                ((AbstractSSHTab<?>) tab).getContent().close();
             }
             tabPanel.closeTab(tab);
         }

@@ -13,40 +13,26 @@ import de.jowisoftware.sshclient.ui.tabpanel.redrawing.RedrawingTabPanel;
 import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 import de.jowisoftware.sshclient.util.Constants;
 import de.jowisoftware.sshclient.util.SwingUtils;
-import org.apache.log4j.Logger;
 
-import javax.swing.JComponent;
-import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
-public class ConnectionPanel extends AbstractSSHConnectionPanel {
+public class ConnectionPanel extends AbstractSSHConnectionPanel<SSHTab> {
     private static final long serialVersionUID = 7873084199411017370L;
 
-    private static final Logger LOGGER = Logger.getLogger(ConnectionPanel.class);
     private final AWTProfile profile;
     private final SessionMenu sessionMenu;
 
     private JSchConnection connection;
     private SSHConsole console = null;
 
-    private final Application application;
-    private final RedrawingTabPanel parent;
-
-    private final SSHTab tab;
-
     public ConnectionPanel(final Application application, final AWTProfile profile,
             final RedrawingTabPanel parent, final SSHTab tab) {
-        this.application = application;
-        this.parent = parent;
-        this.tab = tab;
+        super(application, parent, tab);
         this.profile = profile;
-
-        setLayout(new BorderLayout());
-        setContent(new InfoPane(t("connecting", "Connecting...")));
 
         console = new SSHConsole(profile);
         sessionMenu = new SessionMenu(console);
@@ -82,30 +68,6 @@ public class ConnectionPanel extends AbstractSSHConnectionPanel {
         });
     }
 
-    @Override
-    public void connect() {
-        try {
-            tryConnect();
-        } catch(final Exception e) {
-            close();
-            console = null;
-            if (authWasCanceled(e)) {
-                parent.closeTab(tab);
-            } else {
-                setContent(new ErrorPane(t("error.could_not_establish_connection",
-                        "Could not establish connection"), e));
-                LOGGER.error("Could not connect", e);
-            }
-        }
-    }
-
-    private void tryConnect() throws JSchException, IOException {
-        final SSHUserInfo userInfo = new SSHUserInfo(application.mainWindow,
-                application.passwordManager);
-        setupJSchConnection(userInfo);
-        setupConsole();
-        sessionMenu.updateMenuStates();
-    }
 
     private void setupConsole() {
         console.setOutputStream(connection.getOutputStream());
@@ -152,19 +114,6 @@ public class ConnectionPanel extends AbstractSSHConnectionPanel {
         });
     }
 
-    private boolean authWasCanceled(final Exception e) {
-        final String cancel_message = "Auth cancel";
-        //noinspection SimplifiableIfStatement
-        if (!(e instanceof JSchException)) {
-            return false;
-        }
-        return cancel_message.equals(e.getMessage());
-    }
-
-    private void setContent(final JComponent comp) {
-        removeAll();
-        add(comp, BorderLayout.CENTER);
-    }
 
     @Override
     public void close() {
@@ -179,7 +128,6 @@ public class ConnectionPanel extends AbstractSSHConnectionPanel {
         }
     }
 
-    @Override
     public void redraw() {
         if (console != null) {
             console.redrawConsole();
@@ -210,7 +158,20 @@ public class ConnectionPanel extends AbstractSSHConnectionPanel {
     }
 
     @Override
+    protected void processConnectException(final Exception e) {
+        console = null;
+    }
+
+    @Override
     public void unfreeze() {
         console.unfreeze();
     }
+
+    @Override
+    protected void tryConnect(final SSHUserInfo userInfo) throws JSchException, IOException {
+        setupJSchConnection(userInfo);
+        setupConsole();
+        sessionMenu.updateMenuStates();
+    }
+
 }

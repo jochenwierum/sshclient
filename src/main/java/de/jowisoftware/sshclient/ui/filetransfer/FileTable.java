@@ -30,7 +30,7 @@ public class FileTable<S extends AbstractTreeNodeItem, T extends ChildrenProvide
     }
 
     private void setupColumnRendering() {
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
+        final DefaultTableCellRenderer renderer = new DefaultTableCellRenderer();
         renderer.setHorizontalAlignment(JLabel.RIGHT);
 
         for (int i = 1; i < getColumnCount(); ++i) {
@@ -42,7 +42,7 @@ public class FileTable<S extends AbstractTreeNodeItem, T extends ChildrenProvide
     }
 
     private DefaultTableModel createModel() {
-        DefaultTableModel model = new DefaultTableModel() {
+        final DefaultTableModel model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(final int row, final int column) {
                 return false;
@@ -58,27 +58,26 @@ public class FileTable<S extends AbstractTreeNodeItem, T extends ChildrenProvide
         model.addColumn("Permissions");
         model.addColumn("Owner");
         model.addColumn("Group");
-        model.addColumn("Created");
         model.addColumn("Modified");
     }
 
     @Override
     public void valueChanged(final TreeSelectionEvent e) {
-        Object selected = e.getPath().getLastPathComponent();
+        final Object selected = e.getPath().getLastPathComponent();
         @SuppressWarnings("unchecked")
-        S item = (S) ((DefaultMutableTreeNode) selected).getUserObject();
+        final S item = (S) ((DefaultMutableTreeNode) selected).getUserObject();
         populate(item);
     }
 
     private void populate(final S item) {
-        DefaultTableModel model = (DefaultTableModel) getModel();
+        final DefaultTableModel model = (DefaultTableModel) getModel();
         model.setRowCount(0);
 
         for (final FileInfo info : provider.getFiles(item)) {
             model.addRow(new Object[] {
                     info.getName(), info.getSize(),
                     info.getPermissions(), info.getOwner(), info.getGroup(),
-                    info.getCreated(), info.getModified()
+                    info.getModified()
             });
         }
 
@@ -90,8 +89,8 @@ public class FileTable<S extends AbstractTreeNodeItem, T extends ChildrenProvide
         for (int column = 1; column < getColumnCount(); ++column) {
             int width = 0;
             for (int row = 0; row < getRowCount(); row++) {
-                TableCellRenderer renderer = getCellRenderer(row, column);
-                Component comp = prepareRenderer(renderer, row, column);
+                final TableCellRenderer renderer = getCellRenderer(row, column);
+                final Component comp = prepareRenderer(renderer, row, column);
                 width = Math.max(comp.getPreferredSize().width, width);
             }
 

@@ -4,7 +4,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.GroupPrincipal;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase().contains("windows");
 
     @Override
-    public FileSystemTreeNodeItem[] getChildrenOf(FileSystemTreeNodeItem parent) {
+    public FileSystemTreeNodeItem[] getChildrenOf(final FileSystemTreeNodeItem parent) {
         final List<FileSystemTreeNodeItem> children = new ArrayList<>();
         for (final File file: getFiles(parent.getFile())) {
             if (file.isDirectory()) {
@@ -56,12 +55,11 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
                 final String group = getGroup(path);
                 final String permissions = getPermissions(path);
                 final long size = getSize(path);
-                final Date creationDate = getCreationDate(path);
                 final Date lastModifiedDate = getLastModifiedDate(path);
 
                 files.add(new FileInfo(path.getFileName().toString(), size,
                         owner, group, permissions,
-                        lastModifiedDate, creationDate));
+                        lastModifiedDate));
             }
         }
         return files.toArray(new FileInfo[files.size()]);
@@ -83,15 +81,6 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
         try {
             return new Date(Files.getLastModifiedTime(path).toMillis());
         } catch(final Exception e) {
-            return new Date();
-        }
-    }
-
-    private Date getCreationDate(final Path path) {
-        try {
-            BasicFileAttributes attributes = Files.readAttributes(path, BasicFileAttributes.class);
-            return new Date(attributes.creationTime().toMillis());
-        } catch (final Exception e) {
             return new Date();
         }
     }
@@ -119,7 +108,7 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
             addPermission(permissions, Files.isWritable(path), 'w');
         } else {
             try {
-                Set<PosixFilePermission> permissionSet = Files.getPosixFilePermissions(path);
+                final Set<PosixFilePermission> permissionSet = Files.getPosixFilePermissions(path);
 
                 addPermission(permissions, permissionSet, PosixFilePermission.OWNER_READ, 'r');
                 addPermission(permissions, permissionSet, PosixFilePermission.OWNER_WRITE, 'w');
@@ -149,7 +138,7 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
         addPermission(permissions, permissionSet.contains(permission), character);
     }
 
-    private void addPermission(final StringBuilder permissions, boolean isGiven, final char character) {
+    private void addPermission(final StringBuilder permissions, final boolean isGiven, final char character) {
         if (isGiven) {
             permissions.append(character);
         } else {
