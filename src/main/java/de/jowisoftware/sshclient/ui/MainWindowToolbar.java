@@ -1,15 +1,11 @@
 package de.jowisoftware.sshclient.ui;
 
-import static de.jowisoftware.sshclient.i18n.Translation.t;
-
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Map.Entry;
+import de.jowisoftware.sshclient.application.Application;
+import de.jowisoftware.sshclient.application.settings.ProfileEvent;
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.ui.about.AboutDialog;
+import de.jowisoftware.sshclient.ui.tabpanel.SplitDirection;
+import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -20,14 +16,18 @@ import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.application.Application;
-import de.jowisoftware.sshclient.application.settings.ProfileEvent;
-import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.ui.about.AboutDialog;
-import de.jowisoftware.sshclient.ui.tabpanel.SplitDirection;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class MainWindowToolbar implements ProfileEvent {
     private static final Logger LOGGER = Logger
@@ -200,6 +200,12 @@ public class MainWindowToolbar implements ProfileEvent {
         for (final Entry<String, AWTProfile> p : application.settings.getProfiles().entrySet()) {
             profileNames[i++] = p.getKey();
         }
+        Arrays.sort(profileNames, new Comparator<String>() {
+            @Override
+            public int compare(final String o1, final String o2) {
+                return o1.toLowerCase().compareTo(o2.toLowerCase());
+            }
+        });
 
         final ComboBoxModel<String> model = new DefaultComboBoxModel<>(
                 profileNames);
