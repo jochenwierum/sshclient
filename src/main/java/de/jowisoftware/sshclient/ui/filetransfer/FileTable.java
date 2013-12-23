@@ -15,6 +15,8 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
 import java.awt.Component;
 
+import static de.jowisoftware.sshclient.i18n.Translation.t;
+
 public class FileTable<S extends AbstractTreeNodeItem, T extends ChildrenProvider<S>> extends JTable implements TreeSelectionListener {
     private final T provider;
 
@@ -53,12 +55,12 @@ public class FileTable<S extends AbstractTreeNodeItem, T extends ChildrenProvide
     }
 
     private void createColumns(final DefaultTableModel model) {
-        model.addColumn("Name");
-        model.addColumn("Size");
-        model.addColumn("Permissions");
-        model.addColumn("Owner");
-        model.addColumn("Group");
-        model.addColumn("Modified");
+        model.addColumn(t("file.name", "Name"));
+        model.addColumn(t("file.size", "Size"));
+        model.addColumn(t("file.permissions", "Permissions"));
+        model.addColumn(t("file.owner", "Owner"));
+        model.addColumn(t("file.group", "Group"));
+        model.addColumn(t("file.modified", "Modified"));
     }
 
     @Override

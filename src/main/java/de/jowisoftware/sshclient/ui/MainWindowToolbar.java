@@ -77,7 +77,7 @@ public class MainWindowToolbar implements ProfileEvent {
 
     private JButton createSftpConnectButton() {
         final JButton button = createButton(t("mainwindow.toolbar.sftpconnect",
-                "sftpconnect"), "sftp_connect_established");
+                "connect sftp"), "sftp_connect_established");
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(final ActionEvent e) {
