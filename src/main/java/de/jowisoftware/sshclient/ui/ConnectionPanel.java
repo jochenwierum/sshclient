@@ -1,19 +1,6 @@
 package de.jowisoftware.sshclient.ui;
 
-import static de.jowisoftware.sshclient.i18n.Translation.t;
-
-import java.awt.BorderLayout;
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
-
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
-import org.apache.log4j.Logger;
-
 import com.jcraft.jsch.JSchException;
-
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
@@ -26,8 +13,17 @@ import de.jowisoftware.sshclient.ui.tabpanel.redrawing.RedrawingTabPanel;
 import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 import de.jowisoftware.sshclient.util.Constants;
 import de.jowisoftware.sshclient.util.SwingUtils;
+import org.apache.log4j.Logger;
 
-public class ConnectionPanel extends JPanel {
+import javax.swing.JComponent;
+import java.awt.BorderLayout;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+
+import static de.jowisoftware.sshclient.i18n.Translation.t;
+
+public class ConnectionPanel extends AbstractSSHConnectionPanel {
     private static final long serialVersionUID = 7873084199411017370L;
 
     private static final Logger LOGGER = Logger.getLogger(ConnectionPanel.class);
@@ -86,6 +82,7 @@ public class ConnectionPanel extends JPanel {
         });
     }
 
+    @Override
     public void connect() {
         try {
             tryConnect();
@@ -169,6 +166,7 @@ public class ConnectionPanel extends JPanel {
         add(comp, BorderLayout.CENTER);
     }
 
+    @Override
     public void close() {
         removeAll();
         if (console != null) {
@@ -181,6 +179,7 @@ public class ConnectionPanel extends JPanel {
         }
     }
 
+    @Override
     public void redraw() {
         if (console != null) {
             console.redrawConsole();
@@ -194,6 +193,7 @@ public class ConnectionPanel extends JPanel {
         }
     }
 
+    @Override
     public void takeFocus() {
         if (console != null) {
             console.takeFocus();
@@ -204,10 +204,12 @@ public class ConnectionPanel extends JPanel {
         return sessionMenu;
     }
 
+    @Override
     public void freeze() {
         console.freeze();
     }
 
+    @Override
     public void unfreeze() {
         console.unfreeze();
     }

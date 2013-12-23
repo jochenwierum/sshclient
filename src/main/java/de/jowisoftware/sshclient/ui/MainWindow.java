@@ -1,22 +1,11 @@
 package de.jowisoftware.sshclient.ui;
 
-import static de.jowisoftware.sshclient.i18n.Translation.t;
-
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.io.File;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-import de.jowisoftware.sshclient.application.settings.persistence.Persister;
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.arguments.ArgumentParser;
 import de.jowisoftware.sshclient.application.arguments.ArgumentParserCallback;
 import de.jowisoftware.sshclient.application.settings.TabState;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.application.settings.persistence.Persister;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.log.LogTab;
 import de.jowisoftware.sshclient.ui.settings.profile.ConnectDialog;
@@ -27,6 +16,16 @@ import de.jowisoftware.sshclient.ui.tabpanel.redrawing.RedrawingTabPanel;
 import de.jowisoftware.sshclient.util.ApplicationUtils;
 import de.jowisoftware.sshclient.util.FontUtils;
 import de.jowisoftware.sshclient.util.SwingUtils;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.File;
+
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class MainWindow extends JFrame {
     private static final long serialVersionUID = -2951599770927217249L;
@@ -186,6 +185,14 @@ public class MainWindow extends JFrame {
         tabPanel.add(sshTab);
         sshTab.getContent().connect();
         sshTab.getContent().takeFocus();
+    }
+
+    public void connectSftp(final AWTProfile profile) {
+        final AWTProfile safeProfile = new AWTProfile(profile);
+        final SftpTab sftpTab = new SftpTab(safeProfile, application, tabPanel);
+        tabPanel.add(sftpTab);
+        sftpTab.getContent().connect();
+        sftpTab.getContent().takeFocus();
     }
 
     public void connectToCustomProfile() {

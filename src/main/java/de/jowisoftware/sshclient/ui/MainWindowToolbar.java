@@ -46,6 +46,7 @@ public class MainWindowToolbar implements ProfileEvent {
         toolBar.setFloatable(false);
         toolBar.add(comboBox);
         toolBar.add(createConnectButton());
+        toolBar.add(createSftpConnectButton());
         toolBar.add(createDirectConnectButton());
         toolBar.addSeparator();
         toolBar.add(createHSplitButton());
@@ -73,6 +74,19 @@ public class MainWindowToolbar implements ProfileEvent {
         });
         return button;
     }
+
+    private JButton createSftpConnectButton() {
+        final JButton button = createButton(t("mainwindow.toolbar.sftpconnect",
+                "sftpconnect"), "sftp_connect_established");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                connectSftpToSelectedProfile();
+            }
+        });
+        return button;
+    }
+
 
     private JButton createConnectButton() {
         final JButton button = createButton(t("mainwindow.toolbar.connect",
@@ -187,6 +201,16 @@ public class MainWindowToolbar implements ProfileEvent {
             final AWTProfile profile = application.settings.getProfiles().get(profileName);
             if (profile != null) {
                 parent.connect(profile);
+            }
+        }
+    }
+
+    private void connectSftpToSelectedProfile() {
+        final String profileName = (String) comboBox.getSelectedItem();
+        if (profileName != null) {
+            final AWTProfile profile = application.settings.getProfiles().get(profileName);
+            if (profile != null) {
+                parent.connectSftp(profile);
             }
         }
     }
