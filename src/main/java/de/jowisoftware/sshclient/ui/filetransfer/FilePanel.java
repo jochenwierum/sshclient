@@ -7,7 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
-public class FilePanel<S extends AbstractTreeNodeItem, T extends ChildrenProvider<S>> extends JSplitPane {
+public class FilePanel<S extends AbstractTreeNodeItem<?>, T extends ChildrenProvider<S>> extends JSplitPane {
     private final DirectoryTree<S, T> tree;
 
     public FilePanel(final T fileSystemChildrenProvider) {
@@ -28,13 +28,17 @@ public class FilePanel<S extends AbstractTreeNodeItem, T extends ChildrenProvide
         return new DirectoryTree<>(provider);
     }
 
-    private FileTable createFileListing(final DirectoryTree<S, T> tree, final T fileSystemChildrenProvider) {
-        FileTable fileTable = new FileTable<>(fileSystemChildrenProvider);
+    private FileTable<S, T> createFileListing(final DirectoryTree<S, T> tree, final T fileSystemChildrenProvider) {
+        final FileTable<S, T> fileTable = new FileTable<>(fileSystemChildrenProvider);
         tree.addTreeSelectionListener(fileTable);
         return fileTable;
     }
 
     public void updateSelected() {
         tree.updateSelected();
+    }
+
+    public void close() {
+        tree.close();
     }
 }

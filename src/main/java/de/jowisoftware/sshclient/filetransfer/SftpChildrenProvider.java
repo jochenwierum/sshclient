@@ -4,6 +4,7 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.SftpException;
 import org.apache.log4j.Logger;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,6 +35,8 @@ public class SftpChildrenProvider implements ChildrenProvider<SftpTreeNodeItem> 
         } catch (final SftpException e) {
             LOGGER.info(String.format("Could not read children of %s (%s): %s", node.getPath(), node, e.getMessage()));
         }
+
+        Collections.sort(result);
         return result.toArray(new SftpTreeNodeItem[result.size()]);
     }
 

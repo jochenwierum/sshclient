@@ -22,6 +22,8 @@ import java.io.IOException;
 public class SftpConnectionPanel extends AbstractSSHConnectionPanel<SftpTab> {
     private final AWTProfile profile;
     private JSchSftpConnection connection;
+    private FilePanel<FileSystemTreeNodeItem, FileSystemChildrenProvider> leftPane;
+    private FilePanel<SftpTreeNodeItem, SftpChildrenProvider> rightPane;
 
     public SftpConnectionPanel(final AWTProfile profile, final Application application, final RedrawingTabPanel parent, final SftpTab tab) {
         super(application, parent, tab);
@@ -29,10 +31,8 @@ public class SftpConnectionPanel extends AbstractSSHConnectionPanel<SftpTab> {
     }
 
     private void init(final SftpChildrenProvider childrenProvider) {
-        final FilePanel<FileSystemTreeNodeItem, FileSystemChildrenProvider> leftPane =
-                new FilePanel<>(new FileSystemChildrenProvider());
-        final FilePanel<SftpTreeNodeItem, SftpChildrenProvider> rightPane =
-                new FilePanel<>(childrenProvider);
+        leftPane = new FilePanel<>(new FileSystemChildrenProvider());
+        rightPane = new FilePanel<>(childrenProvider);
 
         final JPanel buttons = new JPanel();
 
@@ -80,6 +80,16 @@ public class SftpConnectionPanel extends AbstractSSHConnectionPanel<SftpTab> {
         if (connection != null) {
             connection.close();
             connection = null;
+        }
+
+        if (leftPane != null) {
+            leftPane.close();
+            leftPane = null;
+        }
+
+        if (rightPane != null) {
+            rightPane.close();
+            rightPane = null;
         }
     }
 

@@ -1,6 +1,6 @@
 package de.jowisoftware.sshclient.filetransfer;
 
-public class AbstractTreeNodeItem {
+public abstract class AbstractTreeNodeItem<T> implements Comparable<T> {
     private boolean isLoaded = false;
 
     public void markAsLoaded() {
@@ -11,4 +11,8 @@ public class AbstractTreeNodeItem {
         return isLoaded;
     }
 
+    @Override
+    public final int compareTo(final T o) {
+        return toString().compareTo(o.toString());
+    }
 }

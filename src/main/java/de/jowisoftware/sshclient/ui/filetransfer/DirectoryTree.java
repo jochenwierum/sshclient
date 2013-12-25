@@ -5,79 +5,82 @@ import de.jowisoftware.sshclient.filetransfer.ChildrenProvider;
 
 import javax.swing.JTree;
 import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeWillExpandListener;
+import javax.swing.event.TreeExpansionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-public class DirectoryTree<S extends AbstractTreeNodeItem, T extends ChildrenProvider<S>> extends JTree {
+public class DirectoryTree<S extends AbstractTreeNodeItem<?>, T extends ChildrenProvider<S>> extends JTree {
     private final T provider;
+    private final LazySubtreeUpdater<S, T> updater;
 
     public DirectoryTree(final T provider) {
         this.provider = provider;
-        setupModel();
+        final DefaultTreeModel model = setupModel();
+        updater = new LazySubtreeUpdater<>(provider, model, this);
+        initRoots(model);
         setupRendering();
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     }
 
-    private void setupModel() {
+    private DefaultTreeModel setupModel() {
         final DefaultTreeModel model = createModel();
         setModel(model);
-        addTreeWillExpandListener(createExpansionListener(model));
+        addTreeExpansionListener(createExpansionListener());
+        return model;
     }
 
     private void setupRendering() {
         setRootVisible(false);
         setShowsRootHandles(true);
 
-        DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
+        final DefaultTreeCellRenderer renderer = new DefaultTreeCellRenderer();
         renderer.setLeafIcon(renderer.getClosedIcon());
         setCellRenderer(renderer);
     }
 
-    private TreeWillExpandListener createExpansionListener(final DefaultTreeModel model) {
-        return new TreeWillExpandListener() {
-
+    private TreeExpansionListener createExpansionListener() {
+        return new TreeExpansionListener() {
             @Override
-            public void treeWillExpand(final TreeExpansionEvent event) throws ExpandVetoException {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
+            public void treeExpanded(final TreeExpansionEvent event) {
+                final DefaultMutableTreeNode node = (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
                 for (int i = node.getChildCount(); i > 0; --i) {
-                    updateModel(model, (DefaultMutableTreeNode) node.getChildAt(i - 1));
+                    updateModel((DefaultMutableTreeNode) node.getChildAt(i - 1));
                 }
             }
 
             @Override
-            public void treeWillCollapse(final TreeExpansionEvent event) throws ExpandVetoException {
+            public void treeCollapsed(final TreeExpansionEvent event) {
+
             }
         };
     }
 
     private DefaultTreeModel createModel() {
         final MutableTreeNode rootNode = new DefaultMutableTreeNode("File Systems", true);
-        final DefaultTreeModel model = new DefaultTreeModel(rootNode);
-
-        int i = 0;
-        for (final S root : provider.getRoots()) {
-            DefaultMutableTreeNode fileSystemNode = new DefaultMutableTreeNode(
-                    root, true);
-            model.insertNodeInto(fileSystemNode, rootNode, i++);
-            updateModel(model, fileSystemNode);
-        }
-
-        return model;
+        return new DefaultTreeModel(rootNode);
     }
 
-    private void updateModel(DefaultTreeModel model, DefaultMutableTreeNode parent) {
+    private void initRoots(final DefaultTreeModel model) {
+        int i = 0;
+        for (final S root : provider.getRoots()) {
+            final DefaultMutableTreeNode fileSystemNode = new DefaultMutableTreeNode(root);
+            model.insertNodeInto(fileSystemNode, (DefaultMutableTreeNode) model.getRoot(), i++);
+            updateModel(fileSystemNode);
+        }
+    }
+
+    private void updateModel(final DefaultMutableTreeNode parent) {
         @SuppressWarnings("unchecked")
         final S treeNodeItem = (S) parent.getUserObject();
         if (!treeNodeItem.isLoaded()) {
-            createChildNodes(model, parent);
             treeNodeItem.markAsLoaded();
-            model.reload(parent);
+            //createChildNodes(model, parent);
+            //model.reload(parent);
+            updater.queueUpdate(parent);
         }
     }
 
@@ -86,7 +89,7 @@ public class DirectoryTree<S extends AbstractTreeNodeItem, T extends ChildrenPro
         @SuppressWarnings("unchecked")
         final S parentObject = (S) parent.getUserObject();
         for (final S child : provider.getChildrenOf(parentObject)) {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode(child, true);
+            final DefaultMutableTreeNode node = new DefaultMutableTreeNode(child, true);
             model.insertNodeInto(node, parent, i++);
         }
     }
@@ -108,5 +111,9 @@ public class DirectoryTree<S extends AbstractTreeNodeItem, T extends ChildrenPro
             getSelectionModel().clearSelection();
             getSelectionModel().setSelectionPath(selectionPath);
         }
+    }
+
+    public void close() {
+        updater.shutdown();
     }
 }

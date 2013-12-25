@@ -2,7 +2,7 @@ package de.jowisoftware.sshclient.filetransfer;
 
 import java.io.File;
 
-public class FileSystemTreeNodeItem extends AbstractTreeNodeItem {
+public class FileSystemTreeNodeItem extends AbstractTreeNodeItem<FileSystemTreeNodeItem> {
     private final File file;
 
     public FileSystemTreeNodeItem(final File file) {

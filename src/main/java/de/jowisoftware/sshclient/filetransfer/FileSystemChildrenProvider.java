@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.nio.file.attribute.GroupPrincipal;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,8 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
                 children.add(new FileSystemTreeNodeItem(file));
             }
         }
+
+        Collections.sort(children);
         return children.toArray(new FileSystemTreeNodeItem[children.size()]);
     }
 
@@ -62,6 +65,8 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
                         lastModifiedDate));
             }
         }
+
+        Collections.sort(files);
         return files.toArray(new FileInfo[files.size()]);
     }
 

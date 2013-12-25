@@ -1,13 +1,12 @@
 package de.jowisoftware.sshclient.util;
 
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 public final class SwingUtils {
     private static final Map<Character, Integer> VKMappings = new HashMap<>();
@@ -64,6 +63,14 @@ public final class SwingUtils {
             } catch (final InvocationTargetException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    public static void runDelayedInSwingThread(final Runnable runnable) {
+        if (SwingUtilities.isEventDispatchThread()) {
+            runnable.run();
+        } else {
+            SwingUtilities.invokeLater(runnable);
         }
     }
 

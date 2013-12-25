@@ -1,6 +1,6 @@
 package de.jowisoftware.sshclient.filetransfer;
 
-public class SftpTreeNodeItem extends AbstractTreeNodeItem {
+public class SftpTreeNodeItem extends AbstractTreeNodeItem<SftpTreeNodeItem> {
     private final String path;
     private final String filename;
 
