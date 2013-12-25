@@ -58,7 +58,6 @@ public class SftpChildrenProvider implements ChildrenProvider<SftpTreeNodeItem> 
                     if (!entry.getAttrs().isDir()) {
                         result.add(createFileInfo(entry));
                     }
-                    LOGGER.trace(filename);
                     return CONTINUE;
                 }
             });

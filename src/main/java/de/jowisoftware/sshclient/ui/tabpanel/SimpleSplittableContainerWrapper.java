@@ -1,10 +1,9 @@
 package de.jowisoftware.sshclient.ui.tabpanel;
 
-import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JSplitPane;
+import java.util.List;
 
 
 public class SimpleSplittableContainerWrapper implements SplittableContainerWrapper {
@@ -42,7 +41,7 @@ public class SimpleSplittableContainerWrapper implements SplittableContainerWrap
         bottomRightComponent.setParent(rightContainer);
 
         registerNewComponent(splitPane);
-        splitPane.setDividerLocation(.5);
+        splitPane.setResizeWeight(.5);
     }
 
     private void registerNewComponent(final JComponent component) {
@@ -53,8 +52,8 @@ public class SimpleSplittableContainerWrapper implements SplittableContainerWrap
     @Override
     public void updateComponent() {
         final int dividerLocation = splitPane.getDividerLocation();
-        splitPane.setLeftComponent(leftContainer.getComponent());
-        splitPane.setRightComponent(rightContainer.getComponent());
+        splitPane.setLeftComponent(leftContainer.component);
+        splitPane.setRightComponent(rightContainer.component);
         splitPane.setDividerLocation(dividerLocation);
         splitPane.doLayout();
     }
@@ -92,8 +91,8 @@ public class SimpleSplittableContainerWrapper implements SplittableContainerWrap
         splitPane = oldChild.splitPane;
 
         if (splitPane != null) {
-            leftContainer.setParent(this);
-            rightContainer.setParent(this);
+            leftContainer.parent = this;
+            rightContainer.parent = this;
         } else {
             ((DnDTabbedPane) oldChild.component).getTabbedPane().setParent(this);
         }
