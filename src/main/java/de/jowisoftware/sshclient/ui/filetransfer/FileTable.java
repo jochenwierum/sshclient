@@ -3,6 +3,7 @@ package de.jowisoftware.sshclient.ui.filetransfer;
 import de.jowisoftware.sshclient.filetransfer.AbstractTreeNodeItem;
 import de.jowisoftware.sshclient.filetransfer.ChildrenProvider;
 import de.jowisoftware.sshclient.filetransfer.FileInfo;
+import de.jowisoftware.sshclient.util.SwingUtils;
 
 import javax.swing.JLabel;
 import javax.swing.JTable;
@@ -17,11 +18,15 @@ import java.awt.Component;
 
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
-public class FileTable<S extends AbstractTreeNodeItem, T extends ChildrenProvider<S>> extends JTable implements TreeSelectionListener {
+public class FileTable<S extends AbstractTreeNodeItem<?>, T extends ChildrenProvider<S>> extends JTable implements TreeSelectionListener {
     private final T provider;
+    private final LazyUpdater<S,T> updater;
 
-    public FileTable(final T provider) {
+    public FileTable(final T provider, final DirectoryTree<S, T> tree, final LazyUpdater<S, T> updater) {
         this.provider = provider;
+        this.updater = updater;
+        tree.addTreeSelectionListener(this);
+
         setModel(createModel());
         getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         setRowSelectionAllowed(true);
@@ -73,17 +78,26 @@ public class FileTable<S extends AbstractTreeNodeItem, T extends ChildrenProvide
 
     private void populate(final S item) {
         final DefaultTableModel model = (DefaultTableModel) getModel();
-        model.setRowCount(0);
-
-        for (final FileInfo info : provider.getFiles(item)) {
-            model.addRow(new Object[] {
-                    info.getName(), info.getSize(),
-                    info.getPermissions(), info.getOwner(), info.getGroup(),
-                    info.getModified()
-            });
-        }
-
-        resizeColumns();
+        updater.queueUpdate(new Runnable() {
+            @Override
+            public void run() {
+                final FileInfo[] files = provider.getFiles(item);
+                SwingUtils.runDelayedInSwingThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        model.setRowCount(0);
+                        for (final FileInfo info : files) {
+                            model.addRow(new Object[] {
+                                    info.getName(), info.getSize(),
+                                    info.getPermissions(), info.getOwner(), info.getGroup(),
+                                    info.getModified()
+                            });
+                        }
+                        resizeColumns();
+                    }
+                });
+            }
+        });
     }
 
     private void resizeColumns() {

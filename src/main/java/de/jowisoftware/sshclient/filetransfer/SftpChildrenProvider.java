@@ -33,7 +33,7 @@ public class SftpChildrenProvider implements ChildrenProvider<SftpTreeNodeItem> 
                 }
             });
         } catch (final SftpException e) {
-            LOGGER.info(String.format("Could not read children of %s (%s): %s", node.getPath(), node, e.getMessage()));
+            LOGGER.info(String.format("Could not read children of %s (%s): %s", node.getPath(), node, e.toString()));
         }
 
         Collections.sort(result);
@@ -62,7 +62,7 @@ public class SftpChildrenProvider implements ChildrenProvider<SftpTreeNodeItem> 
                 }
             });
         } catch (final SftpException e) {
-            LOGGER.info(String.format("Could not read children of %s (%s): %s", node.getPath(), node, e.getMessage()));
+            LOGGER.info(String.format("Could not read children of %s (%s): %s", node.getPath(), node, e.toString()));
         }
         return result.toArray(new FileInfo[result.size()]);
     }

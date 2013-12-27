@@ -2,6 +2,8 @@ package de.jowisoftware.sshclient.ui.filetransfer;
 
 import de.jowisoftware.sshclient.filetransfer.AbstractTreeNodeItem;
 import de.jowisoftware.sshclient.filetransfer.ChildrenProvider;
+import de.jowisoftware.sshclient.util.SwingUtils;
+import org.apache.log4j.Logger;
 
 import javax.swing.JTree;
 import javax.swing.event.TreeExpansionEvent;
@@ -14,13 +16,15 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 public class DirectoryTree<S extends AbstractTreeNodeItem<?>, T extends ChildrenProvider<S>> extends JTree {
-    private final T provider;
-    private final LazySubtreeUpdater<S, T> updater;
+    private static final Logger LOGGER = Logger.getLogger(LazyUpdater.class);
 
-    public DirectoryTree(final T provider) {
+    private final T provider;
+    private final LazyUpdater<S, T> updater;
+
+    public DirectoryTree(final T provider, final LazyUpdater<S, T> updater) {
         this.provider = provider;
+        this.updater = updater;
         final DefaultTreeModel model = setupModel();
-        updater = new LazySubtreeUpdater<>(provider, model, this);
         initRoots(model);
         setupRendering();
         getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
@@ -52,10 +56,7 @@ public class DirectoryTree<S extends AbstractTreeNodeItem<?>, T extends Children
                 }
             }
 
-            @Override
-            public void treeCollapsed(final TreeExpansionEvent event) {
-
-            }
+            @Override public void treeCollapsed(final TreeExpansionEvent event) { }
         };
     }
 
@@ -78,19 +79,48 @@ public class DirectoryTree<S extends AbstractTreeNodeItem<?>, T extends Children
         final S treeNodeItem = (S) parent.getUserObject();
         if (!treeNodeItem.isLoaded()) {
             treeNodeItem.markAsLoaded();
-            //createChildNodes(model, parent);
-            //model.reload(parent);
-            updater.queueUpdate(parent);
+            updateChildrenAsync(parent);
         }
     }
 
-    private void createChildNodes(final DefaultTreeModel model, final DefaultMutableTreeNode parent) {
+    private void updateChildrenAsync(final DefaultMutableTreeNode parent) {
+        updater.queueUpdate(new Runnable() {
+            @Override
+            public void run() {
+                @SuppressWarnings("unchecked")
+                final S item = (S) parent.getUserObject();
+                final S[] children = provider.getChildrenOf(item);
+                LOGGER.debug("Found " + children.length + " items in " + item);
+                SwingUtils.runDelayedInSwingThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        addTreeItems(children, parent);
+                    }
+                });
+            }
+        });
+    }
+
+    private void addTreeItems(final S[] children, final DefaultMutableTreeNode parent) {
         int i = 0;
-        @SuppressWarnings("unchecked")
-        final S parentObject = (S) parent.getUserObject();
-        for (final S child : provider.getChildrenOf(parentObject)) {
-            final DefaultMutableTreeNode node = new DefaultMutableTreeNode(child, true);
-            model.insertNodeInto(node, parent, i++);
+        final int[] indices = new int[children.length];
+        LOGGER.debug("Adding items now");
+        final DefaultTreeModel model = (DefaultTreeModel) getModel();
+        for (final S child : children) {
+            final DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(child);
+            indices[i] = i;
+            model.insertNodeInto(childNode, parent, i++);
+        }
+        LOGGER.debug("Finished, notifying parent....");
+        model.nodesWereInserted(parent, indices);
+
+        expandInvisibleRootNodes(parent);
+    }
+
+    private void expandInvisibleRootNodes(final DefaultMutableTreeNode node) {
+        final DefaultMutableTreeNode parent = (DefaultMutableTreeNode) node.getParent();
+        if (parent != null && parent.isRoot()) {
+            expandPath(new TreePath(parent.getPath()));
         }
     }
 
@@ -106,14 +136,9 @@ public class DirectoryTree<S extends AbstractTreeNodeItem<?>, T extends Children
             final DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
             final DefaultTreeModel model = (DefaultTreeModel) getModel();
             removeChildren(model, node);
-            createChildNodes(model, node);
-            model.reload(node);
+            updateChildrenAsync(node);
             getSelectionModel().clearSelection();
             getSelectionModel().setSelectionPath(selectionPath);
         }
-    }
-
-    public void close() {
-        updater.shutdown();
     }
 }

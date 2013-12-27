@@ -1,10 +1,14 @@
 package de.jowisoftware.sshclient.ui.filetransfer.status;
 
+import de.jowisoftware.sshclient.filetransfer.operations.DownloadOperationCommand;
 import de.jowisoftware.sshclient.filetransfer.operations.OperationCommand;
+import de.jowisoftware.sshclient.filetransfer.operations.UploadOperationCommand;
 import de.jowisoftware.sshclient.ui.CloseButton;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -13,6 +17,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URL;
 
 public class StatusRow extends JPanel {
     private final OperationCommand command;
@@ -36,9 +41,17 @@ public class StatusRow extends JPanel {
     }
 
     private Component createIcon() {
-        final JLabel jLabel = new JLabel("<>");
-        jLabel.setMaximumSize(new Dimension(16, 16));
-        return jLabel;
+        final Icon icon;
+        if (command instanceof UploadOperationCommand) {
+            icon = createImage("up", "");
+        } else if (command instanceof DownloadOperationCommand) {
+            icon = createImage("down", "");
+        } else {
+            icon = createImage("generic_operation", "");
+        }
+        final JLabel label = new JLabel(icon);
+        label.setMaximumSize(new Dimension(16, 16));
+        return label;
     }
 
     private Component createLabel() {
@@ -73,6 +86,11 @@ public class StatusRow extends JPanel {
         this.maxSize = max;
         progressBar.setIndeterminate(false);
         progressBar.setStringPainted(true);
+    }
+
+    private Icon createImage(final String image, final String text) {
+        final URL icon = getClass().getResource("/gfx/" + image + ".png");
+        return new ImageIcon(icon, text);
     }
 
     public OperationCommand getCommand() {

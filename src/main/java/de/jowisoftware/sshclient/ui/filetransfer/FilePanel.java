@@ -4,20 +4,31 @@ import de.jowisoftware.sshclient.filetransfer.AbstractTreeNodeItem;
 import de.jowisoftware.sshclient.filetransfer.ChildrenProvider;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import java.awt.BorderLayout;
 
-public class FilePanel<S extends AbstractTreeNodeItem<?>, T extends ChildrenProvider<S>> extends JSplitPane {
+public class FilePanel<S extends AbstractTreeNodeItem<?>, T extends ChildrenProvider<S>> extends JPanel {
     private final DirectoryTree<S, T> tree;
+    private final LazyUpdater<S, T> updater;
 
     public FilePanel(final T fileSystemChildrenProvider) {
-        super(VERTICAL_SPLIT);
+        setLayout(new BorderLayout());
 
+        updater = new LazyUpdater<>();
         tree = createTreeView(fileSystemChildrenProvider);
-        add(wrapScrollable(tree));
-        add(wrapScrollable(createFileListing(tree, fileSystemChildrenProvider)));
+        add(createMainPanel(tree, fileSystemChildrenProvider), BorderLayout.CENTER);
+        add(new FileTransferToolBar(tree).getToolBar(), BorderLayout.NORTH);
+    }
 
-        setResizeWeight(0.5);
+    private JSplitPane createMainPanel(final DirectoryTree<S, T> directoryTree,
+            final T fileSystemChildrenProvider) {
+        final JSplitPane mainPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+        mainPanel.add(wrapScrollable(directoryTree));
+        mainPanel.add(wrapScrollable(createFileListing(directoryTree, fileSystemChildrenProvider)));
+        mainPanel.setResizeWeight(0.5);
+        return mainPanel;
     }
 
     private JScrollPane wrapScrollable(final JComponent component) {
@@ -25,20 +36,14 @@ public class FilePanel<S extends AbstractTreeNodeItem<?>, T extends ChildrenProv
     }
 
     private DirectoryTree<S, T> createTreeView(final T provider) {
-        return new DirectoryTree<>(provider);
+        return new DirectoryTree<>(provider, updater);
     }
 
     private FileTable<S, T> createFileListing(final DirectoryTree<S, T> tree, final T fileSystemChildrenProvider) {
-        final FileTable<S, T> fileTable = new FileTable<>(fileSystemChildrenProvider);
-        tree.addTreeSelectionListener(fileTable);
-        return fileTable;
-    }
-
-    public void updateSelected() {
-        tree.updateSelected();
+        return new FileTable<>(fileSystemChildrenProvider, tree, updater);
     }
 
     public void close() {
-        tree.close();
+        updater.shutdown();
     }
 }

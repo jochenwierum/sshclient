@@ -9,36 +9,31 @@ import org.apache.log4j.Logger;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
-import javax.swing.JSeparator;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map.Entry;
 
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
-public class MainWindowToolbar implements ProfileEvent {
+public class MainWindowToolbar extends AbstractToolbarCreator implements ProfileEvent {
     private static final Logger LOGGER = Logger
             .getLogger(MainWindowToolbar.class);
 
     private final MainWindow parent;
     private final JComboBox<String> comboBox = createComboBox();
-    private final JToolBar toolBar = new JToolBar("ssh");
     private final Application application;
 
     public MainWindowToolbar(final Application application, final MainWindow parent) {
+        super("ssh");
         this.parent = parent;
         this.application = application;
         application.profileEvents.register(this);
@@ -56,10 +51,6 @@ public class MainWindowToolbar implements ProfileEvent {
         toolBar.add(createAbout());
 
         profilesUpdated();
-    }
-
-    private JSeparator createSeparator() {
-        return new JSeparator(SwingConstants.VERTICAL);
     }
 
     private JButton createDirectConnectButton() {
@@ -181,18 +172,6 @@ public class MainWindowToolbar implements ProfileEvent {
         comboBox.setPreferredSize(new Dimension(200, comboBox.getPreferredSize().height));
         comboBox.setMaximumSize(comboBox.getPreferredSize());
         return comboBox;
-    }
-
-    private JButton createButton(final String text, final String image) {
-        final URL icon = getClass().getResource("/gfx/" + image + ".png");
-        final JButton button = new JButton();
-        button.setIcon(new ImageIcon(icon, text));
-        button.setToolTipText(text);
-        return button;
-    }
-
-    public JToolBar getToolBar() {
-        return toolBar;
     }
 
     private void connectToSelectedProfile() {
