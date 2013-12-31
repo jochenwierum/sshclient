@@ -1,11 +1,12 @@
 package de.jowisoftware.sshclient.filetransfer.operations;
 
 public abstract class AbstractOperationCommand implements OperationCommand {
-    protected final long id;
+    private static long nextId = 1;
+    private final long id;
     private boolean aborted = false;
 
-    protected AbstractOperationCommand(final long id) {
-        this.id = id;
+    protected AbstractOperationCommand() {
+        id = nextId++;
     }
 
     @Override

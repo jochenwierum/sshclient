@@ -6,20 +6,26 @@ import java.util.Date;
 public class FileInfo implements Comparable<FileInfo> {
     private static final char suffixes[] = {' ', 'K', 'M', 'G', 'T', 'E', 'P'};
 
+    private final String fullName;
     private final String name;
     private final String size;
     private final String owner;
     private final String group;
     private final String permissions;
     private final String modified;
+    private final boolean directory;
 
-    public FileInfo(final String name, final long size, final String owner, final String group, final String permissions,
-            final Date modified) {
+    public FileInfo(
+            final String fullName, final boolean isDirectory,
+            final String name, final long size, final String owner,
+            final String group, final String permissions, final Date modified) {
+        this.fullName = fullName;
         this.name = name;
         this.size = niceSize(size);
         this.owner = owner;
         this.group = group;
         this.permissions = permissions;
+        this.directory = isDirectory;
 
         final SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         this.modified = df.format(modified);
@@ -67,5 +73,13 @@ public class FileInfo implements Comparable<FileInfo> {
     @Override
     public int compareTo(final FileInfo o) {
         return name.compareTo(o.name);
+    }
+
+    public boolean isDirectory() {
+        return directory;
+    }
+
+    public String getFullName() {
+        return fullName;
     }
 }

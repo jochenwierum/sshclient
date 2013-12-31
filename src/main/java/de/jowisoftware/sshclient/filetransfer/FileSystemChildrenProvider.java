@@ -60,7 +60,7 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
                 final long size = getSize(path);
                 final Date lastModifiedDate = getLastModifiedDate(path);
 
-                files.add(new FileInfo(path.getFileName().toString(), size,
+                files.add(new FileInfo(file.getAbsolutePath(), false, file.getName(), size,
                         owner, group, permissions,
                         lastModifiedDate));
             }

@@ -24,7 +24,7 @@ public final class AbortableSftpProgressMonitorWrapper {
             @Override
             public boolean count(final long count) {
                 monitor.count(command.id(), count);
-                return !aborted && command.isAborted();
+                return !aborted && !command.isAborted();
             }
 
             @Override

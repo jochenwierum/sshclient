@@ -54,9 +54,8 @@ public class SftpChildrenProvider implements ChildrenProvider<SftpTreeNodeItem> 
             channel.ls(node.getPath(), new ChannelSftp.LsEntrySelector() {
                 @Override
                 public int select(final ChannelSftp.LsEntry entry) {
-                    final String filename = entry.getFilename();
                     if (!entry.getAttrs().isDir()) {
-                        result.add(createFileInfo(entry));
+                        result.add(createFileInfo(node.getPath(), entry));
                     }
                     return CONTINUE;
                 }
@@ -67,7 +66,7 @@ public class SftpChildrenProvider implements ChildrenProvider<SftpTreeNodeItem> 
         return result.toArray(new FileInfo[result.size()]);
     }
 
-    private FileInfo createFileInfo(final ChannelSftp.LsEntry entry) {
+    private FileInfo createFileInfo(final String path, final ChannelSftp.LsEntry entry) {
         final String name = entry.getFilename();
         final long size = entry.getAttrs().getSize();
         final String permissions = entry.getAttrs().getPermissionsString();
@@ -75,6 +74,6 @@ public class SftpChildrenProvider implements ChildrenProvider<SftpTreeNodeItem> 
         final String owner = Integer.toString(entry.getAttrs().getUId());
         final String group = Integer.toString(entry.getAttrs().getGId());
 
-        return new FileInfo(name, size, owner, group, permissions, modifiedDate);
+        return new FileInfo(path + name, false, name, size, owner, group, permissions, modifiedDate);
     }
 }

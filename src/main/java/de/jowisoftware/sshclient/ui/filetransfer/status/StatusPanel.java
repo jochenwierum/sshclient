@@ -1,29 +1,66 @@
 package de.jowisoftware.sshclient.ui.filetransfer.status;
 
+import de.jowisoftware.sshclient.async.StatusListener;
+import de.jowisoftware.sshclient.filetransfer.JSchSftpConnection;
 import de.jowisoftware.sshclient.filetransfer.operations.ExtendedProgressMonitor;
 import de.jowisoftware.sshclient.filetransfer.operations.OperationCommand;
-import de.jowisoftware.sshclient.ui.SftpConnectionPanel;
+import de.jowisoftware.sshclient.ui.CloseButton;
 import de.jowisoftware.sshclient.util.SwingUtils;
 
 import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatusPanel extends JPanel implements ExtendedProgressMonitor {
+public class StatusPanel implements ExtendedProgressMonitor, OperationQueue {
+    private final JPanel mainPanel = new JPanel();
+    private final JPanel operationPanel = new JPanel();
     private final List<StatusRow> rows = new ArrayList<>();
-    private final SftpConnectionPanel parent;
     private final Component glue = Box.createHorizontalGlue();
+    private final StatusBar statusBar = new StatusBar();
+    private final JSchSftpConnection connection;
 
-    public StatusPanel(final SftpConnectionPanel connectionPanel) {
-        this.parent = connectionPanel;
-        setLayout(new GridBagLayout());
+    public StatusPanel(final JSchSftpConnection connection) {
+        this.connection = connection;
+        mainPanel.setLayout(new BorderLayout());
+
+        operationPanel.setLayout(new GridBagLayout());
+        final JScrollPane scrollPane = new JScrollPane(operationPanel,
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        mainPanel.add(createAbortButton(), BorderLayout.NORTH);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(statusBar.getComponent(), BorderLayout.SOUTH);
     }
 
-    public void addRow(final OperationCommand command) {
+    private JComponent createAbortButton() {
+        final JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+        panel.add(Box.createHorizontalGlue());
+        final CloseButton button = new CloseButton();
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                abortAll();
+            }
+        });
+        panel.add(button);
+        return panel;
+    }
+
+    public JComponent getComponent() { return mainPanel; }
+
+    @Override
+    public void addOperation(final OperationCommand command) {
+        connection.queue(command);
         final StatusRow statusObject = new StatusRow(command, this);
         rows.add(statusObject);
         readdComponents();
@@ -65,21 +102,28 @@ public class StatusPanel extends JPanel implements ExtendedProgressMonitor {
     }
 
     private void readdComponents() {
-        removeAll();
+        operationPanel.removeAll();
         int row = 0;
         for (final Component component : rows) {
-            add(component, createRowConstraint(row++));
+            operationPanel.add(component, createRowConstraint(row++));
         }
-        add(glue, createLastRowConstraint(row));
-        getParent().validate();
-        getParent().repaint();
+        operationPanel.add(glue, createLastRowConstraint(row));
+        mainPanel.validate();
+        mainPanel.repaint();
     }
 
     public void dequeueAndAbort(final OperationCommand command) {
         final int row = findRow(command.id());
-        remove(rows.remove(row));
+        mainPanel.remove(rows.remove(row));
         readdComponents();
-        parent.dequeueAndAbort(command);
+        connection.dequeue(command);
+    }
+
+    public void abortAll() {
+        for (final StatusRow op : rows) {
+            connection.dequeue(op.getCommand());
+        }
+        rows.clear();
     }
 
     private int findRow(final long id) {
@@ -106,5 +150,9 @@ public class StatusPanel extends JPanel implements ExtendedProgressMonitor {
         constraints.fill = GridBagConstraints.BOTH;
         constraints.weighty = 1;
         return constraints;
+    }
+
+    public StatusListener getStatusListener() {
+        return statusBar;
     }
 }

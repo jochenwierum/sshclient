@@ -8,8 +8,7 @@ public class UploadOperationCommand extends AbstractOperationCommand {
     private final String local;
     private final String remote;
 
-    public UploadOperationCommand(final long id, final String local, final String remote) {
-        super(id);
+    public UploadOperationCommand(final String local, final String remote) {
         this.local = local;
         this.remote = remote;
     }

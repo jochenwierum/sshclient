@@ -1,5 +1,6 @@
 package de.jowisoftware.sshclient.ui.filetransfer;
 
+import de.jowisoftware.sshclient.async.AsyncQueueRunner;
 import de.jowisoftware.sshclient.filetransfer.AbstractTreeNodeItem;
 import de.jowisoftware.sshclient.filetransfer.ChildrenProvider;
 import de.jowisoftware.sshclient.util.SwingUtils;
@@ -16,12 +17,12 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 public class DirectoryTree<S extends AbstractTreeNodeItem<?>, T extends ChildrenProvider<S>> extends JTree {
-    private static final Logger LOGGER = Logger.getLogger(LazyUpdater.class);
+    private static final Logger LOGGER = Logger.getLogger(AsyncQueueRunner.class);
 
     private final T provider;
-    private final LazyUpdater<S, T> updater;
+    private final AsyncQueueRunner<Runnable> updater;
 
-    public DirectoryTree(final T provider, final LazyUpdater<S, T> updater) {
+    public DirectoryTree(final T provider, final AsyncQueueRunner<Runnable> updater) {
         this.provider = provider;
         this.updater = updater;
         final DefaultTreeModel model = setupModel();
@@ -84,7 +85,7 @@ public class DirectoryTree<S extends AbstractTreeNodeItem<?>, T extends Children
     }
 
     private void updateChildrenAsync(final DefaultMutableTreeNode parent) {
-        updater.queueUpdate(new Runnable() {
+        updater.queue(new Runnable() {
             @Override
             public void run() {
                 @SuppressWarnings("unchecked")
@@ -97,6 +98,11 @@ public class DirectoryTree<S extends AbstractTreeNodeItem<?>, T extends Children
                         addTreeItems(children, parent);
                     }
                 });
+            }
+
+            @Override
+            public String toString() {
+                return "Update " + parent.getUserObject().toString();
             }
         });
     }
