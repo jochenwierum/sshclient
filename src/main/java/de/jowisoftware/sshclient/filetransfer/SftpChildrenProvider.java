@@ -1,6 +1,7 @@
 package de.jowisoftware.sshclient.filetransfer;
 
 import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
 import org.apache.log4j.Logger;
 
@@ -8,6 +9,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class SftpChildrenProvider implements ChildrenProvider<SftpTreeNodeItem> {
     private static final Logger LOGGER = Logger.getLogger(SftpChildrenProvider.class);
@@ -75,5 +78,36 @@ public class SftpChildrenProvider implements ChildrenProvider<SftpTreeNodeItem> 
         final String group = Integer.toString(entry.getAttrs().getGId());
 
         return new FileInfo(path + name, false, name, size, owner, group, permissions, modifiedDate);
+    }
+
+    @Override
+    public long getSize(final SftpTreeNodeItem node) {
+        final Queue<String> pathes = new LinkedList<>();
+        final AtomicLong size = new AtomicLong(0);
+        pathes.add(node.getPath());
+
+        while (!pathes.isEmpty()) {
+            final String path = pathes.remove();
+            try {
+                channel.ls(path, new ChannelSftp.LsEntrySelector() {
+                    @Override
+                    public int select(final ChannelSftp.LsEntry entry) {
+                        final SftpATTRS attrs = entry.getAttrs();
+
+                        if (attrs.isDir()) {
+                            pathes.add(entry.getLongname());
+                        } else if (attrs.isReg()) {
+                            size.addAndGet(attrs.getSize());
+                        }
+
+                        return CONTINUE;
+                    }
+                });
+            } catch (final SftpException e) {
+                LOGGER.info(String.format("Could not calculate size of %s: %s", path, e.getMessage()));
+            }
+        }
+
+        return size.longValue();
     }
 }

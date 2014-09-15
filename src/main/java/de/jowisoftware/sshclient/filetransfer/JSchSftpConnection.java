@@ -16,8 +16,8 @@ public class JSchSftpConnection {
     private final SSHUserInfo userInfo;
     private Session session;
     private ChannelSftp channel;
+    private ChannelSftp controlChannel;
     private OperationExecutor executor;
-    private long nextId;
 
     public JSchSftpConnection(final JSch jsch, final Profile<?> profile, final SSHUserInfo userInfo) {
         this.jsch = jsch;
@@ -34,8 +34,11 @@ public class JSchSftpConnection {
         channel = (ChannelSftp)session.openChannel("sftp");
         channel.connect();
 
+        controlChannel = (ChannelSftp)session.openChannel("sftp");
+        controlChannel.connect();
+
         this.executor = new OperationExecutor(profile.getDefaultTitle() + " operatation queue thread",
-                channel);
+                channel, controlChannel);
     }
 
     public void setStatusMonitor(final ExtendedProgressMonitor monitor) {
@@ -52,6 +55,11 @@ public class JSchSftpConnection {
             channel = null;
         }
 
+        if (controlChannel != null) {
+            controlChannel.disconnect();
+            controlChannel = null;
+        }
+
         if (session != null) {
             session.disconnect();
             session = null;
@@ -59,7 +67,7 @@ public class JSchSftpConnection {
     }
 
     public SftpChildrenProvider getChildrenProvider() {
-        return new SftpChildrenProvider(channel);
+        return new SftpChildrenProvider(controlChannel);
     }
 
     public void queue(final OperationCommand command) {
@@ -70,7 +78,4 @@ public class JSchSftpConnection {
         executor.dequeueAndAbort(command);
     }
 
-    public long getNextId() {
-        return nextId++;
-    }
 }

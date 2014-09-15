@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 public class OperationExecutor extends AsyncQueueRunner<OperationExecutor.WrapperThread> {
     private static final Logger LOGGER = Logger.getLogger(OperationExecutor.class);
+    private final ChannelSftp controlChannel;
 
     private AbortableSftpProgressMonitorWrapper monitor;
     private final ChannelSftp channel;
@@ -25,7 +26,7 @@ public class OperationExecutor extends AsyncQueueRunner<OperationExecutor.Wrappe
         public void run() {
             final SftpProgressMonitor sftpProgressMonitor = monitor.getFor(item);
             try {
-                item.execute(channel, sftpProgressMonitor);
+                item.execute(channel, controlChannel, sftpProgressMonitor);
             } catch (final SftpException e) {
                 LOGGER.error("Could not execute operation " + item, e);
                 sftpProgressMonitor.end();
@@ -42,13 +43,14 @@ public class OperationExecutor extends AsyncQueueRunner<OperationExecutor.Wrappe
         }
     }
 
-    public OperationExecutor(final String name, final ChannelSftp channel) {
+    public OperationExecutor(final String name, final ChannelSftp channel, final ChannelSftp controlChannel) {
         super(name);
         this.channel = channel;
+        this.controlChannel = controlChannel;
     }
 
     public void setMonitor(final ExtendedProgressMonitor monitor) {
-        this.monitor = new AbortableSftpProgressMonitorWrapper(monitor);;
+        this.monitor = new AbortableSftpProgressMonitorWrapper(monitor);
     }
 
     @Override

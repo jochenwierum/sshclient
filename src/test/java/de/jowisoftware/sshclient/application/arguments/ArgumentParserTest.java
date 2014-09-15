@@ -1,19 +1,18 @@
 package de.jowisoftware.sshclient.application.arguments;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsArray.array;
-
-import java.util.HashMap;
-import java.util.Map;
-
+import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.application.settings.Profile;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.application.settings.Profile;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.collection.IsArray.array;
 
 public class ArgumentParserTest {
     @Rule
@@ -44,27 +43,6 @@ public class ArgumentParserTest {
 
     @SuppressWarnings("unchecked")
     @Test public void
-    profilesAreFound() {
-        final Profile<?> profile1 = context.mock(Profile.class, "profile1");
-        final Profile<?> profile2 = context.mock(Profile.class, "profile2");
-
-        final Map<String, Profile<?>> profileMap = new HashMap<>();
-        profileMap.put("p1", profile1);
-        profileMap.put("profile2", profile2);
-
-        context.checking(new Expectations() {{
-            allowing(settings).getProfiles(); will(returnValue(profileMap));
-
-            oneOf(callback).openConnection(profile1);
-            oneOf(callback).openConnection(profile2);
-            oneOf(callback).reportArgumentError(with(array(is("+p3"))));
-        }});
-
-        parser.processArguments(new String[]{"+p1", "+profile2", "+p3"});
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test public void
     sshURIsAreParsed() {
         final Profile<?> profile = context.mock(Profile.class, "profile");
 
@@ -76,6 +54,24 @@ public class ArgumentParserTest {
         }});
 
         parser.processArguments(new String[]{"host"});
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test public void
+    sftpProfilesAreFound() {
+        final Profile<?> profile1 = context.mock(Profile.class, "profile1");
+
+        final Map<String, Profile<?>> profileMap = new HashMap<>();
+        profileMap.put("p1", profile1);
+
+        context.checking(new Expectations() {{
+            allowing(settings).getProfiles(); will(returnValue(profileMap));
+
+            oneOf(callback).openSftpConnection(profile1);
+            oneOf(callback).reportArgumentError(with(array(is("++p3"))));
+        }});
+
+        parser.processArguments(new String[]{"++p1", "++p3"});
     }
 
     @SuppressWarnings("unchecked")

@@ -9,7 +9,7 @@ import de.jowisoftware.sshclient.filetransfer.JSchSftpConnection;
 import de.jowisoftware.sshclient.filetransfer.SftpChildrenProvider;
 import de.jowisoftware.sshclient.filetransfer.SftpTreeNodeItem;
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
-import de.jowisoftware.sshclient.ui.filetransfer.FilePanel;
+import de.jowisoftware.sshclient.ui.filetransfer.DirectoryFilePanel;
 import de.jowisoftware.sshclient.ui.filetransfer.dnd.LocalDragDropHandler;
 import de.jowisoftware.sshclient.ui.filetransfer.dnd.RemoteDragDropHandler;
 import de.jowisoftware.sshclient.ui.filetransfer.status.StatusPanel;
@@ -26,8 +26,8 @@ import java.io.IOException;
 public class SftpConnectionPanel extends AbstractSSHConnectionPanel<SftpTab> {
     private final AWTProfile profile;
     private JSchSftpConnection connection;
-    private FilePanel<FileSystemTreeNodeItem, FileSystemChildrenProvider> leftPane;
-    private FilePanel<SftpTreeNodeItem, SftpChildrenProvider> rightPane;
+    private DirectoryFilePanel<FileSystemTreeNodeItem, FileSystemChildrenProvider> leftPane;
+    private DirectoryFilePanel<SftpTreeNodeItem, SftpChildrenProvider> rightPane;
     private StatusPanel statusPanel;
 
     public SftpConnectionPanel(final AWTProfile profile, final Application application, final RedrawingTabPanel parent, final SftpTab tab) {
@@ -40,9 +40,9 @@ public class SftpConnectionPanel extends AbstractSSHConnectionPanel<SftpTab> {
         statusPanel = new StatusPanel(connection);
         connection.setStatusMonitor(statusPanel);
 
-        leftPane = new FilePanel<>(name + " local files",
+        leftPane = new DirectoryFilePanel<>(name + " local files",
                 new FileSystemChildrenProvider(), new LocalDragDropHandler(statusPanel), statusPanel.getStatusListener());
-        rightPane = new FilePanel<>(name + " remote files",
+        rightPane = new DirectoryFilePanel<>(name + " remote files",
                 childrenProvider, new RemoteDragDropHandler(statusPanel), statusPanel.getStatusListener());
 
         setContent(createComponentsPanel(leftPane, rightPane, statusPanel.getComponent()));

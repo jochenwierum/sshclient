@@ -215,6 +215,11 @@ public class MainWindow extends JFrame {
                     }
 
                     @Override
+                    public void openSftpConnection(final AWTProfile profile) {
+                        connectSftp(profile);
+                    }
+
+                    @Override
                     public void reportArgumentError(final String[] errors) {
                         final StringBuilder builder = new StringBuilder();
                         for (final String error : errors) {
@@ -226,7 +231,7 @@ public class MainWindow extends JFrame {
 
                         SwingUtils.showMessage(MainWindow.this, "<html>"
                                 + t("errors.arguments", "Could not process argument:")
-                                + "<br />" + builder.toString() + "</html>",
+                                + "<br />" + builder + "</html>",
                                 t("errors.arguments.title", "Error"),
                                 JOptionPane.ERROR_MESSAGE);
                     }

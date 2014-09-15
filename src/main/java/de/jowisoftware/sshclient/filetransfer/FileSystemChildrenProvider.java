@@ -1,9 +1,13 @@
 package de.jowisoftware.sshclient.filetransfer;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.FileVisitor;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.GroupPrincipal;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
@@ -70,6 +74,18 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
         return files.toArray(new FileInfo[files.size()]);
     }
 
+    @Override
+    public long getSize(final FileSystemTreeNodeItem dir) {
+        final Path path = Paths.get(dir.getFile().toURI());
+
+        try {
+            return new DirSizeVisitor().getSize(path);
+        } catch (IOException e) {
+            return 0;
+        }
+    }
+
+
     private String getGroup(final Path path) {
         if (isWindows) {
             return "";
@@ -77,7 +93,7 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
 
         try {
             return ((GroupPrincipal) Files.getAttribute(path, "group")).getName();
-        } catch (final Exception e) {
+        } catch (final IOException e) {
             return "";
         }
     }
@@ -85,7 +101,7 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
     private Date getLastModifiedDate(final Path path) {
         try {
             return new Date(Files.getLastModifiedTime(path).toMillis());
-        } catch(final Exception e) {
+        } catch(final IOException e) {
             return new Date();
         }
     }
@@ -93,7 +109,7 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
     private long getSize(final Path path) {
         try {
             return Files.size(path);
-        } catch (final Exception e) {
+        } catch (final IOException e) {
             return 0;
         }
     }
@@ -124,7 +140,7 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
                 addPermission(permissions, permissionSet, PosixFilePermission.OTHERS_READ, 'r');
                 addPermission(permissions, permissionSet, PosixFilePermission.OTHERS_WRITE, 'w');
                 addPermission(permissions, permissionSet, PosixFilePermission.OTHERS_EXECUTE, 'x');
-            } catch (final Exception e) {
+            } catch (final IOException e) {
                 return "-----------";
             }
         }
@@ -134,7 +150,7 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
     private String getOwner(final Path path) {
         try {
             return Files.getOwner(path).getName();
-        } catch(final Exception e) {
+        } catch(final IOException e) {
             return "";
         }
     }
@@ -148,6 +164,37 @@ public class FileSystemChildrenProvider implements ChildrenProvider<FileSystemTr
             permissions.append(character);
         } else {
             permissions.append('-');
+        }
+    }
+
+    private static class DirSizeVisitor implements FileVisitor<Path> {
+        private long size = 0;
+
+        @Override
+        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            size = Files.size(file);
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+            return FileVisitResult.SKIP_SUBTREE;
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+            return FileVisitResult.CONTINUE;
+        }
+
+        public long getSize(Path path) throws IOException {
+            size = 0;
+            Files.walkFileTree(path, this);
+            return size;
         }
     }
 }

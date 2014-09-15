@@ -6,6 +6,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 public class SftpTransferable implements Transferable {
+    public static final DataFlavor DATA_FLAVOR = new DataFlavor(SftpTransferInfo.class, "SftpTransferInfo");
     private final SftpTransferInfo data;
 
     public SftpTransferable(final SftpTransferInfo data) {
@@ -14,14 +15,12 @@ public class SftpTransferable implements Transferable {
 
     @Override
     public DataFlavor[] getTransferDataFlavors() {
-        return new DataFlavor[] {
-                new DataFlavor(SftpTransferInfo.class, "SftpTransferInfo")
-        };
+        return new DataFlavor[] { DATA_FLAVOR };
     }
 
     @Override
     public boolean isDataFlavorSupported(final DataFlavor flavor) {
-        return flavor.getDefaultRepresentationClass().equals(SftpTransferInfo.class);
+        return flavor.equals(DATA_FLAVOR);
     }
 
     @Override

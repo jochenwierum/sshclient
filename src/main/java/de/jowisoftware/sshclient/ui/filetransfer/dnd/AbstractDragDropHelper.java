@@ -8,6 +8,9 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +22,7 @@ public abstract class AbstractDragDropHelper {
         this.operationQueue = operationQueue;
     }
 
-    public SftpTransferInfo createTransferInfo(final JComponent component) {
+    public SftpTransferInfo createTransferInfo(final Component component) {
         if (component instanceof JTable) {
             return createFromTable((JTable) component);
         } else {
@@ -44,9 +47,20 @@ public abstract class AbstractDragDropHelper {
 
     protected abstract SftpTransferInfo getTransferFiles(final List<FileInfo> selectedFiles);
 
-    public abstract void doTransfer(SftpTransferInfo data);
+    public abstract void doTransfer(SftpTransferInfo data, final JComponent component);
 
     public void setTree(final JTree tree) {
         this.tree = tree;
+    }
+
+    protected DefaultMutableTreeNode getTargetTreeNode(final JComponent component) {
+        final TreePath selectionPath;
+        if (component == tree) {
+            selectionPath = (((JTree) component).getDropLocation()).getPath();
+        } else {
+            selectionPath = tree.getSelectionModel().getSelectionPath();
+        }
+
+        return (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
     }
 }

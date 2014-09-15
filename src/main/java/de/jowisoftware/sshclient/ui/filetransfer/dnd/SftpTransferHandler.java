@@ -1,5 +1,7 @@
 package de.jowisoftware.sshclient.ui.filetransfer.dnd;
 
+import org.apache.log4j.Logger;
+
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 import java.awt.datatransfer.DataFlavor;
@@ -8,10 +10,21 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
 
 public class SftpTransferHandler extends TransferHandler {
+    private final Logger LOGGER = Logger.getLogger(SftpTransferHandler.class);
     private final AbstractDragDropHelper helper;
 
     public SftpTransferHandler(final AbstractDragDropHelper helper) {
         this.helper = helper;
+    }
+
+    @Override
+    public boolean canImport(final JComponent comp, final DataFlavor[] transferFlavors) {
+        for (final DataFlavor flavor : transferFlavors) {
+            if (flavor.equals(SftpTransferable.DATA_FLAVOR)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -26,28 +39,14 @@ public class SftpTransferHandler extends TransferHandler {
     }
 
     @Override
-    public boolean canImport(final JComponent comp, final DataFlavor[] transferFlavors) {
-        return findSupportedFlavor(transferFlavors) != null;
-    }
-
-    private DataFlavor findSupportedFlavor(final DataFlavor[] transferFlavors) {
-        for (final DataFlavor flavor : transferFlavors) {
-            if (flavor.getRepresentationClass().equals(SftpTransferInfo.class)) {
-                return flavor;
-            }
-        }
-        return null;
-    }
-
-    @Override
     public boolean importData(final JComponent comp, final Transferable t) {
         try {
-            final SftpTransferInfo data = (SftpTransferInfo) t.getTransferData(
-                    findSupportedFlavor(t.getTransferDataFlavors()));
-            helper.doTransfer(data);
+            final SftpTransferInfo data = (SftpTransferInfo) t.getTransferData(SftpTransferable.DATA_FLAVOR);
+            helper.doTransfer(data, comp);
             return true;
         } catch (final UnsupportedFlavorException | IOException e) {
-            throw new RuntimeException("Could not receive transferable", e);
+            LOGGER.error("Could not receive transferable", e);
+            return false;
         }
     }
 }

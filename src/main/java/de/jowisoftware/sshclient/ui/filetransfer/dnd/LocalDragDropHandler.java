@@ -3,10 +3,11 @@ package de.jowisoftware.sshclient.ui.filetransfer.dnd;
 import de.jowisoftware.sshclient.filetransfer.FileInfo;
 import de.jowisoftware.sshclient.filetransfer.FileSystemTreeNodeItem;
 import de.jowisoftware.sshclient.filetransfer.operations.DownloadOperationCommand;
+import de.jowisoftware.sshclient.filetransfer.operations.OperationCommand;
 import de.jowisoftware.sshclient.ui.filetransfer.status.OperationQueue;
 
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 import java.io.File;
 import java.util.List;
 
@@ -21,32 +22,34 @@ public class LocalDragDropHandler extends AbstractDragDropHelper {
     }
 
     @Override
-    public void doTransfer(final SftpTransferInfo data) {
+    public void doTransfer(final SftpTransferInfo data, final JComponent component) {
+        final File targetDir = getTargetDir(component);
         if (data.isLocal()) {
 // TODO
         } else {
-            final File targetDir = getTargetDir();
-            String basePath = null;
-            File path = targetDir;
-            for (final FileInfo file : data.getFiles()) {
-                if (basePath == null && file.isDirectory()) {
-                    basePath = file.getFullName();
-                }
-
-                if (file.isDirectory()) {
-                    assert basePath != null;
-                    path = new File(targetDir, file.getFullName().substring(basePath.length()));
-                    path.mkdirs();
-                } else {
-                    queue(new DownloadOperationCommand(file.getFullName(), new File(path, file.getName())));
-                }
-            }
+            doRemoteTransfer(data, targetDir);
         }
     }
 
-    public File getTargetDir() {
-        final TreePath selectionPath = tree.getSelectionModel().getSelectionPath();
-        final DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
+    private void doRemoteTransfer(final SftpTransferInfo data, final File targetDir) {
+        for (final FileInfo file : data.getFiles()) {
+            final OperationCommand operation;
+            if (file.isDirectory()) {
+                /*
+                assert basePath != null;
+                path = new File(targetDir, file.getFullName().substring(basePath.length()));
+                operation = new MakeLocalDirCommand(path);
+                */
+                throw new UnsupportedOperationException("Not implemented yet");
+            } else {
+                operation = new DownloadOperationCommand(file.getFullName(), new File(targetDir, file.getName()));
+            }
+            queue(operation);
+        }
+    }
+
+    public File getTargetDir(final JComponent component) {
+        final DefaultMutableTreeNode treeNode = getTargetTreeNode(component);
         return ((FileSystemTreeNodeItem) treeNode.getUserObject()).getFile();
     }
 }

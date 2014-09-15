@@ -6,7 +6,7 @@ import com.jcraft.jsch.SftpProgressMonitor;
 
 public interface OperationCommand {
     long id();
-    void execute(ChannelSftp channel, SftpProgressMonitor monitor) throws SftpException;
+    void execute(ChannelSftp channel, ChannelSftp controlChannel, SftpProgressMonitor monitor) throws SftpException;
 
     void abort();
     boolean isAborted();

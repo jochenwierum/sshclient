@@ -1,12 +1,11 @@
 package de.jowisoftware.sshclient.application.arguments;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.application.settings.Profile;
+import org.apache.log4j.Logger;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class ArgumentParser<T extends Profile<?>> {
     private static final Logger LOGGER = Logger.getLogger(ArgumentParser.class);
@@ -60,7 +59,7 @@ public class ArgumentParser<T extends Profile<?>> {
             }
         } catch(final RuntimeException e) {
             LOGGER.warn("Problem while parsing command line argument '" +
-                    arg + "'", e);
+                    arg + '\'', e);
         }
         return ArgumentResult.ERROR;
     }
@@ -74,9 +73,25 @@ public class ArgumentParser<T extends Profile<?>> {
 
     @SuppressWarnings("SameReturnValue")
     private ArgumentResult parseSession(final String arg) {
-        final String sessionName = arg.substring(1);
+        final boolean isSftpSession;
+        final String sessionName;
+
+        if (arg.startsWith("++")) {
+            isSftpSession = true;
+            sessionName = arg.substring(2);
+        } else {
+            isSftpSession = false;
+            sessionName = arg.substring(1);
+        }
+
         final ConnectArgument<T> argument = new SessionConnectArgument<>(sessionName);
-        callbacks.openConnection(argument.getProfile(settings));
+
+        if (isSftpSession) {
+            callbacks.openSftpConnection(argument.getProfile(settings));
+        } else {
+            callbacks.openConnection(argument.getProfile(settings));
+        }
+
         return ArgumentResult.TAKE_ONE;
     }
 

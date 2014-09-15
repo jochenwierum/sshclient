@@ -4,7 +4,6 @@ import de.jowisoftware.sshclient.async.AsyncQueueRunner;
 import de.jowisoftware.sshclient.filetransfer.AbstractTreeNodeItem;
 import de.jowisoftware.sshclient.filetransfer.ChildrenProvider;
 import de.jowisoftware.sshclient.filetransfer.FileInfo;
-import de.jowisoftware.sshclient.ui.filetransfer.dnd.AbstractDragDropHelper;
 import de.jowisoftware.sshclient.ui.filetransfer.dnd.SftpTransferHandler;
 import de.jowisoftware.sshclient.util.SwingUtils;
 
@@ -27,7 +26,7 @@ public class FileTable<S extends AbstractTreeNodeItem<?>, T extends ChildrenProv
     private final AsyncQueueRunner<Runnable> updater;
     private final JTable table;
 
-    public FileTable(final T provider, final DirectoryTree<S, T> tree, final AsyncQueueRunner<Runnable> updater, final AbstractDragDropHelper dragDropHandler) {
+    public FileTable(final T provider, final DirectoryTree<S, T> tree, final AsyncQueueRunner<Runnable> updater, final SftpTransferHandler transferHandler) {
         this.provider = provider;
         this.updater = updater;
         tree.addTreeSelectionListener(createTreeSelectionListener());
@@ -35,10 +34,13 @@ public class FileTable<S extends AbstractTreeNodeItem<?>, T extends ChildrenProv
         table = new JTable(createModel());
         table.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         table.setRowSelectionAllowed(true);
-        table.setDragEnabled(true);
 
         table.setDropMode(DropMode.ON);
-        table.setTransferHandler(new SftpTransferHandler(dragDropHandler));
+        table.setDragEnabled(true);
+        table.setTransferHandler(transferHandler);
+        //table.setDropTarget(new DropTarget(table, transferHandler));
+        //new DragSource().createDefaultDragGestureRecognizer(table,
+        //        DnDConstants.ACTION_COPY_OR_MOVE, transferHandler);
 
         setupColumnRendering();
 

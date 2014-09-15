@@ -14,7 +14,7 @@ public class UploadOperationCommand extends AbstractOperationCommand {
     }
 
     @Override
-    public void execute(final ChannelSftp channel, final SftpProgressMonitor monitor) throws SftpException {
+    public void execute(final ChannelSftp channel, final ChannelSftp controlChannel, final SftpProgressMonitor monitor) throws SftpException {
         channel.put(local, remote, monitor);
     }
 }
