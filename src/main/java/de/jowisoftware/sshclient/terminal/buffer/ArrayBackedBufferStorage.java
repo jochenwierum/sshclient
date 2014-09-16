@@ -1,12 +1,12 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
+import de.jowisoftware.sshclient.util.RingBuffer;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
-import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
-import de.jowisoftware.sshclient.util.RingBuffer;
 
 public class ArrayBackedBufferStorage implements BufferStorage {
     /**

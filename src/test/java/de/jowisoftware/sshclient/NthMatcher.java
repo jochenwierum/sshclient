@@ -2,7 +2,7 @@ package de.jowisoftware.sshclient;
 
 import org.fest.swing.core.GenericTypeMatcher;
 
-import java.awt.Component;
+import java.awt.*;
 
 class NthMatcher<T extends Component> extends GenericTypeMatcher<T> {
     private int count;

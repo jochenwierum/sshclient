@@ -1,10 +1,10 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultCursorPositionManager implements CursorPositionManager {
-    private static final Logger LOGGER = Logger
-            .getLogger(DefaultCursorPositionManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultCursorPositionManager.class);
 
     private Position position = new Position(1, 1);
     private Position savedPosition;
@@ -48,8 +48,8 @@ public class DefaultCursorPositionManager implements CursorPositionManager {
     public void setPositionSafelyInScreen(final Position newPosition) {
         if (newPosition.y > rightBottomCorner.y) {
             if (LOGGER.isDebugEnabled()) {
-                LOGGER.debug("invalid terminal position, shifting lines: " +
-                        newPosition.x + "/" + newPosition.y);
+                LOGGER.debug("invalid terminal position, shifting lines: {}/{}",
+                        newPosition.x, newPosition.y);
             }
             final int offset = (-newPosition.y - rightBottomCorner.y) % rightBottomCorner.y;
             feedback.lineShiftingNeeded(offset, 0, rightBottomCorner.y);

@@ -1,14 +1,12 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
-import java.awt.Color;
-
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import junitparams.JUnitParamsRunner;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import java.awt.*;
 
 @RunWith(JUnitParamsRunner.class)
 public class CursorColorValidatorTest extends AbstractValidationTest<AWTProfile> {

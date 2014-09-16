@@ -1,13 +1,12 @@
 package de.jowisoftware.sshclient.ui.tabpanel.redrawing;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.Timer;
-
 import de.jowisoftware.sshclient.ui.tabpanel.Tab;
 import de.jowisoftware.sshclient.ui.tabpanel.TabPanel;
 import de.jowisoftware.sshclient.util.Constants;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class RedrawingTabPanel extends TabPanel {
     private final Timer redrawTimer;

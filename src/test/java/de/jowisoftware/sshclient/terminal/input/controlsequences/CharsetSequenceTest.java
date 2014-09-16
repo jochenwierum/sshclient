@@ -1,13 +1,12 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import de.jowisoftware.sshclient.terminal.charsets.TerminalCharset;
+import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
 import org.jmock.Expectations;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.terminal.charsets.TerminalCharset;
-import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class CharsetSequenceTest extends AbstractSequenceTest {
     @Test

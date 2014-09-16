@@ -1,8 +1,9 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
-import static de.jowisoftware.sshclient.i18n.Translation.t;
 import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
+
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class ColorValidator<T extends Profile<?>> implements Validator<T> {
     private static final String COLORFIELD = "gfx.colors";

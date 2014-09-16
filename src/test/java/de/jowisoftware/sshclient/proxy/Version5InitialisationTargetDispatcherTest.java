@@ -1,19 +1,18 @@
 package de.jowisoftware.sshclient.proxy;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
-import java.io.UnsupportedEncodingException;
-
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.UnsupportedEncodingException;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(JUnitParamsRunner.class)
 public class Version5InitialisationTargetDispatcherTest {

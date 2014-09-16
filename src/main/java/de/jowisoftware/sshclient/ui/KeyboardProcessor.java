@@ -1,15 +1,15 @@
 package de.jowisoftware.sshclient.ui;
 
-import java.awt.event.KeyEvent;
-
-import org.apache.log4j.Logger;
-
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.event.KeyEvent;
 
 public class KeyboardProcessor implements KeyboardEvent {
-    private static final Logger LOGGER = Logger.getLogger(KeyboardProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KeyboardProcessor.class);
 
     private static final byte ESC = 27;
     private boolean cursorsInAppMode = false;
@@ -44,7 +44,7 @@ public class KeyboardProcessor implements KeyboardEvent {
             return;
         }
 
-        LOGGER.trace("Ignoring action key: " + e.getKeyCode());
+        LOGGER.trace("Ignoring action key: {}", e.getKeyCode());
     }
 
     private void handleChar(final KeyEvent e) {

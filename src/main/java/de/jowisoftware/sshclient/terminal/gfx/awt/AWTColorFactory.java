@@ -1,18 +1,17 @@
 package de.jowisoftware.sshclient.terminal.gfx.awt;
 
-import java.awt.Color;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import de.jowisoftware.sshclient.terminal.gfx.ColorFactory;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AWTColorFactory implements ColorFactory {
-    private static final Logger LOGGER = Logger
-            .getLogger(AWTColorFactory.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AWTColorFactory.class);
 
     private final AWTGfxInfo gfxInfo;
     private final Map<Integer, CustomColor> customColors =
@@ -93,8 +92,7 @@ public class AWTColorFactory implements ColorFactory {
     @Override
     public void updateCustomColor(final int colorCode,
             final int red, final int green, final int blue) {
-        LOGGER.debug("Setting new cucstom color " + colorCode + " to "
-                + red + "/" + green + "/" + blue);
+        LOGGER.debug("Setting new cucstom color {} to {}/{}/{}", colorCode, red, green, blue);
         customColors.get(colorCode).color = new Color(red, green, blue);
     }
 }

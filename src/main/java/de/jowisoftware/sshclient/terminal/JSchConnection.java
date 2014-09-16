@@ -1,19 +1,11 @@
 package de.jowisoftware.sshclient.terminal;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Map.Entry;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-
 import de.jowisoftware.sshclient.application.settings.Forwarding;
 import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.events.EventHub;
@@ -23,9 +15,16 @@ import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.jsch.InputStreamEventHub;
 import de.jowisoftware.sshclient.jsch.SSHUserInfo;
 import de.jowisoftware.sshclient.proxy.SocksServer;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Map.Entry;
 
 public class JSchConnection {
-    private static final Logger LOGGER = Logger.getLogger(JSchConnection.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JSchConnection.class);
     private static final int X11_BASE_PORT = 6000;
 
     private final JSch jsch;
@@ -52,13 +51,13 @@ public class JSchConnection {
     }
 
     public void connect() throws JSchException, IOException {
-        LOGGER.warn("Connecting to " + profile.getDefaultTitle());
+        LOGGER.warn("Connecting to {}", profile.getDefaultTitle());
 
         openSession();
         openChannel();
         setupStreams();
 
-        LOGGER.warn("Connected to " + profile.getDefaultTitle());
+        LOGGER.warn("Connected to {}", profile.getDefaultTitle());
     }
 
     private void openChannel() throws JSchException {
@@ -92,8 +91,7 @@ public class JSchConnection {
                             forwarding.getRemoteHost(), forwarding.getRemotePort());
                 }
             } catch (final JSchException e) {
-                LOGGER.error("Could not setup port forwarding " + forwarding +
-                        ", ignoring setup and continuing connection", e);
+                LOGGER.error("Could not setup port forwarding {}, ignoring setup and continuing connection", forwarding, e);
             }
         }
     }

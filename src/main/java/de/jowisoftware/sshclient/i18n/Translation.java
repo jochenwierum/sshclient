@@ -1,5 +1,10 @@
 package de.jowisoftware.sshclient.i18n;
 
+import de.jowisoftware.sshclient.util.SwingUtils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -9,13 +14,8 @@ import java.util.Properties;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.util.SwingUtils;
-
 public class Translation {
-    private static final Logger LOGGER = Logger.getLogger(Translation.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Translation.class);
     private static final Object NEUTRAL_LANGUAGE = "en_US";
     private final Properties translations;
 
@@ -39,14 +39,14 @@ public class Translation {
             if (result != null) {
                 formatString = result;
             } else {
-                LOGGER.warn("Missing translation: " + key.toLowerCase() + " (\"" + string + "\")");
+                LOGGER.warn("Missing translation: {} (\"{}\")", key.toLowerCase(), string);
             }
         }
         return String.format(formatString, args);
     }
 
     public static void initStaticTranslationWithLanguage(final String language) {
-        LOGGER.info("Initializing language: " + language);
+        LOGGER.info("Initializing language: {}", language);
 
         staticTranslation = new Translation();
         if (language != null && !language.equals(NEUTRAL_LANGUAGE)) {
@@ -58,10 +58,10 @@ public class Translation {
                             Charset.forName("UTF-8")));
                     IOUtils.closeQuietly(stream);
                 } catch (final IOException e) {
-                    LOGGER.error("Could not read language file: " + language, e);
+                    LOGGER.error("Could not read language file: {}", language, e);
                 }
             } else {
-                LOGGER.error("Could not find language: " + language);
+                LOGGER.error("Could not find language: {}", language);
             }
         }
     }
@@ -99,7 +99,7 @@ public class Translation {
         } else if (charString.length() == 1) {
             return SwingUtils.charToVK(charString.charAt(0));
         } else {
-            LOGGER.warn("Illegal key for mnemonic " + key + ": " + charString);
+            LOGGER.warn("Illegal key for mnemonic {}: {}", key, charString);
             return SwingUtils.charToVK(defaultKey);
         }
     }

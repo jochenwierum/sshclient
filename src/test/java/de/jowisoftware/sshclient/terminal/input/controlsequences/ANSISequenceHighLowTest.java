@@ -1,11 +1,10 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import org.jmock.Expectations;
-import org.junit.Test;
-
 import de.jowisoftware.sshclient.terminal.buffer.BufferSelection;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
+import org.jmock.Expectations;
+import org.junit.Test;
 
 public class ANSISequenceHighLowTest extends AbstractSequenceTest {
     @Test

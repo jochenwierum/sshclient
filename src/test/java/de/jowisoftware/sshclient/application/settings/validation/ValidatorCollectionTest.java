@@ -1,11 +1,10 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Rule;
 import org.junit.Test;
-
-import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 
 public class ValidatorCollectionTest {
     @Rule

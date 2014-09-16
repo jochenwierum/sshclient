@@ -1,17 +1,15 @@
 package de.jowisoftware.sshclient.ui;
 
-import java.awt.event.InputEvent;
-import java.awt.event.MouseEvent;
-
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.event.MouseInputListener;
-
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.debug.PerformanceType;
 import de.jowisoftware.sshclient.terminal.SimpleSSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.mouse.MouseCursorManager;
+
+import javax.swing.*;
+import javax.swing.event.MouseInputListener;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseEvent;
 
 public class SSHConsoleMouseListener implements MouseInputListener {
     private final JComponent parent;

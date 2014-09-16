@@ -1,10 +1,7 @@
 package de.jowisoftware.sshclient.ui.tabpanel;
 
+import javax.swing.*;
 import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JSplitPane;
 
 
 public class SimpleSplittableContainerWrapper implements SplittableContainerWrapper {

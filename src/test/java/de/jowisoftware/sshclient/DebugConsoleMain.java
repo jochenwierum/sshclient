@@ -1,22 +1,17 @@
 package de.jowisoftware.sshclient;
 
+import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import de.jowisoftware.sshclient.terminal.events.DisplayType;
+import de.jowisoftware.sshclient.ui.SSHConsole;
+import org.apache.commons.io.IOUtils;
+
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.Timer;
-import javax.swing.WindowConstants;
-
-import org.apache.commons.io.IOUtils;
-
-import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
-import de.jowisoftware.sshclient.terminal.events.DisplayType;
-import de.jowisoftware.sshclient.ui.SSHConsole;
 
 public class DebugConsoleMain {
     public static void main(final String args[]) throws Exception {

@@ -8,14 +8,8 @@ import de.jowisoftware.sshclient.util.FontUtils;
 import de.jowisoftware.sshclient.util.KeyValue;
 import de.jowisoftware.sshclient.util.StringUtils;
 
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.Window;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;

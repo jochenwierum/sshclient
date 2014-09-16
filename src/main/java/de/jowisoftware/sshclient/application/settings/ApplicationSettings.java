@@ -1,10 +1,10 @@
 package de.jowisoftware.sshclient.application.settings;
 
+import de.jowisoftware.sshclient.encryption.PasswordStorage;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-
-import de.jowisoftware.sshclient.encryption.PasswordStorage;
 
 public interface ApplicationSettings<T extends Profile<?>> {
     Map<String, T> getProfiles();

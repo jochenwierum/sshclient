@@ -1,13 +1,15 @@
 package de.jowisoftware.sshclient.terminal.charsets;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public enum TerminalCharset {
     DECCHARS('0'),
     UK('A'),
     USASCII('B');
 
-    private static final Logger LOGGER = Logger
+    private static final Logger LOGGER = LoggerFactory
             .getLogger(TerminalCharset.class);
 
     private final char identifier;
@@ -22,7 +24,7 @@ public enum TerminalCharset {
             }
         }
 
-        LOGGER.warn("Looking up illegal charset: " + c);
+        LOGGER.warn("Looking up illegal charset: {}", c);
         return USASCII;
     }
 }

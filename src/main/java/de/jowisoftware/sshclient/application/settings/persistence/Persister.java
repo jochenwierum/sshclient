@@ -1,16 +1,16 @@
 package de.jowisoftware.sshclient.application.settings.persistence;
 
-import java.io.File;
-
-import org.apache.log4j.Logger;
-
 import de.jowisoftware.sshclient.application.settings.persistence.annotations.PersistenceAnnotationTraverser;
 import de.jowisoftware.sshclient.application.settings.persistence.xml.DocumentReader;
 import de.jowisoftware.sshclient.application.settings.persistence.xml.XMLDocumentReader;
 import de.jowisoftware.sshclient.application.settings.persistence.xml.XMLDocumentWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 public class Persister {
-    private static final Logger LOGGER = Logger.getLogger(Persister.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Persister.class);
     public static final String VERSION = "2";
 
     private final File settingsFile;

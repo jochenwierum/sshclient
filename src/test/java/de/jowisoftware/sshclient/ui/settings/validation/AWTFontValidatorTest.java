@@ -1,14 +1,13 @@
 package de.jowisoftware.sshclient.ui.settings.validation;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.application.settings.validation.AbstractValidationTest;
 import de.jowisoftware.sshclient.application.settings.validation.ValidationResult;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class AWTFontValidatorTest extends AbstractValidationTest<AWTProfile> {
     @Before

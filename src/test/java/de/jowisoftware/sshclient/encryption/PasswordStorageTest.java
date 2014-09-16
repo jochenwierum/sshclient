@@ -1,16 +1,6 @@
 package de.jowisoftware.sshclient.encryption;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.fail;
-
-import java.util.Arrays;
-import java.util.Map;
-
+import de.jowisoftware.sshclient.encryption.PasswordStorage.State;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -22,7 +12,12 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.encryption.PasswordStorage.State;
+import java.util.Arrays;
+import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.fail;
 
 public class PasswordStorageTest {
     @Rule

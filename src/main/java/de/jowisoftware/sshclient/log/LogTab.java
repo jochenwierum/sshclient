@@ -1,28 +1,19 @@
 package de.jowisoftware.sshclient.log;
 
-import static de.jowisoftware.sshclient.i18n.Translation.t;
+import de.jowisoftware.sshclient.ui.tabpanel.Tab;
+import de.jowisoftware.sshclient.ui.tabpanel.TabPanel;
+import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabListener;
+import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabTitleComponent;
 
-import java.awt.EventQueue;
-import java.awt.Toolkit;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-
-import de.jowisoftware.sshclient.ui.tabpanel.Tab;
-import de.jowisoftware.sshclient.ui.tabpanel.TabPanel;
-import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabListener;
-import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabTitleComponent;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public final class LogTab implements Tab, Observer {
     private static class Content extends JScrollPane {

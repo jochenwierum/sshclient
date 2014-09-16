@@ -1,12 +1,12 @@
 package de.jowisoftware.sshclient.terminal.charsets;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public enum TerminalCharsetSelection {
     G0('('), G1(')');
 
-    private static final Logger LOGGER = Logger
-            .getLogger(TerminalCharsetSelection.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TerminalCharsetSelection.class);
 
     private final char identifier;
     private TerminalCharsetSelection(final char identifier) {
@@ -22,7 +22,7 @@ public enum TerminalCharsetSelection {
             }
         }
 
-        LOGGER.warn("Looking up illegal charset: " + selectionCharacter);
+        LOGGER.warn("Looking up illegal charset: {}", selectionCharacter);
         return G0;
     }
 }

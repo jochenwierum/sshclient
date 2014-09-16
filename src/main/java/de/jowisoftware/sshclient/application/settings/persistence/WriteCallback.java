@@ -6,7 +6,7 @@ import de.jowisoftware.sshclient.application.settings.persistence.annotations.Pe
 import de.jowisoftware.sshclient.application.settings.persistence.xml.DocumentWriter;
 import de.jowisoftware.sshclient.application.settings.persistence.xml.XMLDocumentWriter;
 
-import java.awt.Color;
+import java.awt.*;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;

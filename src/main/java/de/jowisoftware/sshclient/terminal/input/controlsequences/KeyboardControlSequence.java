@@ -1,13 +1,13 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
+import de.jowisoftware.sshclient.terminal.SSHSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.terminal.SSHSession;
-
 public class KeyboardControlSequence implements NonASCIIControlSequence {
-    private static final Logger LOGGER = Logger.getLogger(KeyboardControlSequence.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(KeyboardControlSequence.class);
     private static final Pattern PATTERN = Pattern.compile("=|>");
 
     @Override
@@ -31,7 +31,7 @@ public class KeyboardControlSequence implements NonASCIIControlSequence {
                 sessionInfo.getKeyboardFeedback().fire().newNumblockAppMode(false);
                 break;
             default:
-                LOGGER.error("Unknown control sequence: <ESC>" + sequence);
+                LOGGER.error("Unknown control sequence: <ESC>{}", sequence);
         }
     }
 }

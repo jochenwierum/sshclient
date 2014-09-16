@@ -1,7 +1,6 @@
 package de.jowisoftware.sshclient.debug;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.*;
 
 class BoxPlot {
     private long min;

@@ -1,10 +1,6 @@
 package de.jowisoftware.sshclient.encryption;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 class CipherInformation {
     public byte[] salt;

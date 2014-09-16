@@ -1,10 +1,10 @@
 package de.jowisoftware.sshclient.debug;
 
+import org.junit.Test;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-
-import org.junit.Test;
 
 public class QuantileTest {
     private final Quantile q1 = new Quantile(new long[]{1, 10, 2, 9, 3, 8, 4, 7, 5, 6});

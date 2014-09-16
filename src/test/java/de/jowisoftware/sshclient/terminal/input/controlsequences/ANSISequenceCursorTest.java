@@ -1,12 +1,11 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 
-import static org.junit.Assert.assertEquals;
-
+import de.jowisoftware.sshclient.terminal.buffer.Position;
 import org.jmock.Expectations;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.terminal.buffer.Position;
+import static org.junit.Assert.assertEquals;
 
 public class ANSISequenceCursorTest extends AbstractSequenceTest {
     @Test

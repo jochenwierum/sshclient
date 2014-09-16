@@ -1,24 +1,23 @@
 package de.jowisoftware.sshclient.application.settings.awt;
 
+import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.application.settings.BellType;
+import de.jowisoftware.sshclient.application.settings.TabState;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.Persist;
+import de.jowisoftware.sshclient.application.settings.persistence.annotations.TraversalType;
+import de.jowisoftware.sshclient.encryption.CryptoException;
+import de.jowisoftware.sshclient.encryption.PasswordStorage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.jowisoftware.sshclient.application.settings.persistence.annotations.Persist;
-import de.jowisoftware.sshclient.application.settings.persistence.annotations.TraversalType;
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.application.settings.BellType;
-import de.jowisoftware.sshclient.application.settings.TabState;
-import de.jowisoftware.sshclient.encryption.CryptoException;
-import de.jowisoftware.sshclient.encryption.PasswordStorage;
-
 public class AWTApplicationSettings implements ApplicationSettings<AWTProfile> {
-    private static final Logger LOGGER = Logger
-            .getLogger(AWTApplicationSettings.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AWTApplicationSettings.class);
 
     @Persist(traversalType = TraversalType.RECURSIVE)
     private AWTProfile defaultProfile = new AWTProfile();

@@ -1,13 +1,11 @@
 package de.jowisoftware.sshclient.jsch;
 
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
 import com.jcraft.jsch.UserInfo;
-
 import de.jowisoftware.sshclient.application.PasswordManager;
 import de.jowisoftware.sshclient.application.UserAbortException;
 import de.jowisoftware.sshclient.util.SwingUtils;
+
+import javax.swing.*;
 
 public class SSHUserInfo implements UserInfo {
     private static final int PREFIX_PASSWORD_LENGTH = 13;

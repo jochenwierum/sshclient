@@ -1,16 +1,16 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import org.apache.log4j.Logger;
-
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.gfx.Attribute;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ANSISequencem implements ANSISequence {
-    private static final Logger LOGGER = Logger.getLogger(ANSISequencem.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ANSISequencem.class);
 
     private static final int CUSTOM_FOREGROUND_COLOR = 38;
     private static final int CUSTOM_BACKGROUND_COLOR = 48;
@@ -52,8 +52,7 @@ public class ANSISequencem implements ANSISequence {
                         Integer.parseInt(args[i]),
                         Integer.parseInt(args[i + 2]));
             } else {
-                LOGGER.debug("Missing custom color code: ESC["
-                        + StringUtils.join(";", args) + "m");
+                LOGGER.debug("Missing custom color code: ESC[{}m", StringUtils.join(";", args));
             }
             return true;
         }
@@ -87,7 +86,7 @@ public class ANSISequencem implements ANSISequence {
             resetAttributes(sessionInfo);
         } else if (!processAttributes(sessionInfo, seq) &&
             !processDefaultColors(sessionInfo, seq)) {
-                LOGGER.error("Unknown attribute: <ESC>[" + seq + "m");
+            LOGGER.error("Unknown attribute: <ESC>[{}m", seq);
         }
     }
 

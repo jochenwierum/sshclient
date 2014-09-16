@@ -1,8 +1,8 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import java.util.regex.Pattern;
-
 import de.jowisoftware.sshclient.terminal.SSHSession;
+
+import java.util.regex.Pattern;
 
 public class OperatingSystemCommandSequence implements NonASCIIControlSequence {
     private static final Pattern PATTERN = Pattern.compile("\\][012];.*\u0007");

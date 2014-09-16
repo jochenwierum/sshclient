@@ -1,20 +1,13 @@
 package de.jowisoftware.sshclient.ui.tabpanel.closable;
 
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Graphics;
-import java.awt.SystemColor;
+import de.jowisoftware.sshclient.ui.tabpanel.Tab;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import de.jowisoftware.sshclient.ui.tabpanel.Tab;
 
 public class ClosableTabTitleComponent extends JPanel implements MouseListener {
     private static final long serialVersionUID = 4533946005667886601L;

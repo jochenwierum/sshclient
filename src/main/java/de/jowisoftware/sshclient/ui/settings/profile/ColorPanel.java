@@ -4,11 +4,8 @@ import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 import de.jowisoftware.sshclient.ui.settings.AbstractColorButton;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import java.awt.Color;
-import java.awt.GridLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 import static de.jowisoftware.sshclient.i18n.Translation.t;

@@ -1,7 +1,8 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
-import static de.jowisoftware.sshclient.i18n.Translation.t;
 import de.jowisoftware.sshclient.application.settings.Profile;
+
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class UserValidator implements Validator<Profile<?>> {
     private static final String FIELD = "user";

@@ -1,32 +1,16 @@
 package de.jowisoftware.sshclient.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.io.OutputStream;
-
-import javax.swing.JPanel;
-
-import de.jowisoftware.sshclient.terminal.buffer.*;
-import org.apache.log4j.Logger;
-
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.ChannelShell;
-
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.debug.PerformanceType;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.SimpleSSHSession;
+import de.jowisoftware.sshclient.terminal.buffer.*;
+import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
 import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxCharSetup;
 import de.jowisoftware.sshclient.terminal.input.ByteProcessor;
@@ -38,11 +22,18 @@ import de.jowisoftware.sshclient.terminal.mouse.DefaultMouseCursorManager;
 import de.jowisoftware.sshclient.terminal.mouse.MouseCursorManager;
 import de.jowisoftware.sshclient.ui.terminal.DoubleBufferedImage;
 import de.jowisoftware.sshclient.util.SwingUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.OutputStream;
 
 public class SSHConsole extends JPanel implements InputStreamEvent,
         ComponentListener, FocusListener {
     private static final long serialVersionUID = 5102110929763645596L;
-    private static final Logger LOGGER = Logger.getLogger(SSHConsole.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SSHConsole.class);
 
     private final SimpleSSHSession session;
     private final Renderer renderer;
@@ -165,7 +156,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
             try {
                 outputProcessor.processByte(chars[i]);
             } catch(final RuntimeException e) {
-                LOGGER.error("Error while processing byte " + (chars[i] & 0xff), e);
+                LOGGER.error("Error while processing byte {}", chars[i] & 0xff, e);
             }
         }
     }
@@ -216,8 +207,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
         });
 
         if (channel != null) {
-            LOGGER.debug("Reporting new window size: " + cw + "/" + ch + " "
-                    + pw + "/" + ph);
+            LOGGER.debug("Reporting new window size: {}/{} {}/{}", cw, ch, pw, ph);
 
             if (channel instanceof ChannelExec) {
                 ((ChannelExec) channel).setPtySize(cw, ch, pw, ph);
@@ -235,7 +225,7 @@ public class SSHConsole extends JPanel implements InputStreamEvent,
     }
 
     public void setDisplayType(final DisplayType displayType) {
-        LOGGER.info("Setting new terminal display type: " + displayType);
+        LOGGER.info("Setting new terminal display type: {}", displayType);
         this.displayType = displayType;
 
         switch(displayType) {

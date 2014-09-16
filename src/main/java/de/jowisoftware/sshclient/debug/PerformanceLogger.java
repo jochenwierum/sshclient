@@ -1,16 +1,15 @@
 package de.jowisoftware.sshclient.debug;
 
+import de.jowisoftware.sshclient.util.FixedSizeArrayRingBuffer;
+import de.jowisoftware.sshclient.util.RingBuffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.util.FixedSizeArrayRingBuffer;
-import de.jowisoftware.sshclient.util.RingBuffer;
-
 public class PerformanceLogger {
-    private static final Logger LOGGER = Logger
-            .getLogger(PerformanceLogger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PerformanceLogger.class);
 
     private static final int LIST_SIZE = 100;
 
@@ -60,8 +59,7 @@ public class PerformanceLogger {
         if (time != SimplePerformanceMonitor.NEVER_STARTED) {
             recentTimings.get(performanceType).append(time);
             if (LOGGER.isTraceEnabled()) {
-                LOGGER.trace("Timing of " + performanceType.niceName +
-                        ": " + time + " ms");
+                LOGGER.trace("Timing of {}: {} ms", performanceType.niceName, time);
             }
         }
     }

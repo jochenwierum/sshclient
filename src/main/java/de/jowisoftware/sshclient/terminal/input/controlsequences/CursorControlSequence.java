@@ -1,14 +1,14 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import java.util.regex.Pattern;
-
-import org.apache.log4j.Logger;
-
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.regex.Pattern;
 
 public class CursorControlSequence implements NonASCIIControlSequence {
-    private static final Logger LOGGER = Logger.getLogger(CursorControlSequence.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CursorControlSequence.class);
     private static final Pattern PATTERN = Pattern.compile("[DEM78]");
 
     @Override
@@ -28,7 +28,7 @@ public class CursorControlSequence implements NonASCIIControlSequence {
         } else if (sequence.equals("7") || sequence.equals("8")) {
             processCursorPositionManagerment(sessionInfo, sequence);
         } else {
-            LOGGER.error("Unknown control sequence: <ESC>" + sequence);
+            LOGGER.error("Unknown control sequence: <ESC>{}", sequence);
         }
     }
 

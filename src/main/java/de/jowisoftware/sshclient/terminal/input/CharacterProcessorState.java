@@ -1,10 +1,10 @@
 package de.jowisoftware.sshclient.terminal.input;
 
+import de.jowisoftware.sshclient.terminal.input.controlsequences.NonASCIIControlSequence;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-
-import de.jowisoftware.sshclient.terminal.input.controlsequences.NonASCIIControlSequence;
 
 
 public class CharacterProcessorState {

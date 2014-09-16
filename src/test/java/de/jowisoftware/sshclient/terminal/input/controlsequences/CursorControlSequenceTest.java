@@ -1,16 +1,15 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
 
-import static org.junit.Assert.assertTrue;
-
+import de.jowisoftware.sshclient.terminal.SSHSession;
+import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.terminal.SSHSession;
-import de.jowisoftware.sshclient.terminal.buffer.Buffer;
+import static org.junit.Assert.assertTrue;
 
 public class CursorControlSequenceTest {
     @Rule

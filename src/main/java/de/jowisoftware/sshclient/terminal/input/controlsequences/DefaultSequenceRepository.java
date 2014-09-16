@@ -1,16 +1,16 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
+import de.jowisoftware.sshclient.terminal.SSHSession;
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.terminal.SSHSession;
-import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
-
 public class DefaultSequenceRepository implements SequenceRepository {
     private static class WarnSequenceHandler implements ANSISequence {
-        private static final Logger LOGGER = Logger.getLogger(DefaultSequenceRepository.class);
+        private static final Logger LOGGER = LoggerFactory.getLogger(WarnSequenceHandler.class);
 
         private final char c;
         private WarnSequenceHandler(final char c) {
@@ -25,7 +25,7 @@ public class DefaultSequenceRepository implements SequenceRepository {
             for (int i = 0; i < args.length; ++i) {
                 builder.append(args[i]);
                 if (i < args.length - 1) {
-                    builder.append(";");
+                    builder.append(';');
                 }
             }
             builder.append(c);

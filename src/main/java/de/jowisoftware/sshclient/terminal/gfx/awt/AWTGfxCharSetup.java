@@ -1,14 +1,9 @@
 package de.jowisoftware.sshclient.terminal.gfx.awt;
 
+import de.jowisoftware.sshclient.terminal.charsets.*;
 import de.jowisoftware.sshclient.terminal.gfx.*;
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.terminal.charsets.DECCharset;
-import de.jowisoftware.sshclient.terminal.charsets.GfxCharset;
-import de.jowisoftware.sshclient.terminal.charsets.TerminalCharset;
-import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
-import de.jowisoftware.sshclient.terminal.charsets.UKCharset;
-import de.jowisoftware.sshclient.terminal.charsets.USASCIICharset;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AWTGfxCharSetup implements GfxCharSetup {
     private static class CharSetupState implements Cloneable {
@@ -30,8 +25,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
         }
     }
 
-    private static final Logger LOGGER = Logger
-            .getLogger(AWTGfxCharSetup.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AWTGfxCharSetup.class);
 
     private final ColorFactory colorFactory;
     private final AWTGfxInfo gfxInfo;
@@ -99,7 +93,7 @@ public class AWTGfxCharSetup implements GfxCharSetup {
             break;
         default:
             charset = USASCIICharset.instance();
-            LOGGER.warn("Switch to unknown charset: " + newCharset);
+            LOGGER.warn("Switch to unknown charset: {}", newCharset);
         }
 
         if (selection.equals(TerminalCharsetSelection.G0)) {
@@ -108,14 +102,13 @@ public class AWTGfxCharSetup implements GfxCharSetup {
             this.charState.charsetG1 = charset;
         }
 
-        LOGGER.info("Charset " + selection + " is now " +
-                charset.getClass().getSimpleName());
+        LOGGER.info("Charset {} is now {}", selection, charset.getClass().getSimpleName());
     }
 
     @Override
     public void selectCharset(final TerminalCharsetSelection selection) {
         this.charState.selectedCharset = selection;
-        LOGGER.info("Switched charset to " + selection);
+        LOGGER.info("Switched charset to {}", selection);
     }
 
     @Override

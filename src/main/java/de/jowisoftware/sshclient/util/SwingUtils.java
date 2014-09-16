@@ -1,13 +1,11 @@
 package de.jowisoftware.sshclient.util;
 
-import java.awt.Window;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 
 public final class SwingUtils {
     private static final Map<Character, Integer> VKMappings = new HashMap<>();

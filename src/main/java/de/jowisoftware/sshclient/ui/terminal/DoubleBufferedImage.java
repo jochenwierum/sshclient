@@ -1,17 +1,5 @@
 package de.jowisoftware.sshclient.ui.terminal;
 
-import java.awt.Color;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.RenderingHints;
-import java.awt.Transparency;
-import java.awt.image.BufferedImage;
-
-import javax.swing.JPanel;
-
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.debug.PerformanceType;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
@@ -24,9 +12,13 @@ import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxChar;
 import de.jowisoftware.sshclient.terminal.gfx.awt.AWTGfxInfo;
 import de.jowisoftware.sshclient.util.Constants;
 import de.jowisoftware.sshclient.util.FontUtils;
-import edu.umd.cs.findbugs.annotations.SuppressWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-@SuppressWarnings("IS2_INCONSISTENT_SYNC")
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
+@SuppressFBWarnings("IS2_INCONSISTENT_SYNC")
 public class DoubleBufferedImage implements Renderer {
     private final AWTGfxInfo gfxInfo;
     private final JPanel parent;

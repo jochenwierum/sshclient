@@ -1,13 +1,12 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
+import de.jowisoftware.sshclient.application.settings.Profile;
+import de.jowisoftware.sshclient.i18n.Translation;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import de.jowisoftware.sshclient.application.settings.Profile;
-import de.jowisoftware.sshclient.i18n.Translation;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public abstract class AbstractValidationTest<T extends Profile<?>> {
     protected T profile;

@@ -1,13 +1,6 @@
 package de.jowisoftware.sshclient;
 
-import java.io.File;
-
-import javax.swing.UIManager;
-
-import org.apache.log4j.Logger;
-
 import com.jcraft.jsch.JSch;
-
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.application.settings.awt.AWTApplicationSettings;
@@ -18,9 +11,14 @@ import de.jowisoftware.sshclient.i18n.Translation;
 import de.jowisoftware.sshclient.jsch.JSchKeyManager;
 import de.jowisoftware.sshclient.ui.MainWindow;
 import de.jowisoftware.sshclient.ui.security.SimplePasswordManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.io.File;
 
 public class Init {
-    private static final Logger LOGGER = Logger.getLogger(Init.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Init.class);
 
     public void start() {
         start(new String[0]);

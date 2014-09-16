@@ -1,9 +1,9 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
-import java.util.List;
-
 import de.jowisoftware.sshclient.application.settings.Forwarding;
 import de.jowisoftware.sshclient.application.settings.Profile;
+
+import java.util.List;
 
 public class ForwardingsValidator implements Validator<Profile<?>> {
     @Override

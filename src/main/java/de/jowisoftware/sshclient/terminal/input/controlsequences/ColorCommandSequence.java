@@ -1,9 +1,9 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
+import de.jowisoftware.sshclient.terminal.SSHSession;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import de.jowisoftware.sshclient.terminal.SSHSession;
 
 public class ColorCommandSequence implements NonASCIIControlSequence {
     private final static Pattern partialStart = Pattern.compile(

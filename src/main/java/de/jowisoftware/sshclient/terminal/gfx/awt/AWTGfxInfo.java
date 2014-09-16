@@ -1,16 +1,14 @@
 package de.jowisoftware.sshclient.terminal.gfx.awt;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Toolkit;
-import java.util.HashMap;
-import java.util.Map;
-
 import de.jowisoftware.sshclient.application.settings.persistence.annotations.Persist;
 import de.jowisoftware.sshclient.application.settings.persistence.annotations.TraversalType;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.CursorStyle;
 import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class AWTGfxInfo implements GfxInfo<Color> {
     @Persist(traversalType = TraversalType.MAP, targetClass = Color.class, targetClass2 = ColorName.class)

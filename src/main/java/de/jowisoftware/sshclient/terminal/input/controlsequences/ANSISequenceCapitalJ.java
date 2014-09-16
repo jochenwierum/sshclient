@@ -1,13 +1,13 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import org.apache.log4j.Logger;
-
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.Range;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ANSISequenceCapitalJ implements ANSISequence {
-    private static final Logger LOGGER = Logger.getLogger(ANSISequenceCapitalK.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ANSISequenceCapitalJ.class);
 
     @Override
     public void process(final SSHSession sessionInfo, final String... args) {
@@ -25,7 +25,7 @@ public class ANSISequenceCapitalJ implements ANSISequence {
         case 2:
             buffer.erase(buffer.getSize().toRange());
             break;
-        default: LOGGER.error("Unknown control sequence: <ESC>" + mod + "J");
+        default: LOGGER.error("Unknown control sequence: <ESC> {}J", mod);
         }
     }
 }

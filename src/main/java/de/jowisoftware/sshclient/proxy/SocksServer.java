@@ -1,16 +1,16 @@
 package de.jowisoftware.sshclient.proxy;
 
+import com.jcraft.jsch.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-import org.apache.log4j.Logger;
-
-import com.jcraft.jsch.Session;
-
 public class SocksServer extends Thread {
-    private static final Logger LOGGER = Logger.getLogger(SocksServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SocksServer.class);
 
     private final Session session;
 
@@ -30,7 +30,7 @@ public class SocksServer extends Thread {
 
     @Override
     public void run() {
-        LOGGER.debug("Starting SOCKS proxy server on port " + port);
+        LOGGER.debug("Starting SOCKS proxy server on port {}", port);
 
         try (ServerSocket socket = new ServerSocket(port, 10,
                 InetAddress.getLoopbackAddress())) {
@@ -47,9 +47,9 @@ public class SocksServer extends Thread {
                 }
             }
 
-            LOGGER.debug("Closing SOCKS socket on port " + port);
+            LOGGER.debug("Closing SOCKS socket on port {}", port);
         } catch (final Exception e) {
-            LOGGER.error("Error while serving SOCKS proxy on port " + port, e);
+            LOGGER.error("Error while serving SOCKS proxy on port {}", port, e);
         }
     }
 }

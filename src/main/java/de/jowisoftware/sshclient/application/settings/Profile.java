@@ -1,10 +1,10 @@
 package de.jowisoftware.sshclient.application.settings;
 
+import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
+
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
-
-import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 
 public interface Profile<C extends GfxInfo<?>> {
     String getDefaultTitle();

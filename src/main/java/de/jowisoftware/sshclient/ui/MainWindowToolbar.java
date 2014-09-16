@@ -5,19 +5,11 @@ import de.jowisoftware.sshclient.application.settings.ProfileEvent;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.ui.about.AboutDialog;
 import de.jowisoftware.sshclient.ui.tabpanel.SplitDirection;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
-import javax.swing.JSeparator;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import java.awt.Desktop;
-import java.awt.Dimension;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -30,8 +22,7 @@ import java.util.Map.Entry;
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class MainWindowToolbar implements ProfileEvent {
-    private static final Logger LOGGER = Logger
-            .getLogger(MainWindowToolbar.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainWindowToolbar.class);
 
     private final MainWindow parent;
     private final JComboBox<String> comboBox = createComboBox();

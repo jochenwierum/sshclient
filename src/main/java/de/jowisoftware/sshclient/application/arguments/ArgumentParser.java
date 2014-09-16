@@ -1,15 +1,15 @@
 package de.jowisoftware.sshclient.application.arguments;
 
+import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.application.settings.Profile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.application.settings.Profile;
-
 public class ArgumentParser<T extends Profile<?>> {
-    private static final Logger LOGGER = Logger.getLogger(ArgumentParser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentParser.class);
 
     private final ArgumentParserCallback<T> callbacks;
     private final ApplicationSettings<T> settings;
@@ -59,8 +59,7 @@ public class ArgumentParser<T extends Profile<?>> {
                 return parseFreeStyle(arg);
             }
         } catch(final RuntimeException e) {
-            LOGGER.warn("Problem while parsing command line argument '" +
-                    arg + "'", e);
+            LOGGER.warn("Problem while parsing command line argument '{}'", arg, e);
         }
         return ArgumentResult.ERROR;
     }

@@ -1,19 +1,6 @@
 package de.jowisoftware.sshclient.ui;
 
-import static de.jowisoftware.sshclient.i18n.Translation.t;
-
-import java.awt.BorderLayout;
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
-
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
-import org.apache.log4j.Logger;
-
 import com.jcraft.jsch.JSchException;
-
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.jsch.InputStreamEvent;
@@ -26,11 +13,20 @@ import de.jowisoftware.sshclient.ui.tabpanel.redrawing.RedrawingTabPanel;
 import de.jowisoftware.sshclient.ui.terminal.CloseTabMode;
 import de.jowisoftware.sshclient.util.Constants;
 import de.jowisoftware.sshclient.util.SwingUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class ConnectionPanel extends JPanel {
     private static final long serialVersionUID = 7873084199411017370L;
 
-    private static final Logger LOGGER = Logger.getLogger(ConnectionPanel.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionPanel.class);
     private final AWTProfile profile;
     private final SessionMenu sessionMenu;
 

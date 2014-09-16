@@ -1,13 +1,12 @@
 package de.jowisoftware.sshclient.terminal.mouse;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.Snapshot;
 import de.jowisoftware.sshclient.terminal.buffer.SnapshotWithHistory;
 import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
+import org.jmock.Expectations;
+import org.jmock.Mockery;
 
 class BufferMockHelper {
     private final Mockery context;

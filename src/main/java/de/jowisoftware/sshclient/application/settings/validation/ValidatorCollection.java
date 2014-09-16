@@ -1,9 +1,9 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
+import de.jowisoftware.sshclient.application.settings.Profile;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import de.jowisoftware.sshclient.application.settings.Profile;
 
 public class ValidatorCollection<T extends Profile<?>> implements Validator<T> {
     private final List<Validator<? super T>> validators = new ArrayList<>();

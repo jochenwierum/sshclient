@@ -1,6 +1,6 @@
 package de.jowisoftware.sshclient.ui.tabpanel;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 
 public interface Tab {
     JComponent getContent();

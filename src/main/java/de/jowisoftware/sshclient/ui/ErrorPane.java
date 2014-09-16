@@ -1,9 +1,8 @@
 package de.jowisoftware.sshclient.ui;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import de.jowisoftware.sshclient.util.StringUtils;
+
+import javax.swing.*;
 
 public class ErrorPane extends JPanel {
     private static final long serialVersionUID = -796506188029383907L;

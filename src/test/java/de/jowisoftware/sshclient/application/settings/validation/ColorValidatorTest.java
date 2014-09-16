@@ -1,11 +1,10 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ColorValidatorTest extends AbstractValidationTest<AWTProfile> {
     @Before

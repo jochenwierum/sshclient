@@ -1,10 +1,17 @@
 package de.jowisoftware.sshclient.ui;
 
-import static de.jowisoftware.sshclient.i18n.Translation.m;
-import static de.jowisoftware.sshclient.i18n.Translation.t;
+import com.jcraft.jsch.JSchException;
+import de.jowisoftware.sshclient.application.Application;
+import de.jowisoftware.sshclient.application.settings.KeyManagerEvents;
+import de.jowisoftware.sshclient.ui.tabpanel.Tab;
+import de.jowisoftware.sshclient.ui.tabpanel.TabPanel;
+import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabListener;
+import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabTitleComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -12,25 +19,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
-import org.apache.log4j.Logger;
-
-import com.jcraft.jsch.JSchException;
-
-import de.jowisoftware.sshclient.application.Application;
-import de.jowisoftware.sshclient.application.settings.KeyManagerEvents;
-import de.jowisoftware.sshclient.ui.tabpanel.Tab;
-import de.jowisoftware.sshclient.ui.tabpanel.TabPanel;
-import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabListener;
-import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabTitleComponent;
+import static de.jowisoftware.sshclient.i18n.Translation.m;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class PrivateKeyTab implements KeyManagerEvents, Tab {
     private static class Content extends JPanel {
@@ -101,7 +91,7 @@ public class PrivateKeyTab implements KeyManagerEvents, Tab {
                     final int result = chooser.showOpenDialog(getParent());
                     if (result == JFileChooser.APPROVE_OPTION) {
                         final File file = chooser.getSelectedFile();
-                        LOGGER.info("Adding private key: " + file.getAbsolutePath());
+                        LOGGER.info("Adding private key: {}", file.getAbsolutePath());
                         application.keyManager.loadKey(file.getAbsolutePath());
                     }
                 }
@@ -122,7 +112,7 @@ public class PrivateKeyTab implements KeyManagerEvents, Tab {
                     }
 
                     for (final String name : toRemove) {
-                        LOGGER.info("Removing private key: " + name);
+                        LOGGER.info("Removing private key: {}", name);
                         application.keyManager.removeIdentity(name);
                     }
 
@@ -145,7 +135,7 @@ public class PrivateKeyTab implements KeyManagerEvents, Tab {
         }
     }
 
-    private static final Logger LOGGER = Logger.getLogger(PrivateKeyTab.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrivateKeyTab.class);
 
     private final ClosableTabTitleComponent title;
     private final Content content;

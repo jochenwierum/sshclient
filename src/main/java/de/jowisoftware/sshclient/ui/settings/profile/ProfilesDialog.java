@@ -5,31 +5,12 @@ import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.application.settings.validation.ValidationResult;
 import de.jowisoftware.sshclient.encryption.CryptoException;
 import de.jowisoftware.sshclient.ui.settings.validation.AWTProfileValidator;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListModel;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +21,7 @@ import static de.jowisoftware.sshclient.i18n.Translation.m;
 import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class ProfilesDialog extends JDialog {
-    private static final Logger LOGGER = Logger.getLogger(ProfilesDialog.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfilesDialog.class);
     private static final long serialVersionUID = 4811060219661889812L;
 
     private final JList<String> selectionList = new JList<>(
@@ -311,7 +292,7 @@ public class ProfilesDialog extends JDialog {
         try {
             settings.getPasswordStorage().deletePassword(passwordId);
         } catch (final CryptoException e) {
-            LOGGER.error("Could not remove password: " + selectedValue, e);
+            LOGGER.error("Could not remove password: {}", selectedValue, e);
         }
     }
 

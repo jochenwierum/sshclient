@@ -1,11 +1,10 @@
 package de.jowisoftware.sshclient.terminal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
+import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class TerminalCharsetSelectionTest {
     @Test

@@ -1,11 +1,11 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import org.jmock.Expectations;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class KeyboardControlSequenceTest extends AbstractSequenceTest {
     private KeyboardControlSequence sequence;

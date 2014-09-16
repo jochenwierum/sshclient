@@ -1,14 +1,11 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import org.junit.Test;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
-
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class PositionTest {
     private Position position(final int x, final int y) {

@@ -1,10 +1,10 @@
 package de.jowisoftware.sshclient.terminal.gfx.awt;
 
-import java.awt.Color;
-
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.GfxInfo;
 import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
+
+import java.awt.*;
 
 public class SystemColor implements TerminalColor {
     private final ColorName colorName;

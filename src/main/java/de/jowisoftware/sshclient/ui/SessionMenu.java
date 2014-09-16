@@ -1,16 +1,13 @@
 package de.jowisoftware.sshclient.ui;
 
-import static de.jowisoftware.sshclient.i18n.Translation.m;
-import static de.jowisoftware.sshclient.i18n.Translation.t;
+import de.jowisoftware.sshclient.terminal.events.DisplayType;
 
+import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.ButtonGroup;
-import javax.swing.JMenu;
-import javax.swing.JRadioButtonMenuItem;
-
-import de.jowisoftware.sshclient.terminal.events.DisplayType;
+import static de.jowisoftware.sshclient.i18n.Translation.m;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class SessionMenu extends JMenu {
     private static final long serialVersionUID = -6737261270811373874L;

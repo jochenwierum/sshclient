@@ -1,14 +1,13 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
 public class ArrayListBackedTabStopManager implements TabStopManager {
-    private static final Logger LOGGER = Logger
-            .getLogger(ArrayListBackedTabStopManager.class);
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(ArrayListBackedTabStopManager.class);
 
     private final List<Integer> tabstopList = new ArrayList<>();
     private int width = 0;
@@ -29,7 +28,7 @@ public class ArrayListBackedTabStopManager implements TabStopManager {
             newPos = new Position(tabstopList.get(pos), newY);
         }
 
-        LOGGER.debug("Next tab position for " + position + " is " + newPos);
+        LOGGER.debug("Next tab position for {} is {}", position, newPos);
         return newPos;
     }
 
@@ -72,7 +71,7 @@ public class ArrayListBackedTabStopManager implements TabStopManager {
     @Override
     public void addTab(final int column) {
         if (!tabstopList.contains(column)) {
-            LOGGER.debug("Adding new tab position at column " + column);
+            LOGGER.debug("Adding new tab position at column {}", column);
             tabstopList.add(column);
             Collections.sort(tabstopList);
         }
@@ -80,7 +79,7 @@ public class ArrayListBackedTabStopManager implements TabStopManager {
 
     @Override
     public void removeTab(final int i) {
-        LOGGER.debug("Removing tab position at column " + i);
+        LOGGER.debug("Removing tab position at column {}", i);
         tabstopList.remove(Integer.valueOf(i));
     }
 }

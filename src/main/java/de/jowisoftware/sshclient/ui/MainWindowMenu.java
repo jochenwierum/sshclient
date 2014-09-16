@@ -1,20 +1,17 @@
 package de.jowisoftware.sshclient.ui;
 
-import static de.jowisoftware.sshclient.i18n.Translation.m;
-import static de.jowisoftware.sshclient.i18n.Translation.t;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.ui.about.AboutDialog;
 import de.jowisoftware.sshclient.ui.settings.global.SettingsDialog;
 import de.jowisoftware.sshclient.ui.settings.profile.ProfilesDialog;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import static de.jowisoftware.sshclient.i18n.Translation.m;
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 
 public class MainWindowMenu {

@@ -1,9 +1,8 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
+import de.jowisoftware.sshclient.terminal.buffer.Position;
 import org.jmock.Expectations;
 import org.junit.Test;
-
-import de.jowisoftware.sshclient.terminal.buffer.Position;
 
 public class ANSISequenceTabulatorTest extends AbstractSequenceTest {
     @Test

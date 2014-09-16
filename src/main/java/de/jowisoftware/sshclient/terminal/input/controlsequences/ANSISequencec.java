@@ -1,11 +1,13 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import org.apache.log4j.Logger;
 
 import de.jowisoftware.sshclient.terminal.SSHSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ANSISequencec implements ANSISequence {
-    private static final Logger LOGGER = Logger.getLogger(ANSISequencec.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ANSISequencec.class);
+
     @Override
     public void process(final SSHSession sessionInfo, final String... args) {
         if (args.length == 0 || args[0].equals("0") || args[0].equals("1")) {
@@ -22,10 +24,10 @@ public class ANSISequencec implements ANSISequence {
         for (int i = 0; i < args.length; ++i) {
             builder.append(args[i]);
             if (i < args.length - 1) {
-                builder.append(";");
+                builder.append(';');
             }
         }
-        builder.append("c");
+        builder.append('c');
         LOGGER.warn(builder.toString());
     }
 }

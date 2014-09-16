@@ -1,19 +1,18 @@
 package de.jowisoftware.sshclient.proxy;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertArrayEquals;
-
-import java.net.UnknownHostException;
-
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.net.UnknownHostException;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertArrayEquals;
 
 @RunWith(JUnitParamsRunner.class)
 public class Version4InitialisationDispatcherTest {

@@ -1,11 +1,9 @@
 package de.jowisoftware.sshclient.debug;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Rectangle;
+import de.jowisoftware.sshclient.util.RingBuffer;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -13,11 +11,6 @@ import java.awt.event.WindowListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.swing.JFrame;
-import javax.swing.Timer;
-
-import de.jowisoftware.sshclient.util.RingBuffer;
 
 public class PerformanceWindow extends JFrame implements ActionListener, WindowListener {
     private static final long serialVersionUID = -1674919267554894420L;

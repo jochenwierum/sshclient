@@ -1,14 +1,12 @@
 package de.jowisoftware.sshclient.ui.tabpanel;
 
-import java.awt.Component;
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import javax.swing.JComponent;
-import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 public class TabbedPaneWrapper {
     private final List<Tab> tabs = new ArrayList<>();

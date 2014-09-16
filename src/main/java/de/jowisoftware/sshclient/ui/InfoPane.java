@@ -1,9 +1,8 @@
 package de.jowisoftware.sshclient.ui;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import de.jowisoftware.sshclient.util.StringUtils;
+
+import javax.swing.*;
 
 public class InfoPane extends JPanel {
     private static final long serialVersionUID = -4396620050414029131L;

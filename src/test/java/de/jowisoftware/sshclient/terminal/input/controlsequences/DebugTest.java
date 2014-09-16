@@ -1,13 +1,12 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import de.jowisoftware.sshclient.terminal.buffer.Position;
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 import org.jmock.Expectations;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class DebugTest extends AbstractSequenceTest {
     @Test

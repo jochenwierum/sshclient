@@ -1,13 +1,8 @@
 package de.jowisoftware.sshclient.jsch;
 
-import java.io.File;
-
-import org.apache.log4j.Logger;
-
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.KeyPair;
-
 import de.jowisoftware.sshclient.application.PasswordManager;
 import de.jowisoftware.sshclient.application.UserAbortException;
 import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
@@ -17,9 +12,13 @@ import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.EventHubClient;
 import de.jowisoftware.sshclient.events.ReflectionEventHub;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 public class JSchKeyManager implements KeyManager {
-    private static final Logger LOGGER = Logger.getLogger(JSchKeyManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JSchKeyManager.class);
     private final JSch jsch;
     private final ApplicationSettings<AWTProfile> settings;
     private final PasswordManager passwordManager;
@@ -37,7 +36,7 @@ public class JSchKeyManager implements KeyManager {
     @Override
     public void persistKeyListToSettings() {
         try {
-            LOGGER.info("Persisting " + jsch.getIdentityNames().size() + " private keys");
+            LOGGER.info("Persisting {} private keys", jsch.getIdentityNames().size());
 
             settings.getKeyFiles().clear();
             for (final Object keyName : jsch.getIdentityNames()) {
@@ -52,7 +51,7 @@ public class JSchKeyManager implements KeyManager {
     public void loadKeyListFromSettings() {
         for (final File file : settings.getKeyFiles()) {
             final String filePath = file.getAbsolutePath();
-            LOGGER.info("Restoring private key: " + filePath);
+            LOGGER.info("Restoring private key: {}", filePath);
 
             loadKey(filePath);
         }
@@ -63,7 +62,7 @@ public class JSchKeyManager implements KeyManager {
         try {
             key = KeyPair.load(jsch, keyName);
         } catch (final JSchException e) {
-            LOGGER.error("Could not open key: " + keyName, e);
+            LOGGER.error("Could not open key: {}", keyName, e);
             return null;
         }
 
@@ -97,9 +96,9 @@ public class JSchKeyManager implements KeyManager {
             jsch.addIdentity(absolutePath, password);
             events.fire().keysUpdated();
         } catch(final JSchException e) {
-            LOGGER.error("Could not load key: " + absolutePath, e);
+            LOGGER.error("Could not load key: {}", absolutePath, e);
         } catch (final UserAbortException e) {
-            LOGGER.info("Not loading key - user aborted password input: " + absolutePath);
+            LOGGER.info("Not loading key - user aborted password input: {}", absolutePath);
         }
     }
 

@@ -1,15 +1,14 @@
 package de.jowisoftware.sshclient.terminal.mouse;
 
+import de.jowisoftware.sshclient.terminal.buffer.BoundaryLocator;
+import de.jowisoftware.sshclient.terminal.buffer.Position;
+import de.jowisoftware.sshclient.terminal.buffer.Renderer;
+import de.jowisoftware.sshclient.util.StringUtils;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import de.jowisoftware.sshclient.terminal.buffer.BoundaryLocator;
-import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.terminal.buffer.Renderer;
-import de.jowisoftware.sshclient.util.StringUtils;
 
 public class DefaultMouseCursorManagerTest {
     @Rule

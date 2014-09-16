@@ -1,12 +1,9 @@
 package de.jowisoftware.sshclient.ui.tabpanel;
 
-import java.awt.BorderLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 public class RootContainerWrapper implements SplittableContainerWrapper {
     private final JPanel panel = new JPanel();

@@ -1,12 +1,11 @@
 package de.jowisoftware.sshclient.application.settings.validation;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import de.jowisoftware.sshclient.application.settings.Forwarding;
 import de.jowisoftware.sshclient.application.settings.Forwarding.Direction;
 import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
+import org.junit.Before;
+import org.junit.Test;
 
 public class ForwardingsValidatorTest extends AbstractValidationTest<Profile<?>> {
     @Before

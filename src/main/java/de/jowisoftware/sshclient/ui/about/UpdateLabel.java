@@ -1,18 +1,15 @@
 package de.jowisoftware.sshclient.ui.about;
 
-import static de.jowisoftware.sshclient.i18n.Translation.t;
-
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
 import de.jowisoftware.sshclient.util.ApplicationUtils;
 import de.jowisoftware.sshclient.util.ApplicationUtils.VersionInformation;
 import de.jowisoftware.sshclient.util.SwingUtils;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class UpdateLabel extends JLabel implements UpdateCheckResult {
     private static final long serialVersionUID = -7448353164521009788L;

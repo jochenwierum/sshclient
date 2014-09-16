@@ -21,10 +21,9 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 import javax.swing.text.JTextComponent;
-import java.awt.Component;
-import java.awt.Dialog;
+import java.awt.*;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;

@@ -5,16 +5,17 @@ import de.jowisoftware.sshclient.application.settings.persistence.annotations.Pe
 import de.jowisoftware.sshclient.application.settings.persistence.annotations.PersistenceAnnotationTraverser;
 import de.jowisoftware.sshclient.application.settings.persistence.xml.DocumentReader;
 import de.jowisoftware.sshclient.application.settings.persistence.xml.XMLDocumentReader;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
 public class ReadCallback implements PersistCallback {
-    private static final Logger LOGGER = Logger.getLogger(ReadCallback.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReadCallback.class);
     private final DocumentReader reader;
 
     public ReadCallback(final DocumentReader reader) {
@@ -45,11 +46,11 @@ public class ReadCallback implements PersistCallback {
             while (itemReader != null) {
                 final Object listItem = restoreObject(itemReader, annotation);
                 list.add(listItem);
-                
+
                 itemReader = listReader.nextNode();
             }
         } catch (Exception e) {
-            LOGGER.error("Could not restore map " + field.getName() + " in " + object.getClass().getName(), e);
+            LOGGER.error("Could not restore map {} in {}", field.getName(), object.getClass().getName(), e);
         }
     }
 
@@ -76,7 +77,7 @@ public class ReadCallback implements PersistCallback {
             PersistenceAnnotationTraverser.traverseObject(subObject, new ReadCallback(reader.readSubNode(name)));
             PersistenceAnnotationTraverser.notifyLoad(subObject);
         } catch (Exception e) {
-            LOGGER.error("Could not restore field " + field.getName() + " in " + object.getClass().getName(), e);
+            LOGGER.error("Could not restore field {} in {}", field.getName(), object.getClass().getName(), e);
         }
     }
 
@@ -96,7 +97,7 @@ public class ReadCallback implements PersistCallback {
                 itemReader = listReader.nextNode();
             }
         } catch (Exception e) {
-            LOGGER.error("Could not restore map " + field.getName() + " in " + object.getClass().getName(), e);
+            LOGGER.error("Could not restore map {} in {}", field.getName(), object.getClass().getName(), e);
         }
     }
 

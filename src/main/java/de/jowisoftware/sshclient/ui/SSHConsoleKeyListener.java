@@ -1,9 +1,9 @@
 package de.jowisoftware.sshclient.ui;
 
+import de.jowisoftware.sshclient.terminal.SSHSession;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
-import de.jowisoftware.sshclient.terminal.SSHSession;
 
 public class SSHConsoleKeyListener implements KeyListener {
     private final SSHSession session;

@@ -1,9 +1,10 @@
 package de.jowisoftware.sshclient.application;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class JschLogger implements com.jcraft.jsch.Logger {
-    private static final Logger LOGGER = Logger.getLogger(JschLogger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JschLogger.class);
 
     @Override
     public void log(final int level, final String message) {
@@ -21,7 +22,7 @@ class JschLogger implements com.jcraft.jsch.Logger {
             LOGGER.warn(message);
             break;
         case FATAL:
-            LOGGER.fatal(message);
+            LOGGER.error(message);
             break;
         }
     }

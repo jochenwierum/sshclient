@@ -1,17 +1,8 @@
 package de.jowisoftware.sshclient.ui.tabpanel;
 
-import java.awt.Point;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureEvent;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragSource;
-import java.awt.dnd.DragSourceDragEvent;
-import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceEvent;
-import java.awt.dnd.DragSourceListener;
-
-import javax.swing.BorderFactory;
-import javax.swing.JTabbedPane;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.dnd.*;
 
 public class DnDTabbedPane extends JTabbedPane {
     private static final long serialVersionUID = 4520682692007233910L;

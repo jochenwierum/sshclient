@@ -1,20 +1,15 @@
 package de.jowisoftware.sshclient.terminal.mouse;
 
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.terminal.buffer.BoundaryLocator;
-import de.jowisoftware.sshclient.terminal.buffer.Buffer;
-import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.terminal.buffer.Renderer;
-import de.jowisoftware.sshclient.terminal.buffer.Snapshot;
+import de.jowisoftware.sshclient.terminal.buffer.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultMouseCursorManager implements MouseCursorManager {
     private enum SelectionMode {
         SELECTION_MODE, WORDWISE, LINEWIESE
     }
 
-    private static final Logger LOGGER = Logger
-            .getLogger(DefaultMouseCursorManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DefaultMouseCursorManager.class);
 
     private final Buffer buffer;
     private final ClipboardManager clipboard;
@@ -41,7 +36,7 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
 
     @Override
     public void startSelection(final Position position, final int clicks) {
-        LOGGER.trace("Start selection: " + position);
+        LOGGER.trace("Start selection: {}", position);
         selectionMode = SelectionMode.values()[Math.min(clicks - 1, 2)];
         firstClickPosition = position;
         lastSelectionEndPosition = null;
@@ -54,7 +49,7 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
         }
 
         if (!position.equals(lastSelectionEndPosition)) {
-            LOGGER.trace("End selection: " + position);
+            LOGGER.trace("End selection: {}", position);
             if (position.equals(firstClickPosition) && selectionMode == SelectionMode.SELECTION_MODE) {
                 renderer.clearSelection();
                 startPosition = null;
@@ -124,8 +119,7 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
 
         final Snapshot snapshot = buffer.createSnapshot().createSimpleSnapshot(renderOffset);
 
-        LOGGER.debug("Copying range to clipboard: " + startPosition + " to "
-                + endPosition);
+        LOGGER.debug("Copying range to clipboard: {} to {}", startPosition, endPosition);
 
         final String selectedText;
         if (startPosition.y == endPosition.y) {
@@ -143,11 +137,11 @@ public class DefaultMouseCursorManager implements MouseCursorManager {
             final Position pos2, final Position size) {
         final StringBuilder builder = new StringBuilder();
         builder.append(getLineFromSnapshot(snapshot, pos1.y, pos1.x, size.x));
-        builder.append("\n");
+        builder.append('\n');
 
         for (int line = pos1.y + 1; line < pos2.y; ++line) {
             builder.append(getLineFromSnapshot(snapshot, line, 1, size.x));
-            builder.append("\n");
+            builder.append('\n');
         }
         builder.append(getLineFromSnapshot(snapshot, pos2.y, 1, pos2.x - 1));
         return builder.toString();

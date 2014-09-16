@@ -1,5 +1,9 @@
 package de.jowisoftware.sshclient.terminal.input;
 
+import de.jowisoftware.sshclient.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
@@ -7,16 +11,12 @@ import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
 
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.util.StringUtils;
-
 public class CharsetByteProcessor implements ByteProcessor {
     enum DecodeResult {
         OUTPUT_GENERATED, INPUT_NEEDED, ERROR
     }
 
-    private static final Logger LOGGER = Logger.getLogger(CharsetByteProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CharsetByteProcessor.class);
     private static final char UNKNOWN_CHAR = (char) 0xFFFD;
 
     private final ByteBuffer inputBuffer;
@@ -90,10 +90,8 @@ public class CharsetByteProcessor implements ByteProcessor {
             bytes.append(StringUtils.byteToHex(inputBuffer.get(i)));
             chars.append((char) inputBuffer.get(i));
         }
-        LOGGER.error("Could not decode as " +
-                decoder.charset().displayName() + ": " +
-                bytes.toString() + ": " + chars.toString() +
-                ", discarding first byte and retrying...");
+        LOGGER.error("Could not decode as {}: {}: {}, discarding first byte and retrying...",
+                decoder.charset().displayName(), bytes.toString(), chars.toString());
     }
 
     private DecodeResult couldConvertToOutputBuffer() {

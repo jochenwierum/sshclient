@@ -1,11 +1,11 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import java.util.regex.Pattern;
-
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.charsets.TerminalCharset;
 import de.jowisoftware.sshclient.terminal.charsets.TerminalCharsetSelection;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
+
+import java.util.regex.Pattern;
 
 public class CharsetControlSequence implements NonASCIIControlSequence {
     private final static Pattern PATTERN = Pattern.compile("[NO]|[()][0AB]");

@@ -1,9 +1,9 @@
 package de.jowisoftware.sshclient.ui.security;
 
-import javax.swing.JFrame;
-
 import de.jowisoftware.sshclient.application.UserAbortException;
 import de.jowisoftware.sshclient.util.SwingUtils;
+
+import javax.swing.*;
 
 public class PasswordRequestingSwingRunnable implements Runnable {
     private PasswordData result;

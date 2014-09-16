@@ -1,9 +1,9 @@
 package de.jowisoftware.sshclient.jsch;
 
+import de.jowisoftware.sshclient.events.EventHub;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import de.jowisoftware.sshclient.events.EventHub;
 
 /**
  * Reacts exaclty as an ReflectionEventHub, but is more faster because it does

@@ -1,14 +1,5 @@
 package de.jowisoftware.sshclient.ui.security;
 
-import static de.jowisoftware.sshclient.i18n.Translation.t;
-
-import java.util.SortedMap;
-import java.util.TreeMap;
-
-import javax.swing.JOptionPane;
-
-import org.apache.log4j.Logger;
-
 import de.jowisoftware.sshclient.application.Application;
 import de.jowisoftware.sshclient.application.PasswordManager;
 import de.jowisoftware.sshclient.application.UserAbortException;
@@ -17,10 +8,17 @@ import de.jowisoftware.sshclient.encryption.PasswordStorage;
 import de.jowisoftware.sshclient.encryption.PasswordStorage.State;
 import de.jowisoftware.sshclient.encryption.WrongPasswordException;
 import de.jowisoftware.sshclient.util.SwingUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import static de.jowisoftware.sshclient.i18n.Translation.t;
 
 public class SimplePasswordManager implements PasswordManager {
-    private static final Logger LOGGER = Logger
-            .getLogger(SimplePasswordManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimplePasswordManager.class);
 
     private PasswordStorage storage;
     private Application application;
@@ -171,7 +169,7 @@ public class SimplePasswordManager implements PasswordManager {
             unlockStorage();
             storage.deletePassword(passwordId);
         } catch (final CryptoException e) {
-            LOGGER.error("Unable to delete password '" + passwordId + "'", e);
+            LOGGER.error("Unable to delete password '{}'", passwordId, e);
             showMessage(t("security.exception.delete",
                     "Unable to delete password '%s'.", passwordId));
         } catch (final UserAbortException e) {

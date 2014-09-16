@@ -1,10 +1,10 @@
 package de.jowisoftware.sshclient.application.arguments;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.application.settings.Profile;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FreeStyleConnectArgument<T extends Profile<?>> implements ConnectArgument<T> {
     private static final Pattern ARGUMENT_PATTERN =

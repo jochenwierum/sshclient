@@ -1,13 +1,12 @@
 package de.jowisoftware.sshclient.terminal;
 
-import org.apache.log4j.Logger;
-
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.Renderer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class BackgroundRenderThread extends Thread {
-    private static final Logger LOGGER = Logger
-            .getLogger(BackgroundRenderThread.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BackgroundRenderThread.class);
 
     private volatile boolean run = true;
     private volatile boolean paused = false;
@@ -36,7 +35,7 @@ final class BackgroundRenderThread extends Thread {
                     try {
                         this.wait();
                     } catch (final InterruptedException e) {
-                        LOGGER.error("Error in background renderer: " + e);
+                        LOGGER.error("Error in background renderer", e);
                     }
                 }
                 run = false;
@@ -49,7 +48,7 @@ final class BackgroundRenderThread extends Thread {
                 LOGGER.error("background rendering failed", e);
             }
         }
-        LOGGER.info("background rendering thread ended: " + getName());
+        LOGGER.info("background rendering thread ended: {}", getName());
     }
 
     public void render() {
@@ -80,7 +79,7 @@ final class BackgroundRenderThread extends Thread {
         resumeRendering();
         try {
             join();
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             LOGGER.error("Interrupted while waiting for background renderer to finish", e);
         }
     }

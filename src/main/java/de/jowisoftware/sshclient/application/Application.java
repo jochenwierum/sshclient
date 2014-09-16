@@ -1,24 +1,21 @@
 package de.jowisoftware.sshclient.application;
 
-import java.io.File;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-import org.apache.log4j.Logger;
-
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
-
 import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
 import de.jowisoftware.sshclient.application.settings.KeyManager;
 import de.jowisoftware.sshclient.application.settings.ProfileEvent;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.events.ReflectionEventHub;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import java.io.File;
 
 public class Application {
-    private static final Logger LOGGER = Logger.getLogger(Application.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
     public final JSch jsch;
 

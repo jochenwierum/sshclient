@@ -1,13 +1,11 @@
 package de.jowisoftware.sshclient.terminal.gfx.awt;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Rectangle;
-
 import de.jowisoftware.sshclient.terminal.gfx.Attribute;
 import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 import de.jowisoftware.sshclient.terminal.gfx.RenderFlag;
 import de.jowisoftware.sshclient.terminal.gfx.TerminalColor;
+
+import java.awt.*;
 
 public class AWTGfxChar implements GfxChar {
     private final AWTGfxInfo gfxInfo;

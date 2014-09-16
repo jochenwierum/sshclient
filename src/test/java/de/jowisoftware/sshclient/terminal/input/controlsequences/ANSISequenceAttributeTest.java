@@ -1,12 +1,11 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import org.jmock.Expectations;
-import org.jmock.Sequence;
-import org.junit.Test;
-
 import de.jowisoftware.sshclient.terminal.gfx.Attribute;
 import de.jowisoftware.sshclient.terminal.gfx.ColorName;
 import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
+import org.jmock.Expectations;
+import org.jmock.Sequence;
+import org.junit.Test;
 
 public class ANSISequenceAttributeTest extends AbstractSequenceTest {
     private void callWithAttrAndExpect(final int attr, final Attribute expect) {

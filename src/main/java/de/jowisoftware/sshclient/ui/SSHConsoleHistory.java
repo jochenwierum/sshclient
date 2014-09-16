@@ -1,15 +1,14 @@
 package de.jowisoftware.sshclient.ui;
 
-import java.awt.Adjustable;
+import de.jowisoftware.sshclient.terminal.SSHSession;
+import de.jowisoftware.sshclient.terminal.mouse.MouseCursorManager;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-
-import javax.swing.JScrollBar;
-
-import de.jowisoftware.sshclient.terminal.SSHSession;
-import de.jowisoftware.sshclient.terminal.mouse.MouseCursorManager;
 
 public class SSHConsoleHistory implements AdjustmentListener, MouseWheelListener {
     private final JScrollBar scrollBar = new JScrollBar(Adjustable.VERTICAL, 0,

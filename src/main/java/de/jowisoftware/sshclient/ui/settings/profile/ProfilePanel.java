@@ -3,11 +3,8 @@ package de.jowisoftware.sshclient.ui.settings.profile;
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.ui.settings.AbstractOptionPanel;
 
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import java.awt.BorderLayout;
-import java.awt.Window;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

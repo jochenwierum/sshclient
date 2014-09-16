@@ -1,10 +1,8 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
-
 import org.jmock.Expectations;
 import org.jmock.States;
 import org.jmock.integration.junit4.JUnitRuleMockery;
@@ -13,7 +11,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(JUnitParamsRunner.class)
 public class SynchronizedBufferTest {

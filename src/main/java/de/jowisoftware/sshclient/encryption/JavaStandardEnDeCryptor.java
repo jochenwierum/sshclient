@@ -1,9 +1,6 @@
 package de.jowisoftware.sshclient.encryption;
 
-import java.nio.charset.Charset;
-import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
-import java.security.spec.KeySpec;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -11,8 +8,10 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
-
-import org.apache.commons.codec.binary.Base64;
+import java.nio.charset.Charset;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.security.spec.KeySpec;
 
 class JavaStandardEnDeCryptor implements EnDeCryptor {
     private static final String SECRET_KEY_TYPE = "PBKDF2WithHmacSHA1";

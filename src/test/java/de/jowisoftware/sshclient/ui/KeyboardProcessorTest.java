@@ -1,17 +1,16 @@
 package de.jowisoftware.sshclient.ui;
 
-import java.awt.Label;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-
+import de.jowisoftware.sshclient.terminal.SSHSession;
+import de.jowisoftware.sshclient.terminal.buffer.Renderer;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.terminal.SSHSession;
-import de.jowisoftware.sshclient.terminal.buffer.Renderer;
+import java.awt.*;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 
 // TODO: the whole test class and keyboard processor is a mess
 // try to reduce complexity here, get rid of AWT and make the tests more expressive

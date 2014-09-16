@@ -1,9 +1,6 @@
 package de.jowisoftware.sshclient.ui.settings;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Window;
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public abstract class AbstractGridBagOptionPanel extends AbstractOptionPanel {

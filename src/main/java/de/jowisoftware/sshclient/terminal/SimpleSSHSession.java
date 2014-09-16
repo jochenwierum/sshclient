@@ -1,26 +1,22 @@
 package de.jowisoftware.sshclient.terminal;
 
+import de.jowisoftware.sshclient.events.EventHub;
+import de.jowisoftware.sshclient.events.ReflectionEventHub;
+import de.jowisoftware.sshclient.terminal.buffer.*;
+import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
+import de.jowisoftware.sshclient.terminal.events.VisualEvent;
+import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
+import de.jowisoftware.sshclient.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 
-import org.apache.log4j.Logger;
-
-import de.jowisoftware.sshclient.events.EventHub;
-import de.jowisoftware.sshclient.events.ReflectionEventHub;
-import de.jowisoftware.sshclient.terminal.buffer.Buffer;
-import de.jowisoftware.sshclient.terminal.buffer.BufferStorage;
-import de.jowisoftware.sshclient.terminal.buffer.Position;
-import de.jowisoftware.sshclient.terminal.buffer.Renderer;
-import de.jowisoftware.sshclient.terminal.buffer.TabStopManager;
-import de.jowisoftware.sshclient.terminal.events.KeyboardEvent;
-import de.jowisoftware.sshclient.terminal.events.VisualEvent;
-import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
-import de.jowisoftware.sshclient.util.StringUtils;
-
 public class SimpleSSHSession implements SSHSession {
-    private static final Logger LOGGER = Logger.getLogger(SimpleSSHSession.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleSSHSession.class);
 
     private final Buffer buffer;
     private final Renderer renderer;
@@ -101,16 +97,14 @@ public class SimpleSSHSession implements SSHSession {
         }
 
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Sending: " +
-                    StringUtils.escapeForLogs(bytes, 0, bytes.length));
+            LOGGER.trace("Sending: {}", StringUtils.escapeForLogs(bytes, 0, bytes.length));
         }
         synchronized(responseStream) {
             try {
                 responseStream.write(bytes);
                 responseStream.flush();
             } catch(final IOException e) {
-                LOGGER.warn("Failed to send string: " +
-                        StringUtils.escapeForLogs(bytes, 0, bytes.length), e);
+                LOGGER.warn("Failed to send string: {}", StringUtils.escapeForLogs(bytes, 0, bytes.length), e);
             }
         }
     }

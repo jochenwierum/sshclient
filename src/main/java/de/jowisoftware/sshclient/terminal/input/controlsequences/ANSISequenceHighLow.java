@@ -1,15 +1,15 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import org.apache.log4j.Logger;
-
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
 import de.jowisoftware.sshclient.terminal.buffer.BufferSelection;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.events.DisplayType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ANSISequenceHighLow implements ANSISequence {
-    private static final Logger LOGGER = Logger.getLogger(ANSISequenceHighLow.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ANSISequenceHighLow.class);
     private final boolean isHigh;
 
     public ANSISequenceHighLow(final boolean isHigh) {
@@ -29,7 +29,7 @@ public class ANSISequenceHighLow implements ANSISequence {
     private void processArgs(final String[] args) {
         for (final String arg : args) {
             // 4: insert mode
-            LOGGER.warn("High/low flag not implemented: " + arg);
+            LOGGER.warn("High/low flag not implemented: {}", arg);
         }
     }
 
@@ -73,7 +73,7 @@ public class ANSISequenceHighLow implements ANSISequence {
                     processCursorStorageWithCursorSave(sessionInfo);
                     break;
                 default:
-                    LOGGER.warn("High/low flag not implemented: ?" + arg);
+                    LOGGER.warn("High/low flag not implemented: ?{}", arg);
             }
         }
     }

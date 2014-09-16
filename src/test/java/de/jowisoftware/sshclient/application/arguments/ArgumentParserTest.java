@@ -1,19 +1,18 @@
 package de.jowisoftware.sshclient.application.arguments;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.collection.IsArray.array;
-
-import java.util.HashMap;
-import java.util.Map;
-
+import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
+import de.jowisoftware.sshclient.application.settings.Profile;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import de.jowisoftware.sshclient.application.settings.ApplicationSettings;
-import de.jowisoftware.sshclient.application.settings.Profile;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.collection.IsArray.array;
 
 public class ArgumentParserTest {
     @Rule

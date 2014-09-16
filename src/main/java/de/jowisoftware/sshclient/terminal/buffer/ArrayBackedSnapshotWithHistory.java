@@ -1,9 +1,9 @@
 package de.jowisoftware.sshclient.terminal.buffer;
 
-import java.util.Iterator;
-
 import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 import de.jowisoftware.sshclient.util.RingBuffer;
+
+import java.util.Iterator;
 
 public class ArrayBackedSnapshotWithHistory implements SnapshotWithHistory  {
     private final GfxChar[][] buffer;

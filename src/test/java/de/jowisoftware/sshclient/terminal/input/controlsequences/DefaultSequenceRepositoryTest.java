@@ -1,12 +1,12 @@
 package de.jowisoftware.sshclient.terminal.input.controlsequences;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.isA;
+import org.junit.Test;
 
 import java.util.List;
 
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.isA;
 
 public class DefaultSequenceRepositoryTest {
     @Test

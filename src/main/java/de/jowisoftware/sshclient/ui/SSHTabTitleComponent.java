@@ -1,10 +1,10 @@
 package de.jowisoftware.sshclient.ui;
 
-import javax.swing.JLabel;
-
 import de.jowisoftware.sshclient.application.settings.awt.AWTProfile;
 import de.jowisoftware.sshclient.ui.tabpanel.Tab;
 import de.jowisoftware.sshclient.ui.tabpanel.closable.ClosableTabTitleComponent;
+
+import javax.swing.*;
 
 public class SSHTabTitleComponent extends ClosableTabTitleComponent {
     private static final long serialVersionUID = 3033441642594395407L;

@@ -1,20 +1,20 @@
 package de.jowisoftware.sshclient.proxy;
 
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelDirectTCPIP;
+import com.jcraft.jsch.JSchException;
+import com.jcraft.jsch.Session;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-
-import com.jcraft.jsch.Channel;
-import com.jcraft.jsch.ChannelDirectTCPIP;
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.Session;
-
 public class SocksConnection extends Thread {
-    private static final Logger LOGGER = Logger
+    private static final Logger LOGGER = LoggerFactory
             .getLogger(SocksConnection.class);
 
     private final DefaultSocksInitialisationProcessor processor =
@@ -27,17 +27,16 @@ public class SocksConnection extends Thread {
         this.socket = clientSocket;
         this.session = session;
 
-        setName("SOCKS-" + socket.getLocalPort()
-                + "-" + socket.getInetAddress().toString() + ":"
-                + socket.getPort());
+        setName(String.format("SOCKS-%d-%s:-%d", socket.getLocalPort()
+                ,socket.getInetAddress().toString(), socket.getPort()));
     }
 
     @Override
     public void run() {
-        final String remoteSocket = socket.getInetAddress().toString() + ":"
-                + socket.getPort();
+        final String remoteSocket = String.format("%s:%d",
+                socket.getInetAddress().toString(), socket.getPort());
 
-        LOGGER.info("Starting socks thread for " + remoteSocket);
+        LOGGER.info("Starting socks thread for {}", remoteSocket);
 
         InputStream inputStream = null;
         OutputStream outputStream = null;
@@ -51,7 +50,7 @@ public class SocksConnection extends Thread {
             // JSCHs Channel's thread. The thread closes the Streams when
             // the connection is closed.
         } catch (final IOException | JSchException e) {
-            LOGGER.info("Error while initializing proxy for " + remoteSocket,
+            LOGGER.info("Error while initializing proxy for {}", remoteSocket,
                     e);
             IOUtils.closeQuietly(inputStream);
             IOUtils.closeQuietly(outputStream);
@@ -66,8 +65,8 @@ public class SocksConnection extends Thread {
             outputStream.write(answer);
 
             if (processor.isFinished()) {
-                LOGGER.info("Establishing connection to " + processor.getHost()
-                        + ":" + processor.getPort());
+                LOGGER.info(String.format("Establishing connection to %s:%d",
+                        processor.getHost(), processor.getPort()));
                 final Channel channel = session.openChannel("direct-tcpip");
                 ((ChannelDirectTCPIP) channel).setHost(processor.getHost());
                 ((ChannelDirectTCPIP) channel).setPort(processor.getPort());

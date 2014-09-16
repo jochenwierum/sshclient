@@ -1,6 +1,6 @@
 package de.jowisoftware.sshclient.ui.tabpanel;
 
-import javax.swing.JSplitPane;
+import javax.swing.*;
 
 public enum SplitDirection {
     HORIZONTAL(JSplitPane.HORIZONTAL_SPLIT),

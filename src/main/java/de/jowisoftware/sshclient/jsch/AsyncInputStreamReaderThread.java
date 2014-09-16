@@ -1,20 +1,18 @@
 package de.jowisoftware.sshclient.jsch;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
-
 import com.jcraft.jsch.Channel;
-
 import de.jowisoftware.sshclient.debug.PerformanceLogger;
 import de.jowisoftware.sshclient.debug.PerformanceType;
 import de.jowisoftware.sshclient.util.StringUtils;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class AsyncInputStreamReaderThread extends Thread {
-    private static final Logger LOGGER = Logger
-            .getLogger(AsyncInputStreamReaderThread.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AsyncInputStreamReaderThread.class);
     private final Channel channel;
     private final InputStreamEvent callback;
 
@@ -36,9 +34,10 @@ public class AsyncInputStreamReaderThread extends Thread {
         channel.disconnect();
         final int exitStatus = channel.getExitStatus();
         callback.streamClosed(exitStatus);
-        LOGGER.info("Thread ended, exit status: " + exitStatus);
+        LOGGER.info("Thread ended, exit status: {}", exitStatus);
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     private void processInputStream() throws IOException {
         final InputStream stream = channel.getInputStream();
 
@@ -58,8 +57,7 @@ public class AsyncInputStreamReaderThread extends Thread {
         }
 
         if (LOGGER.isTraceEnabled()) {
-            LOGGER.trace("Got " + read + " bytes: " +
-                    StringUtils.escapeForLogs(buffer, 0, read));
+            LOGGER.trace("Got {} bytes: {}", read, StringUtils.escapeForLogs(buffer, 0, read));
         }
 
         try {

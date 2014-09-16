@@ -4,9 +4,8 @@ import de.jowisoftware.sshclient.application.settings.Profile;
 import de.jowisoftware.sshclient.ui.settings.AbstractGridBagOptionPanel;
 import de.jowisoftware.sshclient.util.StringUtils;
 
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
-import java.awt.Window;
+import javax.swing.*;
+import java.awt.*;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.SortedMap;

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <appenders>
+    <Panel name="Panel">
+      <PatternLayout pattern="%d [%t] %-5p %c{1}: %m%n"/>
+    </Panel>
+
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d [%t] %-5p %c{1}: %m%n"/>
+    </Console>
+  </appenders>
+
+  <Loggers>
+    <logger name="de.jowisoftware.sshclient.debug.PerformanceLogger" level="WARN"/>
+
+    <Root level="debug">
+      <AppenderRef ref="Console"/>
+      <AppenderRef ref="Panel"/>
+    </Root>
+  </Loggers>
+</configuration>

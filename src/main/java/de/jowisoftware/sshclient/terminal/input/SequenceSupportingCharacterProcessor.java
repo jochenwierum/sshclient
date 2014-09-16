@@ -1,10 +1,5 @@
 package de.jowisoftware.sshclient.terminal.input;
 
-import java.util.Iterator;
-import java.util.Stack;
-
-import org.apache.log4j.Logger;
-
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Position;
 import de.jowisoftware.sshclient.terminal.buffer.TabulatorOrientation;
@@ -13,9 +8,14 @@ import de.jowisoftware.sshclient.terminal.input.CharacterProcessorState.State;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.ANSISequence;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.NonASCIIControlSequence;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.SequenceRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
+import java.util.Stack;
 
 public class SequenceSupportingCharacterProcessor implements CharacterProcessor {
-    private static final Logger LOGGER = Logger.getLogger(SequenceSupportingCharacterProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SequenceSupportingCharacterProcessor.class);
     private static final char ESC_CHAR = (char) 27;
     private static final char NEWLINE_CHAR = '\n';
     private static final char CARRIDGE_RETURN_CHAR = '\r';
@@ -127,8 +127,7 @@ public class SequenceSupportingCharacterProcessor implements CharacterProcessor 
             currentState().cachedChars.append(c);
         } else {
             final ANSISequence seq = sequenceRepository.getANSISequence(c);
-            LOGGER.trace("Will handle <ESC>[" + currentState().getCachedString()
-                    + c + " with " + seq.getClass().getSimpleName());
+            LOGGER.trace("Will handle <ESC>[{}{} with {}", currentState().getCachedString(), c, seq.getClass().getSimpleName());
 
             final String sequenceText = currentState().getCachedString();
             if (sequenceText.isEmpty()) {
@@ -168,9 +167,7 @@ public class SequenceSupportingCharacterProcessor implements CharacterProcessor 
             final NonASCIIControlSequence seq = it.next();
             if (seq.canHandleSequence(cachedString)) {
                 if (LOGGER.isInfoEnabled()) {
-                    LOGGER.trace("Will handle " +
-                            cachedString +
-                            " with " + seq.getClass().getSimpleName());
+                    LOGGER.trace("Will handle {} with {}", cachedString, seq.getClass().getSimpleName());
                 }
                 seq.handleSequence(cachedString, sessionInfo);
                 resetState();
@@ -195,8 +192,7 @@ public class SequenceSupportingCharacterProcessor implements CharacterProcessor 
     }
 
     private void handleErrors() {
-        LOGGER.warn("Unable to process sequence, ignoring: " +
-                currentState().cachedChars);
+        LOGGER.warn("Unable to process sequence, ignoring: {}", currentState().cachedChars);
         resetState();
     }
 

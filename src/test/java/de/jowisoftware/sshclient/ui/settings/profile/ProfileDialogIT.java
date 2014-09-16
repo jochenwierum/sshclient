@@ -18,10 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.awt.Color;
-import java.awt.Dialog;
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -29,10 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.fest.swing.core.KeyPressInfo.keyCode;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ProfileDialogIT extends GuiIntegrationTest {

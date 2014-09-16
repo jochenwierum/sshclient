@@ -1,14 +1,5 @@
 package de.jowisoftware.sshclient.terminal.input;
 
-import java.util.Arrays;
-
-import org.jmock.Expectations;
-import org.jmock.Sequence;
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
 import de.jowisoftware.sshclient.events.EventHub;
 import de.jowisoftware.sshclient.terminal.SSHSession;
 import de.jowisoftware.sshclient.terminal.buffer.Buffer;
@@ -19,6 +10,14 @@ import de.jowisoftware.sshclient.terminal.gfx.GfxChar;
 import de.jowisoftware.sshclient.terminal.gfx.GfxCharSetup;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.NonASCIIControlSequence;
 import de.jowisoftware.sshclient.terminal.input.controlsequences.SequenceRepository;
+import org.jmock.Expectations;
+import org.jmock.Sequence;
+import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+
+import java.util.Arrays;
 
 public class SequenceSupportingCharacterProcessorTest {
     @Rule
